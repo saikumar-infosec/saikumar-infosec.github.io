@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Banking Application VAPT — Case Study</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="site-header"><div class="container header-inner"><a href="../index.html" class="btn-ghost">← Back</a></div></header>
+  <main class="container section">
+    <h1>Banking Application VAPT — Case Study</h1>
+    <p class="muted">Full-scope assessment for a large banking mobile + web platform.</p>
+
+    <h3>Scope</h3>
+    <ul>
+      <li>External web application (customer portal)</li>
+      <li>Internal APIs (auth & transaction)</li>
+      <li>Mobile app (Android & iOS)</li>
+    </ul>
+
+    <h3>Attack Surface & Methodology</h3>
+    <p>Reconnaissance → Auth testing → Input validation → API business logic testing → Mobile reverse engineering → Privilege escalation checks.</p>
+
+    <h3>Tools Used</h3>
+    <p>Burp Suite Pro, ZAP, SQLMap, MobSF, Frida, JADX, Nmap</p>
+
+    <h3>Key Findings</h3>
+    <ol>
+      <li><strong>IDOR in transaction API:</strong> Allowed unauthorized account fund view. PoC created and fixed.</li>
+      <li><strong>JWT signature misconfiguration:</strong> Weak verification allowing token tampering.</li>
+      <li><strong>Mobile insecure storage:</strong> Sensitive tokens in SharedPreferences.</li>
+    </ol>
+
+    <h3>Business Impact</h3>
+    <p>Potential data exposure and unauthorized transaction risk — high severity. Recommended immediate fixes reduced attack surface and risk of exploitation.</p>
+
+    <h3>Remediation</h3>
+    <ul>
+      <li>Implement proper access control checks on server side.</li>
+      <li>Enforce JWT verification and rotate keys.</li>
+      <li>Encrypt sensitive data and remove local tokens; use secure storage.</li>
+    </ul>
+
+    <hr>
+    <p><a href="../index.html">Back to portfolio</a></p>
+  </main>
+</body>
+</html>
