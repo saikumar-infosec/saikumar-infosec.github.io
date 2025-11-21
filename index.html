@@ -1,228 +1,183 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Saikumar Raju — Cybersecurity Consultant</title>
+  <title>Saikumar Raju — Cybersecurity Consultant | VAPT • AppSec • Cloud</title>
+  <meta name="description" content="Saikumar Raju — Cybersecurity consultant specializing in VAPT, AppSec, Mobile & Cloud security. Case studies, skills and contact."/>
+  <link rel="icon" href="logo-minimal.svg" />
   <link rel="stylesheet" href="style.css" />
-  <meta name="description" content="Saikumar Raju — Cybersecurity Consultant (VAPT, AppSec, Mobile, Cloud). Explore skills, projects and resume." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Saikumar Raju — Cybersecurity Consultant" />
+  <meta property="og:description" content="VAPT | AppSec | Cloud security consultant - case studies and contact." />
+  <meta property="og:image" content="logo-sr.svg" />
 </head>
-<body class="theme-auto">
-
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <!-- Logo SVG (SR initials) -->
-        <img src="logo-sr.svg" alt="SR Logo">
-        <div class="brand-text">
-          <h1 class="logo">Saikumar Raju</h1>
-          <p class="tag">Cybersecurity Consultant • VAPT • AppSec • Cloud</p>
-        </div>
-      </div>
-
-      <nav id="main-nav" class="nav" aria-label="Main navigation">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#certs">Certifications</a>
-        <a href="#contact">Contact</a>
-        <!-- Resume button uses the repo PDF filename -->
-        <a class="btn-outline" id="resume-link" href="Saikumar Raju_Resume_0.pdf" download>Resume</a>
-        <button id="nav-toggle" class="nav-toggle" aria-label="Toggle menu">☰</button>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌗</button>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-text">
-          <h2 class="hero-title">Offensive Security & VAPT Specialist</h2>
-          <p class="lead">3.6 years of practical experience delivering high-quality VAPT, AppSec, Mobile and Cloud security testing for banking, healthcare, and e-commerce clients. I provide technical PoCs, remediation guides and verification testing.</p>
-          <div class="hero-ctas">
-            <a class="btn-primary" href="Saikumar Raju_Resume_0.pdf" download>Download Resume</a>
-            <a class="btn-ghost" href="#projects">View Projects</a>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/">
+          <img src="SR-initials.svg" alt="SR" class="logo" />
+          <div class="brand-text">
+            <div class="name">Saikumar Raju</div>
+            <div class="title-small">Cybersecurity Consultant · VAPT · AppSec · Cloud</div>
           </div>
-          <p class="muted small">Prefer a different format? <a href="#contact">Contact me</a>.</p>
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#experience">Experience</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
+          <a class="btn-outline" href="Saikumar_Raju_Resume_0.pdf" download>Resume</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌓</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      <section class="hero">
+        <div class="hero-left">
+          <h1 class="hero-title">Offensive Security & VAPT Specialist</h1>
+          <p class="lead">3.6 years delivering high-quality VAPT, AppSec, Mobile and Cloud security testing for banking, healthcare & e-commerce. I deliver technical PoCs, remediation guidance and verification testing.</p>
+          <div class="hero-cta">
+            <a class="btn-primary" href="Saikumar_Raju_Resume_0.pdf" download>Download Resume</a>
+            <a class="btn-link" href="#projects">View Projects</a>
+          </div>
         </div>
 
-        <aside class="hero-card">
-          <div class="card">
-            <h3>Contact</h3>
-            <p><strong>Email:</strong> <a href="mailto:saikumarraju30@gmail.com">saikumarraju30@gmail.com</a></p>
-            <p><strong>Phone:</strong> +91 7337026773</p>
-            <p><strong>Location:</strong> India</p>
-            <p class="muted">GitHub: <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener">saikumar-infosec</a></p>
-            <div class="qr">
-              <img src="qr.png" alt="QR to website" />
-              <p class="small muted">Scan to open site</p>
-            </div>
+        <aside class="contact-card" id="contact">
+          <h3>Contact</h3>
+          <p><strong>Email:</strong> <a href="mailto:saikumarraju30@gmail.com">saikumarraju30@gmail.com</a></p>
+          <p><strong>Phone:</strong> +91 7337026773</p>
+          <p><strong>Location:</strong> India</p>
+          <p><strong>GitHub:</strong> <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener">saikumar-infosec</a></p>
+          <div class="qr-block">
+            <img src="qr.png" alt="QR to website" class="qr-img" />
+            <div class="qr-caption">Scan to open site</div>
           </div>
         </aside>
-      </div>
-    </section>
+      </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="section container">
-      <h2>About</h2>
-      <div class="about-grid">
-        <div>
-          <p><strong>Who I am</strong>: I am a cybersecurity consultant with deep hands-on experience in offensive security and VAPT. I focus on identifying exploitable weaknesses in web, API, mobile and cloud environments, and producing actionable remediation plans for engineering teams.</p>
-          <p><strong>Approach</strong>: I follow structured methodologies (OWASP ASVS, OWASP API Security, PTES) and produce technical PoCs, prioritized risk ratings and remediation verification tests.</p>
+      <section id="about" class="about">
+        <h2>About</h2>
+        <div class="about-grid">
+          <div class="about-left">
+            <p><strong>Who I am:</strong> I am a cybersecurity consultant with hands-on experience in offensive security and VAPT. I identify exploitable weaknesses across web, API, mobile and cloud environments and produce remediation-ready PoCs and verification tests.</p>
+            <p><strong>Approach:</strong> I follow structured methodologies (OWASP ASVS, OWASP API Security, PTES) and produce prioritized findings, PoCs and remediation roadmaps.</p>
+          </div>
+          <div class="about-right">
+            <ul class="meta-list">
+              <li><strong>Experience:</strong> 3.6 years — VAPT & AppSec</li>
+              <li><strong>Verticals:</strong> Banking, Healthcare, E-commerce</li>
+              <li><strong>Delivery:</strong> Reports, PoCs, Retests, Secure Development guidance</li>
+            </ul>
+          </div>
         </div>
-        <ul class="about-facts">
-          <li><strong>Experience:</strong> 3.6 years — VAPT & AppSec</li>
-          <li><strong>Verticals:</strong> Banking, Healthcare, E-commerce</li>
-          <li><strong>Delivery:</strong> Reports, PoCs, Retests, Secure Development guidance</li>
-        </ul>
-      </div>
-    </section>
+      </section>
 
-    <!-- SKILLS -->
-    <section id="skills" class="section bg-light">
-      <div class="container">
+      <section id="skills" class="skills">
         <h2>Skills & Tools</h2>
-        <div class="skills-grid">
-          <div class="skill-card">
+        <div class="cards-grid">
+          <article class="card">
             <h4>Application Security</h4>
             <ul>
-              <li>OWASP Top 10, OWASP ASVS assessments</li>
-              <li>Auth & Access Control testing: IDOR, Broken Access Control, BOLA</li>
-              <li>API Security: JWT/OAuth2 validation, token misuse, rate-limiting bypass</li>
-              <li>Server-side: SSRF, RCE, SSTI, unsafe deserialization</li>
-              <li>Hardening: CORS, CSP, TLS configuration</li>
+              <li>OWASP Top 10, ASVS, API pentesting, JWT & auth flows</li>
+              <li>Business logic analysis, input validation, session weaknesses</li>
+              <li>Secure code checks & remediation guidance</li>
             </ul>
-          </div>
-
-          <div class="skill-card">
+          </article>
+          <article class="card">
             <h4>Mobile Security (Android & iOS)</h4>
             <ul>
-              <li>Static & dynamic analysis: MobSF, JADX, Frida</li>
-              <li>SSL pinning bypass, root/jailbreak detection bypass</li>
-              <li>Local storage & Keychain analysis, insecure crypto</li>
-              <li>Reverse engineering & API abuse testing</li>
+              <li>Static & dynamic analysis: MobSF, Frida, ADB</li>
+              <li>SSL/TLS pinning bypass, insecure storage, Keychain/Keystore issues</li>
             </ul>
-          </div>
-
-          <div class="skill-card">
-            <h4>Network & Cloud Security</h4>
+          </article>
+          <article class="card">
+            <h4>Network & Cloud</h4>
             <ul>
-              <li>Network scanning & exploitation: Nmap, Nessus, Metasploit, NSE</li>
-              <li>Active Directory reconnaissance & attack path analysis</li>
-              <li>AWS audits: IAM, S3 exposure, Security Groups</li>
-              <li>TLS/SSL audits, MITM & credential capture testing</li>
+              <li>Nmap, Nessus, Metasploit; internal/external network assessments</li>
+              <li>AWS auditing: IAM, S3, Security Groups, least-privilege reviews</li>
+              <li>TLS/SSL audits, MITM, credential capture testing</li>
             </ul>
-          </div>
-
-          <div class="skill-card">
+          </article>
+          <article class="card">
             <h4>Tools & Stack</h4>
             <ul>
-              <li>Burp Suite Pro, ZAP, SQLMap, Postman</li>
-              <li>Wireshark, BloodHound, Responder, CrackMapExec</li>
-              <li>Frida, Objection, MobSF, Jadx</li>
-              <li>Git, Bash, Linux, Docker basics, CI/CD awareness</li>
+              <li>Burp Suite Pro, ZAP, SQLMap, Wireshark, Nessus</li>
+              <li>MobSF, Frida, ADB, Postman, Git, Docker</li>
             </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="experience" class="experience">
+        <h2>Experience</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <h4>Cyber Security Consultant — Astracybertech Pvt Ltd</h4>
+              <p class="muted">Oct 2023 — Present</p>
+              <p>Delivered end-to-end VAPT for web, mobile and API platforms. Led 50+ assessments for banking and healthcare — identified critical issues, produced PoCs and remediation plans.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <h4>Security Analyst — Yash Technologies</h4>
+              <p class="muted">Feb 2022 — Mar 2023</p>
+              <p>Performed web & API testing, aided red team exercises, produced technical reports and mitigation guidance.</p>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- EXPERIENCE -->
-    <section id="experience" class="section container">
-      <h2>Experience</h2>
-      <div class="timeline">
-        <article class="timeline-item">
-          <h3>Cyber Security Consultant — Astracybertech Pvt Ltd</h3>
-          <span class="meta">Oct 2023 – Present</span>
-          <ul>
-            <li>Led 50+ full-scope VAPT engagements across Web, API, Mobile & Network systems.</li>
-            <li>Discovered and validated critical issues (IDOR, SSRF, BOLA, RCE), producing PoCs and verification tests.</li>
-            <li>Performed AWS security audits: IAM principle of least privilege reviews, S3 hardening, security group and VPC checks.</li>
-            <li>Prepared structured reports with prioritized remediation and completed retests to verify fixes.</li>
-          </ul>
-        </article>
-
-        <article class="timeline-item">
-          <h3>Security Analyst — Yash Technologies</h3>
-          <span class="meta">Feb 2022 – Mar 2023</span>
-          <ul>
-            <li>Conducted Web & API penetration tests using Burp Suite, ZAP and SQLMap; responsible for vulnerability verification and remediation guidance.</li>
-            <li>Assisted Red Team simulations, internal exploitation exercises and network-focused assessments.</li>
-            <li>Delivered risk assessments and technical remediation reports to stakeholders.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- PROJECTS OVERVIEW -->
-    <section id="projects" class="section bg-light">
-      <div class="container">
+      <section id="projects" class="projects">
         <h2>Projects</h2>
-        <div class="projects-grid">
-          <article class="project">
-            <h4>Banking Application VAPT</h4>
-            <p>Comprehensive testing across Web, API and Mobile; discovered XSS, IDOR, JWT misconfigurations and business logic flaws. Provided detailed PoCs and reduced exposure significantly. <a href="projects/banking-vapt.html">Read case study →</a></p>
-          </article>
+        <div class="project-grid">
+          <a class="project-card" href="projects/banking-vapt.html">
+            <h3>Banking VAPT — Web & API</h3>
+            <p>Full-scope VAPT with OWASP-focused remediation and prioritized PoCs.</p>
+            <div class="meta">Findings: XSS, IDOR, JWT misconfigurations</div>
+          </a>
 
-          <article class="project">
-            <h4>AWS Cloud Security Audit</h4>
-            <p>Analyzed IAM roles, S3 buckets and security groups; identified over-privileged roles and public S3 exposure. Provided actionable remediation and policy hardening. <a href="projects/aws-cloud-audit.html">Read case study →</a></p>
-          </article>
+          <a class="project-card" href="projects/aws-cloud-audit.html">
+            <h3>AWS Cloud Audit</h3>
+            <p>Cloud hardening assessment — IAM, S3, security groups and logging.</p>
+            <div class="meta">Remediation: IAM policies, S3 encryption</div>
+          </a>
 
-          <article class="project">
-            <h4>Enterprise Network Penetration</h4>
-            <p>Internal & external infrastructure testing exposing misconfigurations, weak protocols and privilege escalation paths. Delivered full remediation roadmap. <a href="projects/network-pentest.html">Read case study →</a></p>
-          </article>
+          <a class="project-card" href="projects/network-pentest.html">
+            <h3>Network Penetration Testing</h3>
+            <p>Internal and external network testing with simulated attack paths.</p>
+            <div class="meta">Focus: open ports, weak auth, firewall rules</div>
+          </a>
+        </div>
+      </section>
+
+      <section class="cta-footer">
+        <div class="cta-inner">
+          <h3>Want a tailored security assessment?</h3>
+          <p>Contact me for a short discovery to scope an engagement.</p>
+          <a href="#contact" class="btn-primary">Contact</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <img src="logo-minimal.svg" alt="SR" class="footer-logo" />
+          <div>Saikumar Raju — Cybersecurity Consultant</div>
+        </div>
+        <div class="footer-right">
+          <div>© <span id="year"></span> Saikumar Raju — India</div>
+          <a href="Saikumar_Raju_Resume_0.pdf" download>Download PDF</a>
         </div>
       </div>
-    </section>
-
-    <!-- CERTIFICATIONS -->
-    <section id="certs" class="section container">
-      <h2>Certifications & Education</h2>
-      <div class="certs-grid">
-        <p><strong>Certified Ethical Hacker (CEH)</strong> — EC-Council</p>
-        <p><strong>Certified Cyber Security Professional</strong> — Berry9 IT Pvt Ltd</p>
-        <p><strong>Qualys Vulnerability Management (VM)</strong></p>
-        <p><strong>B.Tech / B.E.</strong> — JNTU College of Engineering, Anantapur</p>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section contact-section bg-dark">
-      <div class="container contact-inner">
-        <div>
-          <h2>Get in Touch</h2>
-          <p>For collaboration, consulting or roles, reach me at <a href="mailto:saikumarraju30@gmail.com">saikumarraju30@gmail.com</a>.</p>
-          <a class="btn-primary" href="mailto:saikumarraju30@gmail.com">Email Me</a>
-        </div>
-
-        <aside class="contact-card">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a id="download-resume" href="Saikumar Raju_Resume_0.pdf" download>Download Resume (PDF)</a></li>
-            <li><a href="https://github.com/saikumar-infosec" target="_blank">GitHub</a></li>
-          </ul>
-        </aside>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-left">
-        <img src="logo-minimal.svg" alt="SR minimal" class="footer-logo" />
-        <p class="muted">© <span id="year"></span> Saikumar Raju</p>
-      </div>
-      <div class="footer-right">
-        <p class="muted">Designed for AppSec & VAPT</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
