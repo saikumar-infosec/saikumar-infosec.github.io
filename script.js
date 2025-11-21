@@ -1,54 +1,53 @@
-// script.js — theme toggle, nav toggle, year, QR generator placeholder
+// theme toggle (auto + manual)
 (function(){
-  // set year in footer
-  const yearEl = document.getElementById('year');
-  if(yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // nav toggle for mobile
-  const navToggle = document.getElementById('nav-toggle');
-  const nav = document.getElementById('main-nav');
-  if(navToggle && nav){
-    navToggle.addEventListener('click', ()=> nav.classList.toggle('open'));
-  }
-
-  // theme toggle (auto + manual)
-  const themeToggle = document.getElementById('theme-toggle');
   const root = document.documentElement;
+  const stored = localStorage.getItem('site-theme');
+  const systemPref = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const current = stored || (systemPref ? 'dark' : 'light');
+  if(current === 'dark') document.documentElement.setAttribute('data-theme','dark');
 
-  function setTheme(t){
-    if(t === 'dark'){
-      root.setAttribute('data-theme','dark');
-      localStorage.setItem('site-theme','dark');
-    } else {
-      root.removeAttribute('data-theme');
-      localStorage.setItem('site-theme','light');
-    }
-  }
+  const toggle = document.getElementById('theme-toggle');
+  toggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('site-theme', isDark ? 'light' : 'dark');
+  });
 
-  // initial theme: system preference or saved
-  const saved = localStorage.getItem('site-theme');
-  if(saved === 'dark') setTheme('dark');
-  else if(saved === 'light') setTheme('light');
-  else {
-    if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
-  }
+  // set footer year
+  document.getElementById('year').innerText = new Date().getFullYear();
 
-  if(themeToggle){
-    themeToggle.addEventListener('click', ()=>{
-      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-      setTheme(current === 'dark' ? 'light' : 'dark');
+  // small fade-in for sections
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('section, .card, .project-card, .timeline-item').forEach((el, i) => {
+      el.style.animationDelay = (i*75) + 'ms';
+      el.classList.add('fade-in');
     });
-  }
 
-  // smooth scroll for in-page anchors
+    // optional typing effect in hero (if you want)
+    const title = document.querySelector('.hero-title');
+    const words = ['Offensive Security & VAPT Specialist'];
+    let idx = 0;
+    if(title){
+      const original = title.textContent;
+      // simple typing - show then revert to static
+      title.textContent = '';
+      let pos = 0;
+      const typer = setInterval(() => {
+        title.textContent += original[pos++] || '';
+        if(pos > original.length) clearInterval(typer);
+      }, 12);
+    }
+  });
+
+  // smooth scroll for internal anchors
   document.querySelectorAll('a[href^="#"]').forEach(a=>{
-    a.addEventListener('click', function(e){
+    a.addEventListener('click', (e)=>{
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if(target) target.scrollIntoView({behavior:'smooth'});
+      const id = a.getAttribute('href').substring(1);
+      if(!id) return window.scrollTo({top:0,behavior:'smooth'});
+      const node = document.getElementById(id);
+      if(node) node.scrollIntoView({behavior:'smooth',block:'start'});
     });
   });
 
-  // QR code: static PNG already included at assets/qr.png
-  // Optionally we could generate QR via JS library; for now static image works.
 })();
