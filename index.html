@@ -1,186 +1,324 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Saikumar Raju – Cybersecurity Specialist</title>
+  <meta charset="utf-8" />
+  <title>Saikumar Raju — Cybersecurity Consultant</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Saikumar Raju — Cybersecurity Consultant specializing in Web, API, Mobile, Network and Cloud security assessments." />
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css" />
+  <!-- Fonts & Styles -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Script -->
+  <script defer src="script.js"></script>
 </head>
-
 <body>
 
-    <!-- NAVBAR -->
-    <header class="navbar glass">
-        <div class="nav-inner">
-            <div class="logo">SR</div>
-
-            <nav>
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#skills">Skills</a>
-                <a href="#experience">Experience</a>
-                <a href="#projects">Projects</a>
-                <a href="#contact">Contact</a>
-                <button id="themeToggle" class="toggle-btn">☀️</button>
-            </nav>
+  <!-- ============ NAVBAR (TOP, FULL-WIDTH) ============ -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#home" class="nav-brand">
+        <div class="nav-logo">SR</div>
+        <div class="nav-text">
+          <span class="nav-name">Saikumar Raju</span>
+          <span class="nav-role">Cybersecurity Consultant</span>
         </div>
-    </header>
+      </a>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="hero">
-        <div class="hero-left fade-in">
-            <p class="hero-subtitle">Offensive Security & VAPT Specialist</p>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#contact" class="nav-link">Contact</a>
+        <a href="Saikumar_Raju_Resume.pdf" class="nav-resume" download>Resume</a>
+        <button id="themeToggle" class="nav-toggle" type="button" aria-label="Toggle theme">🌓</button>
+      </nav>
+    </div>
+  </header>
 
-            <h1 class="hero-title">
-                I help companies detect <span class="red">real security risks</span>  
-                before attackers exploit them.
-            </h1>
+  <!-- ============ HERO (WIDE, 2 COLUMNS) ============ -->
+  <section id="home" class="section hero">
+    <div class="hero-inner">
+      <!-- Left: text -->
+      <div class="hero-left">
+        <p class="hero-kicker">Cybersecurity Consultant · VAPT · AppSec</p>
 
-            <p class="hero-text">
-                3.6+ years of experience in Web, API, Mobile, AppSec, and Cloud security.  
-                Specialized in banking, finance, e-commerce, and enterprise VAPT.
-            </p>
+        <h1 class="hero-title">
+          I help teams find <span class="hero-highlight">real security issues</span>
+          before attackers do.
+        </h1>
 
-            <div class="hero-buttons">
-                <a href="Saikumar_Raju_Resume_0.pdf" class="btn primary">Download Resume</a>
-                <a href="#projects" class="btn ghost">View Projects</a>
-            </div>
-        </div>
-
-        <div class="hero-right slide-in">
-            <img src="assets/hero.png" class="hero-img" alt="Saikumar Raju Hero Image">
-        </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="section">
-        <h2 class="section-title">About Me</h2>
-        <p class="section-text">
-            I am a cybersecurity consultant with deep hands-on experience in offensive security and VAPT.
-            I identify exploitable weaknesses in web, API, mobile and cloud environments, and produce actionable
-            remediation guidance for engineering teams.
+        <p class="hero-subtitle">
+          3.6+ years of hands-on experience in web, API, mobile, network and cloud security testing
+          for banking, healthcare and e-commerce applications.
         </p>
-    </section>
 
-    <!-- SKILLS -->
-    <section id="skills" class="section">
-        <h2 class="section-title">Skills & Tools</h2>
-
-        <div class="skills-grid">
-
-            <div class="skill-card">
-                <h3>Application Security</h3>
-                <ul>
-                    <li>OWASP Top 10, OWASP ASVS</li>
-                    <li>Web VAPT, API Security</li>
-                    <li>JWT, OAuth2 abuse</li>
-                    <li>Secure code review guidance</li>
-                </ul>
-            </div>
-
-            <div class="skill-card">
-                <h3>Mobile Security (Android & iOS)</h3>
-                <ul>
-                    <li>Static + dynamic analysis</li>
-                    <li>Frida, Objection, MobSF</li>
-                    <li>Root/jailbreak detection bypass</li>
-                </ul>
-            </div>
-
-            <div class="skill-card">
-                <h3>Network & Cloud</h3>
-                <ul>
-                    <li>Nmap, Nessus</li>
-                    <li>AWS IAM, S3, SG audits</li>
-                    <li>Cloud misconfiguration assessment</li>
-                </ul>
-            </div>
-
-            <div class="skill-card">
-                <h3>Tools</h3>
-                <ul>
-                    <li>Burp Suite Pro, ZAP</li>
-                    <li>Wireshark, Postman</li>
-                    <li>Responder, BloodHound</li>
-                </ul>
-            </div>
-
+        <div class="hero-actions">
+          <a href="Saikumar_Raju_Resume.pdf" class="btn-primary" download>Download Resume</a>
+          <a href="#projects" class="btn-outline">View Projects</a>
         </div>
-    </section>
 
-    <!-- EXPERIENCE -->
-    <section id="experience" class="section">
-        <h2 class="section-title">Experience</h2>
-
-        <div class="timeline">
-
-            <div class="timeline-item">
-                <h3>Cyber Security Consultant — AstraCybertech Pvt Ltd</h3>
-                <p class="timeline-date">2023 — Present</p>
-                <p>
-                    End-to-end VAPT for Web, API, mobile, and cloud applications.
-                    Delivered detailed reports, PoCs, retests, and secure SDLC improvement.
-                </p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>Security Analyst — Yash Technologies</h3>
-                <p class="timeline-date">2022 — 2023</p>
-                <p>
-                    Web & API testing, team training, remediation verification,  
-                    and secure development consulting.
-                </p>
-            </div>
-
+        <div class="hero-meta">
+          <div>
+            <span class="meta-label">Experience</span>
+            <span class="meta-value">3.6+ years</span>
+          </div>
+          <div>
+            <span class="meta-label">Focus Areas</span>
+            <span class="meta-value">Web · API · Mobile · Network · Cloud</span>
+          </div>
+          <div>
+            <span class="meta-label">Location</span>
+            <span class="meta-value">India</span>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- PROJECTS -->
-    <section id="projects" class="section">
-        <h2 class="section-title">Selected Projects</h2>
-
-        <div class="projects-grid">
-
-            <a class="project-card" href="projects/network-pentest.html">
-                <h3>Network Pentest</h3>
-                <p>Internal/External Infra Pentest with full report.</p>
-            </a>
-
-            <a class="project-card" href="projects/aws-cloud-audit.html">
-                <h3>AWS Cloud Audit</h3>
-                <p>S3, IAM, SG misconfiguration review.</p>
-            </a>
-
-            <a class="project-card" href="projects/vapt.html">
-                <h3>VAPT Assessment</h3>
-                <p>Web + API + mobile security evaluation.</p>
-            </a>
-
+      <!-- Right: circular hero image -->
+      <div class="hero-right">
+        <div class="hero-photo-wrap">
+          <!-- Make sure this image exists at /assets/hero.png -->
+          <img src="assets/hero.png" alt="Cybersecurity consultant at a desk" class="hero-photo" />
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-        <h2 class="section-title">Contact</h2>
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="section">
+    <div class="section-header">
+      <h2>About</h2>
+      <p class="section-subtitle">
+        Cybersecurity consultant with practical experience across applications, infrastructure and cloud.
+      </p>
+    </div>
 
-        <div class="contact-box">
-            <p><strong>Email:</strong> saikumarrj30@gmail.com</p>
-            <p><strong>Phone:</strong> +91 7337026773</p>
-            <p><strong>GitHub:</strong> saikumar-infosec</p>
+    <div class="about-grid">
+      <div>
+        <p>
+          I specialize in Vulnerability Assessment & Penetration Testing (VAPT) for web, API, mobile and
+          network environments. My day-to-day work involves identifying exploitable weaknesses, creating
+          clear proof-of-concepts, and working with development and infrastructure teams to fix issues
+          effectively.
+        </p>
+        <p>
+          I’ve delivered assessments for banking, healthcare and e-commerce clients, focusing on real-world
+          attack scenarios rather than just scanning and sending large reports. I care about clear communication,
+          reproducible findings and practical remediation guidance.
+        </p>
+      </div>
+
+      <div class="about-side">
+        <div class="pill">
+          <span class="pill-label">Approach</span>
+          <span class="pill-text">
+            Methodical testing (OWASP Top 10 / ASVS), PoC-driven findings, prioritized risk and retesting.
+          </span>
         </div>
-    </section>
+        <div class="pill">
+          <span class="pill-label">Certifications</span>
+          <span class="pill-text">
+            CEH · Certified Cyber Security Professional · Qualys Vulnerability Management
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        © 2025 Saikumar Raju — Cybersecurity Specialist
-    </footer>
+  <!-- ============ SKILLS ============ -->
+  <section id="skills" class="section section-alt">
+    <div class="section-header">
+      <h2>Skills & Focus Areas</h2>
+      <p class="section-subtitle">
+        End-to-end VAPT across applications, networks and cloud infrastructure.
+      </p>
+    </div>
 
-    <script src="script.js"></script>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Web & API Security</h3>
+        <ul>
+          <li>Vulnerability Assessment & Penetration Testing for web apps and REST APIs.</li>
+          <li>OWASP Top 10, injection, auth & session issues, access control, IDOR, XSS.</li>
+          <li>Testing JWT, OAuth2 flows, rate limiting and business logic flaws.</li>
+          <li>Tools: Burp Suite, OWASP ZAP, Postman, SQLMap where appropriate.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Mobile Application Security (Android & iOS)</h3>
+        <ul>
+          <li>Static and dynamic analysis of Android & iOS apps.</li>
+          <li>Detecting insecure storage, hardcoded secrets and weak SSL/TLS usage.</li>
+          <li>Runtime testing using tools like MobSF, Frida and emulator/emulated devices.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-2 skills-bottom">
+      <div class="card">
+        <h3>Network & Infrastructure Security</h3>
+        <ul>
+          <li>Internal and external network penetration testing.</li>
+          <li>Port and service discovery using Nmap and custom enumeration.</li>
+          <li>Vulnerability scanning with Nessus and manual validation of high-risk findings.</li>
+          <li>Review of firewall rules, segmentation and exposed services.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Cloud & Supporting Tools</h3>
+        <ul>
+          <li>AWS basic security reviews: IAM, S3 exposure, Security Groups.</li>
+          <li>Traffic and behavior analysis with Wireshark and relevant tooling.</li>
+          <li>Using automation and scripting where needed to support testing.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section id="experience" class="section">
+    <div class="section-header">
+      <h2>Experience</h2>
+    </div>
+
+    <div class="timeline">
+      <article class="timeline-item">
+        <h3>Cyber Security Consultant — AstraCybertech Pvt Ltd</h3>
+        <p class="timeline-meta">Oct 2023 – Present · India</p>
+        <p>
+          Lead VAPT engagements for web, API, mobile and infrastructure. Work directly with banking, healthcare
+          and e-commerce clients to scope assessments, execute tests and deliver reports with PoCs, risk ratings
+          and remediation guidance.
+        </p>
+        <p>
+          Responsibilities include vulnerability identification, coordinated retesting, and helping development
+          teams implement secure configuration and coding practices.
+        </p>
+      </article>
+
+      <article class="timeline-item">
+        <h3>Security Analyst — Yash Technologies</h3>
+        <p class="timeline-meta">Feb 2022 – Mar 2023 · India</p>
+        <p>
+          Performed web and API security testing for internal and customer-facing applications. Assisted in risk
+          assessments, vulnerability analysis and supported remediation efforts with technical details that
+          developers could apply directly.
+        </p>
+      </article>
+
+      <article class="timeline-item">
+        <h3>Personal & Lab Projects</h3>
+        <p class="timeline-meta">Ongoing</p>
+        <p>
+          Practice VAPT on lab environments to stay current with techniques and tooling. This includes web, API,
+          mobile and network lab setups, as well as basic cloud configuration review exercises, focusing on
+          realistic attack surfaces and safe proof-of-concepts.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects" class="section section-alt">
+    <div class="section-header">
+      <h2>Selected Projects</h2>
+      <p class="section-subtitle">
+        A few examples of the type of security work I’ve delivered and practiced.
+      </p>
+    </div>
+
+    <div class="projects-grid">
+      <!-- Project 1: VAPT Web/API -->
+      <article class="project-card">
+        <h3>VAPT — Web & API Assessment</h3>
+        <p>
+          Performed full-scope testing of web and API components including authentication, session
+          management, access control and input validation. Identified issues such as IDOR, XSS and
+          misconfigured JWT usage and provided remediation steps.
+        </p>
+        <p class="project-meta">
+          Focus: Web & API · Tools: Burp Suite, OWASP ZAP, Postman, Nmap (for host discovery).
+        </p>
+      </article>
+
+      <!-- Project 2: Network Pentest -->
+      <article class="project-card">
+        <h3>Network Penetration Test — Internal & External</h3>
+        <p>
+          Internal and external network testing using Nmap and Nessus to discover exposed services,
+          missing patches and weak configurations. Validated critical findings manually and provided
+          clear guidance on closing high-risk exposure and tightening firewall rules.
+        </p>
+        <p class="project-meta">
+          Focus: Network & Infra · Tools: Nmap, Nessus, basic service enumeration.
+        </p>
+      </article>
+
+      <!-- Project 3: AWS Cloud Security Review -->
+      <article class="project-card">
+        <h3>AWS Cloud Security Review</h3>
+        <p>
+          Reviewed AWS environments for basic security misconfigurations including public S3 buckets,
+          overly permissive Security Groups and IAM policies. Suggested hardening configurations and
+          checks to reduce unnecessary exposure.
+        </p>
+        <p class="project-meta">
+          Focus: Cloud (AWS) · Areas: IAM, S3 access, Security Groups.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section">
+    <div class="section-header">
+      <h2>Contact</h2>
+      <p class="section-subtitle">
+        Open to full-time roles and security consulting engagements.
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <div>
+        <p>
+          If you’re looking for someone to perform structured VAPT, help validate vulnerabilities or
+          support your team in improving application or network security, feel free to reach out.
+        </p>
+      </div>
+
+      <div class="contact-details">
+        <div>
+          <span class="meta-label">Email</span>
+          <a href="mailto:saikumarraju30@gmail.com" class="meta-value link">saikumarraju30@gmail.com</a>
+        </div>
+        <div>
+          <span class="meta-label">Phone</span>
+          <a href="tel:+917337026773" class="meta-value link">+91 7337026773</a>
+        </div>
+        <div>
+          <span class="meta-label">GitHub</span>
+          <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener" class="meta-value link">
+            github.com/saikumar-infosec
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-text">
+        © <span id="year"></span> Saikumar Raju · Cybersecurity Consultant
+      </span>
+    </div>
+  </footer>
+
 </body>
 </html>
