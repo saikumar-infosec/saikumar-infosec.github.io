@@ -1,19 +1,29 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>AWS Cloud Audit — Saikumar Raju</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css"/>
 </head><body>
-<main class="container">
-  <a href="../" style="text-decoration:none;color:var(--accent)">← Back</a>
-  <h1>AWS Cloud Audit — Hardening & IAM</h1>
-  <p><strong>Scope:</strong> IAM policies, S3, Security Groups, CloudTrail, VPC.</p>
-  <h3>Summary</h3>
-  <p>Found overly-permissive IAM roles and public S3 buckets. Recommended least-privilege policies, S3 encryption and CloudTrail log centralization.</p>
-  <h3>Key Actions</h3>
-  <ul>
-    <li>Converted broad IAM roles to scoped roles with resource-level permissions.</li>
-    <li>Locked down S3 buckets, enabled encryption & MFA delete policy.</li>
-    <li>Implemented centralized CloudTrail and log monitoring alerts.</li>
-  </ul>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../"><img src="../SR-initials.svg" class="logo" alt="SR"/></a>
+    <nav class="main-nav"><a href="../">Home</a></nav>
+  </div>
+</header>
+<main class="container" style="padding-top:80px">
+  <h1>AWS Cloud Audit — IAM & S3</h1>
+  <p class="muted">
+    Account audit, IAM policy review, S3 bucket exposure analysis, security group tightening
+    and logging recommendations.
+  </p>
+  <section class="card" style="margin-top:16px">
+    <h3>Highlights</h3>
+    <ul>
+      <li>Found public S3 buckets — applied least-privilege & bucket policies.</li>
+      <li>Identified overly permissive IAM roles — tightened with scoped permissions.</li>
+      <li>Hardened security groups and suggested VPC baseline configuration.</li>
+    </ul>
+  </section>
+  <p style="margin-top:18px"><a href="../index.html" class="btn-link">← Back to home</a></p>
 </main>
 </body></html>
