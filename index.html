@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Saikumar Raju — Cybersecurity Consultant specializing in Web, API, Mobile, Network and Cloud security assessments." />
 
-  <!-- Fonts & Styles -->
+  <!-- Styles & Fonts -->
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-  <!-- ============ NAVBAR (TOP, FULL-WIDTH) ============ -->
+  <!-- ================= NAVBAR ================= -->
   <header class="nav">
     <div class="nav-inner">
       <a href="#home" class="nav-brand">
@@ -27,34 +27,37 @@
         </div>
       </a>
 
-      <nav class="nav-links" aria-label="Main navigation">
+      <div class="nav-links" aria-label="Main navigation">
         <a href="#home" class="nav-link">Home</a>
         <a href="#about" class="nav-link">About</a>
         <a href="#skills" class="nav-link">Skills</a>
         <a href="#experience" class="nav-link">Experience</a>
         <a href="#projects" class="nav-link">Projects</a>
+        <a href="#labs" class="nav-link">Labs</a>
+        <a href="#services" class="nav-link">Services</a>
         <a href="#contact" class="nav-link">Contact</a>
-        <a href="Saikumar_Raju_Resume.pdf" class="nav-resume" download>Resume</a>
-        <button id="themeToggle" class="nav-toggle" type="button" aria-label="Toggle theme">🌓</button>
-      </nav>
+        <a href="Saikumar_Raju_Resume.pdf" class="nav-resume" target="_blank" rel="noopener">Resume</a>
+        <button id="themeToggle" class="nav-toggle" type="button">🌓</button>
+      </div>
     </div>
   </header>
 
-  <!-- ============ HERO (WIDE, 2 COLUMNS) ============ -->
+  <!-- ================= HERO ================= -->
   <section id="home" class="section hero">
     <div class="hero-inner">
-      <!-- Left: text -->
+      <!-- Left: Text -->
       <div class="hero-left">
-        <p class="hero-kicker">Cybersecurity Consultant · VAPT · AppSec</p>
+        <p class="hero-kicker">Cybersecurity Consultant</p>
 
         <h1 class="hero-title">
-          I help teams find <span class="hero-highlight">real security issues</span>
-          before attackers do.
+          Specializing in <span class="hero-highlight">Web, API, Mobile, Network &amp; Cloud Security</span>
         </h1>
 
         <p class="hero-subtitle">
-          3.6+ years of hands-on experience in web, API, mobile, network and cloud security testing
-          for banking, healthcare and e-commerce applications.
+          I perform end-to-end security assessments for modern applications and infrastructure, helping
+          organizations identify vulnerabilities, validate security controls and improve their overall
+          security posture. My focus is on clear methodology, reproducible testing and practical remediation
+          guidance for engineering teams.
         </p>
 
         <div class="hero-actions">
@@ -62,61 +65,68 @@
           <a href="#projects" class="btn-outline">View Projects</a>
         </div>
 
+        <!-- At a Glance (counters-style) -->
         <div class="hero-meta">
           <div>
             <span class="meta-label">Experience</span>
             <span class="meta-value">3.6+ years</span>
           </div>
           <div>
-            <span class="meta-label">Focus Areas</span>
-            <span class="meta-value">Web · API · Mobile · Network · Cloud</span>
+            <span class="meta-label">Applications Tested</span>
+            <span class="meta-value">50+ apps</span>
           </div>
           <div>
-            <span class="meta-label">Location</span>
-            <span class="meta-value">India</span>
+            <span class="meta-label">Vulnerabilities Identified</span>
+            <span class="meta-value">120+ findings</span>
+          </div>
+          <div>
+            <span class="meta-label">Cloud Assessments</span>
+            <span class="meta-value">6+ AWS reviews</span>
           </div>
         </div>
       </div>
 
-      <!-- Right: circular hero image -->
+      <!-- Right: Hero Image -->
       <div class="hero-right">
         <div class="hero-photo-wrap">
-          <!-- Make sure this image exists at /assets/hero.png -->
-          <img src="assets/hero.png" alt="Cybersecurity consultant at a desk" class="hero-photo" />
+          <!-- Make sure hero.png exists in the root of the repo -->
+          <img src="hero.png" alt="Saikumar Raju - Cybersecurity Consultant" class="hero-photo" />
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ ABOUT ============ -->
+  <!-- ================= ABOUT + SUMMARY ================= -->
   <section id="about" class="section">
     <div class="section-header">
       <h2>About</h2>
       <p class="section-subtitle">
-        Cybersecurity consultant with practical experience across applications, infrastructure and cloud.
+        Cybersecurity Consultant with hands-on experience in Web, API, Mobile, Network and Cloud security assessments.
       </p>
     </div>
 
     <div class="about-grid">
       <div>
         <p>
-          I specialize in Vulnerability Assessment & Penetration Testing (VAPT) for web, API, mobile and
-          network environments. My day-to-day work involves identifying exploitable weaknesses, creating
-          clear proof-of-concepts, and working with development and infrastructure teams to fix issues
-          effectively.
+          I am a Cybersecurity Consultant with practical experience performing Vulnerability Assessment and
+          Penetration Testing (VAPT) for Web, API, Mobile (Android &amp; iOS), Network and Cloud environments.
+          I focus on identifying vulnerabilities with real-world impact, validating them with proof-of-concepts,
+          and helping teams apply effective remediation.
         </p>
         <p>
-          I’ve delivered assessments for banking, healthcare and e-commerce clients, focusing on real-world
-          attack scenarios rather than just scanning and sending large reports. I care about clear communication,
-          reproducible findings and practical remediation guidance.
+          I have worked across fintech, e-commerce, SaaS and healthcare domains, following industry standards such
+          as OWASP, NIST and CIS Benchmarks. My approach balances technical depth with business context so that
+          security findings are actionable, prioritized and aligned with how systems are actually used.
         </p>
       </div>
 
       <div class="about-side">
         <div class="pill">
-          <span class="pill-label">Approach</span>
+          <span class="pill-label">Summary</span>
           <span class="pill-text">
-            Methodical testing (OWASP Top 10 / ASVS), PoC-driven findings, prioritized risk and retesting.
+            Experience delivering structured VAPT, secure configuration reviews and cloud security assessments,
+            working closely with development and infrastructure teams to strengthen application and infrastructure
+            resilience.
           </span>
         </div>
         <div class="pill">
@@ -129,59 +139,57 @@
     </div>
   </section>
 
-  <!-- ============ SKILLS ============ -->
+  <!-- ================= SKILLS ================= -->
   <section id="skills" class="section section-alt">
     <div class="section-header">
-      <h2>Skills & Focus Areas</h2>
+      <h2>Skills &amp; Focus Areas</h2>
       <p class="section-subtitle">
-        End-to-end VAPT across applications, networks and cloud infrastructure.
+        Balanced experience across Web, API, Mobile, Network and Cloud security testing.
       </p>
     </div>
 
     <div class="grid-2">
-      <div class="card">
-        <h3>Web & API Security</h3>
+      <article class="card">
+        <h3>Web Application Security</h3>
         <ul>
-          <li>Vulnerability Assessment & Penetration Testing for web apps and REST APIs.</li>
-          <li>OWASP Top 10, injection, auth & session issues, access control, IDOR, XSS.</li>
-          <li>Testing JWT, OAuth2 flows, rate limiting and business logic flaws.</li>
-          <li>Tools: Burp Suite, OWASP ZAP, Postman, SQLMap where appropriate.</li>
+          <li>VAPT aligned with OWASP Top 10 and OWASP Testing Guide.</li>
+          <li>Authentication, session management and access control testing.</li>
+          <li>Business logic flaws, IDOR, input validation issues and data exposure.</li>
         </ul>
-      </div>
+      </article>
 
-      <div class="card">
-        <h3>Mobile Application Security (Android & iOS)</h3>
+      <article class="card">
+        <h3>API Security Testing</h3>
         <ul>
-          <li>Static and dynamic analysis of Android & iOS apps.</li>
-          <li>Detecting insecure storage, hardcoded secrets and weak SSL/TLS usage.</li>
-          <li>Runtime testing using tools like MobSF, Frida and emulator/emulated devices.</li>
+          <li>Security testing for REST and JSON-based APIs.</li>
+          <li>JWT, OAuth, rate-limiting and error-handling checks.</li>
+          <li>Endpoint enumeration, parameter tampering and access control testing.</li>
         </ul>
-      </div>
+      </article>
     </div>
 
     <div class="grid-2 skills-bottom">
-      <div class="card">
-        <h3>Network & Infrastructure Security</h3>
+      <article class="card">
+        <h3>Mobile Security (Android &amp; iOS)</h3>
+        <ul>
+          <li>Static and dynamic analysis of Android &amp; iOS applications.</li>
+          <li>Insecure storage, hardcoded secrets and transport layer security checks.</li>
+          <li>API interaction validation and client-side behavior review.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Network &amp; Cloud Security</h3>
         <ul>
           <li>Internal and external network penetration testing.</li>
-          <li>Port and service discovery using Nmap and custom enumeration.</li>
-          <li>Vulnerability scanning with Nessus and manual validation of high-risk findings.</li>
-          <li>Review of firewall rules, segmentation and exposed services.</li>
+          <li>Attack surface enumeration using Nmap, Nessus and related tooling.</li>
+          <li>AWS cloud security reviews: IAM, S3, Security Groups, public exposure and basic architecture checks.</li>
         </ul>
-      </div>
-
-      <div class="card">
-        <h3>Cloud & Supporting Tools</h3>
-        <ul>
-          <li>AWS basic security reviews: IAM, S3 exposure, Security Groups.</li>
-          <li>Traffic and behavior analysis with Wireshark and relevant tooling.</li>
-          <li>Using automation and scripting where needed to support testing.</li>
-        </ul>
-      </div>
+      </article>
     </div>
   </section>
 
-  <!-- ============ EXPERIENCE ============ -->
+  <!-- ================= EXPERIENCE ================= -->
   <section id="experience" class="section">
     <div class="section-header">
       <h2>Experience</h2>
@@ -189,16 +197,17 @@
 
     <div class="timeline">
       <article class="timeline-item">
-        <h3>Cyber Security Consultant — AstraCybertech Pvt Ltd</h3>
+        <h3>Cybersecurity Consultant — AstraCybertech Pvt Ltd</h3>
         <p class="timeline-meta">Oct 2023 – Present · India</p>
         <p>
-          Lead VAPT engagements for web, API, mobile and infrastructure. Work directly with banking, healthcare
-          and e-commerce clients to scope assessments, execute tests and deliver reports with PoCs, risk ratings
-          and remediation guidance.
+          Performing end-to-end VAPT for Web, API, Mobile (Android &amp; iOS), Network and Cloud environments.
+          Responsible for identifying security weaknesses, validating findings, and providing remediation guidance
+          aligned with secure development practices.
         </p>
         <p>
-          Responsibilities include vulnerability identification, coordinated retesting, and helping development
-          teams implement secure configuration and coding practices.
+          Conducted internal and external network assessments using tools like Nmap, Nessus, Wireshark and Metasploit
+          to discover misconfigurations, outdated services and exposure points. Performed AWS security reviews including
+          IAM, S3 and Security Group analysis, completing more than 6 cloud assessments across different environments.
         </p>
       </article>
 
@@ -206,104 +215,264 @@
         <h3>Security Analyst — Yash Technologies</h3>
         <p class="timeline-meta">Feb 2022 – Mar 2023 · India</p>
         <p>
-          Performed web and API security testing for internal and customer-facing applications. Assisted in risk
-          assessments, vulnerability analysis and supported remediation efforts with technical details that
-          developers could apply directly.
+          Conducted Web and API security testing for enterprise applications, focusing on access control, session
+          management, data exposure and input validation. Used tools such as Burp Suite, OWASP ZAP, Nmap and SQLMap
+          to identify and validate vulnerabilities.
+        </p>
+        <p>
+          Supported internal teams with security reviews, collaborated with developers to understand and fix issues,
+          and contributed to improving internal security testing processes.
         </p>
       </article>
 
       <article class="timeline-item">
-        <h3>Personal & Lab Projects</h3>
+        <h3>Personal &amp; Lab Projects</h3>
         <p class="timeline-meta">Ongoing</p>
         <p>
-          Practice VAPT on lab environments to stay current with techniques and tooling. This includes web, API,
-          mobile and network lab setups, as well as basic cloud configuration review exercises, focusing on
-          realistic attack surfaces and safe proof-of-concepts.
+          Regularly practice Web, API, Mobile, Network and basic Cloud security scenarios on lab platforms and
+          self-hosted environments. Focus on strengthening methodology, reporting quality and staying current with
+          evolving attack techniques and defensive controls.
         </p>
       </article>
     </div>
   </section>
 
-  <!-- ============ PROJECTS ============ -->
+  <!-- ================= PROJECTS ================= -->
   <section id="projects" class="section section-alt">
     <div class="section-header">
       <h2>Selected Projects</h2>
       <p class="section-subtitle">
-        A few examples of the type of security work I’ve delivered and practiced.
+        Examples of security assessments and review work across applications and infrastructure.
       </p>
     </div>
 
     <div class="projects-grid">
-      <!-- Project 1: VAPT Web/API -->
       <article class="project-card">
-        <h3>VAPT — Web & API Assessment</h3>
+        <h3>Web &amp; API Security Assessment</h3>
         <p>
-          Performed full-scope testing of web and API components including authentication, session
-          management, access control and input validation. Identified issues such as IDOR, XSS and
-          misconfigured JWT usage and provided remediation steps.
+          Performed comprehensive security testing for enterprise web and API components, including authentication,
+          access control, session management, IDOR, XSS and input validation. Delivered findings with clear PoCs and
+          remediation steps.
         </p>
         <p class="project-meta">
-          Focus: Web & API · Tools: Burp Suite, OWASP ZAP, Postman, Nmap (for host discovery).
+          Focus: Web &amp; API · Tools: Burp Suite, OWASP ZAP, Postman, Nmap (for host discovery).
         </p>
       </article>
 
-      <!-- Project 2: Network Pentest -->
       <article class="project-card">
-        <h3>Network Penetration Test — Internal & External</h3>
+        <h3>Mobile Application Security (Android &amp; iOS)</h3>
         <p>
-          Internal and external network testing using Nmap and Nessus to discover exposed services,
-          missing patches and weak configurations. Validated critical findings manually and provided
-          clear guidance on closing high-risk exposure and tightening firewall rules.
+          Conducted static and dynamic testing of mobile applications to identify insecure storage, API misuse,
+          TLS configuration issues and sensitive data exposure. Validated backend API interactions through proxying
+          and targeted testing.
         </p>
         <p class="project-meta">
-          Focus: Network & Infra · Tools: Nmap, Nessus, basic service enumeration.
+          Focus: Mobile Security · Tools: ADB, MobSF, Frida, proxy tools.
         </p>
       </article>
 
-      <!-- Project 3: AWS Cloud Security Review -->
       <article class="project-card">
-        <h3>AWS Cloud Security Review</h3>
+        <h3>Network &amp; Infrastructure Penetration Test</h3>
         <p>
-          Reviewed AWS environments for basic security misconfigurations including public S3 buckets,
-          overly permissive Security Groups and IAM policies. Suggested hardening configurations and
-          checks to reduce unnecessary exposure.
+          Executed internal and external network assessments using Nmap and Nessus to discover exposed services,
+          outdated software and weak configurations. Provided guidance on firewall rules, patching and hardening.
         </p>
         <p class="project-meta">
-          Focus: Cloud (AWS) · Areas: IAM, S3 access, Security Groups.
+          Focus: Network &amp; Infra · Tools: Nmap, Nessus, Wireshark, Metasploit (where appropriate).
+        </p>
+      </article>
+
+      <article class="project-card">
+        <h3>Cloud Security Review (AWS)</h3>
+        <p>
+          Reviewed IAM roles, S3 permissions, Security Group rules and public endpoints for misconfigurations.
+          Completed 6+ cloud assessments and recommended changes aligned with AWS Security Best Practices.
+        </p>
+        <p class="project-meta">
+          Focus: Cloud Security · Platform: AWS (IAM, S3, EC2, Security Groups).
+        </p>
+      </article>
+
+      <article class="project-card">
+        <h3>API-Driven Microservice Assessment</h3>
+        <p>
+          Assessed API-based microservices for authentication, authorization, rate-limiting, error handling
+          and input validation issues. Ensured APIs followed secure design principles and were resilient to
+          common attack techniques.
+        </p>
+        <p class="project-meta">
+          Focus: API Security · Scope: Internal &amp; external microservices.
         </p>
       </article>
     </div>
   </section>
 
-  <!-- ============ CONTACT ============ -->
+  <!-- ================= LABS & PRACTICE ================= -->
+  <section id="labs" class="section section-alt">
+    <div class="section-header">
+      <h2>Labs &amp; Practice</h2>
+      <p class="section-subtitle">
+        Ongoing hands-on practice on security lab platforms and custom scenarios.
+      </p>
+    </div>
+
+    <div class="labs-grid">
+      <article class="card lab-card">
+        <h3>PortSwigger Web Security Academy</h3>
+        <p class="lab-platform">Web Application Security Labs</p>
+        <ul>
+          <li>Practice labs aligned with OWASP Top 10 and modern web security issues.</li>
+          <li>Focus on XSS, IDOR, JWT misconfigurations, access control and business logic vulnerabilities.</li>
+          <li>Hands-on exploitation and remediation understanding through guided and advanced labs.</li>
+        </ul>
+        <p class="lab-link-wrap">
+          <!-- Replace # with your real profile URL when ready -->
+          <a href="#" target="_blank" rel="noopener" class="lab-link">View my PortSwigger progress →</a>
+        </p>
+      </article>
+
+      <article class="card lab-card">
+        <h3>Hack The Box</h3>
+        <p class="lab-platform">CTF-style Machines &amp; Challenges</p>
+        <ul>
+          <li>Practice on web and infrastructure targets in controlled CTF-style environments.</li>
+          <li>Focus on enumeration, exploitation paths and misconfiguration identification.</li>
+          <li>Improving structured approach to recon, exploitation and reporting.</li>
+        </ul>
+        <p class="lab-link-wrap">
+          <!-- Replace # with your HTB profile URL -->
+          <a href="#" target="_blank" rel="noopener" class="lab-link">View my HTB profile →</a>
+        </p>
+      </article>
+
+      <article class="card lab-card">
+        <h3>TryHackMe &amp; Custom Labs</h3>
+        <p class="lab-platform">Guided Rooms &amp; Self-Built Scenarios</p>
+        <ul>
+          <li>Using guided rooms for Web, API, Network and basic Cloud security learning.</li>
+          <li>Recreating interesting scenarios locally for deeper technical understanding.</li>
+          <li>Maintaining structured notes, commands and methodologies for repeatable testing.</li>
+        </ul>
+        <p class="lab-link-wrap">
+          <!-- Replace # with your TryHackMe profile URL -->
+          <a href="#" target="_blank" rel="noopener" class="lab-link">View my TryHackMe profile →</a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section id="services" class="section">
+    <div class="section-header">
+      <h2>Services</h2>
+      <p class="section-subtitle">
+        Security assessments tailored to modern applications and infrastructure.
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <article class="card">
+        <h3>Web &amp; API Security Testing</h3>
+        <ul>
+          <li>VAPT for web applications and APIs aligned with OWASP Top 10.</li>
+          <li>Focus on authentication, authorization, session management and input validation.</li>
+          <li>Business logic and data integrity testing for critical workflows.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Mobile Application Security (Android &amp; iOS)</h3>
+        <ul>
+          <li>Static and dynamic security testing with focus on data storage and communication.</li>
+          <li>Analysis of API usage, certificate validation and error handling.</li>
+          <li>Recommendations for secure implementation and configuration.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="grid-2 skills-bottom">
+      <article class="card">
+        <h3>Network &amp; Infrastructure Security</h3>
+        <ul>
+          <li>Internal and external network penetration testing.</li>
+          <li>Service enumeration, misconfiguration detection and patch validation.</li>
+          <li>Firewall rules and basic segmentation review for exposed services.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Cloud Security Assessment (AWS)</h3>
+        <ul>
+          <li>Review of IAM roles, S3 bucket policies, Security Groups and public exposure.</li>
+          <li>Assessment of basic architecture against AWS security best practices.</li>
+          <li>Experience with 6+ cloud security reviews across staging and production environments.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= HIGHLIGHTS / STATS ================= -->
+  <section class="section section-alt">
+    <div class="section-header">
+      <h2>Professional Highlights</h2>
+      <p class="section-subtitle">
+        A quick view of my security experience and impact.
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <article class="card">
+        <h3>At a Glance</h3>
+        <ul>
+          <li><strong>3.6+ years</strong> of cybersecurity experience.</li>
+          <li><strong>50+ applications</strong> tested across different domains.</li>
+          <li><strong>120+ vulnerabilities</strong> identified and validated.</li>
+          <li><strong>6+ cloud assessments</strong> performed on AWS environments.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Tools &amp; Technologies</h3>
+        <ul>
+          <li><strong>Web/API:</strong> Burp Suite, OWASP ZAP, Postman, cURL.</li>
+          <li><strong>Mobile:</strong> ADB, MobSF, Frida, proxy tools.</li>
+          <li><strong>Network:</strong> Nmap, Nessus, Wireshark, Metasploit.</li>
+          <li><strong>Cloud &amp; General:</strong> AWS (IAM, S3, EC2, SG), Linux, GitHub, Docker.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
   <section id="contact" class="section">
     <div class="section-header">
       <h2>Contact</h2>
       <p class="section-subtitle">
-        Open to full-time roles and security consulting engagements.
+        Open to full-time roles, security assessments and collaboration opportunities.
       </p>
     </div>
 
     <div class="contact-grid">
       <div>
         <p>
-          If you’re looking for someone to perform structured VAPT, help validate vulnerabilities or
-          support your team in improving application or network security, feel free to reach out.
+          If you are looking for structured VAPT, application security testing, network assessments or cloud
+          security reviews, feel free to reach out. I am comfortable collaborating with engineering, DevOps and
+          security teams to help strengthen security posture in a practical way.
         </p>
       </div>
 
       <div class="contact-details">
         <div>
           <span class="meta-label">Email</span>
-          <a href="mailto:saikumarraju30@gmail.com" class="meta-value link">saikumarraju30@gmail.com</a>
+          <a href="mailto:saikumarraju30@gmail.com" class="link">saikumarraju30@gmail.com</a>
         </div>
         <div>
           <span class="meta-label">Phone</span>
-          <a href="tel:+917337026773" class="meta-value link">+91 7337026773</a>
+          <a href="tel:+917337026773" class="link">+91 7337026773</a>
         </div>
         <div>
           <span class="meta-label">GitHub</span>
-          <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener" class="meta-value link">
+          <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener" class="link">
             github.com/saikumar-infosec
           </a>
         </div>
@@ -311,12 +480,18 @@
     </div>
   </section>
 
-  <!-- ============ FOOTER ============ -->
+  <!-- ================= FOOTER ================= -->
   <footer class="footer">
     <div class="footer-inner">
       <span class="footer-text">
         © <span id="year"></span> Saikumar Raju · Cybersecurity Consultant
       </span>
+      <div class="footer-links">
+        <a href="mailto:saikumarraju30@gmail.com" title="Email">Email</a>
+        <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener" title="GitHub">GitHub</a>
+        <!-- Add LinkedIn when ready -->
+        <!-- <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener" title="LinkedIn">LinkedIn</a> -->
+      </div>
     </div>
   </footer>
 
