@@ -32,6 +32,7 @@
         <a href="#experience" class="nav-link">Experience</a>
         <a href="#projects" class="nav-link">Projects</a>
         <a href="#labs" class="nav-link">Labs</a>
+        <a href="#sqli-lab" class="nav-link">SQLi Lab</a>
         <a href="#services" class="nav-link">Services</a>
         <a href="#contact" class="nav-link">Contact</a>
         <a href="Saikumar_Raju_Resume_0.pdf" class="nav-resume" target="_blank" rel="noopener">Resume</a>
@@ -363,6 +364,69 @@
       </div>
     </section>
 
+    <!-- ================= SQL INJECTION LAB (NEW) ================= -->
+    <section id="sqli-lab" class="section section-alt">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>SQL Injection Training Lab</h2>
+          <p class="section-subtitle">
+            Safe, front-end-only simulations of error-based, boolean-based and time-based SQL injection behaviour.
+          </p>
+        </div>
+
+        <div class="projects-grid">
+          <!-- Error-based lab -->
+          <article class="card" id="sqli-error-card">
+            <h3>Lab 1 — Error-based SQLi</h3>
+            <p class="lab-desc">
+              Simulates a product lookup where the ID is concatenated directly into a query.
+              Try payloads like <code>1'</code> or <code>1' OR 1=1--</code> and see how the simulated
+              response changes.
+            </p>
+            <label class="lab-label" for="sqli-error-input">Product ID (simulated):</label>
+            <input id="sqli-error-input" class="lab-input" type="text" placeholder="1">
+            <button id="sqli-error-btn" class="btn-primary lab-btn" type="button">Send request</button>
+            <div id="sqli-error-output" class="lab-message"></div>
+            <p class="lab-footnote">
+              In real apps, verbose SQL errors reveal how queries are built and may leak schema or data.
+            </p>
+          </article>
+
+          <!-- Boolean-based lab -->
+          <article class="card" id="sqli-bool-card">
+            <h3>Lab 2 — Boolean-based (Blind) SQLi</h3>
+            <p class="lab-desc">
+              The application never shows SQL errors. It only indicates whether any row matched.
+              Try conditions like <code>1) AND 1=1--</code> (true) and <code>1) AND 1=2--</code> (false).
+            </p>
+            <label class="lab-label" for="sqli-bool-input">User ID condition (simulated WHERE clause):</label>
+            <input id="sqli-bool-input" class="lab-input" type="text" placeholder="1">
+            <button id="sqli-bool-btn" class="btn-primary lab-btn" type="button">Check condition</button>
+            <div id="sqli-bool-output" class="lab-message"></div>
+            <p class="lab-footnote">
+              In real blind SQLi, testers chain many true/false checks to infer data without seeing any errors.
+            </p>
+          </article>
+
+          <!-- Time-based lab -->
+          <article class="card" id="sqli-time-card">
+            <h3>Lab 3 — Time-based (Blind) SQLi</h3>
+            <p class="lab-desc">
+              Here the only signal is response time. Try a payload such as
+              <code>1; SLEEP(5)--</code> or <code>1; WAITFOR DELAY '0:0:5'--</code> to trigger a delay.
+            </p>
+            <label class="lab-label" for="sqli-time-input">ID with possible delay clause:</label>
+            <input id="sqli-time-input" class="lab-input" type="text" placeholder="1">
+            <button id="sqli-time-btn" class="btn-primary lab-btn" type="button">Send timed request</button>
+            <div id="sqli-time-output" class="lab-message"></div>
+            <p class="lab-footnote">
+              In real SQLi, the database holds the response while a time function executes. Here the delay is simulated in JavaScript.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= SERVICES ================= -->
     <section id="services" class="section">
       <div class="section-inner">
@@ -517,11 +581,170 @@
       <div class="footer-links">
         <a href="mailto:saikumarraju30@gmail.com">Email</a>
         <a href="https://github.com/saikumar-infosec" target="_blank" rel="noopener">GitHub</a>
-        <!-- Add LinkedIn when ready -->
         <!-- <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener">LinkedIn</a> -->
       </div>
     </div>
   </footer>
+
+  <!-- ================= SQLI LAB SCRIPT (INLINE) ================= -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* ---------- Lab 1: Error-based SQLi (simulated) ---------- */
+      const errorInput  = document.getElementById('sqli-error-input');
+      const errorBtn    = document.getElementById('sqli-error-btn');
+      const errorOutput = document.getElementById('sqli-error-output');
+
+      if (errorInput && errorBtn && errorOutput) {
+        errorBtn.addEventListener('click', function () {
+          const value = (errorInput.value || '').trim();
+          errorOutput.classList.remove('success', 'error');
+          if (!value) {
+            errorOutput.textContent = 'Please enter an ID first.';
+            errorOutput.classList.add('error');
+            return;
+          }
+
+          const lower = value.toLowerCase();
+
+          // classic "1' OR 1=1--"
+          if (lower.includes("' or 1=1--") || lower.includes('" or 1=1--')) {
+            errorOutput.innerHTML =
+              'Simulated query: SELECT * FROM products WHERE id = \'' + value + '\';\n\n' +
+              'Result: multiple rows returned (logic / auth bypass).\n' +
+              'Flag: ' + '<span style="color:#facc15;">FLAG{ERROR_BASED_SI_DEMO}</span>';
+            errorOutput.classList.add('success');
+            return;
+          }
+
+          // has quote but not valid logic → syntax error
+          if (value.includes("'") || value.includes('"')) {
+            errorOutput.innerHTML =
+              'Simulated query: SELECT * FROM products WHERE id = \'' + value + '\';\n\n' +
+              'Error: SQLSTATE[42000] syntax error — unbalanced or unescaped quote.\n' +
+              'This kind of verbose error reveals how the query is built.';
+            errorOutput.classList.add('error');
+            return;
+          }
+
+          // numeric only → normal behaviour
+          if (/^[0-9]+$/.test(value)) {
+            errorOutput.innerHTML =
+              'Simulated query: SELECT * FROM products WHERE id = ' + value + ';\n\n' +
+              'Result: 1 row returned (normal behaviour).';
+            errorOutput.classList.add('success');
+            return;
+          }
+
+          // default
+          errorOutput.innerHTML =
+            'Simulated query: SELECT * FROM products WHERE id = \'' + value + '\';\n\n' +
+            'No obvious syntax error, but the input is unusual. In a real app you would test further.';
+          errorOutput.classList.add('error');
+        });
+      }
+
+      /* ---------- Lab 2: Boolean-based SQLi (simulated) ---------- */
+      const boolInput  = document.getElementById('sqli-bool-input');
+      const boolBtn    = document.getElementById('sqli-bool-btn');
+      const boolOutput = document.getElementById('sqli-bool-output');
+
+      if (boolInput && boolBtn && boolOutput) {
+        boolBtn.addEventListener('click', function () {
+          const value = (boolInput.value || '').trim();
+          boolOutput.classList.remove('success', 'error');
+
+          if (!value) {
+            boolOutput.textContent = 'Application response: No ID provided.';
+            boolOutput.classList.add('error');
+            return;
+          }
+
+          const lower = value.toLowerCase();
+          let conditionTrue = false;
+
+          // Normal "1" → treat as record exists
+          if (/^[0-9]+$/.test(value) && value === '1') {
+            conditionTrue = true;
+          }
+
+          // "1) AND 1=1--" → TRUE
+          if (lower.includes('1) and 1=1--')) {
+            conditionTrue = true;
+          }
+          // "1) AND 1=2--" → stays false
+
+          if (conditionTrue) {
+            boolOutput.innerHTML =
+              'Application says: record exists.\n' +
+              'From the tester perspective, your condition evaluated to TRUE.\n' +
+              'Flag: ' + '<span style="color:#facc15;">FLAG{BOOLEAN_BASED_TRUE_BRANCH}</span>';
+            boolOutput.classList.add('success');
+          } else {
+            boolOutput.innerHTML =
+              'Application says: no matching record.\n' +
+              'From the tester perspective, your condition evaluated to FALSE.';
+            boolOutput.classList.add('error');
+          }
+        });
+      }
+
+      /* ---------- Lab 3: Time-based SQLi (simulated) ---------- */
+      const timeInput  = document.getElementById('sqli-time-input');
+      const timeBtn    = document.getElementById('sqli-time-btn');
+      const timeOutput = document.getElementById('sqli-time-output');
+
+      if (timeInput && timeBtn && timeOutput) {
+        timeBtn.addEventListener('click', function () {
+          const value = (timeInput.value || '').trim();
+          timeOutput.classList.remove('success', 'error');
+
+          if (!value) {
+            timeOutput.textContent = 'Waiting for ID input...';
+            timeOutput.classList.add('error');
+            return;
+          }
+
+          const lower = value.toLowerCase();
+          const start = performance.now();
+          let delay = 300; // default ~0.3s
+          let flag  = false;
+
+          // If payload contains time functions, simulate ~5s delay
+          if (lower.includes('sleep(5)') || lower.includes("waitfor delay '0:0:5'")) {
+            delay = 5000;
+            flag  = true;
+          }
+
+          timeOutput.textContent = 'Sending request to database... (simulated)';
+          timeBtn.disabled = true;
+
+          setTimeout(function () {
+            const end = performance.now();
+            const elapsed = ((end - start) / 1000).toFixed(2);
+
+            let text =
+              'Response received.\n' +
+              'Measured time: ' + elapsed + ' seconds.\n';
+
+            if (flag) {
+              text +=
+                '\nThe delay appears intentional based on your payload. ' +
+                'From a tester perspective, this suggests your injected time function executed.\n' +
+                'Flag: ' + 'FLAG{TIME_BASED_DELAY_CONFIRMED}';
+              timeOutput.classList.add('success');
+            } else {
+              text +=
+                '\nNo significant extra delay detected. Either the payload was ignored, or no time function ran.';
+              timeOutput.classList.add('error');
+            }
+
+            timeOutput.textContent = text;
+            timeBtn.disabled = false;
+          }, delay);
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>
