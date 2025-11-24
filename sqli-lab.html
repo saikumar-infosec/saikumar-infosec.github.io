@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SQL Injection Training Lab – Error / Boolean / Time-Based</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Educational SQL Injection lab demonstrating error-based, boolean-based and time-based SQL injection concepts in a safe, front-end-only environment.">
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= BASIC THEME ================= */
+    :root{
+      --bg: #020617;
+      --panel: #020617;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent2: #a855f7;
+      --border: rgba(148,163,184,0.4);
+      --radius: 12px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(59,130,246,0.35), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(168,85,247,0.35), transparent 55%),
+        #020617;
+      color:var(--text);
+      min-height:100vh;
+    }
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+    a:hover{text-decoration:underline;}
+
+    .page{
+      max-width:960px;
+      margin:0 auto;
+      padding:24px 16px 40px;
+    }
+
+    /* ================= HEADER ================= */
+    .lab-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:24px;
+    }
+    .lab-title{
+      margin:0 0 4px;
+      font-size:24px;
+    }
+    .lab-subtitle{
+      margin:0;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .back-link{
+      font-size:13px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      padding:6px 12px;
+      background:rgba(15,23,42,0.9);
+      color:var(--text);
+    }
+
+    /* ================= INTRO BOX ================= */
+    .intro{
+      background:rgba(15,23,42,0.9);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px 16px;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:24px;
+    }
+    .intro b{color:var(--text);}
+    .intro ul{
+      margin:8px 0 0;
+      padding-left:18px;
+    }
+    .mini-note{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    /* ================= GRID LAYOUT ================= */
+    .lab-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+    @media (max-width:900px){
+      .lab-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    /* ================= PANELS ================= */
+    .lab-panel{
+      background:radial-gradient(circle at top left,
+                 rgba(59,130,246,0.20),
+                 rgba(15,23,42,0.98));
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      padding:14px 14px 12px;
+      font-size:13px;
+      box-shadow:0 16px 40px rgba(0,0,0,0.8);
+    }
+    .lab-panel h2{
+      margin:0 0 4px;
+      font-size:16px;
+    }
+    .lab-tag{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      margin-bottom:8px;
+    }
+    .lab-desc{
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .lab-label{
+      display:block;
+      font-size:12px;
+      margin-bottom:4px;
+    }
+    .lab-input{
+      width:100%;
+      border-radius:8px;
+      border:1px solid rgba(51,65,85,0.9);
+      background:rgba(15,23,42,0.95);
+      padding:7px 9px;
+      color:var(--text);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+    .lab-input:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(59,130,246,0.7);
+    }
+
+    .lab-btn{
+      border-radius:999px;
+      border:none;
+      padding:7px 12px;
+      font-size:13px;
+      cursor:pointer;
+      color:#f9fafb;
+      background:linear-gradient(120deg,var(--accent),var(--accent2));
+      box-shadow:0 8px 22px rgba(37,99,235,0.5);
+      margin-bottom:8px;
+    }
+    .lab-btn:disabled{
+      opacity:0.65;
+      cursor:wait;
+      box-shadow:none;
+    }
+
+    .lab-hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .lab-output{
+      border-radius:8px;
+      border:1px solid rgba(51,65,85,0.9);
+      background:rgba(15,23,42,0.95);
+      padding:8px 9px;
+      min-height:52px;
+      white-space:pre-wrap;
+      font-family:Menlo,Monaco,Consolas,monospace;
+      font-size:12px;
+    }
+    .lab-output .ok{color:#4ade80;}
+    .lab-output .err{color:#f97373;}
+    .lab-output .flag{color:#facc15;}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- ================= HEADER ================= -->
+    <header class="lab-header">
+      <div>
+        <h1 class="lab-title">SQL Injection Training Lab</h1>
+        <p class="lab-subtitle">
+          Error-based · Boolean-based · Time-based (simulated safely in the browser)
+        </p>
+      </div>
+      <a href="index.html" class="back-link">← Back to main site</a>
+    </header>
+
+    <!-- ================= INTRO ================= -->
+    <section class="intro">
+      <p>
+        This page simulates three common SQL injection behaviours using only JavaScript.
+        There is <b>no real database</b> and no backend – everything you see is an
+        educational model of how error-based, boolean-based and time-based SQL injection
+        can look from the tester’s perspective.
+      </p>
+      <p>
+        The goal is to understand how the application’s responses change:
+      </p>
+      <ul>
+        <li><b>Error-based:</b> visible SQL errors or data in the response.</li>
+        <li><b>Boolean-based:</b> only true/false style answers, no error output.</li>
+        <li><b>Time-based:</b> only timing differences (delays) indicate success.</li>
+      </ul>
+      <p class="mini-note">
+        Use these techniques only in legal, authorized environments (your own apps, labs,
+        bug bounty programs with permission, or client systems covered by a contract).
+      </p>
+    </section>
+
+    <!-- ================= LAB GRID ================= -->
+    <section class="lab-grid">
+
+      <!-- ========== LAB 1: ERROR-BASED ========== -->
+      <article class="lab-panel" id="error-lab">
+        <div class="lab-tag">Lab 1 · Error-based</div>
+        <h2>Error-based SQLi (simulated)</h2>
+        <p class="lab-desc">
+          Imagine a product search where input is concatenated directly into an SQL query.
+          Try:
+          <code>1'</code> or
+          <code>1' OR 1=1--</code>
+          and see how the behaviour changes.
+        </p>
+
+        <label class="lab-label" for="error-input">Product ID (simulated):</label>
+        <input id="error-input" class="lab-input" type="text" placeholder="1">
+        <button id="error-btn" class="lab-btn">Send request</button>
+
+        <div id="error-output" class="lab-output"></div>
+
+        <p class="mini-note">
+          In real applications, detailed SQL errors can reveal how queries are built and
+          may even leak table/column names or data.
+        </p>
+      </article>
+
+      <!-- ========== LAB 2: BOOLEAN-BASED ========== -->
+      <article class="lab-panel" id="bool-lab">
+        <div class="lab-tag">Lab 2 · Boolean-based</div>
+        <h2>Boolean-based (blind) SQLi (simulated)</h2>
+        <p class="lab-desc">
+          Here the app never shows SQL errors. It only reports if any row matches the
+          condition. Try:
+          <code>1) AND 1=1--</code> vs
+          <code>1) AND 1=2--</code>.
+        </p>
+
+        <label class="lab-label" for="bool-input">User ID condition (simulated WHERE clause):</label>
+        <input id="bool-input" class="lab-input" type="text" placeholder="1">
+        <button id="bool-btn" class="lab-btn">Check condition</button>
+
+        <div id="bool-output" class="lab-output"></div>
+
+        <p class="mini-note">
+          In real blind SQLi, testers chain many true/false checks (length, chars, etc.)
+          to reconstruct data without any direct error messages.
+        </p>
+      </article>
+
+      <!-- ========== LAB 3: TIME-BASED ========== -->
+      <article class="lab-panel" id="time-lab">
+        <div class="lab-tag">Lab 3 · Time-based</div>
+        <h2>Time-based (blind) SQLi (simulated)</h2>
+        <p class="lab-desc">
+          Here the only signal is response time. Try something like:
+          <code>1; SLEEP(5)--</code> or
+          <code>1; WAITFOR DELAY '0:0:5'--</code>.
+        </p>
+
+        <label class="lab-label" for="time-input">ID with possible delay clause:</label>
+        <input id="time-input" class="lab-input" type="text" placeholder="1">
+        <button id="time-btn" class="lab-btn">Send timed request</button>
+
+        <div id="time-output" class="lab-output"></div>
+
+        <p class="mini-note">
+          In real SQLi, the database engine holds the response while executing the time
+          function. Here the delay is simulated in JavaScript for teaching purposes.
+        </p>
+      </article>
+
+    </section>
+  </div>
+
+  <script>
+    // ===================================================
+    // LAB 1: ERROR-BASED SQLi (SIMULATION ONLY)
+    // ===================================================
+    (function(){
+      const input  = document.getElementById('error-input');
+      const button = document.getElementById('error-btn');
+      const output = document.getElementById('error-output');
+
+      if (!input || !button || !output) return;
+
+      button.addEventListener('click', () => {
+        const value = (input.value || '').trim();
+        output.innerHTML = '';
+
+        if (!value) {
+          output.innerHTML = '<span class="err">Please enter an ID first.</span>';
+          return;
+        }
+
+        const lower = value.toLowerCase();
+
+        // Case 1: classic style "1' OR 1=1--"
+        if (lower.includes(\"' or 1=1--\") || lower.includes('\" or 1=1--')) {
+          output.innerHTML =
+            'Simulated query:\\n' +
+            '  SELECT * FROM products WHERE id = \\'' + value + '\\';\\n\\n' +
+            '<span class=\"ok\">[OK] Query executed. Multiple rows returned (logic / auth bypass).</span>\\n' +
+            '<span class=\"flag\">Flag: FLAG{ERROR_BASED_SI_DEMO}</span>';
+          return;
+        }
+
+        // Case 2: has quote, but not valid logic -> syntax error
+        if (value.includes(\"'\") || value.includes('\"')) {
+          output.innerHTML =
+            'Simulated query:\\n' +
+            '  SELECT * FROM products WHERE id = \\'' + value + '\\';\\n\\n' +
+            '<span class=\"err\">SQLSTATE[42000]: Syntax error or access violation: ' +
+            'Unterminated string literal near \\'' + value + '\\'.</span>\\n' +
+            'This kind of verbose error reveals how the query is built.';
+          return;
+        }
+
+        // Case 3: purely numeric -> safe normal query
+        if (/^[0-9]+$/.test(value)) {
+          output.innerHTML =
+            'Simulated query:\\n' +
+            '  SELECT * FROM products WHERE id = ' + value + ';\\n\\n' +
+            '<span class=\"ok\">[OK] Query executed. 1 row returned (normal behaviour).</span>';
+          return;
+        }
+
+        // Default: weird text but no quote
+        output.innerHTML =
+          'Simulated query:\\n' +
+          '  SELECT * FROM products WHERE id = \\'' + value + '\\';\\n\\n' +
+          '<span class=\"err\">No obvious error, but the application may still be vulnerable ' +
+          'depending on how the query is used internally.</span>';
+      });
+    })();
+
+    // ===================================================
+    // LAB 2: BOOLEAN-BASED (BLIND) SQLi (SIMULATION ONLY)
+    // ===================================================
+    (function(){
+      const input  = document.getElementById('bool-input');
+      const button = document.getElementById('bool-btn');
+      const output = document.getElementById('bool-output');
+
+      if (!input || !button || !output) return;
+
+      button.addEventListener('click', () => {
+        const value = (input.value || '').trim();
+        output.innerHTML = '';
+
+        if (!value) {
+          output.innerHTML = 'Application response: <span class=\"err\">No ID provided.</span>';
+          return;
+        }
+
+        const lower = value.toLowerCase();
+        let conditionTrue = false;
+
+        // "1" alone: treat as exists
+        if (/^[0-9]+$/.test(value) && value === '1') {
+          conditionTrue = true;
+        }
+
+        // "1) AND 1=1--" => TRUE
+        if (lower.includes('1) and 1=1--')) {
+          conditionTrue = true;
+        }
+
+        // "1) AND 1=2--" => FALSE by default
+
+        if (conditionTrue) {
+          output.innerHTML =
+            'Application says: <span class=\"ok\">Record exists.</span>\\n' +
+            'From the tester perspective, your injected condition evaluated to <b>TRUE</b>.\\n' +
+            '<span class=\"flag\">Flag: FLAG{BOOLEAN_BASED_TRUE_BRANCH}</span>';
+        } else {
+          output.innerHTML =
+            'Application says: <span class=\"err\">No matching record.</span>\\n' +
+            'From the tester perspective, your injected condition evaluated to <b>FALSE</b>.';
+        }
+      });
+    })();
+
+    // ===================================================
+    // LAB 3: TIME-BASED (BLIND) SQLi (SIMULATION ONLY)
+    // ===================================================
+    (function(){
+      const input  = document.getElementById('time-input');
+      const button = document.getElementById('time-btn');
+      const output = document.getElementById('time-output');
+
+      if (!input || !button || !output) return;
+
+      button.addEventListener('click', () => {
+        const value = (input.value || '').trim();
+        output.innerHTML = '';
+
+        if (!value) {
+          output.innerHTML = 'Waiting for ID input...';
+          return;
+        }
+
+        const lower = value.toLowerCase();
+        const start = performance.now();
+        button.disabled = true;
+
+        // Default delay (~0.3s)
+        let delay = 300;
+        let flag = false;
+
+        // If payload contains classic time functions, simulate 5s delay
+        if (lower.includes('sleep(5)') || lower.includes(\"waitfor delay '0:0:5'\")) {
+          delay = 5000;
+          flag = true;
+        }
+
+        output.innerHTML = 'Sending request to database... (simulated)';
+
+        setTimeout(() => {
+          const end = performance.now();
+          const elapsed = ((end - start) / 1000).toFixed(2);
+
+          let text =
+            'Response received.\\n' +
+            'Measured time: ' + elapsed + ' seconds.\\n';
+
+          if (flag) {
+            text +=
+              '\\nThe delay appears intentional based on your payload. ' +
+              'From a tester perspective, this suggests your injected time function was executed.\\n' +
+              '<span class=\"flag\">Flag: FLAG{TIME_BASED_DELAY_CONFIRMED}</span>';
+          } else {
+            text +=
+              '\\nNo significant extra delay detected. Either your payload was ignored or ' +
+              'no time-based function executed on the backend.';
+          }
+
+          output.innerHTML = text;
+          button.disabled = false;
+        }, delay);
+      });
+    })();
+  </script>
+</body>
+</html>
