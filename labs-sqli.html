@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>SQL Injection Labs – Saikumar Raju</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <img src="SR-initials.svg" alt="SR" class="logo" />
+        <div class="brand-text">
+          <div class="name">Saikumar Raju</div>
+          <div class="title-small">Cybersecurity Consultant</div>
+        </div>
+      </a>
+
+      <nav class="main-nav">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#contact">Contact</a>
+        <span class="nav-divider">|</span>
+        <a href="labs-sqli.html" class="active">SQLi Labs</a>
+        <span class="nav-disabled">XSS Labs (soon)</span>
+      </nav>
+
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- INTRO -->
+    <section class="section">
+      <div class="container">
+        <div class="labs-hero">
+          <div>
+            <p class="eyebrow">Hands-on Training · Safe Simulation</p>
+            <h1>SQL Injection Training Labs</h1>
+            <p class="section-lead">
+              Three browser-based labs that simulate error-based, boolean-based and time-based SQL
+              injection behaviour. No real database is used – everything runs in JavaScript, making
+              it safe for demos and self-practice.
+            </p>
+
+            <div class="labs-meta">
+              <span>Difficulty: Intermediate</span>
+              <span>Labs: 3</span>
+              <span>Flags to find: 3</span>
+            </div>
+
+            <p class="muted small">
+              These labs are for educational purposes only. Use similar techniques only on systems
+              where you have explicit permission (authorized testing, bug bounty, your own
+              applications, etc.).
+            </p>
+          </div>
+
+          <div class="labs-progress-card">
+            <h3>Flag Progress</h3>
+            <p class="muted small">
+              JS-only simulation of flags. In a real CTF, flags would be stored server-side.
+            </p>
+            <div id="flagProgress" class="flag-progress">
+              Flags found: <span id="flagCount">0</span> / 3
+            </div>
+            <button id="resetFlagsBtn" class="btn-outline btn-sm">Reset flags</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LABS BODY -->
+    <section class="section section-dark">
+      <div class="container">
+        <div class="lab-tabs">
+          <button class="lab-tab active" data-target="lab1">Lab 1 – Error-based SQLi</button>
+          <button class="lab-tab" data-target="lab2">Lab 2 – Boolean-based (Blind)</button>
+          <button class="lab-tab" data-target="lab3">Lab 3 – Time-based (Blind)</button>
+        </div>
+
+        <!-- Lab 1 -->
+        <div id="lab1" class="lab-panel active">
+          <div class="lab-layout">
+            <div class="lab-desc">
+              <h2>Lab 1 – Error-based SQL Injection</h2>
+              <p>
+                This lab simulates a product lookup where <code>id</code> is concatenated directly
+                into a SQL string. Error messages are visible, making it easy to test payloads.
+              </p>
+              <ul>
+                <li>Start with a normal ID like <code>1</code>.</li>
+                <li>Trigger an error using <code>1'</code>.</li>
+                <li>Bypass logic with <code>1' OR 1=1--</code>.</li>
+              </ul>
+              <p class="muted small">
+                In real apps, verbose SQL errors reveal how queries are built and may leak table /
+                column information.
+              </p>
+              <h3>How to fix</h3>
+              <ul>
+                <li>Use parameterized queries / prepared statements.</li>
+                <li>Avoid string concatenation for building SQL.</li>
+                <li>Hide detailed database errors from end users.</li>
+              </ul>
+            </div>
+
+            <div class="lab-console">
+              <h3>Try the query</h3>
+              <label for="sqliErrorInput" class="muted small">
+                Product ID (simulated):
+              </label>
+              <input id="sqliErrorInput" class="lab-input" type="text" value="1" />
+              <button id="sqliErrorBtn" class="btn-primary btn-sm">Send request</button>
+              <div class="lab-output" id="sqliErrorOutput"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div id="lab2" class="lab-panel">
+          <div class="lab-layout">
+            <div class="lab-desc">
+              <h2>Lab 2 – Boolean-based (Blind) SQL Injection</h2>
+              <p>
+                Here the application never shows SQL errors. It only responds with “record exists”
+                or “no match”. You can still detect and exploit SQL injection using true/false
+                conditions.
+              </p>
+              <ul>
+                <li>Baseline: <code>1</code> → record exists.</li>
+                <li>Try: <code>1) AND 1=1--</code> → TRUE branch.</li>
+                <li>Try: <code>1) AND 1=2--</code> → FALSE branch.</li>
+              </ul>
+              <p class="muted small">
+                In real blind SQLi, testers chain many true/false checks to infer data such as the
+                length and content of passwords without seeing any errors.
+              </p>
+              <h3>How to fix</h3>
+              <ul>
+                <li>Use parameterized queries / ORMs.</li>
+                <li>Implement strong input validation and allowlists for IDs.</li>
+                <li>Monitor for unusual patterns in logs (for example <code>AND 1=1</code>).</li>
+              </ul>
+            </div>
+
+            <div class="lab-console">
+              <h3>Try a boolean condition</h3>
+              <label for="sqliBoolInput" class="muted small">
+                User ID condition (simulated <code>WHERE</code> clause):
+              </label>
+              <input id="sqliBoolInput" class="lab-input" type="text" value="1" />
+              <button id="sqliBoolBtn" class="btn-primary btn-sm">Check condition</button>
+              <div class="lab-output" id="sqliBoolOutput"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 3 -->
+        <div id="lab3" class="lab-panel">
+          <div class="lab-layout">
+            <div class="lab-desc">
+              <h2>Lab 3 – Time-based (Blind) SQL Injection</h2>
+              <p>
+                In this lab, the only signal you get is response time. A special payload triggers a
+                delay if the condition is evaluated by the database.
+              </p>
+              <ul>
+                <li>Baseline: <code>1</code> → fast response.</li>
+                <li>Try: <code>1; SLEEP(5)--</code> → delayed response.</li>
+                <li>On MSSQL: <code>1; WAITFOR DELAY '0:0:5'--</code> (also simulated here).</li>
+              </ul>
+              <p class="muted small">
+                In real blind SQLi, attackers use time-based functions when there is no visible
+                output difference but they can still measure response time to extract information.
+              </p>
+              <h3>How to fix</h3>
+              <ul>
+                <li>Again, parameterized queries are the main defence.</li>
+                <li>Rate-limit suspicious requests and unusual delays.</li>
+                <li>Use WAF / RASP with rules for common time-based payloads.</li>
+              </ul>
+            </div>
+
+            <div class="lab-console">
+              <h3>Try a timed payload</h3>
+              <label for="sqliTimeInput" class="muted small">
+                ID with possible delay clause:
+              </label>
+              <input id="sqliTimeInput" class="lab-input" type="text" value="1" />
+              <button id="sqliTimeBtn" class="btn-primary btn-sm">Send timed request</button>
+              <div class="lab-output" id="sqliTimeOutput"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- notice -->
+    <section class="section">
+      <div class="container">
+        <p class="muted small">
+          Note: All behaviour on this page is simulated in JavaScript. There is no real backend or
+          database. The goal is to demonstrate how a tester reasons about SQL injection, and how to
+          fix it, using safe front-end-only examples.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="muted small">© 2025 Saikumar Raju – SQLi Training Labs (Demo)</span>
+      <a href="index.html" class="muted small">Back to main website</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="labs-sqli.js"></script>
+</body>
+</html>
