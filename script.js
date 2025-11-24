@@ -1,67 +1,41 @@
-// script.js
+// theme toggle
+const htmlEl = document.documentElement;
+const themeToggle = document.getElementById("themeToggle");
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  /* ============== THEME TOGGLE ============== */
-  const root = document.documentElement;
-  const toggleBtn = document.getElementById('themeToggle');
-
-  const storedTheme = localStorage.getItem('theme');
-  if (storedTheme === 'light' || storedTheme === 'dark') {
-    root.setAttribute('data-theme', storedTheme);
+if (themeToggle) {
+  const stored = localStorage.getItem("theme");
+  if (stored === "light" || stored === "dark") {
+    htmlEl.setAttribute("data-theme", stored);
   }
 
-  function updateToggleIcon() {
-    const theme = root.getAttribute('data-theme') || 'dark';
-    toggleBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
-  }
-  updateToggleIcon();
+  const refreshIcon = () => {
+    const mode = htmlEl.getAttribute("data-theme");
+    themeToggle.textContent = mode === "light" ? "🌙" : "☀️";
+  };
+  refreshIcon();
 
-  toggleBtn.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateToggleIcon();
+  themeToggle.addEventListener("click", () => {
+    const current = htmlEl.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    htmlEl.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    refreshIcon();
   });
+}
 
-  /* ============== SMOOTH SCROLL (extra) ============== */
-  const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      const targetId = link.getAttribute('href').slice(1);
-      const target = document.getElementById(targetId);
+// smooth scroll for same-page links
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", (e) => {
+    const id = link.getAttribute("href");
+    if (id.length > 1) {
+      const target = document.querySelector(id);
       if (target) {
         e.preventDefault();
-        const offsetTop = target.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        window.scrollTo({
+          top: target.offsetTop - 70,
+          behavior: "smooth",
+        });
       }
-    });
+    }
   });
-
-  /* ============== SCROLL REVEAL ============== */
-  const revealEls = document.querySelectorAll(
-    '.section, .card, .timeline-item, .project-card, .lab-card'
-  );
-
-  revealEls.forEach(el => el.classList.add('reveal'));
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target); // animate once
-      }
-    });
-  }, {
-    threshold: 0.12
-  });
-
-  revealEls.forEach(el => observer.observe(el));
-
-  /* ============== FOOTER YEAR ============== */
-  const yearSpan = document.getElementById('year');
-  if (yearSpan) {
-    yearSpan.textContent = new Date().getFullYear();
-  }
 });
