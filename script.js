@@ -1,81 +1,73 @@
-// Smooth scroll for internal links
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  link.addEventListener('click', e => {
-    const targetId = link.getAttribute('href');
-    if (targetId.length > 1) {
-      e.preventDefault();
-      const el = document.querySelector(targetId);
-      if (el) {
-        window.scrollTo({
-          top: el.offsetTop - 70,
-          behavior: 'smooth'
-        });
-      }
-    }
+// ================= THEME TOGGLE =================
+
+(function () {
+  const root = document.documentElement;
+  const toggle = document.getElementById("themeToggle");
+
+  if (!toggle) return;
+
+  const stored = localStorage.getItem("saikumar-theme");
+  const prefersDark =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  const initialTheme = stored || (prefersDark ? "dark" : "dark");
+  root.setAttribute("data-theme", initialTheme);
+  toggle.textContent = initialTheme === "dark" ? "🌙" : "☀️";
+
+  toggle.addEventListener("click", () => {
+    const current = root.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    localStorage.setItem("saikumar-theme", next);
+    toggle.textContent = next === "dark" ? "🌙" : "☀️";
+  });
+})();
+
+// ================= SMOOTH SCROLL FOR NAV LINKS =================
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", (e) => {
+    const targetId = link.getAttribute("href");
+    if (!targetId || targetId === "#") return;
+
+    const target = document.querySelector(targetId);
+    if (!target) return;
+
+    e.preventDefault();
+    const yOffset = -70;
+    const rect = target.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = rect.top + scrollTop + yOffset;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: "smooth",
+    });
   });
 });
 
-// Highlight active nav link on scroll
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link');
+// ================= FADE-IN ON SCROLL =================
 
-function onScroll() {
-  const scrollPos = window.scrollY + 90;
-
-  sections.forEach(sec => {
-    const top = sec.offsetTop;
-    const bottom = top + sec.offsetHeight;
-    const id = sec.getAttribute('id');
-
-    if (scrollPos >= top && scrollPos < bottom) {
-      navLinks.forEach(l => l.classList.remove('active'));
-      const active = document.querySelector('.nav-link[href="#' + id + '"]');
-      if (active) active.classList.add('active');
-    }
-  });
-}
-
-window.addEventListener('scroll', onScroll);
-onScroll();
-
-// Theme toggle (dark is default)
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
-
-function setTheme(theme) {
-  body.setAttribute('data-theme', theme);
-  localStorage.setItem('sk-theme', theme);
-  themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
-}
-
-const storedTheme = localStorage.getItem('sk-theme');
-setTheme(storedTheme === 'light' ? 'light' : 'dark');
-
-themeToggle.addEventListener('click', () => {
-  const current = body.getAttribute('data-theme') || 'dark';
-  setTheme(current === 'dark' ? 'light' : 'dark');
-});
-
-// Fade-in animation on scroll using IntersectionObserver
 const observer = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
+  (entries) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
+        entry.target.classList.add("visible");
         observer.unobserve(entry.target);
       }
     });
   },
-  { threshold: 0.12 }
+  {
+    threshold: 0.15,
+  }
 );
 
-document.querySelectorAll('.fade-in').forEach(el => {
-  el.style.animationPlayState = 'paused';
-  observer.observe(el);
-});
+document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
 
-// Footer year
-const yearSpan = document.getElementById('year');
+// ================= FOOTER YEAR =================
+
+const yearSpan = document.getElementById("year");
 if (yearSpan) {
   yearSpan.textContent = new Date().getFullYear();
 }
