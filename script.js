@@ -1,66 +1,63 @@
-// Basic interactive behaviors (theme toggle, mobile nav, smooth scroll, reveal on scroll)
+/* script.js — small interactions and responsive menu */
 
-(function(){
-  const body = document.body;
-  const themeToggle = document.getElementById('themeToggle');
-  const mobileToggle = document.getElementById('mobileToggle');
-  const mainNav = document.getElementById('mainNav');
-
-  // --- Theme (persist to localStorage)
-  const saved = localStorage.getItem('site-theme');
-  if (saved) document.documentElement.setAttribute('data-theme', saved);
-
-  themeToggle.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('site-theme', next);
-    themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+  link.addEventListener('click', function(e){
+    const targetId = this.getAttribute('href');
+    if(!targetId || targetId === '#') return;
+    const target = document.querySelector(targetId);
+    if(target){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      // if mobile menu open, close it
+      if(window.innerWidth <= 700){
+        closeMobileNav();
+      }
+    }
   });
+});
 
-  // Set icon correctly on load
-  themeToggle.textContent = (document.documentElement.getAttribute('data-theme') === 'light') ? '☀️' : '🌙';
+// mobile nav toggle
+const hamburger = document.getElementById('hamburger');
+const nav = document.getElementById('mainNav');
 
-  // --- Mobile nav
-  mobileToggle.addEventListener('click', () => {
-    if (body.classList.contains('mobile-open')) {
-      body.classList.remove('mobile-open');
+function openMobileNav(){
+  nav.style.display = 'flex';
+  nav.style.flexDirection = 'column';
+  nav.style.position = 'absolute';
+  nav.style.right = '20px';
+  nav.style.top = '62px';
+  nav.style.background = 'linear-gradient(180deg, rgba(3,6,12,0.95), rgba(3,6,12,0.95))';
+  nav.style.padding = '12px';
+  nav.style.borderRadius = '8px';
+  hamburger.textContent = '✕';
+}
+
+function closeMobileNav(){
+  nav.style.display = 'none';
+  hamburger.textContent = '☰';
+}
+
+if(hamburger){
+  hamburger.addEventListener('click', ()=>{
+    if(window.innerWidth > 700) return;
+    if(nav.style.display === 'flex') closeMobileNav(); else openMobileNav();
+  });
+  // ensure nav reset on resize
+  window.addEventListener('resize', ()=> {
+    if(window.innerWidth > 700){
+      nav.style.display = 'flex';
+      nav.style.position = 'static';
+      nav.style.flexDirection = 'row';
+      hamburger.textContent = '☰';
     } else {
-      body.classList.add('mobile-open');
+      // keep it hidden initially on small screens
+      nav.style.display = 'none';
     }
   });
+}
 
-  // close mobile nav when a link clicked
-  mainNav.addEventListener('click', (e) => {
-    if (e.target.tagName === 'A' && body.classList.contains('mobile-open')) {
-      body.classList.remove('mobile-open');
-    }
-  });
-
-  // --- Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(a=>{
-    a.addEventListener('click', function(e){
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        const top = target.getBoundingClientRect().top + window.scrollY - 64;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
-    });
-  });
-
-  // --- Reveal on scroll (simple)
-  const reveals = document.querySelectorAll('.fade-in');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(ent=>{
-      if (ent.isIntersecting) {
-        ent.target.classList.add('visible');
-        ent.target.style.animationDelay = '0.05s';
-        ent.target.style.animationFillMode = 'forwards';
-      }
-    });
-  }, { threshold: 0.12 });
-
-  reveals.forEach(r => io.observe(r));
-
-})();
+// entrance stagger
+document.querySelectorAll('.fade-in').forEach((el, idx)=>{
+  el.style.animationDelay = (idx * 60) + 'ms';
+});
