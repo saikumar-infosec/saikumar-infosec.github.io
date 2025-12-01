@@ -1,63 +1,55 @@
-/* script.js — small interactions and responsive menu */
+// script.js
+// Basic UI interactions: theme toggle, smooth scroll, current year in footer.
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(link=>{
-  link.addEventListener('click', function(e){
-    const targetId = this.getAttribute('href');
-    if(!targetId || targetId === '#') return;
-    const target = document.querySelector(targetId);
-    if(target){
-      e.preventDefault();
-      target.scrollIntoView({behavior:'smooth', block:'start'});
-      // if mobile menu open, close it
-      if(window.innerWidth <= 700){
-        closeMobileNav();
+// Toggle light/dark theme and store in localStorage
+const themeToggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('site-theme');
+if (savedTheme) root.setAttribute('data-theme', savedTheme);
+updateThemeButton();
+
+themeToggle?.addEventListener('click', () => {
+  const current = root.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('site-theme', next);
+  updateThemeButton();
+});
+
+function updateThemeButton(){
+  const t = root.getAttribute('data-theme') || 'dark';
+  themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
+}
+
+// Smooth scroll for internal links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', function(e){
+    const href = this.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      const el = document.querySelector(href);
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({behavior:'smooth', block:'start'});
       }
     }
   });
 });
 
-// mobile nav toggle
-const hamburger = document.getElementById('hamburger');
-const nav = document.getElementById('mainNav');
+// Put current year in footer
+const yearSpan = document.getElementById('year');
+if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-function openMobileNav(){
-  nav.style.display = 'flex';
-  nav.style.flexDirection = 'column';
-  nav.style.position = 'absolute';
-  nav.style.right = '20px';
-  nav.style.top = '62px';
-  nav.style.background = 'linear-gradient(180deg, rgba(3,6,12,0.95), rgba(3,6,12,0.95))';
-  nav.style.padding = '12px';
-  nav.style.borderRadius = '8px';
-  hamburger.textContent = '✕';
-}
+// Optional: highlight active nav item when scrolling
+const navLinks = document.querySelectorAll('.main-nav a');
+const sections = Array.from(navLinks).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
 
-function closeMobileNav(){
-  nav.style.display = 'none';
-  hamburger.textContent = '☰';
-}
-
-if(hamburger){
-  hamburger.addEventListener('click', ()=>{
-    if(window.innerWidth > 700) return;
-    if(nav.style.display === 'flex') closeMobileNav(); else openMobileNav();
+function onScrollActive() {
+  const y = window.scrollY + 120; // offset for header
+  let activeIndex = -1;
+  sections.forEach((sec, idx) => {
+    if (sec.offsetTop <= y) activeIndex = idx;
   });
-  // ensure nav reset on resize
-  window.addEventListener('resize', ()=> {
-    if(window.innerWidth > 700){
-      nav.style.display = 'flex';
-      nav.style.position = 'static';
-      nav.style.flexDirection = 'row';
-      hamburger.textContent = '☰';
-    } else {
-      // keep it hidden initially on small screens
-      nav.style.display = 'none';
-    }
-  });
+  navLinks.forEach((a,i)=> a.classList.toggle('active', i === activeIndex));
 }
-
-// entrance stagger
-document.querySelectorAll('.fade-in').forEach((el, idx)=>{
-  el.style.animationDelay = (idx * 60) + 'ms';
-});
+window.addEventListener('scroll', onScrollActive);
+onScrollActive();
