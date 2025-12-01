@@ -1,55 +1,81 @@
-// script.js
-// Basic UI interactions: theme toggle, smooth scroll, current year in footer.
+/* script.js
+   - theme toggle (dark/light)
+   - smooth scroll for in-page nav links
+   - avatar gentle float animation
+   - small defensive fixes for images overflowing
+*/
 
-// Toggle light/dark theme and store in localStorage
-const themeToggle = document.getElementById('themeToggle');
-const root = document.documentElement;
-const savedTheme = localStorage.getItem('site-theme');
-if (savedTheme) root.setAttribute('data-theme', savedTheme);
-updateThemeButton();
+/* THEME TOGGLE */
+(function () {
+  const btn = document.getElementById('themeToggle');
+  const root = document.documentElement;
 
-themeToggle?.addEventListener('click', () => {
-  const current = root.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
-  root.setAttribute('data-theme', next);
-  localStorage.setItem('site-theme', next);
-  updateThemeButton();
-});
+  // Load preference (optional)
+  const saved = localStorage.getItem('site-theme');
+  if (saved === 'light') {
+    root.style.setProperty('--bg', '#f6f9ff');
+    root.style.setProperty('--text', '#0b1b2b');
+    btn.textContent = '☀️';
+  } else {
+    btn.textContent = '🌙';
+  }
 
-function updateThemeButton(){
-  const t = root.getAttribute('data-theme') || 'dark';
-  themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
-}
-
-// Smooth scroll for internal links
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', function(e){
-    const href = this.getAttribute('href');
-    if (href && href.startsWith('#')) {
-      const el = document.querySelector(href);
-      if (el) {
-        e.preventDefault();
-        el.scrollIntoView({behavior:'smooth', block:'start'});
-      }
+  btn.addEventListener('click', () => {
+    const current = btn.textContent.trim();
+    if (current === '🌙') {
+      // switch to light-ish quick variant
+      root.style.setProperty('--bg', '#f6f9ff');
+      root.style.setProperty('--text', '#0b1b2b');
+      btn.textContent = '☀️';
+      localStorage.setItem('site-theme', 'light');
+    } else {
+      // restore dark
+      root.style.setProperty('--bg', '#071226');
+      root.style.setProperty('--text', '#e6eef6');
+      btn.textContent = '🌙';
+      localStorage.setItem('site-theme', 'dark');
     }
   });
-});
+})();
 
-// Put current year in footer
-const yearSpan = document.getElementById('year');
-if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-
-// Optional: highlight active nav item when scrolling
-const navLinks = document.querySelectorAll('.main-nav a');
-const sections = Array.from(navLinks).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
-
-function onScrollActive() {
-  const y = window.scrollY + 120; // offset for header
-  let activeIndex = -1;
-  sections.forEach((sec, idx) => {
-    if (sec.offsetTop <= y) activeIndex = idx;
+/* SMOOTH SCROLL FOR ANCHORS */
+(function () {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href.length > 1) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: 'smooth' });
+        }
+      }
+    });
   });
-  navLinks.forEach((a,i)=> a.classList.toggle('active', i === activeIndex));
-}
-window.addEventListener('scroll', onScrollActive);
-onScrollActive();
+})();
+
+/* GENTLE FLOAT FOR HERO AVATAR (pure JS) */
+(function () {
+  const avatar = document.querySelector('.hero-avatar');
+  if (!avatar) return;
+  let angle = 0;
+  function float() {
+    angle += 0.02;
+    const x = Math.sin(angle) * 6; // horizontal
+    const y = Math.cos(angle * 1.2) * 6; // vertical
+    avatar.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(float);
+  }
+  requestAnimationFrame(float);
+})();
+
+/* DEFENSIVE: ensure large images don't overflow on mobile */
+(function () {
+  document.querySelectorAll('img').forEach(img => {
+    img.style.maxWidth = '100%';
+    img.style.height = 'auto';
+    img.addEventListener('load', () => {
+      img.style.display = 'block';
+    });
+  });
+})();
