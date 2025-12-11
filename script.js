@@ -47,7 +47,10 @@
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: 'smooth' });
+          window.scrollTo({
+            top: target.getBoundingClientRect().top + window.scrollY - 64,
+            behavior: 'smooth'
+          });
         }
       }
     });
