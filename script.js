@@ -4,9 +4,9 @@
   const root = document.documentElement;
   const saved = localStorage.getItem('site-theme');
   if (saved === 'light') {
+    if (btn) btn.textContent = '☀️';
     root.style.setProperty('--bg', '#f6f9ff');
     root.style.setProperty('--text', '#0b1b2b');
-    if (btn) btn.textContent = '☀️';
   } else {
     if (btn) btn.textContent = '🌙';
   }
@@ -29,7 +29,7 @@
   }
 })();
 
-/* SMOOTH SCROLL */
+/* SMOOTH SCROLL FOR ANCHORS */
 (function () {
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', function (e) {
@@ -38,7 +38,7 @@
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: 'smooth' });
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
         }
       }
     });
@@ -60,7 +60,7 @@
   requestAnimationFrame(float);
 })();
 
-/* RESPONSIVE IMAGE GUARD */
+/* IMAGE GUARD & fallback */
 (function () {
   document.querySelectorAll('img').forEach(img => {
     img.style.maxWidth = '100%';
@@ -68,10 +68,16 @@
     img.addEventListener('load', () => { img.style.display = 'block'; });
   });
 
-  // fallback: show initials if hero image missing
   const heroImg = document.querySelector('.avatar-inner img');
-  if (heroImg && heroImg.complete && heroImg.naturalWidth === 0) {
-    const fb = document.getElementById('avatarFallback');
-    if (fb) fb.style.display = 'flex';
+  if (heroImg) {
+    heroImg.addEventListener('error', () => {
+      const fb = document.getElementById('avatarFallback');
+      if (fb) fb.style.display = 'flex';
+    });
+    // if already failed
+    if (heroImg.complete && heroImg.naturalWidth === 0) {
+      const fb = document.getElementById('avatarFallback');
+      if (fb) fb.style.display = 'flex';
+    }
   }
 })();
