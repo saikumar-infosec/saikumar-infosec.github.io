@@ -4,26 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Saikumar Raju — Cybersecurity Consultant</title>
-  <meta name="description" content="Saikumar Raju — Cybersecurity Consultant: VAPT, AppSec, Web/API, Mobile, Network & AWS Cloud security." />
+  <meta name="description" content="Saikumar Raju — Cybersecurity Consultant. VAPT, AppSec, Web/API, Mobile, Network & AWS Cloud security." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="#hero">
-        <img src="logo-sr.svg" alt="SR logo" class="logo" />
+      <a class="brand" href="#hero" aria-label="Home">
+        <img src="logo-sr.svg" alt="SR" class="logo" />
         <div class="brand-text">
           <div class="name">Saikumar Raju</div>
           <div class="title-small">Cybersecurity Consultant · VAPT</div>
         </div>
       </a>
 
-      <nav class="main-nav" aria-label="Main">
+      <nav class="main-nav" aria-label="Main navigation">
         <a href="#hero">Home</a>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
-        <a href="#experience">Experience</a>
         <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
         <a href="#contact">Contact</a>
         <a class="btn-outline" href="Saikumar Raju_Resume_0.pdf" download>Resume</a>
         <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
@@ -32,17 +32,15 @@
   </header>
 
   <main>
-    <!-- HERO (B2: bigger avatar, slight overlap) -->
+    <!-- HERO -->
     <section id="hero" class="hero">
       <div class="container hero-inner">
-        <div class="hero-left fade-in">
+        <div class="hero-left">
           <div class="kicker">APPSEC · VAPT · CLOUD SECURITY</div>
           <h1 class="hero-title">
-            <span class="accent">End-to-end security testing</span> for Web, API, Mobile &amp; Cloud.
+            <span class="accent">End-to-end security testing</span> for Web, API, Mobile &amp; Cloud
           </h1>
-          <p class="lead">
-            Cybersecurity consultant with 3.6+ years conducting VAPT, AppSec reviews and cloud security audits — delivering developer-friendly PoCs and prioritized remediation.
-          </p>
+          <p class="lead">Cybersecurity consultant with 3.6+ years of experience delivering VAPT, AppSec reviews and cloud security audits — practical PoCs, prioritized remediation and validation.</p>
 
           <div class="hero-actions">
             <a class="btn-primary" href="Saikumar Raju_Resume_0.pdf" download>Download Resume</a>
@@ -57,8 +55,7 @@
           </ul>
         </div>
 
-        <div class="hero-right fade-in">
-          <!-- bigger, slightly overlapping avatar -->
+        <div class="hero-right" aria-hidden="false">
           <div class="hero-avatar hero-avatar-large" id="heroAvatar">
             <div class="avatar-inner">
               <img src="hero.png" alt="Saikumar Raju" onerror="this.style.display='none';document.getElementById('avatarFallback').style.display='flex'">
@@ -70,48 +67,49 @@
       </div>
     </section>
 
-    <!-- ABOUT (A1: two-column with snapshot micro-cards) -->
-    <section id="about" class="section">
+    <!-- ABOUT -->
+    <section id="about" class="section section-tight">
       <div class="container">
         <div class="section-header">
           <h2>About</h2>
-          <p class="muted">I help engineering teams find and fix real-world vulnerabilities across Web, API, Mobile and Cloud environments with practical, prioritized remediation.</p>
+          <p class="muted">I help engineering teams identify and remediate real-world vulnerabilities across Web, API, Mobile and cloud environments through focused VAPT and AppSec reviews.</p>
         </div>
 
         <div class="about-grid">
           <div class="about-main">
             <div class="card">
               <h3>Who I am</h3>
-              <p>I specialize in Vulnerability Assessment &amp; Penetration Testing (VAPT) and AppSec reviews. My work focuses on realistic attack paths, reproducible PoCs and developer-friendly remediation steps.</p>
+              <p>I specialize in Vulnerability Assessment &amp; Penetration Testing (VAPT) and AppSec reviews for web, API, mobile and cloud systems. My focus is on realistic attack paths, reproducible PoCs, and developer-friendly remediation guidance.</p>
             </div>
 
             <div class="card" style="margin-top:12px">
               <h3>How I work</h3>
               <ul class="list">
-                <li>Threat-driven test planning aligned to OWASP &amp; industry standards.</li>
-                <li>Manual verification + targeted automated scanning for high-confidence findings.</li>
-                <li>Clear PoCs, impact explanation, and prioritized remediation guidance.</li>
+                <li>Threat-driven test planning mapped to OWASP &amp; industry standards.</li>
+                <li>Manual verification plus targeted automated scanning for high-confidence findings.</li>
+                <li>Clear PoCs with remediation recommendations prioritized by impact & feasibility.</li>
               </ul>
             </div>
           </div>
 
           <aside class="about-side">
+            <!-- Replace old snapshot with achievement micro-cards -->
             <div class="micro-grid">
               <div class="micro-card">
-                <div class="micro-title">Role</div>
-                <div class="micro-value">Cybersecurity Consultant (VAPT)</div>
+                <div class="micro-title">Core Role</div>
+                <div class="micro-value">Cybersecurity Consultant (VAPT / AppSec)</div>
               </div>
               <div class="micro-card">
                 <div class="micro-title">Domains</div>
                 <div class="micro-value">Banking · Healthcare · E-commerce</div>
               </div>
               <div class="micro-card">
-                <div class="micro-title">Strengths</div>
+                <div class="micro-title">Core Strengths</div>
                 <div class="micro-value">Web/API · Mobile · AWS · Infra</div>
               </div>
               <div class="micro-card">
-                <div class="micro-title">GitHub</div>
-                <div class="micro-value"><a href="https://github.com/Saikumar-Raju" target="_blank" rel="noreferrer">Saikumar-Raju</a></div>
+                <div class="micro-title">Certs & Tools</div>
+                <div class="micro-value">CEH · Qualys VM · Burp, MobSF, Frida</div>
               </div>
             </div>
           </aside>
@@ -119,53 +117,60 @@
       </div>
     </section>
 
-    <!-- SKILLS -->
-    <section id="skills" class="section">
+    <!-- EXPERTISE / SERVICES -->
+    <section id="skills" class="section section-compact">
       <div class="container">
         <div class="section-header">
-          <h2>Skills &amp; Focus Areas</h2>
-          <p class="muted">Practical expertise across application, mobile, network and cloud security using both manual and automated techniques.</p>
+          <h2>Expertise &amp; Services</h2>
+          <p class="muted">Services I provide and areas of deep expertise.</p>
         </div>
 
-        <div class="cards-grid">
-          <div class="card"><h3>Web &amp; API Security</h3><ul class="list"><li>Auth / session / IDOR / access control</li><li>Burp, ZAP, SQLMap, Postman</li></ul></div>
-          <div class="card"><h3>Mobile Security</h3><ul class="list"><li>Static &amp; dynamic testing; MobSF, Frida</li></ul></div>
-          <div class="card"><h3>Network &amp; Infra</h3><ul class="list"><li>Nmap, Nessus, Wireshark</li></ul></div>
-          <div class="card"><h3>AWS Cloud</h3><ul class="list"><li>IAM, S3, Security Groups, config hardening</li></ul></div>
+        <div class="services-grid">
+          <div class="service card">
+            <h4>Web &amp; API Security</h4>
+            <p class="muted small">Auth/session, access control, IDOR, injection, business logic testing.</p>
+            <ul class="list">
+              <li>OWASP Top 10 &amp; API Top 10 coverage</li>
+              <li>Auth/session abuse, IDOR, rate-limit bypass</li>
+            </ul>
+          </div>
+
+          <div class="service card">
+            <h4>Mobile Security</h4>
+            <p class="muted small">Android &amp; iOS — static/dynamic analysis, storage & TLS checks.</p>
+            <ul class="list">
+              <li>MobSF, Frida, Objection based runtime tests</li>
+            </ul>
+          </div>
+
+          <div class="service card">
+            <h4>AWS Cloud Security</h4>
+            <p class="muted small">IAM reviews, S3 exposure, Security Group audits, hardening.</p>
+            <ul class="list">
+              <li>Multi-account baseline and remediation plans</li>
+            </ul>
+          </div>
+
+          <div class="service card">
+            <h4>Network &amp; Infra</h4>
+            <p class="muted small">Internal/external pentest, firewall reviews and network discovery.</p>
+            <ul class="list">
+              <li>Nmap, Nessus, Wireshark-based analysis</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tools-row">
+          <h4>Tools &amp; Technologies</h4>
+          <div class="tools-grid">
+            <span>Burp Suite</span><span>MobSF</span><span>Frida</span><span>Nmap</span>
+            <span>Wireshark</span><span>SQLMap</span><span>Nessus</span><span>Postman</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- EXPERIENCE -->
-    <section id="experience" class="section">
-      <div class="container">
-        <div class="section-header">
-          <h2>Experience</h2>
-          <p class="muted">Recent roles focused on real-world VAPT and AppSec engagements.</p>
-        </div>
-
-        <div class="timeline">
-          <article class="timeline-item card">
-            <h3>Cybersecurity Consultant — AstraCybertech Pvt Ltd</h3>
-            <p class="time muted">Oct 2023 – Present</p>
-            <ul class="list">
-              <li>Lead VAPT for Web, API and Mobile applications; produced PoCs and remediation plans.</li>
-              <li>Performed network penetration tests and AWS security reviews.</li>
-            </ul>
-          </article>
-
-          <article class="timeline-item card">
-            <h3>Security Analyst — Yash Technologies</h3>
-            <p class="time muted">Feb 2022 – Mar 2023</p>
-            <ul class="list">
-              <li>Web &amp; API security testing; assisted remediation and validation testing.</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS — C2 premium striped cards -->
+    <!-- SELECTED CASE STUDIES (C2 striped) -->
     <section id="projects" class="section">
       <div class="container">
         <div class="section-header">
@@ -180,7 +185,7 @@
               <p class="case-meta muted">Scope: Internet banking portal &amp; internal APIs</p>
             </div>
             <div class="case-body">
-              <p>Performed end-to-end VAPT focusing on authentication, access control, IDOR, and API abuse. Delivered PoCs, prioritized fixes and validation testing.</p>
+              <p>Performed end-to-end VAPT focusing on authentication, access control, IDOR and API abuse. Delivered PoCs, prioritized fixes and validation testing — reduced attack surface and improved session handling.</p>
               <p class="muted small-line">Tools: Burp Suite, Postman · Standards: OWASP Web &amp; API Top 10</p>
             </div>
           </article>
@@ -191,7 +196,7 @@
               <p class="case-meta muted">Scope: Multi-account AWS environment</p>
             </div>
             <div class="case-body">
-              <p>Reviewed IAM policies, S3 exposure and Security Groups. Delivered prioritized hardening plan and validation support after remediation.</p>
+              <p>Reviewed IAM roles, S3 exposure and Security Groups; found overly permissive roles and misconfigured buckets. Delivered a prioritized hardening plan and validation testing after fixes.</p>
               <p class="muted small-line">Focus: IAM, S3, EC2 · Outcome: CIS baseline alignment</p>
             </div>
           </article>
@@ -202,10 +207,54 @@
               <p class="case-meta muted">Scope: Android &amp; iOS apps + backend APIs</p>
             </div>
             <div class="case-body">
-              <p>Static and dynamic analysis of mobile apps and APIs, focusing on unsafe storage, TLS and secret leakage. Worked with the mobile team to validate fixes.</p>
+              <p>Static and dynamic analysis of mobile apps and APIs, focusing on unsafe storage, TLS and secret leakage. Worked with the mobile team to validate fixes and reduce exploitability.</p>
               <p class="muted small-line">Tools: MobSF, Frida, Burp Suite</p>
             </div>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="section section-tight">
+      <div class="container">
+        <div class="section-header">
+          <h2>Experience</h2>
+          <p class="muted">Recent roles focused on VAPT, AppSec and cloud reviews.</p>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-item card">
+            <h3>Cybersecurity Consultant — AstraCybertech Pvt Ltd</h3>
+            <p class="time muted">Oct 2023 – Present</p>
+            <ul class="list">
+              <li>Lead VAPT for Web, API and Mobile applications; delivered PoCs and remediation plans.</li>
+              <li>Performed AWS security reviews and internal/external network tests.</li>
+            </ul>
+          </article>
+
+          <article class="timeline-item card">
+            <h3>Security Analyst — Yash Technologies</h3>
+            <p class="time muted">Feb 2022 – Mar 2023</p>
+            <ul class="list">
+              <li>Conducted Web &amp; API security testing; produced findings and assisted remediation.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACHIEVEMENTS & METRICS -->
+    <section class="section section-compact">
+      <div class="container">
+        <div class="achievements">
+          <h3>Impact &amp; Achievements</h3>
+          <div class="ach-grid">
+            <div class="ach card"><strong>50+</strong><span>Apps &amp; APIs tested</span></div>
+            <div class="ach card"><strong>120+</strong><span>Findings reported</span></div>
+            <div class="ach card"><strong>60%</strong><span>Avg. attack surface reduction (sample)</span></div>
+            <div class="ach card"><strong>6+</strong><span>AWS cloud reviews</span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -218,9 +267,9 @@
           <p class="muted">Open to consultancy, contract and full-time roles in AppSec / VAPT.</p>
         </div>
 
-        <div class="contact-card card">
-          <div class="contact-main">
-            <h3>Let’s connect</h3>
+        <div class="contact-wrap">
+          <div class="contact-card card">
+            <h3>Let's connect</h3>
             <ul class="contact-list">
               <li><span class="label">Email:</span> <a href="mailto:saikumarraju30@gmail.com">saikumarraju30@gmail.com</a></li>
               <li><span class="label">Phone:</span> <a href="tel:+917337026773">+91 73370 26773</a></li>
