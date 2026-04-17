@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Saikumar Raju - Cybersecurity Consultant specializing in VAPT, Web/API Security, Mobile Security, and AWS Cloud Security">
   <meta name="author" content="Saikumar Raju">
+  <meta name="keywords" content="Cybersecurity, VAPT, Penetration Testing, AWS Security, Mobile Security, API Security">
   <title>Saikumar Raju | Cybersecurity Consultant</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛡️%3C/text%3E%3C/svg%3E">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -27,14 +29,25 @@
       --border: #1f2937;
     }
 
+    /* Light Mode */
+    body.light {
+      --bg-dark: #f3f4f6;
+      --bg-card: #ffffff;
+      --bg-elevated: #e5e7eb;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #d1d5db;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg-dark);
       color: var(--text-primary);
       line-height: 1.5;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* FULL WIDTH - NO WASTED SPACE */
+    /* Full Width Container */
     .container {
       width: 100%;
       padding: 0 1.5rem;
@@ -59,6 +72,10 @@
       padding: 1rem 0;
     }
 
+    body.light .navbar {
+      background: rgba(243, 244, 246, 0.95);
+    }
+
     .nav-flex {
       display: flex;
       justify-content: space-between;
@@ -76,10 +93,17 @@
       color: transparent;
     }
 
+    body.light .logo {
+      background: linear-gradient(135deg, #111827 0%, var(--primary-dark) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
     .nav-links {
       display: flex;
       gap: 2rem;
       list-style: none;
+      align-items: center;
     }
 
     .nav-links a {
@@ -91,6 +115,19 @@
 
     .nav-links a:hover {
       color: var(--primary);
+    }
+
+    .theme-toggle {
+      background: var(--bg-elevated);
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: inherit;
     }
 
     .mobile-menu {
@@ -180,6 +217,7 @@
       transition: all 0.2s;
       cursor: pointer;
       border: none;
+      font-family: inherit;
     }
 
     .btn-primary {
@@ -252,6 +290,10 @@
       border-radius: 2rem;
       margin: 1rem 0;
       padding: 2rem 0;
+    }
+
+    body.light .section-alt {
+      background: rgba(229, 231, 235, 0.5);
     }
 
     .section-title {
@@ -402,6 +444,46 @@
       line-height: 1.5;
     }
 
+    .project-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+
+    /* Testimonials */
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+
+    .testimonial-card i {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .testimonial-card p {
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-author {
+      font-size: 0.8rem;
+      color: var(--primary);
+    }
+
     /* Footer */
     footer {
       text-align: center;
@@ -409,6 +491,40 @@
       border-top: 1px solid var(--border);
       color: var(--text-secondary);
       font-size: 0.8rem;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .footer-social a {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      transition: color 0.2s;
+    }
+
+    .footer-social a:hover {
+      color: var(--primary);
+    }
+
+    /* Profile Image */
+    .profile-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .hero-flex {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     /* Mobile */
@@ -435,6 +551,10 @@
       .stats-row {
         justify-content: center;
       }
+      .hero-flex {
+        flex-direction: column;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -451,6 +571,7 @@
       <li><a href="#credentials">Credentials</a></li>
       <li><a href="blog.html">Write-ups</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
     </ul>
   </div>
 </nav>
@@ -459,21 +580,25 @@
   <div class="container">
     <!-- Hero Section -->
     <div class="hero">
-      <span class="hero-badge"><i class="fas fa-shield-alt"></i> Open for Opportunities</span>
-      <h1>Saikumar Raju</h1>
-      <p class="hero-subtitle">Cybersecurity Consultant</p>
-      <p class="hero-description">
-        I help financial institutions, healthcare providers, and enterprises identify critical vulnerabilities 
-        before attackers do. Specializing in web/API pentesting, mobile security, and cloud hardening.
-      </p>
-      <div class="stats-row">
-        <div class="stat"><span>50+</span> Assessments</div>
-        <div class="stat"><span>Banking</span> Healthcare · E-commerce</div>
-        <div class="stat"><span>AWS</span> Cloud Security</div>
-      </div>
-      <div class="btn-group">
-        <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
-        <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
+      <div class="hero-flex">
+        <div>
+          <span class="hero-badge"><i class="fas fa-shield-alt"></i> Open for Opportunities</span>
+          <h1>Saikumar Raju</h1>
+          <p class="hero-subtitle">Cybersecurity Consultant</p>
+          <p class="hero-description">
+            I help financial institutions, healthcare providers, and enterprises identify critical vulnerabilities 
+            before attackers do. Specializing in web/API pentesting, mobile security, and cloud hardening.
+          </p>
+          <div class="stats-row">
+            <div class="stat"><span data-target="50">0</span> Assessments</div>
+            <div class="stat"><span>Banking</span> Healthcare · E-commerce</div>
+            <div class="stat"><span>AWS</span> Cloud Security</div>
+          </div>
+          <div class="btn-group">
+            <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
+            <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -560,22 +685,44 @@
           <div class="project-icon"><i class="fas fa-university"></i></div>
           <h3>Banking Application Security Assessment</h3>
           <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered IDOR, JWT misconfigurations, and business logic flaws.</p>
+          <a href="idor-banking-api.html" class="project-link">Read Case Study →</a>
         </div>
         <div class="project-card">
           <div class="project-icon"><i class="fas fa-network-wired"></i></div>
           <h3>Infrastructure Penetration Testing</h3>
           <p>Internal and external network assessments for enterprise environments. Discovered firewall misconfigurations and privilege escalation paths.</p>
+          <a href="#" class="project-link">View Report →</a>
         </div>
         <div class="project-card">
           <div class="project-icon"><i class="fas fa-cloud"></i></div>
           <h3>AWS Cloud Security Review</h3>
           <p>In-depth cloud security audit reviewing IAM roles, S3 bucket permissions, and security group configurations.</p>
+          <a href="#" class="project-link">View Findings →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recommendations Section -->
+    <section id="recommendations" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">What Colleagues Say</h2>
+        <div class="testimonial-grid">
+          <div class="testimonial-card">
+            <i class="fas fa-quote-left"></i>
+            <p>Saikumar's technical depth in identifying critical vulnerabilities is exceptional. His reports are clear, actionable, and helped us fix issues before they became incidents.</p>
+            <div class="testimonial-author">— Senior Security Architect, Leading Bank</div>
+          </div>
+          <div class="testimonial-card">
+            <i class="fas fa-quote-left"></i>
+            <p>One of the most thorough pentesters I've worked with. He doesn't just find bugs – he understands business impact and helps teams prioritize fixes.</p>
+            <div class="testimonial-author">— CISO, Fintech Startup</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Credentials Section -->
-    <section id="credentials" class="section section-alt">
+    <section id="credentials" class="section">
       <div class="container">
         <h2 class="section-title">Certifications & Education</h2>
         <div class="skills-grid" style="margin-bottom: 2rem;">
@@ -591,21 +738,24 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="section">
-      <h2 class="section-title">Let's Connect</h2>
-      <div class="info-grid">
-        <div class="info-card">
-          <h3>Contact Info</h3>
-          <p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p>
-          <p><i class="fas fa-phone-alt"></i> +91 7337026773</p>
-          <p><i class="fas fa-map-marker-alt"></i> India</p>
-          <p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p>
-        </div>
-        <div class="info-card">
-          <h3>Availability</h3>
-          <p>Open for consulting engagements and full-time opportunities. Available for remote and on-site assessments.</p>
-          <div class="btn-group" style="margin-top: 1rem;">
-            <a href="mailto:saikumararaju30@gmail.com" class="btn btn-primary">Send Message</a>
+    <section id="contact" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">Let's Connect</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Contact Info</h3>
+            <p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p>
+            <p><i class="fas fa-phone-alt"></i> +91 7337026773</p>
+            <p><i class="fas fa-map-marker-alt"></i> India</p>
+            <p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p>
+            <p><i class="fab fa-github"></i> github.com/saikumar-infosec</p>
+          </div>
+          <div class="info-card">
+            <h3>Availability</h3>
+            <p>Open for consulting engagements and full-time opportunities. Available for remote and on-site assessments.</p>
+            <div class="btn-group" style="margin-top: 1rem;">
+              <a href="mailto:saikumararaju30@gmail.com" class="btn btn-primary">Send Message</a>
+            </div>
           </div>
         </div>
       </div>
@@ -614,8 +764,16 @@
 </main>
 
 <footer>
-  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
-  <p style="font-size: 0.7rem; margin-top: 0.5rem;">Focus on actionable security, risk reduction, and engineering collaboration</p>
+  <div class="footer-content">
+    <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
+    <div class="footer-social">
+      <a href="#" id="linkedinLink" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="#" id="githubLink" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="#" id="twitterLink" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a>
+    </div>
+    <p class="footer-small">Focus on actionable security, risk reduction, and engineering collaboration</p>
+  </div>
 </footer>
 
 <script>
@@ -627,6 +785,22 @@
       navLinks.classList.toggle('show');
     });
   }
+
+  // Dark/Light mode toggle
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle?.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const icon = themeToggle.querySelector('i');
+    if (document.body.classList.contains('light')) {
+      icon.classList.remove('fa-moon');
+      icon.classList.add('fa-sun');
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light';
+    } else {
+      icon.classList.remove('fa-sun');
+      icon.classList.add('fa-moon');
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark';
+    }
+  });
 
   // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -642,14 +816,39 @@
     });
   });
 
-  // Download resume placeholder
+  // Animated counter for stats
+  const counters = document.querySelectorAll('.stat span[data-target]');
+  const speed = 200;
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = parseInt(counter.getAttribute('data-target'));
+      const current = parseInt(counter.innerText);
+      const increment = Math.ceil(target / speed);
+      if (current < target) {
+        counter.innerText = Math.min(current + increment, target);
+        setTimeout(updateCount, 20);
+      }
+    };
+    updateCount();
+  });
+
+  // Download resume placeholder - REPLACE WITH ACTUAL PDF
   const resumeBtn = document.getElementById('downloadResume');
   if (resumeBtn) {
     resumeBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      alert('📄 Replace with your actual resume PDF file');
+      alert('📄 Please upload your resume PDF file to the repository and update the link.');
     });
   }
+
+  // Social links - UPDATE THESE WITH YOUR ACTUAL URLs
+  const linkedinLink = document.getElementById('linkedinLink');
+  const githubLink = document.getElementById('githubLink');
+  const twitterLink = document.getElementById('twitterLink');
+
+  if (linkedinLink) linkedinLink.href = '#'; // REPLACE with your LinkedIn URL
+  if (githubLink) githubLink.href = '#'; // REPLACE with your GitHub URL
+  if (twitterLink) twitterLink.href = '#'; // REPLACE with your Twitter URL (or remove)
 </script>
 </body>
 </html>
