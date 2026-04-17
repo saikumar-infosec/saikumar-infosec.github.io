@@ -1,127 +1,80 @@
-(() => {
-    const root = document.documentElement;
-    const themeToggle = document.getElementById("themeToggle");
-    const menuToggle = document.getElementById("menuToggle");
-    const siteNav = document.getElementById("siteNav");
-    const sectionLinks = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
-    const revealItems = document.querySelectorAll("[data-reveal]");
-    const storedTheme = window.localStorage.getItem("saikumar-theme");
-    const preferredLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+// Mobile menu toggle
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const navLinks = document.getElementById('navLinks');
 
-    const closeMenu = () => {
-        if (!siteNav || !menuToggle) {
-            return;
-        }
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('show');
+  });
+}
 
-        siteNav.classList.remove("is-open");
-        menuToggle.setAttribute("aria-expanded", "false");
-    };
+// Dark mode toggle
+const darkToggle = document.getElementById('darkModeToggle');
+darkToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  const icon = darkToggle.querySelector('i');
+  if (document.body.classList.contains('dark')) {
+    icon.classList.remove('fa-moon');
+    icon.classList.add('fa-sun');
+    darkToggle.innerHTML = '<i class="fas fa-sun"></i> Light';
+  } else {
+    icon.classList.remove('fa-sun');
+    icon.classList.add('fa-moon');
+    darkToggle.innerHTML = '<i class="fas fa-moon"></i> Dark';
+  }
+});
 
-    const setTheme = (theme) => {
-        root.dataset.theme = theme;
-        if (themeToggle) {
-            themeToggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
-        }
-        window.localStorage.setItem("saikumar-theme", theme);
-    };
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const targetId = this.getAttribute('href');
+    if (targetId === '#' || targetId === '') return;
+    const target = document.querySelector(targetId);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (navLinks.classList.contains('show')) navLinks.classList.remove('show');
+    }
+  });
+});
 
-    setTheme(storedTheme || (preferredLight ? "light" : "dark"));
+// Download Resume button (placeholder)
+const resumeBtn = document.getElementById('downloadResumeBtn');
+if (resumeBtn) {
+  resumeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('Resume download ready. Replace this with your actual PDF file path.');
+  });
+}
 
-    if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-            const nextTheme = root.dataset.theme === "light" ? "dark" : "light";
-            setTheme(nextTheme);
-        });
+// Contact form handler
+const sendBtn = document.getElementById('sendMessageBtn');
+const feedback = document.getElementById('formFeedback');
+const nameInput = document.getElementById('nameInput');
+const emailInput = document.getElementById('emailInput');
+const messageInput = document.getElementById('messageInput');
+
+if (sendBtn) {
+  sendBtn.addEventListener('click', () => {
+    const name = nameInput?.value.trim() || '';
+    const email = emailInput?.value.trim() || '';
+    const message = messageInput?.value.trim() || '';
+
+    if (!name || !email || !message) {
+      feedback.innerHTML = '❌ Please fill in all fields.';
+      feedback.style.color = '#dc2626';
+      setTimeout(() => { feedback.innerHTML = ''; }, 3000);
+      return;
     }
 
-    if (menuToggle && siteNav) {
-        menuToggle.addEventListener("click", () => {
-            const isOpen = siteNav.classList.toggle("is-open");
-            menuToggle.setAttribute("aria-expanded", String(isOpen));
-        });
-    }
+    feedback.innerHTML = `✓ Thank you ${name}, Saikumar will respond to ${email} shortly.`;
+    feedback.style.color = '#10b981';
+    
+    // Clear form
+    if (nameInput) nameInput.value = '';
+    if (emailInput) emailInput.value = '';
+    if (messageInput) messageInput.value = '';
 
-    sectionLinks.forEach((link) => {
-        link.addEventListener("click", (event) => {
-            const targetId = link.getAttribute("href");
-            if (!targetId || targetId === "#") {
-                return;
-            }
-
-            const section = document.querySelector(targetId);
-            if (!section) {
-                return;
-            }
-
-            event.preventDefault();
-            closeMenu();
-
-            const headerOffset = 96;
-            const top = section.getBoundingClientRect().top + window.scrollY - headerOffset;
-            window.scrollTo({ top, behavior: "smooth" });
-        });
-    });
-
-    if (revealItems.length) {
-        const revealObserver = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("is-visible");
-                        revealObserver.unobserve(entry.target);
-                    }
-                });
-            },
-            {
-                threshold: 0.18,
-                rootMargin: "0px 0px -40px 0px"
-            }
-        );
-
-        revealItems.forEach((item) => revealObserver.observe(item));
-    }
-
-    const trackedSections = Array.from(document.querySelectorAll("main section[id]"));
-    if (trackedSections.length && sectionLinks.length) {
-        const linkMap = new Map(sectionLinks.map((link) => [link.getAttribute("href"), link]));
-
-        const sectionObserver = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) {
-                        return;
-                    }
-
-                    sectionLinks.forEach((link) => link.classList.remove("is-active"));
-                    const activeLink = linkMap.get(`#${entry.target.id}`);
-                    if (activeLink) {
-                        activeLink.classList.add("is-active");
-                    }
-                });
-            },
-            {
-                threshold: 0.45,
-                rootMargin: "-20% 0px -45% 0px"
-            }
-        );
-
-        trackedSections.forEach((section) => sectionObserver.observe(section));
-    }
-
-    window.addEventListener("resize", () => {
-        if (window.innerWidth > 980) {
-            closeMenu();
-        }
-    });
-
-    document.addEventListener("click", (event) => {
-        if (!siteNav || !menuToggle) {
-            return;
-        }
-
-        const clickedInsideMenu = siteNav.contains(event.target) || menuToggle.contains(event.target);
-        if (!clickedInsideMenu) {
-            closeMenu();
-        }
-    });
-})();
+    setTimeout(() => { feedback.innerHTML = ''; }, 4000);
+  });
+}
