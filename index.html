@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Saikumar Raju - Cybersecurity Consultant specializing in VAPT, Web/API Security, Mobile Security, and AWS Cloud Security">
-  <meta name="author" content="Saikumar Raju">
   <title>Saikumar Raju | Cybersecurity Consultant</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+  <!-- Navigation -->
   <nav class="navbar">
-    <div class="container nav-container">
+    <div class="nav-container">
       <a href="#" class="logo">Saikumar<span>.</span>Raju</a>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
       </button>
       <ul class="nav-links" id="navLinks">
@@ -23,175 +23,169 @@
         <li><a href="#projects">Projects</a></li>
         <li><a href="#credentials">Credentials</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><button class="theme-toggle" id="darkModeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+        <li><button class="theme-toggle" id="darkModeToggle"><i class="fas fa-sun"></i> Light</button></li>
       </ul>
     </div>
   </nav>
 
-  <main>
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <h1>Saikumar Raju</h1>
-            <p class="hero-title">Cybersecurity Consultant</p>
-            <p class="hero-description">
-              Offensive security professional focused on application security, infrastructure assessments, 
-              and cloud hardening. Helping engineering teams build resilient systems through practical 
-              vulnerability management and secure remediation strategies.
-            </p>
-            <div class="contact-badges">
-              <span><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
-              <span><i class="fas fa-phone-alt"></i> +91 7337026773</span>
-              <span><i class="fas fa-map-marker-alt"></i> India</span>
-            </div>
-            <div class="hero-buttons">
-              <a href="#" class="btn btn-primary" id="downloadResumeBtn"><i class="fas fa-file-pdf"></i> Download Resume</a>
-              <a href="#contact" class="btn btn-secondary"><i class="fas fa-comment"></i> Contact Me</a>
-            </div>
-          </div>
-          <div class="hero-sidebar">
-            <div class="info-card">
-              <h3>Focus Areas</h3>
-              <p>Web & API Pentesting · Mobile Security · Cloud Audits · Network VAPT</p>
-            </div>
-            <div class="info-card">
-              <h3>Core Tools</h3>
-              <p>Burp Suite, Metasploit, Nessus, Nmap, Wireshark, AWS Inspector</p>
-            </div>
-          </div>
+  <!-- Hero Section - Full width -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <h1>Saikumar Raju</h1>
+        <p class="hero-title">Cybersecurity Consultant</p>
+        <p class="hero-description">
+          Offensive security professional focused on application security, infrastructure assessments, 
+          and cloud hardening. Helping engineering teams build resilient systems through practical 
+          vulnerability management and secure remediation strategies.
+        </p>
+        <div class="contact-row">
+          <span><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
+          <span><i class="fas fa-phone-alt"></i> +91 7337026773</span>
+          <span><i class="fas fa-map-marker-alt"></i> India</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary" id="downloadResumeBtn"><i class="fas fa-file-pdf"></i> Download Resume</a>
+          <a href="#contact" class="btn btn-outline">Contact Me</a>
         </div>
       </div>
-    </section>
+      <div class="hero-side">
+        <div class="info-panel">
+          <h3>Focus Areas</h3>
+          <p>Web & API Pentesting · Mobile Security · Cloud Audits · Network VAPT</p>
+        </div>
+        <div class="info-panel">
+          <h3>Core Tools</h3>
+          <p>Burp Suite, Metasploit, Nessus, Nmap, Wireshark, AWS Inspector</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="section">
-      <div class="container">
-        <h2 class="section-title">Professional Experience</h2>
-        <div class="experience-list">
-          <div class="exp-card">
-            <div class="exp-header">
-              <div>
-                <h3 class="exp-role">Cyber Security Consultant</h3>
-                <p class="exp-company">Astrocytech Petv Ltd</p>
-              </div>
-              <span class="exp-date">Present</span>
+  <!-- Experience -->
+  <section id="experience" class="section">
+    <div class="section-container">
+      <h2 class="section-title">Professional Experience</h2>
+      <div class="exp-grid">
+        <div class="exp-card">
+          <div class="exp-header">
+            <div>
+              <h3>Cyber Security Consultant</h3>
+              <p class="exp-company">Astrocytech Petv Ltd</p>
             </div>
-            <ul class="exp-details">
-              <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, APIs, and mobile platforms (Android & iOS)</li>
-              <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
-              <li><i class="fas fa-chevron-right"></i> Delivered actionable security reports with prioritized remediation strategies</li>
-              <li><i class="fas fa-chevron-right"></i> Executed mobile security assessments identifying weak API protection and unsafe data storage</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted cloud security assessments on AWS environments (IAM, S3, Security Groups)</li>
-            </ul>
+            <span class="exp-badge">Present</span>
           </div>
-          <div class="exp-card">
-            <div class="exp-header">
-              <div>
-                <h3 class="exp-role">Security Analyst</h3>
-                <p class="exp-company">Yash Technologies</p>
-              </div>
-              <span class="exp-date">Previous</span>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, APIs, and mobile platforms (Android & iOS)</li>
+            <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
+            <li><i class="fas fa-chevron-right"></i> Delivered actionable security reports with prioritized remediation strategies</li>
+            <li><i class="fas fa-chevron-right"></i> Executed mobile security assessments identifying weak API protection and unsafe data storage</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted cloud security assessments on AWS environments (IAM, S3, Security Groups)</li>
+          </ul>
+        </div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <div>
+              <h3>Security Analyst</h3>
+              <p class="exp-company">Yash Technologies</p>
             </div>
-            <ul class="exp-details">
-              <li><i class="fas fa-chevron-right"></i> Performed web and API security testing using OWASP ZAP, Burp Suite, and SQLMap</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations and weak encryption</li>
-              <li><i class="fas fa-chevron-right"></i> Supported red team exercises and risk assessment processes</li>
-              <li><i class="fas fa-chevron-right"></i> Provided technical reports with detailed mitigation plans</li>
-            </ul>
+            <span class="exp-badge">Previous</span>
           </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Performed web and API security testing using OWASP ZAP, Burp Suite, and SQLMap</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations and weak encryption</li>
+            <li><i class="fas fa-chevron-right"></i> Supported red team exercises and risk assessment processes</li>
+            <li><i class="fas fa-chevron-right"></i> Provided technical reports with detailed mitigation plans</li>
+          </ul>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="section">
-      <div class="container">
-        <h2 class="section-title">Core Expertise</h2>
-        <div class="skills-grid">
-          <span class="skill-tag">Web & API Security (OWASP Top 10)</span>
-          <span class="skill-tag">Network Penetration Testing</span>
-          <span class="skill-tag">Mobile Security (Android/iOS)</span>
-          <span class="skill-tag">Burp Suite / Metasploit</span>
-          <span class="skill-tag">Nessus / Nmap / Wireshark</span>
-          <span class="skill-tag">AWS Cloud Security Audits</span>
-          <span class="skill-tag">IAM & S3 Hardening</span>
-          <span class="skill-tag">Vulnerability Management</span>
-          <span class="skill-tag">API Pentesting & JWT attacks</span>
-          <span class="skill-tag">Red Team Support</span>
-        </div>
+  <!-- Skills -->
+  <section id="skills" class="section alt-bg">
+    <div class="section-container">
+      <h2 class="section-title">Technical Skills</h2>
+      <div class="skills-cloud">
+        <span>Web & API Security (OWASP Top 10)</span>
+        <span>Network Penetration Testing</span>
+        <span>Mobile Security (Android/iOS)</span>
+        <span>Burp Suite / Metasploit</span>
+        <span>Nessus / Nmap / Wireshark</span>
+        <span>AWS Cloud Security Audits</span>
+        <span>IAM & S3 Hardening</span>
+        <span>Vulnerability Management</span>
+        <span>API Pentesting & JWT attacks</span>
+        <span>Red Team Support</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="section">
-      <div class="container">
-        <h2 class="section-title">Key Engagements</h2>
-        <div class="projects-grid">
-          <div class="project-card">
-            <h3><i class="fas fa-university"></i> Banking Application Security Assessment</h3>
-            <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered business logic flaws, IDOR vulnerabilities, JWT misconfigurations, and XSS.</p>
-          </div>
-          <div class="project-card">
-            <h3><i class="fas fa-network-wired"></i> Infrastructure Penetration Testing</h3>
-            <p>Internal and external network assessments for enterprise environments. Discovered firewall misconfigurations, weak authentication, and privilege escalation paths.</p>
-          </div>
-          <div class="project-card">
-            <h3><i class="fas fa-cloud"></i> AWS Cloud Security Review</h3>
-            <p>In-depth cloud security audit for a fintech client, reviewing IAM roles, S3 bucket permissions, security group rules, and logging configurations.</p>
-          </div>
+  <!-- Projects -->
+  <section id="projects" class="section">
+    <div class="section-container">
+      <h2 class="section-title">Key Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <h3><i class="fas fa-university"></i> Banking Application Security Assessment</h3>
+          <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered business logic flaws, IDOR vulnerabilities, JWT misconfigurations, and XSS.</p>
+        </div>
+        <div class="project-card">
+          <h3><i class="fas fa-network-wired"></i> Infrastructure Penetration Testing</h3>
+          <p>Internal and external network assessments for enterprise environments. Discovered firewall misconfigurations, weak authentication, and privilege escalation paths.</p>
+        </div>
+        <div class="project-card">
+          <h3><i class="fas fa-cloud"></i> AWS Cloud Security Review</h3>
+          <p>In-depth cloud security audit for a fintech client, reviewing IAM roles, S3 bucket permissions, security group rules, and logging configurations.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Credentials Section -->
-    <section id="credentials" class="section">
-      <div class="container">
-        <h2 class="section-title">Certifications & Education</h2>
-        <div class="certs-list">
-          <span class="cert-item"><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span>
-          <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Berry9 IT Pvt Ltd</span>
-          <span class="cert-item"><i class="fas fa-certificate"></i> Qualys Vulnerability Management (VM) Certification</span>
-        </div>
-        <div class="education-card">
-          <i class="fas fa-graduation-cap"></i>
-          <div>
-            <h4>B.Tech / B.E. – Computer Science</h4>
-            <p>JNTU College of Engineering, Anantapur</p>
-          </div>
+  <!-- Credentials -->
+  <section id="credentials" class="section alt-bg">
+    <div class="section-container">
+      <h2 class="section-title">Certifications & Education</h2>
+      <div class="certs-row">
+        <span><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span>
+        <span><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Berry9 IT</span>
+        <span><i class="fas fa-certificate"></i> Qualys Vulnerability Management Certification</span>
+      </div>
+      <div class="edu-box">
+        <i class="fas fa-graduation-cap"></i>
+        <div>
+          <h4>B.Tech / B.E. – Computer Science</h4>
+          <p>JNTU College of Engineering, Anantapur</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="section">
-      <div class="container">
-        <h2 class="section-title">Let's Connect</h2>
-        <div class="contact-wrapper">
-          <div class="contact-info">
-            <div class="contact-item"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
-            <div class="contact-item"><i class="fas fa-phone-alt"></i> +91 7337026773</div>
-            <div class="contact-item"><i class="fas fa-map-marker-alt"></i> India (open for consulting & full-time)</div>
-            <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
-          </div>
-          <form class="contact-form" id="contactForm">
-            <input type="text" placeholder="Full name" id="nameInput">
-            <input type="email" placeholder="Email address" id="emailInput">
-            <textarea rows="4" placeholder="Message or inquiry about security assessments" id="messageInput"></textarea>
-            <button type="button" id="sendMessageBtn" class="btn btn-primary">Send Message</button>
-            <p id="formFeedback"></p>
-          </form>
+  <!-- Contact -->
+  <section id="contact" class="section">
+    <div class="section-container">
+      <h2 class="section-title">Let's Connect</h2>
+      <div class="contact-flex">
+        <div class="contact-details">
+          <div><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
+          <div><i class="fas fa-phone-alt"></i> +91 7337026773</div>
+          <div><i class="fas fa-map-marker-alt"></i> India (open for consulting & full-time)</div>
+          <div><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
         </div>
+        <form class="contact-form" id="contactForm">
+          <input type="text" placeholder="Full name" id="nameInput">
+          <input type="email" placeholder="Email address" id="emailInput">
+          <textarea rows="4" placeholder="Message or inquiry about security assessments" id="messageInput"></textarea>
+          <button type="button" id="sendMessageBtn" class="btn btn-primary">Send Message</button>
+          <p id="formFeedback"></p>
+        </form>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
   <footer>
-    <div class="container">
-      <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
-      <p class="footer-tagline">Focus on actionable security, risk reduction, and engineering collaboration</p>
-    </div>
+    <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
+    <p class="footer-small">Focus on actionable security, risk reduction, and engineering collaboration</p>
   </footer>
 
   <script src="script.js"></script>
