@@ -8,39 +8,46 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #0a0c10; color: #e8edf5; line-height: 1.6; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
     .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { position: sticky; top: 0; background: #0a0c10; border-bottom: 1px solid #1f2937; padding: 1rem 0; z-index: 100; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; }
     .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: #e8edf5; }
-    .logo span { color: #00f5a0; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { text-decoration: none; color: #9ca3af; font-weight: 500; }
-    .nav-links a:hover { color: #00f5a0; }
-    .mobile-menu { display: none; background: none; border: none; color: #e8edf5; font-size: 1.5rem; cursor: pointer; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
     .blog-header { padding: 6rem 0 2rem; }
-    .blog-category { display: inline-block; background: rgba(0, 245, 160, 0.1); border: 1px solid #00f5a0; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.7rem; color: #00f5a0; margin-bottom: 1.5rem; }
+    .blog-category { display: inline-block; background: rgba(0, 245, 160, 0.1); border: 1px solid var(--primary); padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.7rem; color: var(--primary); margin-bottom: 1.5rem; }
     .blog-title { font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
-    .blog-meta { display: flex; gap: 1.5rem; color: #9ca3af; font-size: 0.85rem; padding-bottom: 2rem; border-bottom: 1px solid #1f2937; flex-wrap: wrap; }
+    .blog-meta { display: flex; gap: 1.5rem; color: var(--text-secondary); font-size: 0.85rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
     .blog-content { padding: 2rem 0 4rem; }
-    .blog-content h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: #00f5a0; border-left: 3px solid #00f5a0; padding-left: 1rem; }
-    .blog-content h3 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; color: #e8edf5; }
-    .blog-content p { margin-bottom: 1rem; color: #9ca3af; }
-    .blog-content ul, .blog-content ol { margin: 1rem 0 1.5rem 2rem; color: #9ca3af; }
+    .blog-content h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .blog-content h3 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; color: var(--text-primary); }
+    .blog-content p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .blog-content ul, .blog-content ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
     .blog-content li { margin-bottom: 0.5rem; }
-    .code-block { background: #111827; border: 1px solid #1f2937; border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #00f5a0; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); }
     .severity-critical { background: rgba(255, 68, 68, 0.15); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .fix-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid #00f5a0; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: #00f5a0; text-decoration: none; }
-    hr { border-color: #1f2937; margin: 2rem 0; }
-    .vulnerability-badge { display: inline-block; background: #1a1f2e; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.7rem; margin-right: 0.5rem; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid #1f2937; color: #6b7280; font-size: 0.8rem; }
+    .fix-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .related-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+    .related-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; transition: all 0.2s; }
+    .related-card:hover { border-color: var(--primary); }
+    .related-card h4 { font-size: 0.9rem; margin-top: 0.3rem; }
+    hr { border-color: var(--border); margin: 2rem 0; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
       .mobile-menu { display: block; }
       .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
       .nav-links.show { display: flex; }
       .blog-title { font-size: 1.8rem; }
+      .related-posts { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -55,7 +62,9 @@
       <li><a href="index.html#experience">Experience</a></li>
       <li><a href="index.html#skills">Skills</a></li>
       <li><a href="blog.html">Write-ups</a></li>
+      <li><a href="tools.html">Tools</a></li>
       <li><a href="index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
     </ul>
   </div>
 </nav>
@@ -73,63 +82,46 @@
     </div>
 
     <div class="blog-content">
-
-      <!-- VULNERABILITY NAME -->
       <h2>📌 IDOR in Transaction History API Endpoint</h2>
 
-      <!-- DESCRIPTION -->
       <h2>🧠 Description</h2>
       <p><strong>What is the vulnerability?</strong></p>
       <p>An Insecure Direct Object Reference (IDOR) vulnerability exists in the bank's transaction history API endpoint. Any authenticated user can view any other user's complete transaction history by modifying the account ID parameter in the API request.</p>
-      
       <p><strong>Why does it occur?</strong></p>
       <p>The API endpoint correctly authenticates users via JWT tokens but fails to verify that the authenticated user has permission to access the requested account resource. The server trusts the client-provided account ID without performing any ownership validation.</p>
-      
       <p><strong>Security principle violated:</strong> Authorization</p>
-      <p><span class="vulnerability-badge">Input Validation</span> <span class="vulnerability-badge">Authorization</span></p>
-      
       <p><strong>Real-world analogy:</strong> Imagine a hotel where guests can enter any room by changing the room number on their key card, because the front desk never checks if the guest actually booked that room.</p>
 
-      <!-- CLASSIFICATION -->
       <h2>🏷️ Classification</h2>
       <ul>
         <li><strong>Type:</strong> Broken Access Control / IDOR</li>
         <li><strong>OWASP:</strong> A01:2021 – Broken Access Control</li>
         <li><strong>CWE:</strong> CWE-639: Authorization Bypass Through User-Controlled Key</li>
-        <li><strong>CAPEC:</strong> CAPEC-566: IDOR</li>
       </ul>
 
-      <!-- ATTACK SURFACE -->
-      <h2>🎯 Attack Surface (Where to Test)</h2>
+      <h2>🎯 Attack Surface</h2>
       <ul>
         <li>✅ URL parameters (<code>/accounts/{accountId}/transactions</code>)</li>
         <li>✅ API endpoints (REST)</li>
-        <li>❌ POST body (not applicable in this case)</li>
-        <li>❌ Headers (not applicable)</li>
+        <li>❌ POST body / Headers (not applicable)</li>
       </ul>
 
-      <!-- DETECTION METHODOLOGY -->
       <h2>🔍 Detection Methodology</h2>
-      
-      <h3>1. Static Analysis (Source Code Review)</h3>
-      <div class="code-block">
-        <pre>// Vulnerable code pattern identified
+      <h3>Static Analysis (Source Code Review)</h3>
+      <div class="code-block"><pre>// Vulnerable code pattern
 router.get('/api/v1/accounts/:accountId/transactions', authenticate, (req, res) => {
     const accountId = req.params.accountId;
-    // ❌ Missing: check if req.user owns accountId
+    // ❌ Missing ownership check
     db.getTransactions(accountId).then(transactions => res.json(transactions));
-});</pre>
-      </div>
+});</pre></div>
       
-      <h3>2. Dynamic Analysis (Burp Suite / Manual)</h3>
+      <h3>Dynamic Analysis (Burp Suite)</h3>
       <ul>
         <li>Intercepted request to <code>/api/v1/accounts/184729/transactions</code></li>
         <li>Modified account ID parameter to a different value</li>
         <li>Observed successful response with another user's data</li>
       </ul>
-      <p><strong>Tools used:</strong> Burp Suite Repeater</p>
 
-      <!-- EXPLOITATION STEPS -->
       <h2>⚙️ Exploitation Steps</h2>
       <ol>
         <li>Authenticate to the banking application as any valid user</li>
@@ -139,94 +131,57 @@ router.get('/api/v1/accounts/:accountId/transactions', authenticate, (req, res) 
         <li>Forward the request – receive another user's complete transaction history</li>
       </ol>
 
-      <!-- MITIGATION -->
       <h2>🛡️ Mitigation</h2>
       <div class="fix-box">
-        <strong>✅ Input validation:</strong> Validate account ID format and type<br>
         <strong>✅ Authorization check:</strong> Verify ownership before returning data<br>
-        <strong>✅ Secure coding:</strong> Implement resource-based access control<br>
-        <strong>✅ Use UUIDs:</strong> Replace sequential IDs with non-guessable identifiers
+        <strong>✅ Use UUIDs:</strong> Replace sequential IDs with non-guessable identifiers<br>
+        <strong>✅ Input validation:</strong> Validate account ID format and type
       </div>
-
-      <div class="code-block">
-        <pre>// Secure implementation
+      <div class="code-block"><pre>// Secure implementation
 router.get('/api/v1/accounts/:accountId/transactions', authenticate, async (req, res) => {
     const accountId = req.params.accountId;
     const userId = req.user.id;
-    
-    // ✅ Critical authorization check
     const ownsAccount = await db.userOwnsAccount(userId, accountId);
-    if (!ownsAccount) {
-        return res.status(403).json({ error: "Access denied" });
-    }
-    
+    if (!ownsAccount) return res.status(403).json({ error: "Access denied" });
     const transactions = await db.getTransactions(accountId);
     res.json(transactions);
-});</pre>
-      </div>
+});</pre></div>
 
-      <!-- MITIGATION BYPASS -->
-      <h2>🔓 Mitigation Bypass Attempts</h2>
-      <ul>
-        <li><strong>Weak filters:</strong> No filtering was in place initially</li>
-        <li><strong>Encoding tricks:</strong> Not applicable – direct parameter modification worked</li>
-        <li><strong>Business logic abuse:</strong> The flaw was purely authorization-based</li>
-      </ul>
-
-      <!-- RISK / IMPACT -->
       <h2>⚠️ Risk / Impact</h2>
       <div class="severity-critical">
         <strong>Severity: Critical</strong><br><br>
-        <strong>Impact:</strong>
-        <ul>
-          <li><strong>Data leak:</strong> Complete transaction history of any user</li>
-          <li><strong>Privacy violation:</strong> Exposed financial data, recipient details, balances</li>
-          <li><strong>Regulatory:</strong> Violates GDPR, GLBA, and banking regulations</li>
-          <li><strong>Reputational damage:</strong> Complete loss of customer trust</li>
-        </ul>
+        <strong>Impact:</strong> Data leak (transaction history of any user), Privacy violation, Regulatory non-compliance (GDPR, GLBA)
       </div>
 
-      <!-- DISCLOSURE TIMELINE -->
       <h2>📅 Disclosure Timeline</h2>
       <ul>
-        <li><strong>Day 1:</strong> Vulnerability discovered and documented</li>
-        <li><strong>Day 1:</strong> Submitted detailed report via disclosure program</li>
-        <li><strong>Day 2:</strong> Security team acknowledged as Critical severity</li>
-        <li><strong>Day 5:</strong> Fix deployed to staging environment</li>
-        <li><strong>Day 8:</strong> Fix validated and deployed to production</li>
+        <li><strong>Day 1:</strong> Vulnerability discovered and reported</li>
+        <li><strong>Day 2:</strong> Acknowledged as Critical severity</li>
+        <li><strong>Day 5:</strong> Fix deployed to staging</li>
+        <li><strong>Day 8:</strong> Fix deployed to production</li>
       </ul>
 
-      <!-- REMEDIATION RECOMMENDATIONS -->
-      <h2>📋 Remediation Recommendations Provided</h2>
-      <ul>
-        <li>Implement proper authorization checks on every API endpoint</li>
-        <li>Use UUIDs instead of sequential numeric IDs</li>
-        <li>Add rate limiting to prevent enumeration attacks</li>
-        <li>Conduct regular API security testing with IDOR-specific test cases</li>
-        <li>Implement a bug bounty program for continuous security validation</li>
-      </ul>
-
-      <!-- LESSONS LEARNED -->
       <h2>💡 Lessons Learned</h2>
       <ul>
-        <li><strong>Authentication ≠ Authorization:</strong> Just because a user is logged in doesn't mean they should have access to everything</li>
-        <li><strong>Never Trust Client Input:</strong> Account IDs provided by the client must always be validated server-side</li>
-        <li><strong>API Security is Critical:</strong> Backend APIs are frequently under-tested despite exposing sensitive data</li>
-        <li><strong>Defense in Depth:</strong> Even with proper authorization, additional controls like UUIDs provide valuable protection</li>
+        <li><strong>Authentication ≠ Authorization</strong> – being logged in doesn't mean access to everything</li>
+        <li><strong>Never Trust Client Input</strong> – always validate server-side</li>
+        <li><strong>API Security is Critical</strong> – backends are often under-tested</li>
       </ul>
 
-      <!-- REFERENCES -->
       <h2>📚 References</h2>
       <ul>
-        <li><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" style="color: #00f5a0;" target="_blank">OWASP A01:2021 – Broken Access Control</a></li>
-        <li><a href="https://cwe.mitre.org/data/definitions/639.html" style="color: #00f5a0;" target="_blank">CWE-639: Authorization Bypass Through User-Controlled Key</a></li>
-        <li><a href="https://portswigger.net/web-security/access-control/idor" style="color: #00f5a0;" target="_blank">PortSwigger: IDOR vulnerabilities</a></li>
+        <li><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" style="color: var(--primary);">OWASP A01:2021 – Broken Access Control</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/639.html" style="color: var(--primary);">CWE-639: Authorization Bypass</a></li>
       </ul>
 
+      <h2>📖 Related Write-ups</h2>
+      <div class="related-posts">
+        <div class="related-card"><span style="font-size: 0.7rem; color: var(--primary);">Read next</span><h4>JWT Misconfiguration: Account Takeover</h4><a href="jwt-misconfiguration.html" style="color: var(--text-secondary); font-size: 0.75rem; text-decoration: none;">Read →</a></div>
+        <div class="related-card"><span style="font-size: 0.7rem; color: var(--primary);">Read next</span><h4>AWS S3 Bucket Misconfigurations</h4><a href="aws-s3-misconfig.html" style="color: var(--text-secondary); font-size: 0.75rem; text-decoration: none;">Read →</a></div>
+      </div>
+
       <hr>
-
-      <p><em>This write-up has been anonymized to protect the client. Technical details accurately represent the vulnerability discovered during an authorized penetration test. The vulnerability was reported responsibly and fixed within 8 days.</em></p>
-
+      <p><em>This write-up has been anonymized to protect the client. The vulnerability was reported responsibly and fixed within 8 days.</em></p>
       <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to all write-ups</a>
     </div>
   </div>
@@ -238,6 +193,7 @@ router.get('/api/v1/accounts/:accountId/transactions', authenticate, async (req,
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const navLinks = document.getElementById('navLinks');
   if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
 </script>
 </body>
 </html>
