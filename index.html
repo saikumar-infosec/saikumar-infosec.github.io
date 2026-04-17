@@ -7,402 +7,68 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0a0c10;
-      color: #e8edf5;
-      line-height: 1.5;
-    }
-
-    /* Full width layout - NO GAPS */
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    /* Navigation */
-    .navbar {
-      position: sticky;
-      top: 0;
-      background: #0a0c10;
-      border-bottom: 1px solid #1f2937;
-      padding: 1rem 0;
-      z-index: 100;
-    }
-
-    .nav-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      text-decoration: none;
-      color: #e8edf5;
-    }
-
-    .logo span {
-      color: #00f5a0;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #9ca3af;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: #00f5a0;
-    }
-
-    .mobile-menu {
-      display: none;
-      background: none;
-      border: none;
-      color: #e8edf5;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    /* Hero */
-    .hero {
-      padding: 4rem 0 3rem;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      background: rgba(0, 245, 160, 0.1);
-      border: 1px solid #00f5a0;
-      padding: 0.3rem 1rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      color: #00f5a0;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-subtitle {
-      font-size: 1.25rem;
-      color: #00f5a0;
-      margin-bottom: 1rem;
-    }
-
-    .hero-desc {
-      color: #9ca3af;
-      max-width: 550px;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .contact-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .contact-chip {
-      background: #111827;
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px solid #1f2937;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 0.75rem 1.8rem;
-      border-radius: 40px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
-    }
-
-    .btn-primary {
-      background: #00f5a0;
-      color: #0a0c10;
-    }
-
-    .btn-primary:hover {
-      background: #00cc88;
-      transform: translateY(-2px);
-    }
-
-    .btn-outline {
-      border: 1px solid #00f5a0;
-      color: #00f5a0;
-      background: transparent;
-    }
-
-    .btn-outline:hover {
-      background: rgba(0, 245, 160, 0.1);
-      transform: translateY(-2px);
-    }
-
-    /* Info Cards */
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .info-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
-      padding: 1.5rem;
-    }
-
-    .info-card h3 {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #00f5a0;
-      margin-bottom: 0.75rem;
-    }
-
-    .info-card p {
-      color: #9ca3af;
-      line-height: 1.5;
-    }
-
-    /* Sections */
-    .section {
-      padding: 4rem 0;
-      border-bottom: 1px solid #1f2937;
-    }
-
-    .section-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .section-title:after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 50px;
-      height: 3px;
-      background: #00f5a0;
-    }
-
-    /* Experience */
-    .exp-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .exp-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
-      padding: 1.5rem;
-    }
-
-    .exp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-
-    .exp-role {
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
-
-    .exp-company {
-      color: #00f5a0;
-      font-size: 0.9rem;
-    }
-
-    .exp-date {
-      background: #1a1f2e;
-      padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-    }
-
-    .exp-list {
-      list-style: none;
-    }
-
-    .exp-list li {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 0.6rem;
-      font-size: 0.9rem;
-      color: #9ca3af;
-    }
-
-    .exp-list i {
-      color: #00f5a0;
-      margin-top: 0.2rem;
-    }
-
-    /* Skills */
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .skill-tag {
-      background: #1a1f2e;
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      transition: all 0.2s;
-    }
-
-    .skill-tag:hover {
-      background: #00f5a0;
-      color: #0a0c10;
-    }
-
-    /* Projects */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .project-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      transition: all 0.2s;
-    }
-
-    .project-card:hover {
-      border-color: #00f5a0;
-      transform: translateY(-4px);
-    }
-
-    .project-icon {
-      width: 48px;
-      height: 48px;
-      background: rgba(0, 245, 160, 0.1);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .project-icon i {
-      font-size: 1.5rem;
-      color: #00f5a0;
-    }
-
-    .project-card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .project-card p {
-      color: #9ca3af;
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-    }
-
-    .project-link {
-      color: #00f5a0;
-      text-decoration: none;
-      font-size: 0.8rem;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 2rem;
-      border-top: 1px solid #1f2937;
-      color: #6b7280;
-      font-size: 0.8rem;
-    }
-
-    .footer-social {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin: 1rem 0;
-    }
-
-    .footer-social a {
-      color: #9ca3af;
-      font-size: 1.2rem;
-      transition: color 0.2s;
-    }
-
-    .footer-social a:hover {
-      color: #00f5a0;
-    }
-
-    /* Mobile */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0c10; color: #e8edf5; line-height: 1.5; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: #0a0c10; border-bottom: 1px solid #1f2937; padding: 1rem 0; z-index: 100; }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: #e8edf5; }
+    .logo span { color: #00f5a0; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: #9ca3af; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #00f5a0; }
+    .mobile-menu { display: none; background: none; border: none; color: #e8edf5; font-size: 1.5rem; cursor: pointer; }
+    .hero { padding: 4rem 0 3rem; }
+    .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .hero-tag { display: inline-block; background: rgba(0, 245, 160, 0.1); border: 1px solid #00f5a0; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; color: #00f5a0; margin-bottom: 1.5rem; }
+    .hero-subtitle { font-size: 1.25rem; color: #00f5a0; margin-bottom: 1rem; }
+    .hero-desc { color: #9ca3af; max-width: 550px; margin-bottom: 2rem; line-height: 1.6; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+    .contact-chip { background: #111827; padding: 0.5rem 1.2rem; border-radius: 40px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid #1f2937; }
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 1.8rem; border-radius: 40px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+    .btn-primary { background: #00f5a0; color: #0a0c10; }
+    .btn-primary:hover { background: #00cc88; transform: translateY(-2px); }
+    .btn-outline { border: 1px solid #00f5a0; color: #00f5a0; background: transparent; }
+    .btn-outline:hover { background: rgba(0, 245, 160, 0.1); transform: translateY(-2px); }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .info-card { background: #111827; border: 1px solid #1f2937; border-radius: 1rem; padding: 1.5rem; }
+    .info-card h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #00f5a0; margin-bottom: 0.75rem; }
+    .info-card p { color: #9ca3af; line-height: 1.5; }
+    .section { padding: 4rem 0; border-bottom: 1px solid #1f2937; }
+    .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; position: relative; display: inline-block; }
+    .section-title:after { content: ''; position: absolute; bottom: -8px; left: 0; width: 50px; height: 3px; background: #00f5a0; }
+    .exp-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+    .exp-card { background: #111827; border: 1px solid #1f2937; border-radius: 1rem; padding: 1.5rem; }
+    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 1rem; }
+    .exp-role { font-size: 1.2rem; font-weight: 700; }
+    .exp-company { color: #00f5a0; font-size: 0.9rem; }
+    .exp-date { background: #1a1f2e; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem; }
+    .exp-list { list-style: none; }
+    .exp-list li { display: flex; gap: 0.75rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: #9ca3af; }
+    .exp-list i { color: #00f5a0; margin-top: 0.2rem; }
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .skill-tag { background: #1a1f2e; padding: 0.5rem 1.2rem; border-radius: 40px; font-size: 0.8rem; transition: all 0.2s; }
+    .skill-tag:hover { background: #00f5a0; color: #0a0c10; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .project-card { background: #111827; border: 1px solid #1f2937; border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
+    .project-card:hover { border-color: #00f5a0; transform: translateY(-4px); }
+    .project-icon { width: 48px; height: 48px; background: rgba(0, 245, 160, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .project-icon i { font-size: 1.5rem; color: #00f5a0; }
+    .project-card h3 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .project-card p { color: #9ca3af; font-size: 0.85rem; margin-bottom: 1rem; }
+    .project-link { color: #00f5a0; text-decoration: none; font-size: 0.8rem; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid #1f2937; color: #6b7280; font-size: 0.8rem; }
+    .footer-social { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; }
+    .footer-social a { color: #9ca3af; font-size: 1.2rem; transition: color 0.2s; }
+    .footer-social a:hover { color: #00f5a0; }
     @media (max-width: 768px) {
-      .container {
-        padding: 0 1rem;
-      }
-      .mobile-menu {
-        display: block;
-      }
-      .nav-links {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        padding: 1rem 0;
-        gap: 1rem;
-      }
-      .nav-links.show {
-        display: flex;
-      }
-      .hero h1 {
-        font-size: 2rem;
-      }
-      .section-title {
-        font-size: 1.5rem;
-      }
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .hero h1 { font-size: 2rem; }
+      .section-title { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -410,9 +76,10 @@
 
 <nav class="navbar">
   <div class="container nav-flex">
-    <a href="#" class="logo">Saikumar.<span>Raju</span></a>
+    <a href="index.html" class="logo">Saikumar.<span>Raju</span></a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
@@ -428,10 +95,7 @@
       <span class="hero-tag"><i class="fas fa-shield-alt"></i> Offensive Security Professional</span>
       <h1>Saikumar Raju</h1>
       <p class="hero-subtitle">Cybersecurity Consultant</p>
-      <p class="hero-desc">
-        Specializing in web & API penetration testing, mobile security, and cloud hardening. 
-        I help organizations identify critical vulnerabilities before attackers do.
-      </p>
+      <p class="hero-desc">Specializing in web & API penetration testing, mobile security, and cloud hardening. I help organizations identify critical vulnerabilities before attackers do.</p>
       <div class="contact-row">
         <span class="contact-chip"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
         <span class="contact-chip"><i class="fas fa-phone-alt"></i> +91 7337026773</span>
@@ -444,156 +108,40 @@
     </div>
 
     <div class="info-grid">
-      <div class="info-card">
-        <h3>Focus Areas</h3>
-        <p>Web & API Pentesting · Mobile Security (Android/iOS) · Cloud Audits · Network VAPT</p>
-      </div>
-      <div class="info-card">
-        <h3>Core Tools</h3>
-        <p>Burp Suite · Metasploit · Nessus · Nmap · Wireshark · AWS Inspector</p>
-      </div>
-      <div class="info-card">
-        <h3>Standards</h3>
-        <p>OWASP Top 10 · MITRE ATT&CK · PCI DSS · NIST · ISO 27001</p>
-      </div>
+      <div class="info-card"><h3>Focus Areas</h3><p>Web & API Pentesting · Mobile Security · Cloud Audits · Network VAPT</p></div>
+      <div class="info-card"><h3>Core Tools</h3><p>Burp Suite · Metasploit · Nessus · Nmap · Wireshark · AWS Inspector</p></div>
+      <div class="info-card"><h3>Standards</h3><p>OWASP Top 10 · MITRE ATT&CK · PCI DSS · NIST · ISO 27001</p></div>
     </div>
 
     <section id="experience" class="section">
       <h2 class="section-title">Experience</h2>
       <div class="exp-grid">
-        <div class="exp-card">
-          <div class="exp-header">
-            <div>
-              <div class="exp-role">Cyber Security Consultant</div>
-              <div class="exp-company">Astrocytech Petv Ltd</div>
-            </div>
-            <span class="exp-date">Present</span>
-          </div>
-          <ul class="exp-list">
-            <li><i class="fas fa-chevron-right"></i> VAPT for web, API, and mobile platforms (Android & iOS)</li>
-            <li><i class="fas fa-chevron-right"></i> Network penetration testing using Nmap, Nessus, Metasploit</li>
-            <li><i class="fas fa-chevron-right"></i> Security reports with prioritized remediation strategies</li>
-            <li><i class="fas fa-chevron-right"></i> AWS cloud security assessments (IAM, S3, Security Groups)</li>
-          </ul>
-        </div>
-        <div class="exp-card">
-          <div class="exp-header">
-            <div>
-              <div class="exp-role">Security Analyst</div>
-              <div class="exp-company">Yash Technologies</div>
-            </div>
-            <span class="exp-date">Previous</span>
-          </div>
-          <ul class="exp-list">
-            <li><i class="fas fa-chevron-right"></i> Web & API security testing using Burp Suite, OWASP ZAP</li>
-            <li><i class="fas fa-chevron-right"></i> Network security assessments and misconfiguration detection</li>
-            <li><i class="fas fa-chevron-right"></i> Red team exercises and risk assessment support</li>
-          </ul>
-        </div>
+        <div class="exp-card"><div class="exp-header"><div><div class="exp-role">Cyber Security Consultant</div><div class="exp-company">Astrocytech Petv Ltd</div></div><span class="exp-date">Present</span></div>
+          <ul class="exp-list"><li><i class="fas fa-chevron-right"></i> VAPT for web, API, and mobile platforms (Android & iOS)</li><li><i class="fas fa-chevron-right"></i> Network penetration testing using Nmap, Nessus, Metasploit</li><li><i class="fas fa-chevron-right"></i> AWS cloud security assessments (IAM, S3, Security Groups)</li></ul></div>
+        <div class="exp-card"><div class="exp-header"><div><div class="exp-role">Security Analyst</div><div class="exp-company">Yash Technologies</div></div><span class="exp-date">Previous</span></div>
+          <ul class="exp-list"><li><i class="fas fa-chevron-right"></i> Web & API security testing using Burp Suite, OWASP ZAP</li><li><i class="fas fa-chevron-right"></i> Network security assessments and red team exercises</li></ul></div>
       </div>
     </section>
 
-    <section id="skills" class="section">
-      <h2 class="section-title">Technical Skills</h2>
-      <div class="skills-grid">
-        <span class="skill-tag">Web & API Security</span>
-        <span class="skill-tag">Network Pentesting</span>
-        <span class="skill-tag">Mobile Security</span>
-        <span class="skill-tag">Burp Suite</span>
-        <span class="skill-tag">Metasploit</span>
-        <span class="skill-tag">Nessus/Nmap</span>
-        <span class="skill-tag">AWS Cloud</span>
-        <span class="skill-tag">IAM Hardening</span>
-        <span class="skill-tag">IDOR/BOLA</span>
-        <span class="skill-tag">JWT Attacks</span>
-        <span class="skill-tag">SQL Injection</span>
-        <span class="skill-tag">XSS/CSRF</span>
-      </div>
-    </section>
+    <section id="skills" class="section"><h2 class="section-title">Technical Skills</h2><div class="skills-grid"><span class="skill-tag">Web & API Security</span><span class="skill-tag">Network Pentesting</span><span class="skill-tag">Mobile Security</span><span class="skill-tag">Burp Suite</span><span class="skill-tag">Metasploit</span><span class="skill-tag">Nessus/Nmap</span><span class="skill-tag">AWS Cloud</span><span class="skill-tag">IDOR/BOLA</span><span class="skill-tag">JWT Attacks</span></div></section>
 
-    <section id="projects" class="section">
-      <h2 class="section-title">Key Projects</h2>
-      <div class="projects-grid">
-        <div class="project-card">
-          <div class="project-icon"><i class="fas fa-university"></i></div>
-          <h3>Banking Security Assessment</h3>
-          <p>IDOR, JWT misconfigurations, and business logic flaws uncovered in banking platform.</p>
-          <a href="idor-banking-api.html" class="project-link">Read case study →</a>
-        </div>
-        <div class="project-card">
-          <div class="project-icon"><i class="fas fa-network-wired"></i></div>
-          <h3>Infrastructure Pentesting</h3>
-          <p>Firewall misconfigurations and privilege escalation paths discovered.</p>
-          <a href="#" class="project-link">View details →</a>
-        </div>
-        <div class="project-card">
-          <div class="project-icon"><i class="fas fa-cloud"></i></div>
-          <h3>AWS Cloud Audit</h3>
-          <p>IAM, S3 bucket, and security group hardening for fintech client.</p>
-          <a href="#" class="project-link">View details →</a>
-        </div>
-      </div>
-    </section>
+    <section id="projects" class="section"><h2 class="section-title">Key Projects</h2><div class="projects-grid"><div class="project-card"><div class="project-icon"><i class="fas fa-university"></i></div><h3>Banking Security Assessment</h3><p>IDOR, JWT misconfigurations uncovered.</p><a href="idor-banking-api.html" class="project-link">Read case study →</a></div>
+    <div class="project-card"><div class="project-icon"><i class="fas fa-network-wired"></i></div><h3>Infrastructure Pentesting</h3><p>Firewall misconfigurations discovered.</p><a href="#" class="project-link">View details →</a></div>
+    <div class="project-card"><div class="project-icon"><i class="fas fa-cloud"></i></div><h3>AWS Cloud Audit</h3><p>IAM and S3 hardening for fintech.</p><a href="#" class="project-link">View details →</a></div></div></section>
 
-    <section id="contact" class="section">
-      <h2 class="section-title">Let's Connect</h2>
-      <div class="info-grid">
-        <div class="info-card">
-          <h3>Contact</h3>
-          <p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p>
-          <p><i class="fas fa-phone-alt"></i> +91 7337026773</p>
-          <p><i class="fas fa-map-marker-alt"></i> India</p>
-          <p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p>
-        </div>
-        <div class="info-card">
-          <h3>Certifications</h3>
-          <p>CEH (EC-Council)</p>
-          <p>Certified Cyber Security Professional</p>
-          <p>Qualys VM Certification</p>
-          <p><strong>B.Tech - JNTU Anantapur</strong></p>
-        </div>
-      </div>
-    </section>
+    <section id="contact" class="section"><h2 class="section-title">Let's Connect</h2><div class="info-grid"><div class="info-card"><h3>Contact</h3><p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p><p><i class="fas fa-phone-alt"></i> +91 7337026773</p><p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p></div>
+    <div class="info-card"><h3>Certifications</h3><p>CEH · Certified Cyber Security Pro · Qualys VM</p><p><strong>B.Tech - JNTU Anantapur</strong></p></div></div></section>
   </div>
 </main>
 
-<footer>
-  <div class="footer-social">
-    <a href="#"><i class="fab fa-linkedin"></i></a>
-    <a href="#"><i class="fab fa-github"></i></a>
-    <a href="#"><i class="fab fa-twitter"></i></a>
-    <a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a>
-  </div>
-  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p>
-</footer>
+<footer><div class="footer-social"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a></div><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) {
-    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
-  }
-
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href === '#') return;
-      const target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth' });
-        navLinks.classList.remove('show');
-      }
-    });
-  });
-
-  const resumeBtn = document.getElementById('downloadResume');
-  if (resumeBtn) {
-    resumeBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Upload your resume PDF to enable download');
-    });
-  }
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { const href = this.getAttribute('href'); if (href === '#') return; const target = document.querySelector(href); if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); navLinks.classList.remove('show'); } }); });
+  const resumeBtn = document.getElementById('downloadResume'); if (resumeBtn) { resumeBtn.addEventListener('click', (e) => { e.preventDefault(); alert('Upload your resume PDF to enable download'); }); }
 </script>
 </body>
 </html>
