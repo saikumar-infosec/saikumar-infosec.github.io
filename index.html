@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Saikumar Raju - Cybersecurity Consultant with 3.6+ years in Offensive Security, VAPT, Web/API Pentesting, Mobile Security">
+  <meta name="description" content="Saikumar Raju - Cybersecurity Consultant specializing in VAPT, Web/API Security, Mobile Security, and AWS Cloud Security">
+  <meta name="author" content="Saikumar Raju">
   <title>Saikumar Raju | Cybersecurity Consultant</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -16,70 +16,47 @@
     }
 
     :root {
-      --primary: #00ff88;
-      --primary-dark: #00cc6a;
-      --primary-glow: rgba(0, 255, 136, 0.12);
+      --primary: #00f5a0;
+      --primary-dark: #00cc88;
+      --primary-glow: rgba(0, 245, 160, 0.1);
       --bg-dark: #0a0c10;
       --bg-card: #111827;
       --bg-elevated: #1a1f2e;
-      --text-primary: #f0f3fa;
+      --text-primary: #ffffff;
       --text-secondary: #9ca3af;
       --border: #1f2937;
-      --gradient: linear-gradient(135deg, #00ff88 0%, #00b4ff 100%);
     }
 
     body {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg-dark);
       color: var(--text-primary);
       line-height: 1.5;
     }
 
-    .cursor, .cursor-follower {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-    }
-    .cursor {
-      width: 6px;
-      height: 6px;
-      background: var(--primary);
-    }
-    .cursor-follower {
-      width: 30px;
-      height: 30px;
-      border: 2px solid var(--primary);
-      opacity: 0.4;
-      transition: 0.1s;
-    }
-
-    #matrix-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
+    /* FULL WIDTH - NO WASTED SPACE */
+    .container {
       width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.06;
-      pointer-events: none;
+      padding: 0 1.5rem;
     }
 
+    @media (min-width: 1400px) {
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+    }
+
+    /* Navigation */
     .navbar {
-      position: fixed;
+      position: sticky;
       top: 0;
-      width: 100%;
       background: rgba(10, 12, 16, 0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       z-index: 1000;
       padding: 1rem 0;
-    }
-
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 2rem;
     }
 
     .nav-flex {
@@ -93,7 +70,7 @@
       font-size: 1.5rem;
       font-weight: 700;
       text-decoration: none;
-      background: var(--gradient);
+      background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
@@ -112,7 +89,9 @@
       transition: color 0.2s;
     }
 
-    .nav-links a:hover { color: var(--primary); }
+    .nav-links a:hover {
+      color: var(--primary);
+    }
 
     .mobile-menu {
       display: none;
@@ -123,21 +102,10 @@
       cursor: pointer;
     }
 
+    /* Hero Section */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 6rem 0 4rem;
+      padding: 4rem 0 3rem;
     }
-
-    .hero-grid {
-      display: flex;
-      gap: 4rem;
-      flex-wrap: wrap;
-    }
-
-    .hero-main { flex: 2; min-width: 280px; }
-    .hero-side { flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 1.25rem; }
 
     .hero-badge {
       display: inline-block;
@@ -150,29 +118,56 @@
       margin-bottom: 1.5rem;
     }
 
-    .hero-main h1 { font-size: 4rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.03em; }
-    .hero-title { font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem; }
-    .hero-desc { color: var(--text-secondary); margin-bottom: 1.5rem; max-width: 520px; line-height: 1.6; }
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
 
-    .contact-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .hero-description {
+      color: var(--text-secondary);
+      max-width: 600px;
       margin-bottom: 2rem;
+      line-height: 1.6;
     }
 
-    .contact-chip {
-      background: var(--bg-card);
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat {
       font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      border: 1px solid var(--border);
+      color: var(--text-secondary);
     }
 
-    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
     .btn {
       padding: 0.75rem 1.8rem;
@@ -181,369 +176,438 @@
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      font-size: 0.85rem;
+      gap: 0.5rem;
+      transition: all 0.2s;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
     }
 
-    .btn-primary { background: var(--primary); color: var(--bg-dark); }
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
-    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
-    .btn-outline:hover { background: var(--primary-glow); transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--primary);
+      color: #0a0c10;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Info Cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
 
     .info-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 1.5rem;
+      border-radius: 1rem;
       padding: 1.5rem;
+      transition: all 0.2s;
     }
-    .info-card h3 { font-size: 0.7rem; text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem; }
-    .info-card p { font-size: 0.9rem; color: var(--text-secondary); }
 
-    .section { padding: 5rem 0; border-bottom: 1px solid var(--border); }
-    .section-alt { background: rgba(17, 24, 39, 0.3); }
-    .section-title { font-size: 2rem; font-weight: 700; margin-bottom: 2.5rem; position: relative; display: inline-block; }
-    .section-title::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 60px; height: 3px; background: var(--primary); }
+    .info-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
 
-    /* Experience - Detailed */
-    .exp-grid { display: flex; flex-direction: column; gap: 2rem; }
-    .exp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1.5rem; padding: 2rem; }
-    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 1.5rem; }
-    .exp-role { font-size: 1.4rem; font-weight: 700; }
-    .exp-company { color: var(--primary); font-size: 1rem; margin-top: 0.25rem; }
-    .exp-badge { background: var(--bg-elevated); padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; border: 1px solid var(--border); }
+    .info-card h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
 
-    .exp-details { margin-top: 1rem; }
-    .exp-category { font-size: 0.85rem; color: var(--primary); margin: 1rem 0 0.75rem 0; font-weight: 600; letter-spacing: 0.5px; }
-    .exp-list { list-style: none; margin-bottom: 1rem; }
-    .exp-list li { display: flex; gap: 0.75rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--text-secondary); }
-    .exp-list i { color: var(--primary); margin-top: 0.2rem; font-size: 0.7rem; }
+    .info-card p {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
 
-    /* Skills Grid */
-    .skills-bento { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-    .skill-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1.5rem; padding: 1.5rem; }
-    .skill-card h3 { font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary); }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-    .skill-tag { background: var(--bg-elevated); padding: 0.4rem 1rem; border-radius: 40px; font-size: 0.75rem; }
+    .info-card i {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
 
-    /* Projects - Detailed */
-    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; }
-    .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1.5rem; padding: 1.5rem; transition: all 0.2s; }
-    .project-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .project-icon { width: 48px; height: 48px; background: var(--primary-glow); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .project-icon i { font-size: 1.5rem; color: var(--primary); }
-    .project-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
-    .project-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5; }
-    .project-findings { font-size: 0.8rem; color: var(--primary); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+    /* Sections */
+    .section {
+      padding: 4rem 0;
+    }
 
-    /* Certs */
-    .certs-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
-    .cert-item { background: var(--bg-card); padding: 0.6rem 1.3rem; border-radius: 40px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border); }
-    .edu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1.5rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-    .edu-card i { font-size: 2.5rem; color: var(--primary); }
+    .section-alt {
+      background: rgba(17, 24, 39, 0.3);
+      border-radius: 2rem;
+      margin: 1rem 0;
+      padding: 2rem 0;
+    }
 
-    /* Contact */
-    .contact-flex { display: flex; flex-wrap: wrap; gap: 3rem; }
-    .contact-info { flex: 1; display: flex; flex-direction: column; gap: 1.2rem; }
-    .contact-item { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
-    .contact-item i { width: 2rem; color: var(--primary); font-size: 1.2rem; }
-    .contact-form { flex: 1.5; display: flex; flex-direction: column; gap: 1rem; }
-    .contact-form input, .contact-form textarea { background: var(--bg-card); border: 1px solid var(--border); padding: 0.9rem 1.2rem; border-radius: 1rem; color: var(--text-primary); font-family: inherit; }
-    .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--primary); }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
 
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary);
+    }
 
+    /* Experience Cards */
+    .exp-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .exp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .exp-card:hover {
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .exp-role {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .exp-company {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .exp-date {
+      background: var(--bg-elevated);
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+    }
+
+    .exp-list {
+      list-style: none;
+    }
+
+    .exp-list li {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .exp-list i {
+      color: var(--primary);
+      margin-top: 0.2rem;
+    }
+
+    /* Skills Tags */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .skill-tag {
+      background: var(--bg-elevated);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .skill-tag:hover {
+      background: var(--primary);
+      color: #0a0c10;
+      cursor: default;
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-6px);
+    }
+
+    .project-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-glow);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .project-icon i {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .project-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-card p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* Mobile */
     @media (max-width: 768px) {
-      .mobile-menu { display: block; }
-      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
-      .nav-links.show { display: flex; }
-      .hero-main h1 { font-size: 2.5rem; }
-      .section-title { font-size: 1.6rem; }
-      .cursor, .cursor-follower { display: none; }
+      .mobile-menu {
+        display: block;
+      }
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        padding: 1rem 0;
+        gap: 1rem;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+      .stats-row {
+        justify-content: center;
+      }
     }
-
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-dark); }
-    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
   </style>
 </head>
 <body>
-
-<canvas id="matrix-bg"></canvas>
-<div class="cursor"></div>
-<div class="cursor-follower"></div>
 
 <nav class="navbar">
   <div class="container nav-flex">
     <a href="#" class="logo">Saikumar.Raju</a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
-<ul class="nav-links" id="navLinks">
-  <li><a href="#experience">Experience</a></li>
-  <li><a href="#skills">Skills</a></li>
-  <li><a href="#projects">Projects</a></li>
-  <li><a href="#credentials">Credentials</a></li>
-  <li><a href="blog.html">Write-ups</a></li>
-  <li><a href="#contact">Contact</a></li>
-</ul>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#credentials">Credentials</a></li>
+      <li><a href="blog.html">Write-ups</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
   </div>
 </nav>
 
 <main>
   <div class="container">
+    <!-- Hero Section -->
     <div class="hero">
-      <div class="hero-grid">
-        <div class="hero-main" data-aos="fade-right">
-          <span class="hero-badge"><i class="fas fa-shield-alt"></i> Offensive Security Professional</span>
-          <h1>Saikumar Raju</h1>
-          <p class="hero-title">Cybersecurity Consultant</p>
-          <p class="hero-desc">
-            Offensive security professional with comprehensive experience in application security, 
-            infrastructure assessments, and cloud hardening. Proven track record of identifying 
-            complex vulnerabilities and helping engineering teams implement effective remediation strategies.
-          </p>
-          <div class="contact-row">
-            <span class="contact-chip"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
-            <span class="contact-chip"><i class="fas fa-phone-alt"></i> +91 7337026773</span>
-            <span class="contact-chip"><i class="fas fa-map-marker-alt"></i> India</span>
-          </div>
-          <div class="btn-group">
-            <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
-            <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
-          </div>
-        </div>
-        <div class="hero-side" data-aos="fade-left">
-          <div class="info-card">
-            <h3>Focus Areas</h3>
-            <p>Web & API Pentesting · Mobile Security (Android/iOS) · Cloud Security Audits · Network VAPT · Red Teaming</p>
-          </div>
-          <div class="info-card">
-            <h3>Core Tools</h3>
-            <p>Burp Suite Pro · Metasploit Framework · Nessus · Nmap · Wireshark · AWS Inspector · OWASP ZAP · SQLMap</p>
-          </div>
-          <div class="info-card">
-            <h3>Industry Standards</h3>
-            <p>OWASP Top 10 · MITRE ATT&CK · PCI DSS · NIST Cybersecurity Framework · ISO 27001</p>
-          </div>
-        </div>
+      <span class="hero-badge"><i class="fas fa-shield-alt"></i> Open for Opportunities</span>
+      <h1>Saikumar Raju</h1>
+      <p class="hero-subtitle">Cybersecurity Consultant</p>
+      <p class="hero-description">
+        I help financial institutions, healthcare providers, and enterprises identify critical vulnerabilities 
+        before attackers do. Specializing in web/API pentesting, mobile security, and cloud hardening.
+      </p>
+      <div class="stats-row">
+        <div class="stat"><span>50+</span> Assessments</div>
+        <div class="stat"><span>Banking</span> Healthcare · E-commerce</div>
+        <div class="stat"><span>AWS</span> Cloud Security</div>
+      </div>
+      <div class="btn-group">
+        <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
+        <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
       </div>
     </div>
 
-    <!-- Experience Section - Fully Detailed -->
+    <!-- Focus Areas Cards -->
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Focus Areas</h3>
+        <p>Web & API Pentesting · Mobile Security (Android/iOS) · Cloud Security Audits · Network VAPT · Red Teaming</p>
+      </div>
+      <div class="info-card">
+        <h3>Core Tools</h3>
+        <p>Burp Suite Pro · Metasploit · Nessus · Nmap · Wireshark · AWS Inspector · OWASP ZAP · SQLMap</p>
+      </div>
+      <div class="info-card">
+        <h3>Industry Standards</h3>
+        <p>OWASP Top 10 · MITRE ATT&CK · PCI DSS · NIST Framework · ISO 27001</p>
+      </div>
+    </div>
+
+    <!-- Experience Section -->
     <section id="experience" class="section">
-      <h2 class="section-title" data-aos="fade-up">Professional Experience</h2>
+      <h2 class="section-title">Professional Experience</h2>
       <div class="exp-grid">
-        
-        <!-- Current Role - Detailed -->
-        <div class="exp-card" data-aos="fade-up">
+        <div class="exp-card">
           <div class="exp-header">
             <div>
               <div class="exp-role">Cyber Security Consultant</div>
               <div class="exp-company">Astrocytech Petv Ltd</div>
             </div>
-            <span class="exp-badge">Oct 2023 – Present</span>
+            <span class="exp-date">Present</span>
           </div>
-          
-          <div class="exp-details">
-            <div class="exp-category"><i class="fas fa-code"></i> Application Security</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, REST/gRPC APIs, and mobile platforms (Android & iOS)</li>
-              <li><i class="fas fa-chevron-right"></i> Performed security assessments for banking, healthcare, and e-commerce applications, identifying critical vulnerabilities including authentication bypasses, IDOR, and business logic flaws</li>
-              <li><i class="fas fa-chevron-right"></i> Executed API security testing focusing on JWT misconfigurations, rate limiting bypasses, and mass assignment vulnerabilities</li>
-              <li><i class="fas fa-chevron-right"></i> Led mobile application security assessments (Android & iOS) identifying weak API protection, hardcoded credentials, insecure data storage, and certificate pinning issues</li>
-            </ul>
-
-            <div class="exp-category"><i class="fas fa-network-wired"></i> Network & Infrastructure</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
-              <li><i class="fas fa-chevron-right"></i> Identified firewall misconfigurations, weak encryption protocols (SSL/TLS), and outdated software with known CVEs</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted vulnerability scanning and configuration reviews for Windows/Linux servers, network devices, and containers</li>
-              <li><i class="fas fa-chevron-right"></i> Simulated real-world attack scenarios including lateral movement, privilege escalation, and persistence mechanisms</li>
-            </ul>
-
-            <div class="exp-category"><i class="fas fa-cloud"></i> Cloud Security</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Conducted AWS cloud security assessments: IAM role analysis, S3 bucket policy reviews, Security Group audits, and CloudTrail monitoring</li>
-              <li><i class="fas fa-chevron-right"></i> Identified misconfigurations in EC2 instances, RDS snapshots, and Lambda functions</li>
-              <li><i class="fas fa-chevron-right"></i> Provided remediation guidance for least-privilege access, encryption at rest, and network segmentation</li>
-            </ul>
-
-            <div class="exp-category"><i class="fas fa-file-alt"></i> Reporting & Collaboration</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Created detailed security assessment reports with executive summaries, technical findings, proof-of-concept, and prioritized remediation steps</li>
-              <li><i class="fas fa-chevron-right"></i> Worked directly with development and DevOps teams to validate fixes and implement secure coding practices</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted knowledge transfer sessions and security awareness training for engineering teams</li>
-            </ul>
-          </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, APIs, and mobile platforms (Android & iOS)</li>
+            <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
+            <li><i class="fas fa-chevron-right"></i> Delivered actionable security reports with prioritized remediation strategies</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted cloud security assessments on AWS environments (IAM, S3, Security Groups)</li>
+            <li><i class="fas fa-chevron-right"></i> Executed mobile security assessments identifying weak API protection and unsafe data storage</li>
+          </ul>
         </div>
-
-        <!-- Previous Role - Detailed -->
-        <div class="exp-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="exp-card">
           <div class="exp-header">
             <div>
               <div class="exp-role">Security Analyst</div>
               <div class="exp-company">Yash Technologies</div>
             </div>
-            <span class="exp-badge">Feb 2022 – Mar 2023</span>
+            <span class="exp-date">Previous</span>
           </div>
-          
-          <div class="exp-details">
-            <div class="exp-category"><i class="fas fa-code"></i> Application Security Testing</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Performed manual and automated web application security testing using Burp Suite, OWASP ZAP, and SQLMap</li>
-              <li><i class="fas fa-chevron-right"></i> Identified and validated OWASP Top 10 vulnerabilities including SQL injection, XSS, CSRF, SSRF, and insecure deserialization</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted API security assessments for RESTful services, identifying broken object level authorization (BOLA) and excessive data exposure</li>
-              <li><i class="fas fa-chevron-right"></i> Performed authentication and session management testing including JWT analysis, OAuth flows, and password policies</li>
-            </ul>
-
-            <div class="exp-category"><i class="fas fa-shield-alt"></i> Security Operations</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations, weak encryption, and vulnerable services</li>
-              <li><i class="fas fa-chevron-right"></i> Assisted in red team exercises including external reconnaissance, social engineering simulations, and internal pivoting</li>
-              <li><i class="fas fa-chevron-right"></i> Performed security risk assessments for third-party integrations and vendor applications</li>
-              <li><i class="fas fa-chevron-right"></i> Contributed to the development of security testing methodologies and internal knowledge base</li>
-            </ul>
-
-            <div class="exp-category"><i class="fas fa-file-alt"></i> Reporting</div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Produced technical security reports with proof-of-concept demonstrations and clear remediation guidance</li>
-              <li><i class="fas fa-chevron-right"></i> Presented findings to stakeholders and tracked vulnerability remediation progress</li>
-              <li><i class="fas fa-chevron-right"></i> Collaborated with development teams to validate security fixes and retest patched vulnerabilities</li>
-            </ul>
-          </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Performed web and API security testing using Burp Suite, OWASP ZAP, and SQLMap</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations and weak encryption</li>
+            <li><i class="fas fa-chevron-right"></i> Supported red team exercises and risk assessment processes</li>
+            <li><i class="fas fa-chevron-right"></i> Provided technical reports with detailed mitigation plans</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- Skills Section - Expanded -->
+    <!-- Skills Section -->
     <section id="skills" class="section section-alt">
-      <h2 class="section-title" data-aos="fade-up">Technical Arsenal</h2>
-      <div class="skills-bento">
-        <div class="skill-card" data-aos="fade-up">
-          <h3><i class="fas fa-globe"></i> Web & API Security</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">OWASP Top 10</span>
-            <span class="skill-tag">REST API Testing</span>
-            <span class="skill-tag">GraphQL Security</span>
-            <span class="skill-tag">JWT Analysis</span>
-            <span class="skill-tag">IDOR/BOLA</span>
-            <span class="skill-tag">SQL Injection</span>
-            <span class="skill-tag">XSS/CSRF/SSRF</span>
-            <span class="skill-tag">Business Logic Flaws</span>
-          </div>
-        </div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="100">
-          <h3><i class="fas fa-network-wired"></i> Network Security</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">Nmap</span>
-            <span class="skill-tag">Nessus</span>
-            <span class="skill-tag">Metasploit</span>
-            <span class="skill-tag">Wireshark</span>
-            <span class="skill-tag">Burp Suite</span>
-            <span class="skill-tag">Firewall Auditing</span>
-            <span class="skill-tag">Privilege Escalation</span>
-            <span class="skill-tag">Active Directory</span>
-          </div>
-        </div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="200">
-          <h3><i class="fas fa-mobile-alt"></i> Mobile Security</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">Android Pentesting</span>
-            <span class="skill-tag">iOS Security</span>
-            <span class="skill-tag">APK Analysis</span>
-            <span class="skill-tag">IPA Inspection</span>
-            <span class="skill-tag">Certificate Pinning</span>
-            <span class="skill-tag">Secure Data Storage</span>
-          </div>
-        </div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="300">
-          <h3><i class="fas fa-cloud"></i> Cloud Security</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">AWS IAM</span>
-            <span class="skill-tag">S3 Hardening</span>
-            <span class="skill-tag">Security Groups</span>
-            <span class="skill-tag">CloudTrail</span>
-            <span class="skill-tag">EC2 Security</span>
-            <span class="skill-tag">Lambda Security</span>
-          </div>
+      <div class="container">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+          <span class="skill-tag">Web & API Security (OWASP Top 10)</span>
+          <span class="skill-tag">Network Penetration Testing</span>
+          <span class="skill-tag">Mobile Security (Android/iOS)</span>
+          <span class="skill-tag">Burp Suite / Metasploit</span>
+          <span class="skill-tag">Nessus / Nmap / Wireshark</span>
+          <span class="skill-tag">AWS Cloud Security Audits</span>
+          <span class="skill-tag">IAM & S3 Hardening</span>
+          <span class="skill-tag">Vulnerability Management</span>
+          <span class="skill-tag">API Pentesting & JWT attacks</span>
+          <span class="skill-tag">Red Team Support</span>
+          <span class="skill-tag">IDOR / BOLA</span>
+          <span class="skill-tag">SQL Injection / XSS</span>
         </div>
       </div>
     </section>
 
-    <!-- Projects Section - Detailed -->
+    <!-- Projects Section -->
     <section id="projects" class="section">
-      <h2 class="section-title" data-aos="fade-up">Key Projects</h2>
+      <h2 class="section-title">Key Projects</h2>
       <div class="projects-grid">
-        <div class="project-card" data-aos="fade-up">
+        <div class="project-card">
           <div class="project-icon"><i class="fas fa-university"></i></div>
           <h3>Banking Application Security Assessment</h3>
-          <p>Comprehensive security assessment of a major bank's digital banking platform including web portal, mobile apps (Android & iOS), and backend APIs.</p>
-          <div class="project-findings">
-            <strong>Key Findings:</strong> IDOR allowing unauthorized account access, JWT misconfiguration enabling token replay, business logic flaw in fund transfer, hardcoded API keys in mobile app
-          </div>
+          <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered IDOR, JWT misconfigurations, and business logic flaws.</p>
         </div>
-        <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="project-card">
           <div class="project-icon"><i class="fas fa-network-wired"></i></div>
-          <h3>Enterprise Infrastructure Penetration Test</h3>
-          <p>Internal and external network assessment for a multinational organization with hybrid cloud infrastructure.</p>
-          <div class="project-findings">
-            <strong>Key Findings:</strong> Domain privilege escalation via misconfigured GPOs, unpatched critical vulnerabilities (EternalBlue), weak SNMP community strings, exposed internal admin panels
-          </div>
+          <h3>Infrastructure Penetration Testing</h3>
+          <p>Internal and external network assessments for enterprise environments. Discovered firewall misconfigurations and privilege escalation paths.</p>
         </div>
-        <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="project-card">
           <div class="project-icon"><i class="fas fa-cloud"></i></div>
-          <h3>AWS Cloud Security Hardening</h3>
-          <p>Security audit and hardening of AWS environment for a fintech startup handling sensitive financial data.</p>
-          <div class="project-findings">
-            <strong>Key Findings:</strong> Publicly accessible S3 buckets with PII, over-privileged IAM roles, unencrypted RDS snapshots, missing CloudTrail logs, open security groups to 0.0.0.0/0
-          </div>
-        </div>
-        <div class="project-card" data-aos="fade-up" data-aos-delay="300">
-          <div class="project-icon"><i class="fas fa-cart-shopping"></i></div>
-          <h3>E-commerce Platform Security Review</h3>
-          <p>Complete security assessment of a high-traffic e-commerce platform including payment gateway integration.</p>
-          <div class="project-findings">
-            <strong>Key Findings:</strong> Payment gateway parameter tampering, coupon code brute-forcing, stored XSS in product reviews, insecure direct object reference in order history
-          </div>
+          <h3>AWS Cloud Security Review</h3>
+          <p>In-depth cloud security audit reviewing IAM roles, S3 bucket permissions, and security group configurations.</p>
         </div>
       </div>
     </section>
 
-    <!-- Credentials -->
+    <!-- Credentials Section -->
     <section id="credentials" class="section section-alt">
-      <h2 class="section-title" data-aos="fade-up">Certifications & Education</h2>
-      <div class="certs-grid" data-aos="fade-up">
-        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span>
-        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Berry9 IT Pvt Ltd</span>
-        <span class="cert-item"><i class="fas fa-certificate"></i> Qualys Vulnerability Management (VM) Certification</span>
-      </div>
-      <div class="edu-card" data-aos="fade-up">
-        <i class="fas fa-graduation-cap"></i>
-        <div>
-          <strong style="font-size: 1.1rem;">Bachelor of Technology (B.Tech) – Computer Science & Engineering</strong><br>
-          <span style="color: var(--text-secondary);">JNTU College of Engineering, Anantapur</span>
+      <div class="container">
+        <h2 class="section-title">Certifications & Education</h2>
+        <div class="skills-grid" style="margin-bottom: 2rem;">
+          <span class="skill-tag"><i class="fas fa-certificate"></i> CEH – EC-Council</span>
+          <span class="skill-tag"><i class="fas fa-certificate"></i> Certified Cyber Security Professional</span>
+          <span class="skill-tag"><i class="fas fa-certificate"></i> Qualys VM Certification</span>
+        </div>
+        <div class="info-card">
+          <h3>Education</h3>
+          <p><strong>B.Tech / B.E. – Computer Science</strong><br>JNTU College of Engineering, Anantapur</p>
         </div>
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact Section -->
     <section id="contact" class="section">
-      <h2 class="section-title" data-aos="fade-up">Let's Connect</h2>
-      <div class="contact-flex">
-        <div class="contact-info" data-aos="fade-right">
-          <div class="contact-item"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
-          <div class="contact-item"><i class="fas fa-phone-alt"></i> +91 7337026773</div>
-          <div class="contact-item"><i class="fas fa-map-marker-alt"></i> India (Open for consulting & full-time)</div>
-          <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
+      <h2 class="section-title">Let's Connect</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Contact Info</h3>
+          <p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p>
+          <p><i class="fas fa-phone-alt"></i> +91 7337026773</p>
+          <p><i class="fas fa-map-marker-alt"></i> India</p>
+          <p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p>
         </div>
-        <form class="contact-form" id="contactForm" data-aos="fade-left">
-          <input type="text" placeholder="Full name" id="nameInput">
-          <input type="email" placeholder="Email address" id="emailInput">
-          <textarea rows="4" placeholder="Message or inquiry about security assessments" id="messageInput"></textarea>
-          <button type="button" class="btn btn-primary" id="sendMsgBtn">Send Message <i class="fas fa-paper-plane"></i></button>
-          <p id="formFeedback"></p>
-        </form>
+        <div class="info-card">
+          <h3>Availability</h3>
+          <p>Open for consulting engagements and full-time opportunities. Available for remote and on-site assessments.</p>
+          <div class="btn-group" style="margin-top: 1rem;">
+            <a href="mailto:saikumararaju30@gmail.com" class="btn btn-primary">Send Message</a>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -554,48 +618,17 @@
   <p style="font-size: 0.7rem; margin-top: 0.5rem;">Focus on actionable security, risk reduction, and engineering collaboration</p>
 </footer>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  AOS.init({ once: true, duration: 800 });
-
-  // Matrix Background
-  const canvas = document.getElementById('matrix-bg');
-  const ctx = canvas.getContext('2d');
-  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-  const fontSize = 14;
-  let columns = Math.floor(canvas.width / fontSize);
-  let drops = new Array(columns).fill(1);
-  function drawMatrix() {
-    ctx.fillStyle = 'rgba(10, 12, 16, 0.04)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#00ff88';
-    ctx.font = `${fontSize}px monospace`;
-    for (let i = 0; i < drops.length; i++) {
-      const text = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    }
-  }
-  setInterval(drawMatrix, 50);
-
-  // Custom Cursor
-  const cursor = document.querySelector('.cursor');
-  const follower = document.querySelector('.cursor-follower');
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.transform = `translate(${e.clientX - 3}px, ${e.clientY - 3}px)`;
-    follower.style.transform = `translate(${e.clientX - 15}px, ${e.clientY - 15}px)`;
-  });
-
-  // Mobile menu
+  // Mobile menu toggle
   const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinksEl = document.getElementById('navLinks');
-  mobileBtn?.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('show');
+    });
+  }
 
-  // Smooth scroll
+  // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -604,35 +637,19 @@
       if (target) {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth' });
-        navLinksEl?.classList.remove('show');
+        if (navLinks.classList.contains('show')) navLinks.classList.remove('show');
       }
     });
   });
 
-  // Resume download
-  document.getElementById('downloadResume')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    alert('📄 Upload your resume PDF to enable download');
-  });
-
-  // Contact form
-  const sendBtn = document.getElementById('sendMsgBtn');
-  const feedback = document.getElementById('formFeedback');
-  sendBtn?.addEventListener('click', () => {
-    const name = document.getElementById('nameInput')?.value.trim();
-    const email = document.getElementById('emailInput')?.value.trim();
-    const msg = document.getElementById('messageInput')?.value.trim();
-    if (!name || !email || !msg) {
-      feedback.innerHTML = '❌ Please fill all fields';
-      feedback.style.color = '#ff4444';
-      setTimeout(() => feedback.innerHTML = '', 3000);
-      return;
-    }
-    feedback.innerHTML = `✓ Thank you ${name}, Saikumar will respond to ${email}`;
-    feedback.style.color = '#00ff88';
-    document.getElementById('contactForm')?.reset();
-    setTimeout(() => feedback.innerHTML = '', 4000);
-  });
+  // Download resume placeholder
+  const resumeBtn = document.getElementById('downloadResume');
+  if (resumeBtn) {
+    resumeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('📄 Replace with your actual resume PDF file');
+    });
+  }
 </script>
 </body>
 </html>
