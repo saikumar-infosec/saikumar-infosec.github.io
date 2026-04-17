@@ -36,7 +36,6 @@
     .severity-critical { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
     .severity-high { background: rgba(255, 153, 0, 0.2); color: #ff9900; }
     .severity-medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-    .severity-low { background: rgba(0, 245, 160, 0.2); color: var(--primary); }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
@@ -54,9 +53,8 @@
     <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html">Resume</a></li>
       <li><a href="../knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="../resume.html">Resume</a></li>
       <li><a href="../blog.html">Write-ups</a></li>
       <li><a href="../tools.html">Tools</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
@@ -84,17 +82,15 @@
       <a href="path-traversal.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-folder-open"></i></div><h3>Path Traversal</h3><p>Reading arbitrary files from the server.</p><span class="severity severity-high">High</span></a>
       <a href="command-injection.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-terminal"></i></div><h3>Command Injection</h3><p>Executing arbitrary commands on the server.</p><span class="severity severity-critical">Critical</span></a>
       <a href="lfi-rfi.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-file-import"></i></div><h3>LFI / RFI (File Inclusion)</h3><p>Including local or remote files to execute code.</p><span class="severity severity-high">High</span></a>
-      <a href="race-conditions.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-tachometer-alt"></i></div><h3>Race Conditions</h3><p>Exploiting timing vulnerabilities in concurrent operations.</p><span class="severity severity-medium">Medium</span></a>
-      <a href="business-logic.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-brain"></i></div><h3>Business Logic Flaws</h3><p>Abusing application workflows for unintended benefits.</p><span class="severity severity-high">High</span></a>
-      <a href="open-redirect.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div><h3>Open Redirect</h3><p>Redirecting users to malicious external sites.</p><span class="severity severity-low">Low</span></a>
       <a href="cors.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div><h3>CORS Misconfiguration</h3><p>Improper cross-origin resource sharing policies.</p><span class="severity severity-medium">Medium</span></a>
+      <a href="open-redirect.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div><h3>Open Redirect</h3><p>Redirecting users to malicious external sites.</p><span class="severity severity-low">Low</span></a>
       <a href="recon.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-search"></i></div><h3>Reconnaissance</h3><p>Information gathering techniques and tools.</p><span class="severity severity-medium">Informational</span></a>
       <a href="checklist.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-check-square"></i></div><h3>Web Pentest Checklist</h3><p>Complete step-by-step testing methodology.</p><span class="severity severity-medium">Reference</span></a>
     </div>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p><p style="font-size: 0.7rem;"><a href="../index.html" style="color: var(--primary);">← Back to Resume</a></p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
