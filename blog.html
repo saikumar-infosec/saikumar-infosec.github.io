@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Write-ups | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Copy the same styles from your main CSS, add blog-specific */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --primary: #00ff88;
+      --bg-dark: #0a0c10;
+      --bg-card: #111827;
+      --text-primary: #f0f3fa;
+      --text-secondary: #9ca3af;
+      --border: #1f2937;
+    }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 12, 16, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .nav-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(135deg, #00ff88 0%, #00b4ff 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    
+    .page-header {
+      padding: 8rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 { font-size: 3rem; margin-bottom: 1rem; }
+    .page-header p { color: var(--text-secondary); max-width: 600px; }
+    
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 3rem 0;
+    }
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+    .blog-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .blog-date { font-size: 0.7rem; color: var(--primary); margin-bottom: 0.75rem; }
+    .blog-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .blog-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; }
+    .read-more { color: var(--primary); text-decoration: none; font-size: 0.85rem; }
+    .tag { display: inline-block; background: rgba(0, 255, 136, 0.1); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; color: var(--primary); margin-right: 0.5rem; }
+    
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    
+    @media (max-width: 768px) {
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="index.html" class="logo">Saikumar.Raju</a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="blog.html" class="active">Write-ups</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>Security Write-ups</h1>
+      <p>Technical deep-dives, vulnerability research, and lessons learned from real-world assessments.</p>
+    </div>
+
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-date">Coming Soon</div>
+        <h3>IDOR in Banking API: How I Accessed Another User's Transaction History</h3>
+        <p>Deep dive into an Insecure Direct Object Reference vulnerability discovered during a banking application assessment, including exploitation steps and remediation.</p>
+        <span class="tag">API Security</span>
+        <span class="tag">IDOR</span>
+        <div><a href="#" class="read-more">Read more →</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-date">Coming Soon</div>
+        <h3>JWT Misconfiguration: From Token to Account Takeover</h3>
+        <p>How a misconfigured JWT implementation allowed privilege escalation and complete account takeover across multiple user roles.</p>
+        <span class="tag">JWT</span>
+        <span class="tag">Authentication</span>
+        <div><a href="#" class="read-more">Read more →</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-date">Coming Soon</div>
+        <h3>AWS S3 Bucket Security: Common Misconfigurations and How to Find Them</h3>
+        <p>A practical guide to identifying publicly exposed S3 buckets, misconfigured policies, and sensitive data exposure in cloud environments.</p>
+        <span class="tag">AWS</span>
+        <span class="tag">Cloud Security</span>
+        <div><a href="#" class="read-more">Read more →</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-date">Coming Soon</div>
+        <h3>Android Pentesting: Bypassing Certificate Pinning</h3>
+        <p>Step-by-step techniques for bypassing certificate pinning on Android applications using Frida and Objection.</p>
+        <span class="tag">Mobile Security</span>
+        <span class="tag">Android</span>
+        <div><a href="#" class="read-more">Read more →</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-date">Coming Soon</div>
+        <h3>Privilege Escalation in Active Directory: A Pentester's Guide</h3>
+        <p>Common AD misconfigurations that lead to domain privilege escalation, with practical exploitation techniques.</p>
+        <span class="tag">Active Directory</span>
+        <span class="tag">Network Security</span>
+        <div><a href="#" class="read-more">Read more →</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-date">Coming Soon</div>
+        <h3>GraphQL API Security: Top Vulnerabilities and Testing Approaches</h3>
+        <p>How to test GraphQL APIs for introspection leaks, batch query attacks, and depth limit bypasses.</p>
+        <span class="tag">GraphQL</span>
+        <span class="tag">API Security</span>
+        <div><a href="#" class="read-more">Read more →</a></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
+</footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinksEl = document.getElementById('navLinks');
+  mobileBtn?.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+</script>
+</body>
+</html>
