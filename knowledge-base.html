@@ -18,7 +18,7 @@
     .logo span { color: var(--primary); }
     .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
     .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--primary); }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
     .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
     .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
     .page-header { padding: 6rem 0 2rem; text-align: center; }
@@ -55,9 +55,8 @@
     <a href="index.html" class="logo">Saikumar.<span>Raju</span></a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">Resume</a></li>
       <li><a href="knowledge-base.html" class="active">Knowledge Base</a></li>
-      <li><a href="resume.html">Resume</a></li>
       <li><a href="blog.html">Write-ups</a></li>
       <li><a href="tools.html">Tools</a></li>
       <li><a href="index.html#contact">Contact</a></li>
@@ -73,10 +72,7 @@
       <p>Comprehensive penetration testing methodology, exploitation techniques, and payloads organized by vulnerability type.</p>
     </div>
 
-    <div class="search-section">
-      <i class="fas fa-search"></i>
-      <input type="text" id="searchInput" placeholder="Search vulnerabilities, domains, or techniques...">
-    </div>
+    <div class="search-section"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search vulnerabilities, domains, or techniques..."></div>
 
     <div class="category-filter">
       <button class="filter-btn active" data-category="all">All</button>
@@ -103,7 +99,7 @@
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Knowledge Base with 100+ Vulnerabilities</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Knowledge Base with 100+ Vulnerabilities</p><p style="font-size: 0.7rem;"><a href="index.html" style="color: var(--primary);">← Back to Resume</a></p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
