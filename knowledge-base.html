@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; transition: all 0.3s ease; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; text-align: center; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .page-header p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+    .search-section { margin-bottom: 2rem; position: relative; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .search-section i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+    .search-section input { width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 40px; color: var(--text-primary); font-family: inherit; }
+    .category-filter { display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin: 2rem 0; }
+    .filter-btn { background: transparent; border: 1px solid var(--border); padding: 0.5rem 1.2rem; border-radius: 40px; color: var(--text-secondary); cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .filter-btn:hover, .filter-btn.active { background: var(--primary); border-color: var(--primary); color: #0a0c10; }
+    .domains-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; padding: 2rem 0 4rem; }
+    .domain-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; text-decoration: none; display: block; }
+    .domain-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .domain-icon { font-size: 2rem; color: var(--primary); margin-bottom: 1rem; }
+    .domain-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
+    .domain-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5; }
+    .vuln-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .vuln-tag { background: var(--bg-elevated); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem; color: var(--primary); }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="knowledge-base.html" class="active">Knowledge Base</a></li>
+      <li><a href="blog.html">Write-ups</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>📚 Security Knowledge Base</h1>
+      <p>Comprehensive penetration testing methodology, exploitation techniques, and 10,000+ payloads organized by vulnerability type.</p>
+    </div>
+
+    <div class="search-section">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search vulnerabilities, domains, or techniques...">
+    </div>
+
+    <div class="category-filter">
+      <button class="filter-btn active" data-category="all">All</button>
+      <button class="filter-btn" data-category="web">🌐 Web</button>
+      <button class="filter-btn" data-category="api">🔌 API</button>
+      <button class="filter-btn" data-category="mobile">📱 Mobile</button>
+      <button class="filter-btn" data-category="network">🖧 Network</button>
+      <button class="filter-btn" data-category="cloud">☁️ Cloud</button>
+      <button class="filter-btn" data-category="ad">🏢 Active Directory</button>
+      <button class="filter-btn" data-category="llm">🤖 LLM</button>
+      <button class="filter-btn" data-category="web3">⛓️ Web3</button>
+    </div>
+
+    <div class="domains-grid" id="domainsGrid">
+      <!-- Web Security -->
+      <div class="domain-card" data-category="web">
+        <div class="domain-icon"><i class="fas fa-globe"></i></div>
+        <h3>🌐 Web Security</h3>
+        <p>Complete web application penetration testing guide with 25+ vulnerabilities, real payloads, and exploitation techniques.</p>
+        <div class="vuln-list"><span class="vuln-tag">IDOR</span><span class="vuln-tag">SQLi</span><span class="vuln-tag">XSS</span><span class="vuln-tag">SSRF</span><span class="vuln-tag">XXE</span><span class="vuln-tag">SSTI</span><span class="vuln-tag">CSRF</span></div>
+        <a href="web/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- API Security -->
+      <div class="domain-card" data-category="api">
+        <div class="domain-icon"><i class="fas fa-plug"></i></div>
+        <h3>🔌 API Security</h3>
+        <p>REST API, GraphQL, and JWT testing methodologies with BOLA, mass assignment, and rate limiting attacks.</p>
+        <div class="vuln-list"><span class="vuln-tag">BOLA</span><span class="vuln-tag">Mass Assignment</span><span class="vuln-tag">GraphQL</span><span class="vuln-tag">JWT</span></div>
+        <a href="api/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Mobile Security -->
+      <div class="domain-card" data-category="mobile">
+        <div class="domain-icon"><i class="fas fa-mobile-alt"></i></div>
+        <h3>📱 Mobile Security</h3>
+        <p>Android and iOS penetration testing, including root bypass, certificate pinning, Frida scripts, and deep link vulnerabilities.</p>
+        <div class="vuln-list"><span class="vuln-tag">Android</span><span class="vuln-tag">iOS</span><span class="vuln-tag">Frida</span><span class="vuln-tag">Root Bypass</span></div>
+        <a href="mobile/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Network Security -->
+      <div class="domain-card" data-category="network">
+        <div class="domain-icon"><i class="fas fa-network-wired"></i></div>
+        <h3>🖧 Network Security</h3>
+        <p>Network reconnaissance, exploitation, privilege escalation (Linux/Windows), and lateral movement techniques.</p>
+        <div class="vuln-list"><span class="vuln-tag">Nmap</span><span class="vuln-tag">Metasploit</span><span class="vuln-tag">PrivEsc</span><span class="vuln-tag">Lateral Movement</span></div>
+        <a href="network/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Source Code Review -->
+      <div class="domain-card" data-category="web">
+        <div class="domain-icon"><i class="fas fa-code"></i></div>
+        <h3>💻 Source Code Review</h3>
+        <p>Manual source code review for PHP, Java, JavaScript, Python, and C# with dangerous functions and SAST tools.</p>
+        <div class="vuln-list"><span class="vuln-tag">PHP</span><span class="vuln-tag">Java</span><span class="vuln-tag">Python</span><span class="vuln-tag">JavaScript</span></div>
+        <a href="source-code/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Cloud Security -->
+      <div class="domain-card" data-category="cloud">
+        <div class="domain-icon"><i class="fas fa-cloud"></i></div>
+        <h3>☁️ Cloud Security</h3>
+        <p>AWS, Azure, GCP security assessments including IAM, S3, EC2, container security, and Kubernetes hardening.</p>
+        <div class="vuln-list"><span class="vuln-tag">AWS</span><span class="vuln-tag">Azure</span><span class="vuln-tag">GCP</span><span class="vuln-tag">K8s</span></div>
+        <a href="cloud/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- DevSecOps -->
+      <div class="domain-card" data-category="cloud">
+        <div class="domain-icon"><i class="fas fa-cogs"></i></div>
+        <h3>⚙️ DevSecOps</h3>
+        <p>CI/CD pipeline security, SAST/DAST integration, secrets scanning, SBOM, and Infrastructure as Code scanning.</p>
+        <div class="vuln-list"><span class="vuln-tag">CI/CD</span><span class="vuln-tag">SAST</span><span class="vuln-tag">Secrets</span><span class="vuln-tag">IaC</span></div>
+        <a href="devsecops/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Active Directory -->
+      <div class="domain-card" data-category="ad">
+        <div class="domain-icon"><i class="fas fa-users"></i></div>
+        <h3>🏢 Active Directory</h3>
+        <p>AD enumeration, Kerberoasting, AS-REP Roasting, Pass-the-Hash, Golden/Silver Ticket, DCSync, ACL abuse.</p>
+        <div class="vuln-list"><span class="vuln-tag">Kerberoasting</span><span class="vuln-tag">Golden Ticket</span><span class="vuln-tag">DCSync</span></div>
+        <a href="active-directory/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Red Teaming -->
+      <div class="domain-card" data-category="network">
+        <div class="domain-icon"><i class="fas fa-skull"></i></div>
+        <h3>🔴 Red Teaming</h3>
+        <p>C2 frameworks (Cobalt Strike, Mythic), phishing campaigns, AV/EDR evasion, persistence mechanisms, and OPSEC.</p>
+        <div class="vuln-list"><span class="vuln-tag">C2</span><span class="vuln-tag">Phishing</span><span class="vuln-tag">Evasion</span><span class="vuln-tag">Persistence</span></div>
+        <a href="red-teaming/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- LLM Security -->
+      <div class="domain-card" data-category="llm">
+        <div class="domain-icon"><i class="fas fa-robot"></i></div>
+        <h3>🤖 LLM Security</h3>
+        <p>Prompt injection, jailbreaking, model inversion, data poisoning, RAG security, and LLM API abuse.</p>
+        <div class="vuln-list"><span class="vuln-tag">Prompt Injection</span><span class="vuln-tag">Jailbreaking</span><span class="vuln-tag">RAG Security</span></div>
+        <a href="llm-security/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Web3 Security -->
+      <div class="domain-card" data-category="web3">
+        <div class="domain-icon"><i class="fas fa-link"></i></div>
+        <h3>⛓️ Web3 Security</h3>
+        <p>Smart contract vulnerabilities (reentrancy, integer overflow), front-running, flash loan attacks, and DeFi security.</p>
+        <div class="vuln-list"><span class="vuln-tag">Reentrancy</span><span class="vuln-tag">Front-running</span><span class="vuln-tag">Flash Loan</span></div>
+        <a href="web3-security/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+
+      <!-- Fuzzing & Discovery -->
+      <div class="domain-card" data-category="web">
+        <div class="domain-icon"><i class="fas fa-bomb"></i></div>
+        <h3>🛠️ Fuzzing & Discovery</h3>
+        <p>Directory fuzzing, parameter discovery, VHost enumeration, and 403 bypass techniques with comprehensive wordlists.</p>
+        <div class="vuln-list"><span class="vuln-tag">Directory Fuzzing</span><span class="vuln-tag">Parameter Discovery</span><span class="vuln-tag">403 Bypass</span></div>
+        <a href="fuzzing/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Knowledge Base with 100+ Vulnerabilities & 10,000+ Payloads</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  const searchInput = document.getElementById('searchInput');
+  const domainCards = document.querySelectorAll('.domain-card');
+  if (searchInput) { searchInput.addEventListener('keyup', function() { const term = this.value.toLowerCase(); domainCards.forEach(card => { const title = card.querySelector('h3')?.innerText.toLowerCase() || ''; const desc = card.querySelector('p')?.innerText.toLowerCase() || ''; if (title.includes(term) || desc.includes(term)) { card.style.display = 'block'; } else { card.style.display = 'none'; } }); }); }
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => { btn.addEventListener('click', () => { filterBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); const category = btn.getAttribute('data-category'); domainCards.forEach(card => { const cardCategory = card.getAttribute('data-category'); if (category === 'all' || cardCategory === category) { card.style.display = 'block'; } else { card.style.display = 'none'; } }); if (searchInput) searchInput.value = ''; }); });
+</script>
+</body>
+</html>
