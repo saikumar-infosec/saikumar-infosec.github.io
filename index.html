@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saikumar Raju | Cybersecurity Consultant</title>
+  <title>Saikumar Raju | Cybersecurity Consultant & Security Researcher</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -16,7 +16,7 @@
     .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
     .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
     .logo span { color: var(--primary); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
     .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--primary); }
     .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
@@ -29,40 +29,24 @@
     .contact-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
     .contact-chip { background: var(--bg-card); padding: 0.5rem 1.2rem; border-radius: 40px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border); }
     .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn { padding: 0.75rem 1.8rem; border-radius: 40px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+    .btn { padding: 0.75rem 1.8rem; border-radius: 40px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; cursor: pointer; }
     .btn-primary { background: var(--primary); color: #0a0c10; }
     .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
     .btn-outline { border: 1px solid var(--primary); color: var(--primary); background: transparent; }
     .btn-outline:hover { background: rgba(0, 245, 160, 0.1); transform: translateY(-2px); }
-    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-    .info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
-    .info-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .info-card h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 0.75rem; }
-    .info-card p { color: var(--text-secondary); line-height: 1.5; }
-    .section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; text-align: center; }
+    .stat-number { font-size: 2rem; font-weight: 800; color: var(--primary); }
+    .domains-section { padding: 4rem 0; }
     .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; position: relative; display: inline-block; }
     .section-title:after { content: ''; position: absolute; bottom: -8px; left: 0; width: 50px; height: 3px; background: var(--primary); }
-    .exp-grid { display: flex; flex-direction: column; gap: 1.5rem; }
-    .exp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
-    .exp-card:hover { border-color: var(--primary); transform: translateX(4px); }
-    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 1rem; }
-    .exp-role { font-size: 1.2rem; font-weight: 700; }
-    .exp-company { color: var(--primary); font-size: 0.9rem; }
-    .exp-date { background: var(--bg-elevated); padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem; }
-    .exp-list { list-style: none; }
-    .exp-list li { display: flex; gap: 0.75rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--text-secondary); }
-    .exp-list i { color: var(--primary); margin-top: 0.2rem; }
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-    .skill-tag { background: var(--bg-elevated); padding: 0.5rem 1.2rem; border-radius: 40px; font-size: 0.8rem; transition: all 0.2s; cursor: default; }
-    .skill-tag:hover { background: var(--primary); color: #0a0c10; }
-    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-    .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
-    .project-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .project-icon { width: 48px; height: 48px; background: rgba(0, 245, 160, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .project-icon i { font-size: 1.5rem; color: var(--primary); }
-    .project-card h3 { font-size: 1.1rem; margin-bottom: 0.75rem; }
-    .project-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; }
-    .project-link { color: var(--primary); text-decoration: none; font-size: 0.8rem; }
+    .domains-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .domain-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; text-decoration: none; display: block; }
+    .domain-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .domain-icon { font-size: 2rem; color: var(--primary); margin-bottom: 1rem; }
+    .domain-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
+    .domain-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; }
+    .vuln-count { font-size: 0.7rem; color: var(--primary); }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
     .footer-social { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; }
     .footer-social a { color: var(--text-secondary); font-size: 1.2rem; transition: color 0.2s; }
@@ -73,7 +57,6 @@
       .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
       .nav-links.show { display: flex; }
       .hero h1 { font-size: 2rem; }
-      .section-title { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -85,9 +68,7 @@
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
+      <li><a href="knowledge-base.html">Knowledge Base</a></li>
       <li><a href="blog.html">Write-ups</a></li>
       <li><a href="tools.html">Tools</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -101,55 +82,55 @@
     <div class="hero">
       <span class="hero-tag"><i class="fas fa-shield-alt"></i> Offensive Security Professional</span>
       <h1>Saikumar Raju</h1>
-      <p class="hero-subtitle">Cybersecurity Consultant</p>
-      <p class="hero-desc">Specializing in web & API penetration testing, mobile security, and cloud hardening. I help organizations identify critical vulnerabilities before attackers do.</p>
+      <p class="hero-subtitle">Cybersecurity Consultant & Security Researcher</p>
+      <p class="hero-desc">Specializing in web & API penetration testing, mobile security, cloud hardening, and vulnerability research. Building comprehensive security knowledge base with 100+ vulnerabilities and 10,000+ payloads.</p>
       <div class="contact-row">
         <span class="contact-chip"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
         <span class="contact-chip"><i class="fas fa-phone-alt"></i> +91 7337026773</span>
         <span class="contact-chip"><i class="fas fa-map-marker-alt"></i> India</span>
       </div>
       <div class="btn-group">
-        <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
+        <a href="knowledge-base.html" class="btn btn-primary"><i class="fas fa-database"></i> Explore Knowledge Base</a>
         <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
       </div>
     </div>
 
-    <div class="info-grid">
-      <div class="info-card"><h3>Focus Areas</h3><p>Web & API Pentesting · Mobile Security (Android/iOS) · Cloud Audits · Network VAPT</p></div>
-      <div class="info-card"><h3>Core Tools</h3><p>Burp Suite · Metasploit · Nessus · Nmap · Wireshark · AWS Inspector</p></div>
-      <div class="info-card"><h3>Standards</h3><p>OWASP Top 10 · MITRE ATT&CK · PCI DSS · NIST · ISO 27001</p></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-number">100+</div><div>Vulnerabilities Covered</div></div>
+      <div class="stat-card"><div class="stat-number">10,000+</div><div>Payloads</div></div>
+      <div class="stat-card"><div class="stat-number">15+</div><div>Security Domains</div></div>
+      <div class="stat-card"><div class="stat-number">50+</div><div>Practical Examples</div></div>
     </div>
 
-    <section id="experience" class="section">
-      <h2 class="section-title">Experience</h2>
-      <div class="exp-grid">
-        <div class="exp-card"><div class="exp-header"><div><div class="exp-role">Cyber Security Consultant</div><div class="exp-company">Astrocytech Petv Ltd</div></div><span class="exp-date">Present</span></div>
-          <ul class="exp-list"><li><i class="fas fa-chevron-right"></i> VAPT for web, API, and mobile platforms (Android & iOS)</li><li><i class="fas fa-chevron-right"></i> Network penetration testing using Nmap, Nessus, Metasploit</li><li><i class="fas fa-chevron-right"></i> AWS cloud security assessments (IAM, S3, Security Groups)</li></ul></div>
-        <div class="exp-card"><div class="exp-header"><div><div class="exp-role">Security Analyst</div><div class="exp-company">Yash Technologies</div></div><span class="exp-date">Previous</span></div>
-          <ul class="exp-list"><li><i class="fas fa-chevron-right"></i> Web & API security testing using Burp Suite, OWASP ZAP</li><li><i class="fas fa-chevron-right"></i> Network security assessments and red team exercises</li></ul></div>
+    <div class="domains-section">
+      <h2 class="section-title">Security Domains</h2>
+      <div class="domains-grid">
+        <a href="web/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-globe"></i></div><h3>🌐 Web Security</h3><p>OWASP Top 10, Injections, XSS, SSRF, XXE, SSTI, CSRF, Race Conditions, Business Logic</p><span class="vuln-count">25+ Vulnerabilities</span></a>
+        <a href="api/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-plug"></i></div><h3>🔌 API Security</h3><p>BOLA, Mass Assignment, Rate Limiting, GraphQL, JWT Attacks, Parameter Pollution</p><span class="vuln-count">10+ Vulnerabilities</span></a>
+        <a href="mobile/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-mobile-alt"></i></div><h3>📱 Mobile Security</h3><p>Android, iOS, Root Bypass, Certificate Pinning, Deep Links, Insecure Storage</p><span class="vuln-count">12+ Vulnerabilities</span></a>
+        <a href="network/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-network-wired"></i></div><h3>🖧 Network Security</h3><p>Recon, Exploitation, Linux/Windows Privesc, Lateral Movement</p><span class="vuln-count">8+ Categories</span></a>
+        <a href="source-code/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-code"></i></div><h3>💻 Source Code Review</h3><p>SAST Tools, PHP/Java/JS/Python Security, Dangerous Functions</p><span class="vuln-count">5+ Languages</span></a>
+        <a href="cloud/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-cloud"></i></div><h3>☁️ Cloud Security</h3><p>AWS, Azure, GCP, IAM, S3, Container Security, Kubernetes</p><span class="vuln-count">15+ Misconfigurations</span></a>
+        <a href="devsecops/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-cogs"></i></div><h3>⚙️ DevSecOps</h3><p>CI/CD Security, SAST/DAST, Secrets Scanning, IaC Scanning</p><span class="vuln-count">6+ Categories</span></a>
+        <a href="active-directory/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-users"></i></div><h3>🏢 Active Directory</h3><p>Kerberoasting, Pass-the-Hash, Golden Ticket, DCSync, ACL Abuse</p><span class="vuln-count">12+ Attacks</span></a>
+        <a href="red-teaming/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-skull"></i></div><h3>🔴 Red Teaming</h3><p>C2 Frameworks, Phishing, Evasion, Persistence, OPSEC</p><span class="vuln-count">8+ Categories</span></a>
+        <a href="llm-security/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-robot"></i></div><h3>🤖 LLM Security</h3><p>Prompt Injection, Jailbreaking, Model Inversion, RAG Security</p><span class="vuln-count">10+ Vulnerabilities</span></a>
+        <a href="web3-security/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-link"></i></div><h3>⛓️ Web3 Security</h3><p>Smart Contract Vulnerabilities, DeFi Attacks, Reentrancy</p><span class="vuln-count">12+ Vulnerabilities</span></a>
+        <a href="fuzzing/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-bomb"></i></div><h3>🛠️ Fuzzing & Discovery</h3><p>Directory Fuzzing, Parameter Discovery, VHost Enumeration</p><span class="vuln-count">5+ Categories</span></a>
       </div>
-    </section>
+    </div>
 
-    <section id="skills" class="section"><h2 class="section-title">Technical Skills</h2><div class="skills-grid"><span class="skill-tag">Web & API Security</span><span class="skill-tag">Network Pentesting</span><span class="skill-tag">Mobile Security</span><span class="skill-tag">Burp Suite</span><span class="skill-tag">Metasploit</span><span class="skill-tag">Nessus/Nmap</span><span class="skill-tag">AWS Cloud</span><span class="skill-tag">IDOR/BOLA</span><span class="skill-tag">JWT Attacks</span><span class="skill-tag">SSRF</span><span class="skill-tag">XXE</span></div></section>
-
-    <section id="projects" class="section"><h2 class="section-title">Key Projects</h2><div class="projects-grid"><div class="project-card"><div class="project-icon"><i class="fas fa-university"></i></div><h3>Banking Security Assessment</h3><p>IDOR, JWT misconfigurations uncovered.</p><a href="idor-banking-api.html" class="project-link">Read case study →</a></div>
-    <div class="project-card"><div class="project-icon"><i class="fas fa-network-wired"></i></div><h3>Infrastructure Pentesting</h3><p>Firewall misconfigurations discovered.</p><a href="#" class="project-link">View details →</a></div>
-    <div class="project-card"><div class="project-icon"><i class="fas fa-cloud"></i></div><h3>AWS Cloud Audit</h3><p>IAM and S3 hardening for fintech.</p><a href="aws-s3-misconfig.html" class="project-link">Read case study →</a></div></div></section>
-
-    <section id="contact" class="section"><h2 class="section-title">Let's Connect</h2><div class="info-grid"><div class="info-card"><h3>Contact</h3><p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p><p><i class="fas fa-phone-alt"></i> +91 7337026773</p><p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p><p><i class="fab fa-github"></i> github.com/saikumar-infosec</p></div>
-    <div class="info-card"><h3>Certifications</h3><p>CEH · Certified Cyber Security Pro · Qualys VM</p><p><strong>B.Tech - JNTU Anantapur</strong></p></div></div></section>
+    <section id="contact" style="padding: 4rem 0;"><h2 class="section-title">Let's Connect</h2><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;"><div class="stat-card"><h3 style="margin-bottom: 1rem;">Contact Info</h3><p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p><p><i class="fas fa-phone-alt"></i> +91 7337026773</p><p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p><p><i class="fab fa-github"></i> github.com/saikumar-infosec</p></div><div class="stat-card"><h3 style="margin-bottom: 1rem;">Certifications</h3><p>CEH (EC-Council)</p><p>Certified Cyber Security Professional</p><p>Qualys VM Certification</p><p><strong>B.Tech - JNTU Anantapur</strong></p></div></div></section>
   </div>
 </main>
 
-<footer><div class="footer-social"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a></div><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p></footer>
+<footer><div class="footer-social"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a></div><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p><p style="font-size: 0.7rem; margin-top: 0.5rem;">Knowledge Base with 100+ Vulnerabilities & 10,000+ Payloads</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const navLinks = document.getElementById('navLinks');
   if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { const href = this.getAttribute('href'); if (href === '#') return; const target = document.querySelector(href); if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); navLinks.classList.remove('show'); } }); });
   const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
-  const resumeBtn = document.getElementById('downloadResume'); if (resumeBtn) { resumeBtn.addEventListener('click', (e) => { e.preventDefault(); alert('📄 Upload your resume PDF to enable download'); }); }
 </script>
 </body>
 </html>
