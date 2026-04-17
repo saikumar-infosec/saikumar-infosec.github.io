@@ -3,54 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Saikumar Raju - Cybersecurity Consultant. Offensive security, VAPT, Web/API pentesting, Mobile security, AWS cloud security.">
+  <meta name="description" content="Saikumar Raju - Cybersecurity Consultant specializing in VAPT, Web/API Security, Mobile Security, and AWS Cloud Security">
   <meta name="author" content="Saikumar Raju">
   <title>Saikumar Raju | Cybersecurity Consultant</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
   <style>
     /* ========================================
        PROFESSIONAL CYBERSECURITY PORTFOLIO
-       Dark theme | Clean | No wasted space
+       Inspired by top industry portfolios
+       Dark theme | Clean | Modern
     ======================================== */
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    :root {
+      --primary: #00ff88;
+      --primary-dark: #00cc6a;
+      --primary-glow: rgba(0, 255, 136, 0.15);
+      --bg-dark: #0a0c10;
+      --bg-card: #111827;
+      --bg-elevated: #1a1f2e;
+      --text-primary: #f0f3fa;
+      --text-secondary: #9ca3af;
+      --border: #1f2937;
+      --gradient-1: linear-gradient(135deg, #00ff88 0%, #00b4ff 100%);
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #0a0c10;
-      color: #eef2ff;
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
       line-height: 1.5;
-      scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
-    /* Typography */
-    h1, h2, h3 {
-      font-weight: 600;
-      letter-spacing: -0.02em;
+    /* Custom Cursor */
+    .cursor {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.1s ease;
     }
 
-    /* Layout containers - full width with internal padding */
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 2rem;
+    .cursor-follower {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.15s ease;
+      opacity: 0.5;
+    }
+
+    /* Matrix Canvas Background */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.08;
+      pointer-events: none;
     }
 
     /* Navigation */
     .navbar {
-      position: sticky;
+      position: fixed;
       top: 0;
+      width: 100%;
       background: rgba(10, 12, 16, 0.95);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid #1f2937;
+      border-bottom: 1px solid var(--border);
       z-index: 1000;
       padding: 1rem 0;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
 
     .nav-flex {
@@ -65,106 +116,143 @@
       font-size: 1.5rem;
       font-weight: 700;
       text-decoration: none;
-      background: linear-gradient(135deg, #fff 0%, #60a5fa 100%);
+      background: var(--gradient-1);
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
+      letter-spacing: -0.02em;
     }
 
     .nav-links {
       display: flex;
-      gap: 2rem;
+      gap: 2.5rem;
       list-style: none;
       align-items: center;
-      flex-wrap: wrap;
     }
 
     .nav-links a {
       text-decoration: none;
-      color: #9ca3af;
+      color: var(--text-secondary);
       font-weight: 500;
       font-size: 0.9rem;
-      transition: color 0.2s;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.2s;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
     }
 
     .nav-links a:hover {
-      color: #60a5fa;
-    }
-
-    .theme-btn {
-      background: #1f2937;
-      border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 2rem;
-      color: #eef2ff;
-      cursor: pointer;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      color: var(--primary);
     }
 
     .mobile-menu {
       display: none;
       background: none;
       border: none;
-      color: #eef2ff;
+      color: var(--text-primary);
       font-size: 1.5rem;
       cursor: pointer;
     }
 
     /* Hero Section */
     .hero {
-      padding: 4rem 0 3rem;
-      border-bottom: 1px solid #1f2937;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 0 4rem;
+      position: relative;
     }
 
     .hero-grid {
       display: flex;
-      gap: 3rem;
+      gap: 4rem;
       flex-wrap: wrap;
     }
 
     .hero-main {
       flex: 2;
-      min-width: 260px;
+      min-width: 280px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--primary-glow);
+      border: 1px solid var(--primary);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
     }
 
     .hero-main h1 {
-      font-size: 3rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
     }
 
     .hero-title {
       font-size: 1.25rem;
-      color: #60a5fa;
+      color: var(--primary);
       font-weight: 500;
       margin-bottom: 1rem;
     }
 
-    .hero-desc {
-      color: #9ca3af;
+    .typing-wrapper {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
       margin-bottom: 1.5rem;
+    }
+
+    #typed-text {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .hero-desc {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
       max-width: 520px;
+      line-height: 1.6;
     }
 
     .contact-row {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .contact-chip {
-      background: #111827;
-      padding: 0.4rem 1rem;
-      border-radius: 2rem;
+      background: var(--bg-card);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
       font-size: 0.85rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      border: 1px solid #1f2937;
+      gap: 0.6rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .contact-chip:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
     }
 
     .btn-group {
@@ -174,94 +262,139 @@
     }
 
     .btn {
-      padding: 0.65rem 1.5rem;
-      border-radius: 2rem;
+      padding: 0.75rem 1.8rem;
+      border-radius: 40px;
       font-weight: 600;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
       font-size: 0.85rem;
       cursor: pointer;
       border: none;
+      transition: all 0.2s;
     }
 
     .btn-primary {
-      background: #2563eb;
-      color: white;
+      background: var(--primary);
+      color: var(--bg-dark);
     }
 
     .btn-primary:hover {
-      background: #1d4ed8;
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px var(--primary-glow);
     }
 
     .btn-outline {
       background: transparent;
-      border: 1px solid #3b82f6;
-      color: #3b82f6;
+      border: 1px solid var(--primary);
+      color: var(--primary);
     }
 
     .btn-outline:hover {
-      background: rgba(59, 130, 246, 0.1);
+      background: var(--primary-glow);
+      transform: translateY(-2px);
     }
 
     .hero-side {
       flex: 1;
-      min-width: 240px;
+      min-width: 260px;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
 
     .info-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
-      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .info-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
     }
 
     .info-card h3 {
       font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #60a5fa;
+      letter-spacing: 1.5px;
+      color: var(--primary);
       margin-bottom: 0.75rem;
     }
 
     .info-card p {
       font-size: 0.9rem;
-      color: #d1d5db;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
 
     /* Sections */
     .section {
-      padding: 4rem 0;
-      border-bottom: 1px solid #1f2937;
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .section-alt {
-      background: #0d1117;
+      background: rgba(17, 24, 39, 0.3);
     }
 
     .section-title {
-      font-size: 1.5rem;
+      font-size: 2rem;
       font-weight: 700;
-      margin-bottom: 2rem;
-      letter-spacing: -0.3px;
+      margin-bottom: 3rem;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: inline-block;
     }
 
-    /* Experience Cards */
-    .exp-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 2px;
     }
 
-    .exp-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
-      padding: 1.5rem;
+    /* Experience Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--primary);
+      opacity: 0.3;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      padding-left: 2rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -0.5rem;
+      top: 0.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--primary);
     }
 
     .exp-header {
@@ -270,26 +403,27 @@
       align-items: flex-start;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
 
     .exp-role {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 700;
     }
 
     .exp-company {
-      color: #9ca3af;
-      font-size: 0.85rem;
+      color: var(--primary);
+      font-size: 0.9rem;
       margin-top: 0.2rem;
     }
 
     .exp-badge {
-      background: #1f2937;
+      background: var(--bg-elevated);
       padding: 0.2rem 0.8rem;
-      border-radius: 2rem;
+      border-radius: 40px;
       font-size: 0.7rem;
       font-weight: 500;
+      border: 1px solid var(--border);
     }
 
     .exp-list {
@@ -301,60 +435,113 @@
       gap: 0.75rem;
       margin-bottom: 0.6rem;
       font-size: 0.9rem;
-      color: #d1d5db;
+      color: var(--text-secondary);
     }
 
     .exp-list i {
-      color: #3b82f6;
+      color: var(--primary);
       margin-top: 0.2rem;
       font-size: 0.7rem;
     }
 
-    /* Skills Tags */
-    .skills-grid {
+    /* Bento Grid for Skills */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .bento-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .bento-card h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+    }
+
+    .skills-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.6rem;
     }
 
     .skill-tag {
-      background: #1f2937;
-      padding: 0.5rem 1.2rem;
-      border-radius: 2rem;
-      font-size: 0.8rem;
+      background: var(--bg-elevated);
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
       font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .skill-tag:hover {
+      background: var(--primary);
+      color: var(--bg-dark);
     }
 
     /* Projects Grid */
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1.5rem;
     }
 
     .project-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
       padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-6px);
+    }
+
+    .project-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-glow);
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .project-icon i {
+      font-size: 1.5rem;
+      color: var(--primary);
     }
 
     .project-card h3 {
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
     .project-card p {
       font-size: 0.85rem;
-      color: #9ca3af;
+      color: var(--text-secondary);
       line-height: 1.5;
     }
 
     /* Credentials */
-    .certs-wrap {
+    .certs-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
@@ -362,51 +549,64 @@
     }
 
     .cert-item {
-      background: #1f2937;
-      padding: 0.5rem 1.2rem;
-      border-radius: 2rem;
+      background: var(--bg-card);
+      padding: 0.6rem 1.3rem;
+      border-radius: 40px;
       font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .cert-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
     }
 
     .edu-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 1rem;
-      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
       flex-wrap: wrap;
     }
 
     .edu-card i {
-      font-size: 2rem;
-      color: #3b82f6;
+      font-size: 2.5rem;
+      color: var(--primary);
     }
 
-    /* Contact */
+    /* Contact Section */
     .contact-flex {
       display: flex;
       flex-wrap: wrap;
-      gap: 2.5rem;
+      gap: 3rem;
     }
 
     .contact-info {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.2rem;
     }
 
     .contact-item {
       display: flex;
       align-items: center;
       gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .contact-item i {
-      width: 1.5rem;
-      color: #3b82f6;
+      width: 2rem;
+      color: var(--primary);
+      font-size: 1.2rem;
     }
 
     .contact-form {
@@ -418,16 +618,20 @@
 
     .contact-form input,
     .contact-form textarea {
-      background: #111827;
-      border: 1px solid #1f2937;
-      padding: 0.8rem 1rem;
-      border-radius: 0.75rem;
-      color: #eef2ff;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.2rem;
+      border-radius: 1rem;
+      color: var(--text-primary);
       font-family: inherit;
+      transition: all 0.2s;
     }
 
-    .contact-form button {
-      width: fit-content;
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
     }
 
     #formFeedback {
@@ -439,68 +643,9 @@
     footer {
       text-align: center;
       padding: 2rem;
-      background: #0a0c10;
-      border-top: 1px solid #1f2937;
-      color: #6b7280;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
       font-size: 0.8rem;
-    }
-
-    /* Light Mode */
-    body.light {
-      background: #f3f4f6;
-      color: #111827;
-    }
-
-    body.light .navbar {
-      background: rgba(255, 255, 255, 0.95);
-      border-bottom-color: #e5e7eb;
-    }
-
-    body.light .logo {
-      background: linear-gradient(135deg, #111827 0%, #2563eb 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-    }
-
-    body.light .nav-links a {
-      color: #4b5563;
-    }
-
-    body.light .theme-btn {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    body.light .hero-desc,
-    body.light .exp-list li,
-    body.light .project-card p {
-      color: #4b5563;
-    }
-
-    body.light .contact-chip,
-    body.light .exp-card,
-    body.light .project-card,
-    body.light .info-card,
-    body.light .edu-card,
-    body.light .contact-form input,
-    body.light .contact-form textarea {
-      background: #ffffff;
-      border-color: #e5e7eb;
-    }
-
-    body.light .skill-tag,
-    body.light .cert-item {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    body.light .section-alt {
-      background: #f9fafb;
-    }
-
-    body.light footer {
-      background: #f3f4f6;
-      border-top-color: #e5e7eb;
     }
 
     /* Responsive */
@@ -508,9 +653,11 @@
       .container {
         padding: 0 1.25rem;
       }
+      
       .mobile-menu {
         display: block;
       }
+      
       .nav-links {
         display: none;
         width: 100%;
@@ -519,238 +666,394 @@
         padding: 1rem 0;
         gap: 1rem;
       }
+      
       .nav-links.show {
         display: flex;
       }
+      
       .hero-main h1 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
       }
+      
       .section-title {
-        font-size: 1.3rem;
+        font-size: 1.6rem;
       }
+      
+      .timeline {
+        padding-left: 1rem;
+      }
+      
+      .cursor, .cursor-follower {
+        display: none;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container nav-flex">
-      <a href="#" class="logo">Saikumar.Raju</a>
-      <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#credentials">Credentials</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><button class="theme-btn" id="darkModeToggle"><i class="fas fa-moon"></i> Dark</button></li>
-      </ul>
-    </div>
-  </nav>
 
-  <main>
-    <div class="container">
-      <!-- Hero -->
-      <div class="hero">
-        <div class="hero-grid">
-          <div class="hero-main">
-            <h1>Saikumar Raju</h1>
-            <p class="hero-title">Cybersecurity Consultant</p>
-            <p class="hero-desc">Offensive security professional focused on application security, infrastructure assessments, and cloud hardening. Helping engineering teams build resilient systems through practical vulnerability management.</p>
-            <div class="contact-row">
-              <span class="contact-chip"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
-              <span class="contact-chip"><i class="fas fa-phone-alt"></i> +91 7337026773</span>
-              <span class="contact-chip"><i class="fas fa-map-marker-alt"></i> India</span>
-            </div>
-            <div class="btn-group">
-              <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
-              <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
-            </div>
+<canvas id="matrix-bg"></canvas>
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="#" class="logo">Saikumar.Raju</a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#credentials">Credentials</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-grid">
+        <div class="hero-main" data-aos="fade-right" data-aos-duration="1000">
+          <span class="hero-badge"><i class="fas fa-shield-alt"></i> Offensive Security Professional</span>
+          <h1>Saikumar Raju</h1>
+          <p class="hero-title">Cybersecurity Consultant</p>
+          <div class="typing-wrapper">
+            <span>Specializing in </span><span id="typed-text"></span>
           </div>
-          <div class="hero-side">
-            <div class="info-card">
-              <h3>Focus Areas</h3>
-              <p>Web & API Pentesting · Mobile Security · Cloud Audits · Network VAPT</p>
-            </div>
-            <div class="info-card">
-              <h3>Core Tools</h3>
-              <p>Burp Suite, Metasploit, Nessus, Nmap, Wireshark, AWS Inspector</p>
-            </div>
+          <p class="hero-desc">
+            Offensive security professional focused on application security, infrastructure assessments, 
+            and cloud hardening. Helping engineering teams build resilient systems through practical 
+            vulnerability management and secure remediation strategies.
+          </p>
+          <div class="contact-row">
+            <span class="contact-chip"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
+            <span class="contact-chip"><i class="fas fa-phone-alt"></i> +91 7337026773</span>
+            <span class="contact-chip"><i class="fas fa-map-marker-alt"></i> India</span>
+          </div>
+          <div class="btn-group">
+            <a href="#" class="btn btn-primary" id="downloadResume"><i class="fas fa-file-pdf"></i> Download Resume</a>
+            <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
+          </div>
+        </div>
+        <div class="hero-side" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+          <div class="info-card">
+            <h3>Focus Areas</h3>
+            <p>Web & API Pentesting · Mobile Security · Cloud Audits · Network VAPT</p>
+          </div>
+          <div class="info-card">
+            <h3>Core Tools</h3>
+            <p>Burp Suite, Metasploit, Nessus, Nmap, Wireshark, AWS Inspector</p>
+          </div>
+          <div class="info-card">
+            <h3>Industry Standards</h3>
+            <p>OWASP Top 10 · MITRE ATT&CK · PCI DSS · NIST Framework</p>
           </div>
         </div>
       </div>
-
-      <!-- Experience -->
-      <section id="experience" class="section">
-        <h2 class="section-title">Professional Experience</h2>
-        <div class="exp-grid">
-          <div class="exp-card">
-            <div class="exp-header">
-              <div>
-                <div class="exp-role">Cyber Security Consultant</div>
-                <div class="exp-company">Astrocytech Petv Ltd</div>
-              </div>
-              <span class="exp-badge">Present</span>
-            </div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, APIs, and mobile platforms (Android & iOS)</li>
-              <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
-              <li><i class="fas fa-chevron-right"></i> Delivered actionable security reports with prioritized remediation strategies</li>
-              <li><i class="fas fa-chevron-right"></i> Executed mobile security assessments identifying weak API protection and unsafe data storage</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted cloud security assessments on AWS environments (IAM, S3, Security Groups)</li>
-            </ul>
-          </div>
-          <div class="exp-card">
-            <div class="exp-header">
-              <div>
-                <div class="exp-role">Security Analyst</div>
-                <div class="exp-company">Yash Technologies</div>
-              </div>
-              <span class="exp-badge">Previous</span>
-            </div>
-            <ul class="exp-list">
-              <li><i class="fas fa-chevron-right"></i> Performed web and API security testing using OWASP ZAP, Burp Suite, and SQLMap</li>
-              <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations and weak encryption</li>
-              <li><i class="fas fa-chevron-right"></i> Supported red team exercises and risk assessment processes</li>
-              <li><i class="fas fa-chevron-right"></i> Provided technical reports with detailed mitigation plans</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- Skills -->
-      <section id="skills" class="section section-alt">
-        <h2 class="section-title">Technical Skills</h2>
-        <div class="skills-grid">
-          <span class="skill-tag">Web & API Security (OWASP Top 10)</span>
-          <span class="skill-tag">Network Penetration Testing</span>
-          <span class="skill-tag">Mobile Security (Android/iOS)</span>
-          <span class="skill-tag">Burp Suite / Metasploit</span>
-          <span class="skill-tag">Nessus / Nmap / Wireshark</span>
-          <span class="skill-tag">AWS Cloud Security Audits</span>
-          <span class="skill-tag">IAM & S3 Hardening</span>
-          <span class="skill-tag">Vulnerability Management</span>
-          <span class="skill-tag">API Pentesting & JWT attacks</span>
-          <span class="skill-tag">Red Team Support</span>
-        </div>
-      </section>
-
-      <!-- Projects -->
-      <section id="projects" class="section">
-        <h2 class="section-title">Key Projects</h2>
-        <div class="projects-grid">
-          <div class="project-card">
-            <h3><i class="fas fa-university"></i> Banking Application Security Assessment</h3>
-            <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered business logic flaws, IDOR vulnerabilities, JWT misconfigurations, and XSS.</p>
-          </div>
-          <div class="project-card">
-            <h3><i class="fas fa-network-wired"></i> Infrastructure Penetration Testing</h3>
-            <p>Internal and external network assessments for enterprise environments. Discovered firewall misconfigurations, weak authentication, and privilege escalation paths.</p>
-          </div>
-          <div class="project-card">
-            <h3><i class="fas fa-cloud"></i> AWS Cloud Security Review</h3>
-            <p>In-depth cloud security audit for a fintech client, reviewing IAM roles, S3 bucket permissions, security group rules, and logging configurations.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Credentials -->
-      <section id="credentials" class="section section-alt">
-        <h2 class="section-title">Certifications & Education</h2>
-        <div class="certs-wrap">
-          <span class="cert-item"><i class="fas fa-certificate"></i> CEH – EC-Council</span>
-          <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional</span>
-          <span class="cert-item"><i class="fas fa-certificate"></i> Qualys VM Certification</span>
-        </div>
-        <div class="edu-card">
-          <i class="fas fa-graduation-cap"></i>
-          <div>
-            <strong>B.Tech / B.E. – Computer Science</strong><br>
-            JNTU College of Engineering, Anantapur
-          </div>
-        </div>
-      </section>
-
-      <!-- Contact -->
-      <section id="contact" class="section">
-        <h2 class="section-title">Let's Connect</h2>
-        <div class="contact-flex">
-          <div class="contact-info">
-            <div class="contact-item"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
-            <div class="contact-item"><i class="fas fa-phone-alt"></i> +91 7337026773</div>
-            <div class="contact-item"><i class="fas fa-map-marker-alt"></i> India (open for consulting & full-time)</div>
-            <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
-          </div>
-          <form class="contact-form" id="contactForm">
-            <input type="text" placeholder="Full name" id="nameInput">
-            <input type="email" placeholder="Email address" id="emailInput">
-            <textarea rows="4" placeholder="Message or inquiry about security assessments" id="messageInput"></textarea>
-            <button type="button" class="btn btn-primary" id="sendMsgBtn">Send Message</button>
-            <p id="formFeedback"></p>
-          </form>
-        </div>
-      </section>
     </div>
-  </main>
 
-  <footer>
-    <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
-    <p style="font-size: 0.7rem; margin-top: 0.5rem;">Focus on actionable security, risk reduction, and engineering collaboration</p>
-  </footer>
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+      <h2 class="section-title" data-aos="fade-up">Professional Experience</h2>
+      <div class="timeline">
+        <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Cyber Security Consultant</div>
+              <div class="exp-company">Astrocytech Petv Ltd</div>
+            </div>
+            <span class="exp-badge">Present</span>
+          </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, APIs, and mobile platforms (Android & iOS)</li>
+            <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
+            <li><i class="fas fa-chevron-right"></i> Delivered actionable security reports with prioritized remediation strategies</li>
+            <li><i class="fas fa-chevron-right"></i> Executed mobile security assessments identifying weak API protection and unsafe data storage</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted cloud security assessments on AWS environments (IAM, S3, Security Groups)</li>
+          </ul>
+        </div>
+        <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Security Analyst</div>
+              <div class="exp-company">Yash Technologies</div>
+            </div>
+            <span class="exp-badge">Previous</span>
+          </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Performed web and API security testing using OWASP ZAP, Burp Suite, and SQLMap</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations and weak encryption</li>
+            <li><i class="fas fa-chevron-right"></i> Supported red team exercises and risk assessment processes</li>
+            <li><i class="fas fa-chevron-right"></i> Provided technical reports with detailed mitigation plans</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-  <script>
-    // Mobile menu toggle
-    const mobileBtn = document.getElementById('mobileMenuBtn');
-    const navLinksEl = document.getElementById('navLinks');
-    if (mobileBtn) {
-      mobileBtn.addEventListener('click', () => navLinksEl.classList.toggle('show'));
-    }
+    <!-- Skills Section - Bento Grid -->
+    <section id="skills" class="section section-alt">
+      <h2 class="section-title" data-aos="fade-up">Technical Arsenal</h2>
+      <div class="bento-grid">
+        <div class="bento-card" data-aos="fade-up" data-aos-delay="50">
+          <h3><i class="fas fa-globe"></i> Web & API Security</h3>
+          <div class="skills-tags">
+            <span class="skill-tag">OWASP Top 10</span>
+            <span class="skill-tag">API Pentesting</span>
+            <span class="skill-tag">JWT Attacks</span>
+            <span class="skill-tag">IDOR</span>
+            <span class="skill-tag">XSS/CSRF</span>
+            <span class="skill-tag">SQL Injection</span>
+          </div>
+        </div>
+        <div class="bento-card" data-aos="fade-up" data-aos-delay="100">
+          <h3><i class="fas fa-network-wired"></i> Network Security</h3>
+          <div class="skills-tags">
+            <span class="skill-tag">Nmap</span>
+            <span class="skill-tag">Nessus</span>
+            <span class="skill-tag">Metasploit</span>
+            <span class="skill-tag">Wireshark</span>
+            <span class="skill-tag">Firewall Auditing</span>
+            <span class="skill-tag">Privilege Escalation</span>
+          </div>
+        </div>
+        <div class="bento-card" data-aos="fade-up" data-aos-delay="150">
+          <h3><i class="fas fa-mobile-alt"></i> Mobile Security</h3>
+          <div class="skills-tags">
+            <span class="skill-tag">Android Pentesting</span>
+            <span class="skill-tag">iOS Security</span>
+            <span class="skill-tag">API Protection</span>
+            <span class="skill-tag">Data Storage Analysis</span>
+          </div>
+        </div>
+        <div class="bento-card" data-aos="fade-up" data-aos-delay="200">
+          <h3><i class="fas fa-cloud"></i> Cloud Security</h3>
+          <div class="skills-tags">
+            <span class="skill-tag">AWS IAM</span>
+            <span class="skill-tag">S3 Hardening</span>
+            <span class="skill-tag">Security Groups</span>
+            <span class="skill-tag">CloudTrail</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    // Dark/Light mode
-    const darkToggle = document.getElementById('darkModeToggle');
-    darkToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light');
-      const isLight = document.body.classList.contains('light');
-      darkToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
-    });
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+      <h2 class="section-title" data-aos="fade-up">Key Engagements</h2>
+      <div class="projects-grid">
+        <div class="project-card" data-aos="fade-up" data-aos-delay="50">
+          <div class="project-icon"><i class="fas fa-university"></i></div>
+          <h3>Banking Application Security Assessment</h3>
+          <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered business logic flaws, IDOR vulnerabilities, JWT misconfigurations, and XSS.</p>
+        </div>
+        <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="project-icon"><i class="fas fa-network-wired"></i></div>
+          <h3>Infrastructure Penetration Testing</h3>
+          <p>Internal and external network assessments for enterprise environments. Discovered firewall misconfigurations, weak authentication, and privilege escalation paths.</p>
+        </div>
+        <div class="project-card" data-aos="fade-up" data-aos-delay="150">
+          <div class="project-icon"><i class="fas fa-cloud"></i></div>
+          <h3>AWS Cloud Security Review</h3>
+          <p>In-depth cloud security audit for a fintech client, reviewing IAM roles, S3 bucket permissions, security group rules, and logging configurations.</p>
+        </div>
+      </div>
+    </section>
 
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href === '#') return;
-        const target = document.querySelector(href);
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth' });
-          if (navLinksEl.classList.contains('show')) navLinksEl.classList.remove('show');
-        }
-      });
-    });
+    <!-- Credentials -->
+    <section id="credentials" class="section section-alt">
+      <h2 class="section-title" data-aos="fade-up">Certifications & Education</h2>
+      <div class="certs-grid" data-aos="fade-up" data-aos-delay="100">
+        <span class="cert-item"><i class="fas fa-certificate"></i> CEH – EC-Council</span>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional</span>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Qualys VM Certification</span>
+      </div>
+      <div class="edu-card" data-aos="fade-up" data-aos-delay="200">
+        <i class="fas fa-graduation-cap"></i>
+        <div>
+          <strong style="font-size: 1.1rem;">B.Tech / B.E. – Computer Science</strong><br>
+          <span style="color: var(--text-secondary);">JNTU College of Engineering, Anantapur</span>
+        </div>
+      </div>
+    </section>
 
-    // Resume download placeholder
-    document.getElementById('downloadResume')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Upload your resume PDF to enable download');
-    });
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <h2 class="section-title" data-aos="fade-up">Let's Connect</h2>
+      <div class="contact-flex">
+        <div class="contact-info" data-aos="fade-right" data-aos-delay="100">
+          <div class="contact-item"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
+          <div class="contact-item"><i class="fas fa-phone-alt"></i> +91 7337026773</div>
+          <div class="contact-item"><i class="fas fa-map-marker-alt"></i> India (Open for consulting & full-time)</div>
+          <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
+          <div class="contact-item"><i class="fab fa-github"></i> github.com/saikumar-raju</div>
+        </div>
+        <form class="contact-form" id="contactForm" data-aos="fade-left" data-aos-delay="200">
+          <input type="text" placeholder="Full name" id="nameInput">
+          <input type="email" placeholder="Email address" id="emailInput">
+          <textarea rows="4" placeholder="Message or inquiry about security assessments" id="messageInput"></textarea>
+          <button type="button" class="btn btn-primary" id="sendMsgBtn" style="width: fit-content;">Send Message <i class="fas fa-paper-plane"></i></button>
+          <p id="formFeedback"></p>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
 
-    // Contact form
-    const sendBtn = document.getElementById('sendMsgBtn');
-    const feedback = document.getElementById('formFeedback');
-    sendBtn?.addEventListener('click', () => {
-      const name = document.getElementById('nameInput')?.value.trim();
-      const email = document.getElementById('emailInput')?.value.trim();
-      const msg = document.getElementById('messageInput')?.value.trim();
-      if (!name || !email || !msg) {
-        feedback.innerHTML = '❌ Please fill all fields';
-        feedback.style.color = '#ef4444';
-        setTimeout(() => feedback.innerHTML = '', 3000);
-        return;
+<footer>
+  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
+  <p style="font-size: 0.7rem; margin-top: 0.5rem;">Focus on actionable security, risk reduction, and engineering collaboration</p>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  // Initialize AOS
+  AOS.init({ once: true, duration: 800 });
+
+  // Matrix Background Animation
+  const canvas = document.getElementById('matrix-bg');
+  const ctx = canvas.getContext('2d');
+  
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+  const fontSize = 14;
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = new Array(columns).fill(1);
+  
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(10, 12, 16, 0.04)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00ff88';
+    ctx.font = `${fontSize}px monospace`;
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
       }
-      feedback.innerHTML = `✓ Thank you ${name}, Saikumar will respond to ${email}`;
-      feedback.style.color = '#10b981';
-      document.getElementById('contactForm')?.reset();
-      setTimeout(() => feedback.innerHTML = '', 4000);
+      drops[i]++;
+    }
+  }
+  setInterval(drawMatrix, 50);
+
+  // Custom Cursor
+  const cursor = document.querySelector('.cursor');
+  const follower = document.querySelector('.cursor-follower');
+  
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+    follower.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+  });
+  
+  document.querySelectorAll('a, button, .btn, .project-card, .bento-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      follower.style.transform = 'scale(1.5)';
+      follower.style.opacity = '0.3';
     });
-  </script>
+    el.addEventListener('mouseleave', () => {
+      follower.style.transform = 'scale(1)';
+      follower.style.opacity = '0.5';
+    });
+  });
+
+  // Typing Animation
+  const roles = ['Web & API Pentesting', 'Mobile Security', 'Cloud Security Audits', 'Network VAPT'];
+  let roleIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  const typedElement = document.getElementById('typed-text');
+  
+  function typeEffect() {
+    const currentRole = roles[roleIndex];
+    if (isDeleting) {
+      typedElement.textContent = currentRole.substring(0, charIndex - 1);
+      charIndex--;
+    } else {
+      typedElement.textContent = currentRole.substring(0, charIndex + 1);
+      charIndex++;
+    }
+    
+    if (!isDeleting && charIndex === currentRole.length) {
+      isDeleting = true;
+      setTimeout(typeEffect, 2000);
+      return;
+    }
+    
+    if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      roleIndex = (roleIndex + 1) % roles.length;
+    }
+    
+    setTimeout(typeEffect, isDeleting ? 50 : 100);
+  }
+  typeEffect();
+
+  // Mobile menu
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinksEl = document.getElementById('navLinks');
+  mobileBtn?.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+        navLinksEl?.classList.remove('show');
+      }
+    });
+  });
+
+  // Resume download
+  document.getElementById('downloadResume')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('📄 Replace with your actual resume PDF file');
+  });
+
+  // Contact form
+  const sendBtn = document.getElementById('sendMsgBtn');
+  const feedback = document.getElementById('formFeedback');
+  sendBtn?.addEventListener('click', () => {
+    const name = document.getElementById('nameInput')?.value.trim();
+    const email = document.getElementById('emailInput')?.value.trim();
+    const msg = document.getElementById('messageInput')?.value.trim();
+    
+    if (!name || !email || !msg) {
+      feedback.innerHTML = '❌ Please fill all fields';
+      feedback.style.color = '#ff4444';
+      setTimeout(() => feedback.innerHTML = '', 3000);
+      return;
+    }
+    
+    feedback.innerHTML = `✓ Thank you ${name}, Saikumar will respond to ${email}`;
+    feedback.style.color = '#00ff88';
+    document.getElementById('contactForm')?.reset();
+    setTimeout(() => feedback.innerHTML = '', 4000);
+  });
+</script>
 </body>
 </html>
