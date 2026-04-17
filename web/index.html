@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Security | Saikumar Raju Knowledge Base</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; transition: all 0.3s ease; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .page-header p { color: var(--text-secondary); max-width: 600px; }
+    .vulns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; padding: 2rem 0 4rem; }
+    .vuln-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; text-decoration: none; display: block; }
+    .vuln-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .vuln-icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 0.75rem; }
+    .vuln-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .vuln-card p { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.75rem; }
+    .severity { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 600; }
+    .severity-critical { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+    .severity-high { background: rgba(255, 153, 0, 0.2); color: #ff9900; }
+    .severity-medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / Web Security</div>
+    <div class="page-header">
+      <h1>🌐 Web Security</h1>
+      <p>Complete web application penetration testing guide. Each vulnerability includes description, classification, attack surface, detection methodology, payloads, exploitation steps, mitigation, and real-world examples.</p>
+    </div>
+
+    <div class="vulns-grid">
+      <!-- IDOR -->
+      <a href="idor.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-key"></i></div>
+        <h3>IDOR (Insecure Direct Object Reference)</h3>
+        <p>Accessing unauthorized resources by modifying object identifiers in requests.</p>
+        <span class="severity severity-high">High Severity</span>
+      </a>
+
+      <!-- SQL Injection -->
+      <a href="sql-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-database"></i></div>
+        <h3>SQL Injection</h3>
+        <p>Injecting malicious SQL queries to manipulate databases.</p>
+        <span class="severity severity-critical">Critical Severity</span>
+      </a>
+
+      <!-- XSS -->
+      <a href="xss.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>Cross-Site Scripting (XSS)</h3>
+        <p>Injecting malicious scripts into web applications.</p>
+        <span class="severity severity-medium">Medium Severity</span>
+      </a>
+
+      <!-- SSRF -->
+      <a href="ssrf.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-server"></i></div>
+        <h3>Server-Side Request Forgery (SSRF)</h3>
+        <p>Making servers send requests to internal or external resources.</p>
+        <span class="severity severity-critical">Critical Severity</span>
+      </a>
+
+      <!-- XXE -->
+      <a href="xxe.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-code"></i></div>
+        <h3>XXE (XML External Entity)</h3>
+        <p>Exploiting XML parsers to read files or perform SSRF.</p>
+        <span class="severity severity-critical">Critical Severity</span>
+      </a>
+
+      <!-- SSTI -->
+      <a href="ssti.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-paint-roller"></i></div>
+        <h3>SSTI (Server-Side Template Injection)</h3>
+        <p>Injecting malicious code into template engines.</p>
+        <span class="severity severity-critical">Critical Severity</span>
+      </a>
+
+      <!-- CSRF -->
+      <a href="csrf.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-user-secret"></i></div>
+        <h3>CSRF (Cross-Site Request Forgery)</h3>
+        <p>Tricking users into performing unintended actions.</p>
+        <span class="severity severity-medium">Medium Severity</span>
+      </a>
+
+      <!-- CORS -->
+      <a href="cors.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div>
+        <h3>CORS Misconfiguration</h3>
+        <p>Improper cross-origin resource sharing policies.</p>
+        <span class="severity severity-medium">Medium Severity</span>
+      </a>
+
+      <!-- Path Traversal -->
+      <a href="path-traversal.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-folder-open"></i></div>
+        <h3>Path Traversal</h3>
+        <p>Reading arbitrary files from the server.</p>
+        <span class="severity severity-high">High Severity</span>
+      </a>
+
+      <!-- Command Injection -->
+      <a href="command-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-terminal"></i></div>
+        <h3>Command Injection</h3>
+        <p>Executing arbitrary commands on the server.</p>
+        <span class="severity severity-critical">Critical Severity</span>
+      </a>
+
+      <!-- LFI/RFI -->
+      <a href="lfi-rfi.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-import"></i></div>
+        <h3>LFI / RFI (File Inclusion)</h3>
+        <p>Including local or remote files to execute code.</p>
+        <span class="severity severity-high">High Severity</span>
+      </a>
+
+      <!-- Race Conditions -->
+      <a href="race-conditions.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-tachometer-alt"></i></div>
+        <h3>Race Conditions</h3>
+        <p>Exploiting timing vulnerabilities in concurrent operations.</p>
+        <span class="severity severity-medium">Medium Severity</span>
+      </a>
+
+      <!-- Business Logic -->
+      <a href="business-logic.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-brain"></i></div>
+        <h3>Business Logic Flaws</h3>
+        <p>Abusing application workflows for unintended benefits.</p>
+        <span class="severity severity-high">High Severity</span>
+      </a>
+
+      <!-- Open Redirect -->
+      <a href="open-redirect.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div>
+        <h3>Open Redirect</h3>
+        <p>Redirecting users to malicious external sites.</p>
+        <span class="severity severity-low">Low Severity</span>
+      </a>
+
+      <!-- Reconnaissance -->
+      <a href="recon.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-search"></i></div>
+        <h3>Reconnaissance</h3>
+        <p>Information gathering techniques and tools.</p>
+        <span class="severity severity-medium">Informational</span>
+      </a>
+
+      <!-- Checklist -->
+      <a href="checklist.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-check-square"></i></div>
+        <h3>Web Pentest Checklist</h3>
+        <p>Complete step-by-step testing methodology.</p>
+        <span class="severity severity-medium">Reference</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+</script>
+</body>
+</html>
