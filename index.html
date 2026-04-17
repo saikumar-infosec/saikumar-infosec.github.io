@@ -31,15 +31,15 @@
     .btn-download { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: #0a0c10; padding: 0.7rem 1.5rem; border-radius: 40px; text-decoration: none; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer; font-family: inherit; }
     .btn-download:hover { transform: translateY(-2px); background: var(--primary-dark); }
     
-    /* Quick Access Cards - Knowledge Base, Write-ups, Tools */
-    .quick-access { margin: 2rem 0; }
-    .quick-title { font-size: 1.2rem; margin-bottom: 1rem; color: var(--primary); }
-    .access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-    .access-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; text-align: center; transition: all 0.2s; text-decoration: none; display: block; }
-    .access-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .access-icon { font-size: 2rem; color: var(--primary); margin-bottom: 0.75rem; }
-    .access-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.1rem; }
-    .access-card p { color: var(--text-secondary); font-size: 0.8rem; }
+    /* Quick Access Cards - Will appear at bottom */
+    .quick-access { margin: 2rem 0 1rem; }
+    .quick-title { font-size: 1.3rem; margin-bottom: 1.5rem; color: var(--primary); text-align: center; }
+    .access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .access-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.8rem; text-align: center; transition: all 0.2s; text-decoration: none; display: block; }
+    .access-card:hover { border-color: var(--primary); transform: translateY(-6px); }
+    .access-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+    .access-card h3 { color: var(--text-primary); margin-bottom: 0.75rem; font-size: 1.2rem; }
+    .access-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
     
     /* Resume Sections */
     .resume-section { margin: 2.5rem 0; }
@@ -80,6 +80,7 @@
       .resume-header h1 { font-size: 2rem; }
       .contact-info-grid { flex-direction: column; align-items: flex-start; }
       .projects-grid { grid-template-columns: 1fr; }
+      .access-grid { grid-template-columns: 1fr; }
     }
     @media print {
       body { background: white; color: black; }
@@ -118,28 +119,6 @@
         <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
         <div class="contact-item"><i class="fab fa-github"></i> github.com/saikumar-infosec</div>
         <button class="btn-download" onclick="window.print()"><i class="fas fa-print"></i> Print / Save PDF</button>
-      </div>
-    </div>
-
-    <!-- Quick Access - Knowledge Base, Write-ups, Tools -->
-    <div class="quick-access">
-      <h3 class="quick-title"><i class="fas fa-compass"></i> Quick Access</h3>
-      <div class="access-grid">
-        <a href="knowledge-base.html" class="access-card">
-          <div class="access-icon"><i class="fas fa-database"></i></div>
-          <h3>📚 Security Knowledge Base</h3>
-          <p>100+ vulnerabilities, 10,000+ payloads, organized by domain</p>
-        </a>
-        <a href="blog.html" class="access-card">
-          <div class="access-icon"><i class="fas fa-blog"></i></div>
-          <h3>✍️ Write-ups & Research</h3>
-          <p>Detailed vulnerability write-ups from real-world assessments</p>
-        </a>
-        <a href="tools.html" class="access-card">
-          <div class="access-icon"><i class="fas fa-tools"></i></div>
-          <h3>🔧 Custom Security Tools</h3>
-          <p>Open-source pentesting tools and automation scripts</p>
-        </a>
       </div>
     </div>
 
@@ -214,29 +193,73 @@
       </div>
     </div>
 
-    <!-- Certifications & Education -->
+    <!-- Certifications -->
     <div class="resume-section">
       <h2 class="section-title"><i class="fas fa-certificate"></i> Certifications</h2>
-      <div><span class="cert-item"><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span><span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Berry9 IT Pvt Ltd</span><span class="cert-item"><i class="fas fa-certificate"></i> Qualys Vulnerability Management (VM) Certification</span></div>
+      <div>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Berry9 IT Pvt Ltd</span>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Qualys Vulnerability Management (VM) Certification</span>
+      </div>
     </div>
 
+    <!-- Education -->
     <div class="resume-section">
       <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h2>
-      <div class="exp-card"><div class="exp-header"><div><span class="exp-role">Bachelor of Technology (B.Tech) – Computer Science & Engineering</span></div></div><p style="color: var(--text-secondary);">JNTU College of Engineering, Anantapur</p></div>
+      <div class="exp-card">
+        <div class="exp-header"><div><span class="exp-role">Bachelor of Technology (B.Tech) – Computer Science & Engineering</span></div></div>
+        <p style="color: var(--text-secondary);">JNTU College of Engineering, Anantapur</p>
+      </div>
+    </div>
+
+    <!-- QUICK ACCESS CARDS - NOW AT THE BOTTOM (After Education) -->
+    <div class="quick-access">
+      <h2 class="quick-title"><i class="fas fa-compass"></i> Explore My Work</h2>
+      <div class="access-grid">
+        <a href="knowledge-base.html" class="access-card">
+          <div class="access-icon"><i class="fas fa-database"></i></div>
+          <h3>📚 Security Knowledge Base</h3>
+          <p>100+ vulnerabilities, 10,000+ payloads, organized by domain with detailed exploitation guides</p>
+        </a>
+        <a href="blog.html" class="access-card">
+          <div class="access-icon"><i class="fas fa-blog"></i></div>
+          <h3>✍️ Write-ups & Research</h3>
+          <p>Detailed vulnerability write-ups from real-world assessments with step-by-step exploitation</p>
+        </a>
+        <a href="tools.html" class="access-card">
+          <div class="access-icon"><i class="fas fa-tools"></i></div>
+          <h3>🔧 Custom Security Tools</h3>
+          <p>Open-source pentesting tools and automation scripts for security assessments</p>
+        </a>
+      </div>
     </div>
 
     <!-- Contact Section -->
     <div id="contact" class="resume-section">
       <h2 class="section-title"><i class="fas fa-envelope"></i> Let's Connect</h2>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-        <div class="exp-card"><h3 style="margin-bottom: 1rem; color: var(--primary);">Contact Info</h3><p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p><p><i class="fas fa-phone-alt"></i> +91 7337026773</p><p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p><p><i class="fab fa-github"></i> github.com/saikumar-infosec</p></div>
-        <div class="exp-card"><h3 style="margin-bottom: 1rem; color: var(--primary);">Quick Links</h3><p><a href="knowledge-base.html" style="color: var(--primary); text-decoration: none;">📚 Security Knowledge Base</a></p><p><a href="blog.html" style="color: var(--primary); text-decoration: none;">✍️ Vulnerability Write-ups</a></p><p><a href="tools.html" style="color: var(--primary); text-decoration: none;">🔧 Custom Security Tools</a></p></div>
+        <div class="exp-card">
+          <h3 style="margin-bottom: 1rem; color: var(--primary);">Contact Info</h3>
+          <p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p>
+          <p><i class="fas fa-phone-alt"></i> +91 7337026773</p>
+          <p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p>
+          <p><i class="fab fa-github"></i> github.com/saikumar-infosec</p>
+        </div>
+        <div class="exp-card">
+          <h3 style="margin-bottom: 1rem; color: var(--primary);">Quick Links</h3>
+          <p><a href="knowledge-base.html" style="color: var(--primary); text-decoration: none;">📚 Security Knowledge Base</a></p>
+          <p><a href="blog.html" style="color: var(--primary); text-decoration: none;">✍️ Vulnerability Write-ups</a></p>
+          <p><a href="tools.html" style="color: var(--primary); text-decoration: none;">🔧 Custom Security Tools</a></p>
+        </div>
       </div>
     </div>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT Specialist</p><p style="font-size: 0.7rem; margin-top: 0.5rem;">Explore the <a href="knowledge-base.html" style="color: var(--primary);">Security Knowledge Base</a> with 100+ vulnerabilities and 10,000+ payloads</p></footer>
+<footer>
+  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT Specialist</p>
+  <p style="font-size: 0.7rem; margin-top: 0.5rem;">Explore the <a href="knowledge-base.html" style="color: var(--primary);">Security Knowledge Base</a> with 100+ vulnerabilities and 10,000+ payloads</p>
+</footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
