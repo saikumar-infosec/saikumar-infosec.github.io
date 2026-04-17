@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saikumar Raju | Cybersecurity Consultant & Security Researcher</title>
+  <title>Saikumar Raju | Cybersecurity Consultant</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -37,15 +37,15 @@
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
     .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; text-align: center; }
     .stat-number { font-size: 2rem; font-weight: 800; color: var(--primary); }
-    .domains-section { padding: 4rem 0; }
+    .section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
     .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; position: relative; display: inline-block; }
     .section-title:after { content: ''; position: absolute; bottom: -8px; left: 0; width: 50px; height: 3px; background: var(--primary); }
-    .domains-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .domains-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
     .domain-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; text-decoration: none; display: block; }
     .domain-card:hover { border-color: var(--primary); transform: translateY(-4px); }
     .domain-icon { font-size: 2rem; color: var(--primary); margin-bottom: 1rem; }
     .domain-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
-    .domain-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; }
+    .domain-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem; }
     .vuln-count { font-size: 0.7rem; color: var(--primary); }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
     .footer-social { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; }
@@ -69,6 +69,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="resume.html">Resume</a></li>
       <li><a href="blog.html">Write-ups</a></li>
       <li><a href="tools.html">Tools</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -82,7 +83,7 @@
     <div class="hero">
       <span class="hero-tag"><i class="fas fa-shield-alt"></i> Offensive Security Professional</span>
       <h1>Saikumar Raju</h1>
-      <p class="hero-subtitle">Cybersecurity Consultant & Security Researcher</p>
+      <p class="hero-subtitle">Cybersecurity Consultant</p>
       <p class="hero-desc">Specializing in web & API penetration testing, mobile security, cloud hardening, and vulnerability research. Building comprehensive security knowledge base with 100+ vulnerabilities and 10,000+ payloads.</p>
       <div class="contact-row">
         <span class="contact-chip"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
@@ -90,33 +91,29 @@
         <span class="contact-chip"><i class="fas fa-map-marker-alt"></i> India</span>
       </div>
       <div class="btn-group">
-        <a href="knowledge-base.html" class="btn btn-primary"><i class="fas fa-database"></i> Explore Knowledge Base</a>
-        <a href="#contact" class="btn btn-outline"><i class="fas fa-comment"></i> Contact Me</a>
+        <a href="resume.html" class="btn btn-primary"><i class="fas fa-file-pdf"></i> View Resume</a>
+        <a href="knowledge-base.html" class="btn btn-outline"><i class="fas fa-database"></i> Explore Knowledge Base</a>
       </div>
     </div>
 
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-number">100+</div><div>Vulnerabilities Covered</div></div>
+      <div class="stat-card"><div class="stat-number">100+</div><div>Vulnerabilities</div></div>
       <div class="stat-card"><div class="stat-number">10,000+</div><div>Payloads</div></div>
       <div class="stat-card"><div class="stat-number">15+</div><div>Security Domains</div></div>
-      <div class="stat-card"><div class="stat-number">50+</div><div>Practical Examples</div></div>
+      <div class="stat-card"><div class="stat-number">3.6+</div><div>Years Experience</div></div>
     </div>
 
-    <div class="domains-section">
+    <div class="section">
       <h2 class="section-title">Security Domains</h2>
       <div class="domains-grid">
-        <a href="web/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-globe"></i></div><h3>🌐 Web Security</h3><p>OWASP Top 10, Injections, XSS, SSRF, XXE, SSTI, CSRF, Race Conditions, Business Logic</p><span class="vuln-count">25+ Vulnerabilities</span></a>
-        <a href="api/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-plug"></i></div><h3>🔌 API Security</h3><p>BOLA, Mass Assignment, Rate Limiting, GraphQL, JWT Attacks, Parameter Pollution</p><span class="vuln-count">10+ Vulnerabilities</span></a>
-        <a href="mobile/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-mobile-alt"></i></div><h3>📱 Mobile Security</h3><p>Android, iOS, Root Bypass, Certificate Pinning, Deep Links, Insecure Storage</p><span class="vuln-count">12+ Vulnerabilities</span></a>
-        <a href="network/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-network-wired"></i></div><h3>🖧 Network Security</h3><p>Recon, Exploitation, Linux/Windows Privesc, Lateral Movement</p><span class="vuln-count">8+ Categories</span></a>
-        <a href="source-code/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-code"></i></div><h3>💻 Source Code Review</h3><p>SAST Tools, PHP/Java/JS/Python Security, Dangerous Functions</p><span class="vuln-count">5+ Languages</span></a>
-        <a href="cloud/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-cloud"></i></div><h3>☁️ Cloud Security</h3><p>AWS, Azure, GCP, IAM, S3, Container Security, Kubernetes</p><span class="vuln-count">15+ Misconfigurations</span></a>
-        <a href="devsecops/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-cogs"></i></div><h3>⚙️ DevSecOps</h3><p>CI/CD Security, SAST/DAST, Secrets Scanning, IaC Scanning</p><span class="vuln-count">6+ Categories</span></a>
-        <a href="active-directory/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-users"></i></div><h3>🏢 Active Directory</h3><p>Kerberoasting, Pass-the-Hash, Golden Ticket, DCSync, ACL Abuse</p><span class="vuln-count">12+ Attacks</span></a>
-        <a href="red-teaming/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-skull"></i></div><h3>🔴 Red Teaming</h3><p>C2 Frameworks, Phishing, Evasion, Persistence, OPSEC</p><span class="vuln-count">8+ Categories</span></a>
-        <a href="llm-security/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-robot"></i></div><h3>🤖 LLM Security</h3><p>Prompt Injection, Jailbreaking, Model Inversion, RAG Security</p><span class="vuln-count">10+ Vulnerabilities</span></a>
-        <a href="web3-security/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-link"></i></div><h3>⛓️ Web3 Security</h3><p>Smart Contract Vulnerabilities, DeFi Attacks, Reentrancy</p><span class="vuln-count">12+ Vulnerabilities</span></a>
-        <a href="fuzzing/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-bomb"></i></div><h3>🛠️ Fuzzing & Discovery</h3><p>Directory Fuzzing, Parameter Discovery, VHost Enumeration</p><span class="vuln-count">5+ Categories</span></a>
+        <a href="web/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-globe"></i></div><h3>🌐 Web Security</h3><p>25+ vulnerabilities with real payloads</p><span class="vuln-count">25+ Vulns</span></a>
+        <a href="api/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-plug"></i></div><h3>🔌 API Security</h3><p>REST, GraphQL, JWT attacks</p><span class="vuln-count">10+ Vulns</span></a>
+        <a href="mobile/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-mobile-alt"></i></div><h3>📱 Mobile Security</h3><p>Android & iOS pentesting</p><span class="vuln-count">12+ Vulns</span></a>
+        <a href="network/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-network-wired"></i></div><h3>🖧 Network Security</h3><p>Recon, exploitation, privesc</p><span class="vuln-count">8+ Categories</span></a>
+        <a href="cloud/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-cloud"></i></div><h3>☁️ Cloud Security</h3><p>AWS, Azure, GCP, K8s</p><span class="vuln-count">15+ Misconfigs</span></a>
+        <a href="active-directory/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-users"></i></div><h3>🏢 Active Directory</h3><p>Kerberoasting, Golden Ticket</p><span class="vuln-count">12+ Attacks</span></a>
+        <a href="llm-security/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-robot"></i></div><h3>🤖 LLM Security</h3><p>Prompt injection, jailbreaking</p><span class="vuln-count">10+ Vulns</span></a>
+        <a href="web3-security/index.html" class="domain-card"><div class="domain-icon"><i class="fas fa-link"></i></div><h3>⛓️ Web3 Security</h3><p>Smart contract, DeFi attacks</p><span class="vuln-count">12+ Vulns</span></a>
       </div>
     </div>
 
@@ -124,7 +121,7 @@
   </div>
 </main>
 
-<footer><div class="footer-social"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a></div><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p><p style="font-size: 0.7rem; margin-top: 0.5rem;">Knowledge Base with 100+ Vulnerabilities & 10,000+ Payloads</p></footer>
+<footer><div class="footer-social"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="mailto:saikumararaju30@gmail.com"><i class="fas fa-envelope"></i></a></div><p>Saikumar Raju — Cybersecurity Consultant | Knowledge Base with 100+ Vulnerabilities</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
