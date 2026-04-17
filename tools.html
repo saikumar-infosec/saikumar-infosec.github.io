@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Tools | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; transition: all 0.3s ease; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; text-align: center; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .page-header p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; padding: 2rem 0 4rem; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
+    .tool-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .tool-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+    .tool-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .tool-desc { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5; }
+    .tool-link { color: var(--primary); text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .tool-stats { display: flex; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-secondary); }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="blog.html">Write-ups</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>🔧 Custom Security Tools</h1>
+      <p>Open-source tools and scripts I've built for penetration testing and vulnerability research.</p>
+    </div>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon"><i class="fab fa-python"></i></div>
+        <h3>API Security Scanner</h3>
+        <p class="tool-desc">Automated tool for detecting IDOR, mass assignment, and rate limiting issues in REST APIs. Supports Burp Suite integration.</p>
+        <a href="#" class="tool-link"><i class="fab fa-github"></i> Coming soon →</a>
+        <div class="tool-stats"><span><i class="fas fa-star"></i> Planned</span><span><i class="fas fa-code-branch"></i> Python</span></div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon"><i class="fas fa-terminal"></i></div>
+        <h3>JWT Token Analyzer</h3>
+        <p class="tool-desc">Python script to analyze JWT tokens for algorithm confusion, weak secrets, null signatures, and common misconfigurations.</p>
+        <a href="#" class="tool-link"><i class="fab fa-github"></i> Coming soon →</a>
+        <div class="tool-stats"><span><i class="fas fa-star"></i> Planned</span><span><i class="fas fa-code-branch"></i> Python</span></div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon"><i class="fas fa-cloud"></i></div>
+        <h3>AWS Misconfiguration Scanner</h3>
+        <p class="tool-desc">Bash/Python script to audit S3 buckets, IAM roles, security groups, and CloudTrail for common security misconfigurations.</p>
+        <a href="#" class="tool-link"><i class="fab fa-github"></i> Coming soon →</a>
+        <div class="tool-stats"><span><i class="fas fa-star"></i> Planned</span><span><i class="fas fa-code-branch"></i> Bash/Python</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+</script>
+</body>
+</html>
