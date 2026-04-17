@@ -35,7 +35,7 @@
     .domain-card:hover { border-color: var(--primary); transform: translateY(-4px); }
     .domain-icon { font-size: 2rem; color: var(--primary); margin-bottom: 1rem; }
     .domain-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
-    .domain-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5; }
+    .domain-card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem; }
     .vuln-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
     .vuln-tag { background: var(--bg-elevated); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem; color: var(--primary); }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
@@ -57,6 +57,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="knowledge-base.html" class="active">Knowledge Base</a></li>
+      <li><a href="resume.html">Resume</a></li>
       <li><a href="blog.html">Write-ups</a></li>
       <li><a href="tools.html">Tools</a></li>
       <li><a href="index.html#contact">Contact</a></li>
@@ -69,7 +70,7 @@
   <div class="container">
     <div class="page-header">
       <h1>📚 Security Knowledge Base</h1>
-      <p>Comprehensive penetration testing methodology, exploitation techniques, and 10,000+ payloads organized by vulnerability type.</p>
+      <p>Comprehensive penetration testing methodology, exploitation techniques, and payloads organized by vulnerability type.</p>
     </div>
 
     <div class="search-section">
@@ -90,118 +91,19 @@
     </div>
 
     <div class="domains-grid" id="domainsGrid">
-      <!-- Web Security -->
-      <div class="domain-card" data-category="web">
-        <div class="domain-icon"><i class="fas fa-globe"></i></div>
-        <h3>🌐 Web Security</h3>
-        <p>Complete web application penetration testing guide with 25+ vulnerabilities, real payloads, and exploitation techniques.</p>
-        <div class="vuln-list"><span class="vuln-tag">IDOR</span><span class="vuln-tag">SQLi</span><span class="vuln-tag">XSS</span><span class="vuln-tag">SSRF</span><span class="vuln-tag">XXE</span><span class="vuln-tag">SSTI</span><span class="vuln-tag">CSRF</span></div>
-        <a href="web/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- API Security -->
-      <div class="domain-card" data-category="api">
-        <div class="domain-icon"><i class="fas fa-plug"></i></div>
-        <h3>🔌 API Security</h3>
-        <p>REST API, GraphQL, and JWT testing methodologies with BOLA, mass assignment, and rate limiting attacks.</p>
-        <div class="vuln-list"><span class="vuln-tag">BOLA</span><span class="vuln-tag">Mass Assignment</span><span class="vuln-tag">GraphQL</span><span class="vuln-tag">JWT</span></div>
-        <a href="api/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Mobile Security -->
-      <div class="domain-card" data-category="mobile">
-        <div class="domain-icon"><i class="fas fa-mobile-alt"></i></div>
-        <h3>📱 Mobile Security</h3>
-        <p>Android and iOS penetration testing, including root bypass, certificate pinning, Frida scripts, and deep link vulnerabilities.</p>
-        <div class="vuln-list"><span class="vuln-tag">Android</span><span class="vuln-tag">iOS</span><span class="vuln-tag">Frida</span><span class="vuln-tag">Root Bypass</span></div>
-        <a href="mobile/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Network Security -->
-      <div class="domain-card" data-category="network">
-        <div class="domain-icon"><i class="fas fa-network-wired"></i></div>
-        <h3>🖧 Network Security</h3>
-        <p>Network reconnaissance, exploitation, privilege escalation (Linux/Windows), and lateral movement techniques.</p>
-        <div class="vuln-list"><span class="vuln-tag">Nmap</span><span class="vuln-tag">Metasploit</span><span class="vuln-tag">PrivEsc</span><span class="vuln-tag">Lateral Movement</span></div>
-        <a href="network/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Source Code Review -->
-      <div class="domain-card" data-category="web">
-        <div class="domain-icon"><i class="fas fa-code"></i></div>
-        <h3>💻 Source Code Review</h3>
-        <p>Manual source code review for PHP, Java, JavaScript, Python, and C# with dangerous functions and SAST tools.</p>
-        <div class="vuln-list"><span class="vuln-tag">PHP</span><span class="vuln-tag">Java</span><span class="vuln-tag">Python</span><span class="vuln-tag">JavaScript</span></div>
-        <a href="source-code/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Cloud Security -->
-      <div class="domain-card" data-category="cloud">
-        <div class="domain-icon"><i class="fas fa-cloud"></i></div>
-        <h3>☁️ Cloud Security</h3>
-        <p>AWS, Azure, GCP security assessments including IAM, S3, EC2, container security, and Kubernetes hardening.</p>
-        <div class="vuln-list"><span class="vuln-tag">AWS</span><span class="vuln-tag">Azure</span><span class="vuln-tag">GCP</span><span class="vuln-tag">K8s</span></div>
-        <a href="cloud/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- DevSecOps -->
-      <div class="domain-card" data-category="cloud">
-        <div class="domain-icon"><i class="fas fa-cogs"></i></div>
-        <h3>⚙️ DevSecOps</h3>
-        <p>CI/CD pipeline security, SAST/DAST integration, secrets scanning, SBOM, and Infrastructure as Code scanning.</p>
-        <div class="vuln-list"><span class="vuln-tag">CI/CD</span><span class="vuln-tag">SAST</span><span class="vuln-tag">Secrets</span><span class="vuln-tag">IaC</span></div>
-        <a href="devsecops/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Active Directory -->
-      <div class="domain-card" data-category="ad">
-        <div class="domain-icon"><i class="fas fa-users"></i></div>
-        <h3>🏢 Active Directory</h3>
-        <p>AD enumeration, Kerberoasting, AS-REP Roasting, Pass-the-Hash, Golden/Silver Ticket, DCSync, ACL abuse.</p>
-        <div class="vuln-list"><span class="vuln-tag">Kerberoasting</span><span class="vuln-tag">Golden Ticket</span><span class="vuln-tag">DCSync</span></div>
-        <a href="active-directory/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Red Teaming -->
-      <div class="domain-card" data-category="network">
-        <div class="domain-icon"><i class="fas fa-skull"></i></div>
-        <h3>🔴 Red Teaming</h3>
-        <p>C2 frameworks (Cobalt Strike, Mythic), phishing campaigns, AV/EDR evasion, persistence mechanisms, and OPSEC.</p>
-        <div class="vuln-list"><span class="vuln-tag">C2</span><span class="vuln-tag">Phishing</span><span class="vuln-tag">Evasion</span><span class="vuln-tag">Persistence</span></div>
-        <a href="red-teaming/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- LLM Security -->
-      <div class="domain-card" data-category="llm">
-        <div class="domain-icon"><i class="fas fa-robot"></i></div>
-        <h3>🤖 LLM Security</h3>
-        <p>Prompt injection, jailbreaking, model inversion, data poisoning, RAG security, and LLM API abuse.</p>
-        <div class="vuln-list"><span class="vuln-tag">Prompt Injection</span><span class="vuln-tag">Jailbreaking</span><span class="vuln-tag">RAG Security</span></div>
-        <a href="llm-security/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Web3 Security -->
-      <div class="domain-card" data-category="web3">
-        <div class="domain-icon"><i class="fas fa-link"></i></div>
-        <h3>⛓️ Web3 Security</h3>
-        <p>Smart contract vulnerabilities (reentrancy, integer overflow), front-running, flash loan attacks, and DeFi security.</p>
-        <div class="vuln-list"><span class="vuln-tag">Reentrancy</span><span class="vuln-tag">Front-running</span><span class="vuln-tag">Flash Loan</span></div>
-        <a href="web3-security/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
-
-      <!-- Fuzzing & Discovery -->
-      <div class="domain-card" data-category="web">
-        <div class="domain-icon"><i class="fas fa-bomb"></i></div>
-        <h3>🛠️ Fuzzing & Discovery</h3>
-        <p>Directory fuzzing, parameter discovery, VHost enumeration, and 403 bypass techniques with comprehensive wordlists.</p>
-        <div class="vuln-list"><span class="vuln-tag">Directory Fuzzing</span><span class="vuln-tag">Parameter Discovery</span><span class="vuln-tag">403 Bypass</span></div>
-        <a href="fuzzing/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a>
-      </div>
+      <div class="domain-card" data-category="web"><div class="domain-icon"><i class="fas fa-globe"></i></div><h3>🌐 Web Security</h3><p>25+ vulnerabilities: SQLi, XSS, SSRF, XXE, SSTI, CSRF, IDOR, LFI, Command Injection</p><div class="vuln-list"><span class="vuln-tag">SQLi</span><span class="vuln-tag">XSS</span><span class="vuln-tag">SSRF</span><span class="vuln-tag">IDOR</span></div><a href="web/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="api"><div class="domain-icon"><i class="fas fa-plug"></i></div><h3>🔌 API Security</h3><p>BOLA, Mass Assignment, GraphQL Introspection, JWT Attacks, Rate Limiting</p><div class="vuln-list"><span class="vuln-tag">BOLA</span><span class="vuln-tag">JWT</span><span class="vuln-tag">GraphQL</span></div><a href="api/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="mobile"><div class="domain-icon"><i class="fas fa-mobile-alt"></i></div><h3>📱 Mobile Security</h3><p>Android Root Bypass, Certificate Pinning, Frida, Objection, iOS Keychain</p><div class="vuln-list"><span class="vuln-tag">Android</span><span class="vuln-tag">iOS</span><span class="vuln-tag">Frida</span></div><a href="mobile/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="network"><div class="domain-icon"><i class="fas fa-network-wired"></i></div><h3>🖧 Network Security</h3><p>Nmap, Metasploit, Linux/Windows Privesc, Lateral Movement, Port Forwarding</p><div class="vuln-list"><span class="vuln-tag">Nmap</span><span class="vuln-tag">Privesc</span><span class="vuln-tag">Metasploit</span></div><a href="network/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="cloud"><div class="domain-icon"><i class="fas fa-cloud"></i></div><h3>☁️ Cloud Security</h3><p>AWS IAM, S3 Misconfig, SSRF to Metadata, Azure Entra ID, GCP, K8s</p><div class="vuln-list"><span class="vuln-tag">AWS</span><span class="vuln-tag">Azure</span><span class="vuln-tag">K8s</span></div><a href="cloud/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="ad"><div class="domain-icon"><i class="fas fa-users"></i></div><h3>🏢 Active Directory</h3><p>Kerberoasting, AS-REP Roasting, Pass-the-Hash, Golden Ticket, DCSync</p><div class="vuln-list"><span class="vuln-tag">Kerberoasting</span><span class="vuln-tag">Golden Ticket</span></div><a href="active-directory/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="llm"><div class="domain-icon"><i class="fas fa-robot"></i></div><h3>🤖 LLM Security</h3><p>Prompt Injection, Jailbreaking, Model Inversion, RAG Security</p><div class="vuln-list"><span class="vuln-tag">Prompt Injection</span><span class="vuln-tag">Jailbreaking</span></div><a href="llm-security/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
+      <div class="domain-card" data-category="web3"><div class="domain-icon"><i class="fas fa-link"></i></div><h3>⛓️ Web3 Security</h3><p>Reentrancy, Integer Overflow, Front-running, Flash Loan, DeFi Attacks</p><div class="vuln-list"><span class="vuln-tag">Reentrancy</span><span class="vuln-tag">DeFi</span></div><a href="web3-security/index.html" style="color: var(--primary); font-size: 0.8rem; margin-top: 1rem; display: inline-block;">Explore →</a></div>
     </div>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Knowledge Base with 100+ Vulnerabilities & 10,000+ Payloads</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Knowledge Base with 100+ Vulnerabilities</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
