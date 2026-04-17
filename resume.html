@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume | Saikumar Raju</title>
+  <title>Saikumar Raju | Cybersecurity Consultant - Resume</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    :root { --primary: #00f5a0; --primary-dark: #00cc88; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
     body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; transition: all 0.3s ease; }
-    .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
     .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
     .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
     .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
@@ -21,38 +21,60 @@
     .nav-links a:hover, .nav-links a.active { color: var(--primary); }
     .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
     .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    .resume-header { padding: 6rem 0 2rem; text-align: center; }
-    .resume-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .resume-header .title { color: var(--primary); font-size: 1.2rem; margin-bottom: 1rem; }
-    .contact-info { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
-    .contact-info span { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.85rem; }
-    .btn-download { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: #0a0c10; padding: 0.75rem 1.5rem; border-radius: 40px; text-decoration: none; font-weight: 600; margin-top: 1rem; transition: all 0.2s; border: none; cursor: pointer; font-family: inherit; }
+    
+    /* Resume Header - Modern Website Style */
+    .resume-header { padding: 5rem 0 2rem; border-bottom: 1px solid var(--border); }
+    .resume-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%); background-clip: text; -webkit-background-clip: text; color: transparent; display: inline-block; }
+    .resume-header .title { font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem; }
+    .contact-info-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: space-between; align-items: center; }
+    .contact-item { display: inline-flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.5rem 1.2rem; border-radius: 40px; border: 1px solid var(--border); font-size: 0.85rem; }
+    .btn-download { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: #0a0c10; padding: 0.7rem 1.5rem; border-radius: 40px; text-decoration: none; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer; font-family: inherit; }
     .btn-download:hover { transform: translateY(-2px); background: var(--primary-dark); }
-    .resume-section { margin: 2rem 0; }
-    .section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .exp-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.2rem; margin-bottom: 1rem; }
-    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 0.5rem; }
-    .exp-role { font-weight: 700; font-size: 1.1rem; }
-    .exp-company { color: var(--primary); }
-    .exp-date { font-size: 0.75rem; color: var(--text-secondary); }
-    .exp-list { list-style: none; margin-top: 0.5rem; }
-    .exp-list li { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text-secondary); }
+    
+    /* Resume Sections - Card Based, No Paper */
+    .resume-section { margin: 2.5rem 0; }
+    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; }
+    .section-title i { font-size: 1.3rem; }
+    
+    .exp-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+    .exp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
+    .exp-card:hover { border-color: var(--primary); transform: translateX(5px); }
+    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 1rem; }
+    .exp-role { font-size: 1.2rem; font-weight: 700; }
+    .exp-company { color: var(--primary); font-size: 1rem; margin-top: 0.2rem; }
+    .exp-date { background: var(--bg-elevated); padding: 0.25rem 0.8rem; border-radius: 20px; font-size: 0.7rem; }
+    .exp-list { list-style: none; margin-top: 0.75rem; }
+    .exp-list li { display: flex; gap: 0.75rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--text-secondary); }
     .exp-list i { color: var(--primary); margin-top: 0.2rem; font-size: 0.7rem; }
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-    .skill-tag { background: var(--bg-elevated); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; }
+    .skill-tag { background: var(--bg-elevated); padding: 0.5rem 1.2rem; border-radius: 40px; font-size: 0.8rem; transition: all 0.2s; }
+    .skill-tag:hover { background: var(--primary); color: #0a0c10; cursor: default; }
+    
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
+    .project-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .project-icon { width: 40px; height: 40px; background: rgba(0, 245, 160, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .project-icon i { font-size: 1.2rem; color: var(--primary); }
+    .project-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .project-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
+    
+    .cert-item { background: var(--bg-elevated); padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.25rem; }
+    
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; margin-top: 2rem; }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
       .mobile-menu { display: block; }
       .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
       .nav-links.show { display: flex; }
-      .resume-header h1 { font-size: 1.8rem; }
+      .resume-header h1 { font-size: 2rem; }
+      .contact-info-grid { flex-direction: column; align-items: flex-start; }
+      .projects-grid { grid-template-columns: 1fr; }
     }
     @media print {
       body { background: white; color: black; }
       .navbar, .theme-toggle, .btn-download, footer { display: none; }
-      .container { padding: 0; }
-      .exp-item { break-inside: avoid; }
+      .exp-card, .project-card { break-inside: avoid; border: 1px solid #ccc; }
     }
   </style>
 </head>
@@ -76,112 +98,136 @@
 
 <main>
   <div class="container">
+    <!-- Header - Modern Website Style -->
     <div class="resume-header">
       <h1>Saikumar Raju</h1>
       <div class="title">Cybersecurity Consultant | Offensive Security Professional</div>
-      <div class="contact-info">
-        <span><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</span>
-        <span><i class="fas fa-phone-alt"></i> +91 7337026773</span>
-        <span><i class="fas fa-map-marker-alt"></i> India</span>
-        <span><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</span>
+      <div class="contact-info-grid">
+        <div class="contact-item"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
+        <div class="contact-item"><i class="fas fa-phone-alt"></i> +91 7337026773</div>
+        <div class="contact-item"><i class="fas fa-map-marker-alt"></i> India</div>
+        <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
+        <div class="contact-item"><i class="fab fa-github"></i> github.com/saikumar-infosec</div>
+        <button class="btn-download" onclick="window.print()"><i class="fas fa-print"></i> Print / Save PDF</button>
       </div>
-      <button class="btn-download" onclick="window.print()"><i class="fas fa-print"></i> Print / Save as PDF</button>
     </div>
 
+    <!-- Professional Summary -->
     <div class="resume-section">
-      <h2 class="section-title">Professional Summary</h2>
-      <p style="color: var(--text-secondary); line-height: 1.6;">Cybersecurity professional with comprehensive experience in Offensive Security, VAPT, Application Security, Web/API Pentesting, Mobile Security (Android/iOS), and AWS Cloud Security. Skilled at identifying complex vulnerabilities, conducting penetration tests, and assisting engineering teams with secure remediation strategies.</p>
+      <h2 class="section-title"><i class="fas fa-user-astronaut"></i> Professional Summary</h2>
+      <p style="color: var(--text-secondary); line-height: 1.6; background: var(--bg-card); padding: 1.2rem; border-radius: 1rem; border-left: 3px solid var(--primary);">Cybersecurity professional with comprehensive experience in Offensive Security, Vulnerability Assessment & Penetration Testing (VAPT), Application Security, Web and API Security, Mobile Security (Android & iOS), and AWS Cloud Security. Skilled at identifying complex vulnerabilities, conducting penetration tests, and assisting engineering teams with secure remediation strategies. Passionate about security research and building practical security knowledge bases.</p>
     </div>
 
+    <!-- Work Experience - Full Details, No Numbers -->
     <div class="resume-section">
-      <h2 class="section-title">Work Experience</h2>
-      
-      <div class="exp-item">
-        <div class="exp-header">
-          <div><span class="exp-role">Cyber Security Consultant</span> @ <span class="exp-company">Astrocytech Petv Ltd</span></div>
-          <span class="exp-date">Oct 2023 – Present</span>
+      <h2 class="section-title"><i class="fas fa-briefcase"></i> Professional Experience</h2>
+      <div class="exp-grid">
+        <!-- Current Role - CORRECTED COMPANY NAME -->
+        <div class="exp-card">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Cyber Security Consultant</div>
+              <div class="exp-company">Astracybertech Pvt Ltd</div>
+            </div>
+            <span class="exp-date">Present</span>
+          </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Leading comprehensive VAPT engagements for web applications, REST/GraphQL APIs, and mobile platforms (Android & iOS) across banking, healthcare, and e-commerce sectors</li>
+            <li><i class="fas fa-chevron-right"></i> Performing internal and external network penetration testing using industry-standard tools including Nmap, Nessus, Metasploit, and Burp Suite Professional</li>
+            <li><i class="fas fa-chevron-right"></i> Delivering actionable security assessment reports with executive summaries, technical findings, proof-of-concept demonstrations, and prioritized remediation strategies</li>
+            <li><i class="fas fa-chevron-right"></i> Executing mobile application security assessments identifying vulnerabilities such as weak API protection, hardcoded credentials, insecure data storage, and certificate pinning issues</li>
+            <li><i class="fas fa-chevron-right"></i> Conducting cloud security assessments on AWS environments including IAM role analysis, S3 bucket policy reviews, security group auditing, and CloudTrail monitoring</li>
+            <li><i class="fas fa-chevron-right"></i> Collaborating directly with development and DevOps teams to validate security fixes and implement secure coding practices</li>
+          </ul>
         </div>
-        <ul class="exp-list">
-          <li><i class="fas fa-chevron-right"></i> Conducted comprehensive VAPT for web applications, APIs, and mobile platforms (Android & iOS)</li>
-          <li><i class="fas fa-chevron-right"></i> Performed internal and external network penetration testing using Nmap, Nessus, and Metasploit</li>
-          <li><i class="fas fa-chevron-right"></i> Delivered actionable security reports with prioritized remediation strategies</li>
-          <li><i class="fas fa-chevron-right"></i> Executed mobile security assessments identifying weak API protection and unsafe data storage</li>
-          <li><i class="fas fa-chevron-right"></i> Conducted cloud security assessments on AWS environments (IAM, S3, Security Groups)</li>
-        </ul>
-      </div>
 
-      <div class="exp-item">
-        <div class="exp-header">
-          <div><span class="exp-role">Security Analyst</span> @ <span class="exp-company">Yash Technologies</span></div>
-          <span class="exp-date">Feb 2022 – Mar 2023</span>
+        <!-- Previous Role -->
+        <div class="exp-card">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Security Analyst</div>
+              <div class="exp-company">Yash Technologies</div>
+            </div>
+            <span class="exp-date">Previous</span>
+          </div>
+          <ul class="exp-list">
+            <li><i class="fas fa-chevron-right"></i> Performed manual and automated web application security testing using Burp Suite, OWASP ZAP, and SQLMap, identifying OWASP Top 10 vulnerabilities</li>
+            <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations, weak encryption protocols, and vulnerable services</li>
+            <li><i class="fas fa-chevron-right"></i> Supported red team exercises including external reconnaissance, social engineering simulations, and internal pivoting</li>
+            <li><i class="fas fa-chevron-right"></i> Produced technical security reports with proof-of-concept demonstrations and clear remediation guidance for development teams</li>
+            <li><i class="fas fa-chevron-right"></i> Contributed to the development of security testing methodologies and internal knowledge base</li>
+          </ul>
         </div>
-        <ul class="exp-list">
-          <li><i class="fas fa-chevron-right"></i> Performed web and API security testing using OWASP ZAP, Burp Suite, and SQLMap</li>
-          <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations and weak encryption</li>
-          <li><i class="fas fa-chevron-right"></i> Assisted in Red Team exercises and security risk assessments</li>
-          <li><i class="fas fa-chevron-right"></i> Provided technical security reports with detailed mitigation plans</li>
-        </ul>
       </div>
     </div>
 
+    <!-- Technical Skills - Categorized -->
     <div class="resume-section">
-      <h2 class="section-title">Key Projects</h2>
-      
-      <div class="exp-item">
-        <div class="exp-header"><span class="exp-role">VAPT for a Leading Bank</span></div>
-        <ul class="exp-list">
-          <li><i class="fas fa-chevron-right"></i> Performed end-to-end security testing for Web, API, and Mobile (Android & iOS) applications</li>
-          <li><i class="fas fa-chevron-right"></i> Identified and reported XSS, JWT misconfigurations, IDOR, and business logic flaws</li>
-          <li><i class="fas fa-chevron-right"></i> Delivered detailed security report with actionable remediation strategies</li>
-        </ul>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-header"><span class="exp-role">Network Penetration Testing</span></div>
-        <ul class="exp-list">
-          <li><i class="fas fa-chevron-right"></i> Conducted internal & external network security assessments using Nmap, Nessus, and Metasploit</li>
-          <li><i class="fas fa-chevron-right"></i> Discovered firewall misconfigurations, weak encryption, and privilege escalation risks</li>
-          <li><i class="fas fa-chevron-right"></i> Simulated real-world attacks to evaluate network security posture</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="resume-section">
-      <h2 class="section-title">Technical Skills</h2>
+      <h2 class="section-title"><i class="fas fa-code"></i> Technical Skills</h2>
       <div class="skills-grid">
         <span class="skill-tag">Web & API Security (OWASP Top 10)</span>
         <span class="skill-tag">Network Penetration Testing</span>
-        <span class="skill-tag">Mobile Security (Android/iOS)</span>
-        <span class="skill-tag">Burp Suite / Metasploit</span>
+        <span class="skill-tag">Mobile Security (Android & iOS)</span>
+        <span class="skill-tag">Burp Suite Professional</span>
+        <span class="skill-tag">Metasploit Framework</span>
         <span class="skill-tag">Nessus / Nmap / Wireshark</span>
         <span class="skill-tag">AWS Cloud Security Audits</span>
         <span class="skill-tag">IAM & S3 Hardening</span>
         <span class="skill-tag">Vulnerability Management</span>
-        <span class="skill-tag">API Pentesting & JWT Attacks</span>
+        <span class="skill-tag">API Security & JWT Attacks</span>
         <span class="skill-tag">Red Team Exercises</span>
+        <span class="skill-tag">Social Engineering</span>
+        <span class="skill-tag">SQL Injection / XSS / SSRF</span>
+        <span class="skill-tag">IDOR / BOLA / Mass Assignment</span>
       </div>
     </div>
 
+    <!-- Key Projects - Detailed -->
     <div class="resume-section">
-      <h2 class="section-title">Certifications</h2>
-      <div class="skills-grid">
-        <span class="skill-tag"><i class="fas fa-certificate"></i> CEH – EC-Council</span>
-        <span class="skill-tag"><i class="fas fa-certificate"></i> Certified Cyber Security Professional</span>
-        <span class="skill-tag"><i class="fas fa-certificate"></i> Qualys VM Certification</span>
+      <h2 class="section-title"><i class="fas fa-project-diagram"></i> Key Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-icon"><i class="fas fa-university"></i></div>
+          <h3>Banking Application Security Assessment</h3>
+          <p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered critical vulnerabilities including IDOR allowing unauthorized account access, JWT misconfigurations enabling token replay, business logic flaws in fund transfer operations, and hardcoded API keys in mobile applications. Delivered comprehensive security report that helped reduce overall risk exposure.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-icon"><i class="fas fa-network-wired"></i></div>
+          <h3>Enterprise Infrastructure Penetration Testing</h3>
+          <p>Internal and external network assessment for a multinational organization with hybrid cloud infrastructure. Discovered domain privilege escalation via misconfigured GPOs, unpatched critical vulnerabilities, weak SNMP community strings, and exposed internal admin panels. Simulated real-world attack scenarios including lateral movement and persistence mechanisms.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-icon"><i class="fas fa-cloud"></i></div>
+          <h3>AWS Cloud Security Hardening</h3>
+          <p>Security audit and hardening of AWS environment for a fintech startup handling sensitive financial data. Identified publicly accessible S3 buckets containing PII, over-privileged IAM roles, unencrypted RDS snapshots, missing CloudTrail logs, and open security groups. Provided remediation guidance for least-privilege access, encryption at rest, and network segmentation.</p>
+        </div>
       </div>
     </div>
 
+    <!-- Certifications -->
     <div class="resume-section">
-      <h2 class="section-title">Education</h2>
-      <div class="exp-item">
-        <div class="exp-header"><span class="exp-role">B.Tech / B.E. – Computer Science</span></div>
+      <h2 class="section-title"><i class="fas fa-certificate"></i> Certifications</h2>
+      <div>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Hacking Trainer Institute (Berry9 IT Pvt Ltd)</span>
+        <span class="cert-item"><i class="fas fa-certificate"></i> Qualys Vulnerability Management (VM) Certification</span>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="resume-section">
+      <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h2>
+      <div class="exp-card">
+        <div class="exp-header">
+          <div><span class="exp-role">Bachelor of Technology (B.Tech) – Computer Science & Engineering</span></div>
+        </div>
         <p style="color: var(--text-secondary);">JNTU College of Engineering, Anantapur</p>
       </div>
     </div>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT Specialist</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
