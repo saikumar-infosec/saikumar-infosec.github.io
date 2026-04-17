@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS S3 Misconfigurations | Vulnerability Write-up | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .blog-header { padding: 6rem 0 2rem; }
+    .blog-category { display: inline-block; background: rgba(0, 245, 160, 0.1); border: 1px solid var(--primary); padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.7rem; color: var(--primary); margin-bottom: 1.5rem; }
+    .blog-title { font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .blog-meta { display: flex; gap: 1.5rem; color: var(--text-secondary); font-size: 0.85rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .blog-content { padding: 2rem 0 4rem; }
+    .blog-content h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); }
+    .severity-critical { background: rgba(255, 68, 68, 0.15); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .fix-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .related-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+    .related-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .related-card h4 { font-size: 0.9rem; margin-top: 0.3rem; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .blog-title { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="blog.html">Write-ups</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="blog-header">
+      <span class="blog-category"><i class="fas fa-bug"></i> Cloud Security Research</span>
+      <h1 class="blog-title">AWS S3 Bucket Security: Common Misconfigurations and How to Find Them</h1>
+      <div class="blog-meta">
+        <span><i class="fas fa-calendar-alt"></i> April 18, 2026</span>
+        <span><i class="fas fa-clock"></i> 6 min read</span>
+        <span><i class="fas fa-tag"></i> AWS · Cloud Security · S3</span>
+      </div>
+    </div>
+
+    <div class="blog-content">
+      <h2>📌 Publicly Exposable S3 Buckets</h2>
+
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Misconfigured AWS S3 buckets that allow public read/write access, exposing sensitive data such as PII, credentials, backups, and internal documents.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Default S3 bucket permissions are private, but administrators often misconfigure bucket policies or ACLs to allow public access. Additionally, "Block Public Access" settings may be disabled.</p>
+      <p><strong>Security principle violated:</strong> Misconfiguration / Access Control</p>
+
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Cloud Misconfiguration</li>
+        <li><strong>OWASP:</strong> API8:2023 – Security Misconfiguration</li>
+        <li><strong>CWE:</strong> CWE-284: Improper Access Control</li>
+      </ul>
+
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ S3 bucket URLs (https://bucket-name.s3.amazonaws.com)</li>
+        <li>✅ Bucket policies and ACLs</li>
+        <li>✅ Public listing of bucket contents</li>
+      </ul>
+
+      <h2>🔍 Detection Methodology</h2>
+      <div class="code-block"><pre># AWS CLI command to check bucket ACL
+aws s3api get-bucket-acl --bucket target-bucket
+
+# Check bucket policy
+aws s3api get-bucket-policy --bucket target-bucket
+
+# Test public access via browser
+https://bucket-name.s3.amazonaws.com/</pre></div>
+
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify S3 bucket names (via JS files, wayback machine, or bruteforce)</li>
+        <li>Attempt to access bucket URL directly in browser</li>
+        <li>If bucket lists contents, enumerate all files</li>
+        <li>Download sensitive files (backups, configs, credentials)</li>
+      </ol>
+
+      <h2>🛡️ Mitigation</h2>
+      <div class="fix-box">
+        <strong>✅ Enable "Block Public Access":</strong> Turn on all Block Public Access settings<br>
+        <strong>✅ Review bucket policies:</strong> Ensure no "Principal": "*" with "Effect": "Allow"<br>
+        <strong>✅ Use bucket ACLs carefully:</strong> Prefer IAM roles and bucket policies<br>
+        <strong>✅ Enable bucket logging:</strong> Monitor access patterns<br>
+        <strong>✅ Regular audits:</strong> Use AWS Trusted Advisor or third-party tools
+      </div>
+
+      <div class="code-block"><pre># Secure bucket policy - deny all public access
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": "s3:*",
+        "Resource": "arn:aws:s3:::bucket-name/*",
+        "Condition": {"Bool": {"aws:SecureTransport": "false"}}
+    }]
+}</pre></div>
+
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="severity-critical">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Data breach (PII, credentials, internal documents), regulatory fines (GDPR), reputational damage
+      </div>
+
+      <h2>📅 Disclosure Timeline</h2>
+      <ul>
+        <li><strong>Day 1:</strong> Discovered publicly exposed bucket with customer data</li>
+        <li><strong>Day 1:</strong> Reported immediately via security contact</li>
+        <li><strong>Day 2:</strong> Bucket secured within 24 hours</li>
+        <li><strong>Day 5:</strong> Post-mortem and remediation plan provided</li>
+      </ul>
+
+      <h2>📖 Related Write-ups</h2>
+      <div class="related-posts">
+        <div class="related-card"><span style="font-size: 0.7rem; color: var(--primary);">Read next</span><h4>IDOR in Banking API</h4><a href="idor-banking-api.html" style="color: var(--text-secondary); font-size: 0.75rem; text-decoration: none;">Read →</a></div>
+        <div class="related-card"><span style="font-size: 0.7rem; color: var(--primary);">Read next</span><h4>JWT Misconfiguration</h4><a href="jwt-misconfiguration.html" style="color: var(--text-secondary); font-size: 0.75rem; text-decoration: none;">Read →</a></div>
+      </div>
+
+      <hr>
+      <p><em>This write-up has been anonymized. All data was handled according to responsible disclosure practices.</em></p>
+      <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to all write-ups</a>
+    </div>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+</script>
+</body>
+</html>
