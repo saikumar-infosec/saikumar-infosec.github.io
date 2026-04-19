@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saikumar Raju | Cybersecurity Consultant - Resume</title>
+  <title>Web Security | Saikumar Raju Knowledge Base</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --primary-dark: #00cc88; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
     body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; transition: all 0.3s ease; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
     .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
     .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
     .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
@@ -21,71 +21,28 @@
     .nav-links a:hover { color: var(--primary); }
     .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
     .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    
-    /* Resume Header */
-    .resume-header { padding: 5rem 0 2rem; border-bottom: 1px solid var(--border); }
-    .resume-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%); background-clip: text; -webkit-background-clip: text; color: transparent; display: inline-block; }
-    .resume-header .title { font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem; }
-    .contact-info-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; justify-content: space-between; align-items: center; }
-    .contact-item { display: inline-flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.5rem 1.2rem; border-radius: 40px; border: 1px solid var(--border); font-size: 0.85rem; }
-    .btn-download { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: #0a0c10; padding: 0.7rem 1.5rem; border-radius: 40px; text-decoration: none; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer; font-family: inherit; }
-    .btn-download:hover { transform: translateY(-2px); background: var(--primary-dark); }
-    
-    /* Quick Access Cards - Will appear at bottom */
-    .quick-access { margin: 2rem 0 1rem; }
-    .quick-title { font-size: 1.3rem; margin-bottom: 1.5rem; color: var(--primary); text-align: center; }
-    .access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-    .access-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.8rem; text-align: center; transition: all 0.2s; text-decoration: none; display: block; }
-    .access-card:hover { border-color: var(--primary); transform: translateY(-6px); }
-    .access-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
-    .access-card h3 { color: var(--text-primary); margin-bottom: 0.75rem; font-size: 1.2rem; }
-    .access-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
-    
-    /* Resume Sections */
-    .resume-section { margin: 2.5rem 0; }
-    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; }
-    .section-title i { font-size: 1.3rem; }
-    
-    .exp-grid { display: flex; flex-direction: column; gap: 1.5rem; }
-    .exp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
-    .exp-card:hover { border-color: var(--primary); transform: translateX(5px); }
-    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 1rem; }
-    .exp-role { font-size: 1.2rem; font-weight: 700; }
-    .exp-company { color: var(--primary); font-size: 1rem; margin-top: 0.2rem; }
-    .exp-date { background: var(--bg-elevated); padding: 0.25rem 0.8rem; border-radius: 20px; font-size: 0.7rem; }
-    .exp-list { list-style: none; margin-top: 0.75rem; }
-    .exp-list li { display: flex; gap: 0.75rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--text-secondary); }
-    .exp-list i { color: var(--primary); margin-top: 0.2rem; font-size: 0.7rem; }
-    
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; }
-    .skill-tag { background: var(--bg-elevated); padding: 0.5rem 1.2rem; border-radius: 40px; font-size: 0.8rem; transition: all 0.2s; }
-    .skill-tag:hover { background: var(--primary); color: #0a0c10; cursor: default; }
-    
-    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-    .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
-    .project-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .project-icon { width: 40px; height: 40px; background: rgba(0, 245, 160, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .project-icon i { font-size: 1.2rem; color: var(--primary); }
-    .project-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .project-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
-    
-    .cert-item { background: var(--bg-elevated); padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.25rem; }
-    
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; margin-top: 2rem; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .page-header p { color: var(--text-secondary); max-width: 600px; }
+    .vulns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; padding: 2rem 0 4rem; }
+    .vuln-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; text-decoration: none; display: block; }
+    .vuln-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .vuln-icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 0.75rem; }
+    .vuln-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .vuln-card p { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.75rem; }
+    .severity { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 600; }
+    .severity-critical { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+    .severity-high { background: rgba(255, 153, 0, 0.2); color: #ff9900; }
+    .severity-medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
       .mobile-menu { display: block; }
       .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
       .nav-links.show { display: flex; }
-      .resume-header h1 { font-size: 2rem; }
-      .contact-info-grid { flex-direction: column; align-items: flex-start; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .access-grid { grid-template-columns: 1fr; }
-    }
-    @media print {
-      body { background: white; color: black; }
-      .navbar, .theme-toggle, .btn-download, footer, .quick-access { display: none; }
-      .exp-card, .project-card { break-inside: avoid; border: 1px solid #ccc; }
+      .page-header h1 { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -93,14 +50,14 @@
 
 <nav class="navbar">
   <div class="container nav-flex">
-    <a href="index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Resume</a></li>
-      <li><a href="knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="blog.html">Write-ups</a></li>
-      <li><a href="tools.html">Tools</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
       <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
     </ul>
   </div>
@@ -108,158 +65,185 @@
 
 <main>
   <div class="container">
-    <!-- Header -->
-    <div class="resume-header">
-      <h1>Saikumar Raju</h1>
-      <div class="title">Cybersecurity Consultant | Offensive Security Professional</div>
-      <div class="contact-info-grid">
-        <div class="contact-item"><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</div>
-        <div class="contact-item"><i class="fas fa-phone-alt"></i> +91 7337026773</div>
-        <div class="contact-item"><i class="fas fa-map-marker-alt"></i> India</div>
-        <div class="contact-item"><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</div>
-        <div class="contact-item"><i class="fab fa-github"></i> github.com/saikumar-infosec</div>
-        <button class="btn-download" onclick="window.print()"><i class="fas fa-print"></i> Print / Save PDF</button>
-      </div>
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / Web Security</div>
+    <div class="page-header">
+      <h1>🌐 Web Security Knowledge Base</h1>
+      <p>Complete web application penetration testing guides. Each vulnerability includes description, classification, attack surface, detection methodology, payloads, exploitation steps, mitigation, and real‑world examples.</p>
     </div>
 
-    <!-- Professional Summary -->
-    <div class="resume-section">
-      <h2 class="section-title"><i class="fas fa-user-astronaut"></i> Professional Summary</h2>
-      <p style="color: var(--text-secondary); line-height: 1.6; background: var(--bg-card); padding: 1.2rem; border-radius: 1rem; border-left: 3px solid var(--primary);">Cybersecurity professional with comprehensive experience in Offensive Security, Vulnerability Assessment & Penetration Testing (VAPT), Application Security, Web and API Security, Mobile Security (Android & iOS), and AWS Cloud Security. Skilled at identifying complex vulnerabilities, conducting penetration tests, and assisting engineering teams with secure remediation strategies. Passionate about security research and building practical security knowledge bases.</p>
-    </div>
+    <div class="vulns-grid">
+      <!-- SQL Injection (Basic) -->
+      <a href="sqli/index.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-database"></i></div>
+        <h3>SQL Injection (Basic)</h3>
+        <p>Error‑based, union‑based, boolean/time‑based blind.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
 
-    <!-- Work Experience -->
-    <div class="resume-section">
-      <h2 class="section-title"><i class="fas fa-briefcase"></i> Professional Experience</h2>
-      <div class="exp-grid">
-        <div class="exp-card">
-          <div class="exp-header">
-            <div><div class="exp-role">Cyber Security Consultant</div><div class="exp-company">Astracybertech Pvt Ltd</div></div>
-            <span class="exp-date">Present</span>
-          </div>
-          <ul class="exp-list">
-            <li><i class="fas fa-chevron-right"></i> Leading comprehensive VAPT engagements for web applications, REST/GraphQL APIs, and mobile platforms (Android & iOS) across banking, healthcare, and e-commerce sectors</li>
-            <li><i class="fas fa-chevron-right"></i> Performing internal and external network penetration testing using industry-standard tools including Nmap, Nessus, Metasploit, and Burp Suite Professional</li>
-            <li><i class="fas fa-chevron-right"></i> Delivering actionable security assessment reports with executive summaries, technical findings, proof-of-concept demonstrations, and prioritized remediation strategies</li>
-            <li><i class="fas fa-chevron-right"></i> Executing mobile application security assessments identifying vulnerabilities such as weak API protection, hardcoded credentials, insecure data storage, and certificate pinning issues</li>
-            <li><i class="fas fa-chevron-right"></i> Conducting cloud security assessments on AWS environments including IAM role analysis, S3 bucket policy reviews, security group auditing, and CloudTrail monitoring</li>
-            <li><i class="fas fa-chevron-right"></i> Collaborating directly with development and DevOps teams to validate security fixes and implement secure coding practices</li>
-          </ul>
-        </div>
+      <!-- SQL Injection (Advanced) -->
+      <a href="sqli/advanced.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-database"></i></div>
+        <h3>SQL Injection (Advanced)</h3>
+        <p>WAF bypass, database‑specific exploits, stacked queries, RCE.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
 
-        <div class="exp-card">
-          <div class="exp-header">
-            <div><div class="exp-role">Security Analyst</div><div class="exp-company">Yash Technologies</div></div>
-            <span class="exp-date">Previous</span>
-          </div>
-          <ul class="exp-list">
-            <li><i class="fas fa-chevron-right"></i> Performed manual and automated web application security testing using Burp Suite, OWASP ZAP, and SQLMap, identifying OWASP Top 10 vulnerabilities</li>
-            <li><i class="fas fa-chevron-right"></i> Conducted network security assessments to detect misconfigurations, weak encryption protocols, and vulnerable services</li>
-            <li><i class="fas fa-chevron-right"></i> Supported red team exercises including external reconnaissance, social engineering simulations, and internal pivoting</li>
-            <li><i class="fas fa-chevron-right"></i> Produced technical security reports with proof-of-concept demonstrations and clear remediation guidance for development teams</li>
-            <li><i class="fas fa-chevron-right"></i> Contributed to the development of security testing methodologies and internal knowledge base</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      <!-- XSS -->
+      <a href="xss.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>Cross‑Site Scripting (XSS)</h3>
+        <p>Reflected, stored, DOM‑based XSS with 150+ payloads.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
 
-    <!-- Technical Skills -->
-    <div class="resume-section">
-      <h2 class="section-title"><i class="fas fa-code"></i> Technical Skills</h2>
-      <div class="skills-grid">
-        <span class="skill-tag">Web & API Security (OWASP Top 10)</span>
-        <span class="skill-tag">Network Penetration Testing</span>
-        <span class="skill-tag">Mobile Security (Android & iOS)</span>
-        <span class="skill-tag">Burp Suite Professional</span>
-        <span class="skill-tag">Metasploit Framework</span>
-        <span class="skill-tag">Nessus / Nmap / Wireshark</span>
-        <span class="skill-tag">AWS Cloud Security Audits</span>
-        <span class="skill-tag">IAM & S3 Hardening</span>
-        <span class="skill-tag">Vulnerability Management</span>
-        <span class="skill-tag">API Security & JWT Attacks</span>
-        <span class="skill-tag">Red Team Exercises</span>
-        <span class="skill-tag">SQL Injection / XSS / SSRF</span>
-        <span class="skill-tag">IDOR / BOLA / Mass Assignment</span>
-      </div>
-    </div>
+      <!-- SSRF -->
+      <a href="ssrf.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-server"></i></div>
+        <h3>Server‑Side Request Forgery (SSRF)</h3>
+        <p>Cloud metadata, internal port scanning, protocol handlers.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
 
-    <!-- Key Projects -->
-    <div class="resume-section">
-      <h2 class="section-title"><i class="fas fa-project-diagram"></i> Key Projects</h2>
-      <div class="projects-grid">
-        <div class="project-card"><div class="project-icon"><i class="fas fa-university"></i></div><h3>Banking Application Security Assessment</h3><p>End-to-end security testing for web, API, and mobile banking platforms. Uncovered critical vulnerabilities including IDOR allowing unauthorized account access, JWT misconfigurations enabling token replay, business logic flaws in fund transfer operations, and hardcoded API keys in mobile applications.</p></div>
-        <div class="project-card"><div class="project-icon"><i class="fas fa-network-wired"></i></div><h3>Enterprise Infrastructure Penetration Testing</h3><p>Internal and external network assessment for a multinational organization. Discovered domain privilege escalation via misconfigured GPOs, unpatched critical vulnerabilities, weak SNMP community strings, and exposed internal admin panels.</p></div>
-        <div class="project-card"><div class="project-icon"><i class="fas fa-cloud"></i></div><h3>AWS Cloud Security Hardening</h3><p>Security audit and hardening of AWS environment for a fintech startup. Identified publicly accessible S3 buckets containing PII, over-privileged IAM roles, unencrypted RDS snapshots, missing CloudTrail logs, and open security groups.</p></div>
-      </div>
-    </div>
+      <!-- XXE -->
+      <a href="xxe.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-code"></i></div>
+        <h3>XXE (XML External Entity)</h3>
+        <p>File disclosure, SSRF, denial of service.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
 
-    <!-- Certifications -->
-    <div class="resume-section">
-      <h2 class="section-title"><i class="fas fa-certificate"></i> Certifications</h2>
-      <div>
-        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Ethical Hacker (CEH) – EC-Council</span>
-        <span class="cert-item"><i class="fas fa-certificate"></i> Certified Cyber Security Professional – Berry9 IT Pvt Ltd</span>
-        <span class="cert-item"><i class="fas fa-certificate"></i> Qualys Vulnerability Management (VM) Certification</span>
-      </div>
-    </div>
+      <!-- SSTI -->
+      <a href="ssti.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-paint-roller"></i></div>
+        <h3>Server‑Side Template Injection (SSTI)</h3>
+        <p>RCE via template engines (Jinja2, Twig, Freemarker).</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
 
-    <!-- Education -->
-    <div class="resume-section">
-      <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h2>
-      <div class="exp-card">
-        <div class="exp-header"><div><span class="exp-role">Bachelor of Technology (B.Tech) – Computer Science & Engineering</span></div></div>
-        <p style="color: var(--text-secondary);">JNTU College of Engineering, Anantapur</p>
-      </div>
-    </div>
+      <!-- CSRF -->
+      <a href="csrf.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-user-secret"></i></div>
+        <h3>Cross‑Site Request Forgery (CSRF)</h3>
+        <p>GET/POST based attacks, anti‑CSRF bypass.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
 
-    <!-- QUICK ACCESS CARDS - NOW AT THE BOTTOM (After Education) -->
-    <div class="quick-access">
-      <h2 class="quick-title"><i class="fas fa-compass"></i> Explore My Work</h2>
-      <div class="access-grid">
-        <a href="knowledge-base.html" class="access-card">
-          <div class="access-icon"><i class="fas fa-database"></i></div>
-          <h3>📚 Security Knowledge Base</h3>
-          <p>100+ vulnerabilities, 10,000+ payloads, organized by domain with detailed exploitation guides</p>
-        </a>
-        <a href="blog.html" class="access-card">
-          <div class="access-icon"><i class="fas fa-blog"></i></div>
-          <h3>✍️ Write-ups & Research</h3>
-          <p>Detailed vulnerability write-ups from real-world assessments with step-by-step exploitation</p>
-        </a>
-        <a href="tools.html" class="access-card">
-          <div class="access-icon"><i class="fas fa-tools"></i></div>
-          <h3>🔧 Custom Security Tools</h3>
-          <p>Open-source pentesting tools and automation scripts for security assessments</p>
-        </a>
-      </div>
-    </div>
+      <!-- IDOR -->
+      <a href="idor.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-key"></i></div>
+        <h3>IDOR (Insecure Direct Object Reference)</h3>
+        <p>Accessing unauthorised resources by modifying IDs.</p>
+        <span class="severity severity-high">High</span>
+      </a>
 
-    <!-- Contact Section -->
-    <div id="contact" class="resume-section">
-      <h2 class="section-title"><i class="fas fa-envelope"></i> Let's Connect</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-        <div class="exp-card">
-          <h3 style="margin-bottom: 1rem; color: var(--primary);">Contact Info</h3>
-          <p><i class="fas fa-envelope"></i> saikumararaju30@gmail.com</p>
-          <p><i class="fas fa-phone-alt"></i> +91 7337026773</p>
-          <p><i class="fab fa-linkedin"></i> linkedin.com/in/saikumar-raju</p>
-          <p><i class="fab fa-github"></i> github.com/saikumar-infosec</p>
-        </div>
-        <div class="exp-card">
-          <h3 style="margin-bottom: 1rem; color: var(--primary);">Quick Links</h3>
-          <p><a href="knowledge-base.html" style="color: var(--primary); text-decoration: none;">📚 Security Knowledge Base</a></p>
-          <p><a href="blog.html" style="color: var(--primary); text-decoration: none;">✍️ Vulnerability Write-ups</a></p>
-          <p><a href="tools.html" style="color: var(--primary); text-decoration: none;">🔧 Custom Security Tools</a></p>
-        </div>
-      </div>
+      <!-- Path Traversal -->
+      <a href="path-traversal.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-folder-open"></i></div>
+        <h3>Path Traversal</h3>
+        <p>Reading arbitrary files via ../ sequences.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Command Injection -->
+      <a href="command-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-terminal"></i></div>
+        <h3>Command Injection</h3>
+        <p>Executing OS commands via unsanitised input.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- LFI/RFI -->
+      <a href="lfi-rfi.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-import"></i></div>
+        <h3>LFI / RFI (File Inclusion)</h3>
+        <p>Local/remote file inclusion leading to RCE.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- CORS -->
+      <a href="cors.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div>
+        <h3>CORS Misconfiguration</h3>
+        <p>Permissive cross‑origin policies, data theft.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- Open Redirect -->
+      <a href="open-redirect.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div>
+        <h3>Open Redirect</h3>
+        <p>Unvalidated redirects to malicious sites.</p>
+        <span class="severity severity-low">Low</span>
+      </a>
+
+      <!-- File Upload -->
+      <a href="file-upload.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-upload"></i></div>
+        <h3>File Upload Vulnerabilities</h3>
+        <p>Bypass techniques, webshells, XSS via SVG, Zip Slip, etc.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- RCE -->
+      <a href="remote-code-execution.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-bug"></i></div>
+        <h3>Remote Code Execution (RCE)</h3>
+        <p>Deserialization, command injection, Log4Shell, etc.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- LDAP Injection -->
+      <a href="ldap-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-ldap"></i></div>
+        <h3>LDAP Injection</h3>
+        <p>Authentication bypass, directory enumeration.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- XPath Injection -->
+      <a href="xpath-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>XPath Injection</h3>
+        <p>Bypass authentication, extract XML data.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- SSI Injection -->
+      <a href="ssi-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>SSI Injection</h3>
+        <p>Server‑Side Includes command execution.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Insecure Deserialization -->
+      <a href="insecure-deserialization.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-box"></i></div>
+        <h3>Insecure Deserialization</h3>
+        <p>Java, PHP, Python, .NET – RCE via gadget chains.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- Reconnaissance -->
+      <a href="recon.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-search"></i></div>
+        <h3>Reconnaissance</h3>
+        <p>OSINT, subdomain discovery, fuzzing, JS analysis.</p>
+        <span class="severity severity-medium">Informational</span>
+      </a>
+
+      <!-- Web Pentest Checklist -->
+      <a href="checklist.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-check-square"></i></div>
+        <h3>Web Pentest Checklist</h3>
+        <p>Step‑by‑step testing methodology.</p>
+        <span class="severity severity-medium">Reference</span>
+      </a>
     </div>
   </div>
 </main>
 
-<footer>
-  <p>Saikumar Raju — Cybersecurity Consultant | Offensive Security & VAPT Specialist</p>
-  <p style="font-size: 0.7rem; margin-top: 0.5rem;">Explore the <a href="knowledge-base.html" style="color: var(--primary);">Security Knowledge Base</a> with 100+ vulnerabilities and 10,000+ payloads</p>
-</footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
