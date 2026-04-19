@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Security | Saikumar Raju</title>
+  <title>Web Security | Saikumar Raju Knowledge Base</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -67,31 +67,183 @@
   <div class="container">
     <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / Web Security</div>
     <div class="page-header">
-      <h1>🌐 Web Security</h1>
-      <p>Complete web application penetration testing guide. Each vulnerability includes description, classification, attack surface, detection methodology, payloads, exploitation steps, and mitigation.</p>
+      <h1>🌐 Web Security Knowledge Base</h1>
+      <p>Complete web application penetration testing guides. Each vulnerability includes description, classification, attack surface, detection methodology, payloads, exploitation steps, mitigation, and real‑world examples.</p>
     </div>
 
     <div class="vulns-grid">
-      <a href="sql-injection.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-database"></i></div><h3>SQL Injection</h3><p>Injecting malicious SQL queries to manipulate databases.</p><span class="severity severity-critical">Critical</span></a>
-      <a href="xss.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-code"></i></div><h3>Cross-Site Scripting (XSS)</h3><p>Injecting malicious scripts into web applications.</p><span class="severity severity-medium">Medium</span></a>
-      <a href="ssrf.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-server"></i></div><h3>Server-Side Request Forgery (SSRF)</h3><p>Making servers send requests to internal resources.</p><span class="severity severity-critical">Critical</span></a>
-      <a href="xxe.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-file-code"></i></div><h3>XXE (XML External Entity)</h3><p>Exploiting XML parsers to read files.</p><span class="severity severity-critical">Critical</span></a>
-      <a href="ssti.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-paint-roller"></i></div><h3>Server-Side Template Injection (SSTI)</h3><p>Injecting malicious code into template engines.</p><span class="severity severity-critical">Critical</span></a>
-      <a href="csrf.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-user-secret"></i></div><h3>CSRF (Cross-Site Request Forgery)</h3><p>Tricking users into performing unintended actions.</p><span class="severity severity-medium">Medium</span></a>
-      <a href="idor.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-key"></i></div><h3>IDOR (Insecure Direct Object Reference)</h3><p>Accessing unauthorized resources by modifying IDs.</p><span class="severity severity-high">High</span></a>
-      <a href="path-traversal.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-folder-open"></i></div><h3>Path Traversal</h3><p>Reading arbitrary files from the server.</p><span class="severity severity-high">High</span></a>
-      <a href="command-injection.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-terminal"></i></div><h3>Command Injection</h3><p>Executing arbitrary commands on the server.</p><span class="severity severity-critical">Critical</span></a>
-      <a href="lfi-rfi.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-file-import"></i></div><h3>LFI / RFI (File Inclusion)</h3><p>Including local or remote files to execute code.</p><span class="severity severity-high">High</span></a>
-      <a href="cors.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div><h3>CORS Misconfiguration</h3><p>Improper cross-origin resource sharing policies.</p><span class="severity severity-medium">Medium</span></a>
-      <a href="open-redirect.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div><h3>Open Redirect</h3><p>Redirecting users to malicious external sites.</p><span class="severity severity-low">Low</span></a>
-      <a href="file-upload.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-file-upload"></i></div><h3>File Upload Vulnerabilities</h3><p>12 types: Unrestricted, MIME Bypass, Extension Bypass, Double Extension, Null Byte, ImageTragick, Zip Slip, SVG XSS, XML Bomb, Race Condition, Filename Injection, Web Shell</p><span class="severity severity-critical">Critical</span></a>
-      <a href="recon.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-search"></i></div><h3>Reconnaissance</h3><p>Information gathering techniques and tools.</p><span class="severity severity-medium">Informational</span></a>
-      <a href="checklist.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-check-square"></i></div><h3>Web Pentest Checklist</h3><p>Complete step-by-step testing methodology.</p><span class="severity severity-medium">Reference</span></a>
+      <!-- SQL Injection (Basic) -->
+      <a href="sqli/index.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-database"></i></div>
+        <h3>SQL Injection (Basic)</h3>
+        <p>Error‑based, union‑based, boolean/time‑based blind.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- SQL Injection (Advanced) -->
+      <a href="sqli/advanced.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-database"></i></div>
+        <h3>SQL Injection (Advanced)</h3>
+        <p>WAF bypass, database‑specific exploits, stacked queries, RCE.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- XSS -->
+      <a href="xss.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>Cross‑Site Scripting (XSS)</h3>
+        <p>Reflected, stored, DOM‑based XSS with 150+ payloads.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- SSRF -->
+      <a href="ssrf.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-server"></i></div>
+        <h3>Server‑Side Request Forgery (SSRF)</h3>
+        <p>Cloud metadata, internal port scanning, protocol handlers.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- XXE -->
+      <a href="xxe.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-code"></i></div>
+        <h3>XXE (XML External Entity)</h3>
+        <p>File disclosure, SSRF, denial of service.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- SSTI -->
+      <a href="ssti.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-paint-roller"></i></div>
+        <h3>Server‑Side Template Injection (SSTI)</h3>
+        <p>RCE via template engines (Jinja2, Twig, Freemarker).</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- CSRF -->
+      <a href="csrf.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-user-secret"></i></div>
+        <h3>Cross‑Site Request Forgery (CSRF)</h3>
+        <p>GET/POST based attacks, anti‑CSRF bypass.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- IDOR -->
+      <a href="idor.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-key"></i></div>
+        <h3>IDOR (Insecure Direct Object Reference)</h3>
+        <p>Accessing unauthorised resources by modifying IDs.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Path Traversal -->
+      <a href="path-traversal.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-folder-open"></i></div>
+        <h3>Path Traversal</h3>
+        <p>Reading arbitrary files via ../ sequences.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Command Injection -->
+      <a href="command-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-terminal"></i></div>
+        <h3>Command Injection</h3>
+        <p>Executing OS commands via unsanitised input.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- LFI/RFI -->
+      <a href="lfi-rfi.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-import"></i></div>
+        <h3>LFI / RFI (File Inclusion)</h3>
+        <p>Local/remote file inclusion leading to RCE.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- CORS -->
+      <a href="cors.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div>
+        <h3>CORS Misconfiguration</h3>
+        <p>Permissive cross‑origin policies, data theft.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- Open Redirect -->
+      <a href="open-redirect.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div>
+        <h3>Open Redirect</h3>
+        <p>Unvalidated redirects to malicious sites.</p>
+        <span class="severity severity-low">Low</span>
+      </a>
+
+      <!-- File Upload -->
+      <a href="file-upload.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-upload"></i></div>
+        <h3>File Upload Vulnerabilities</h3>
+        <p>Bypass techniques, webshells, XSS via SVG, Zip Slip, etc.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- RCE -->
+      <a href="remote-code-execution.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-bug"></i></div>
+        <h3>Remote Code Execution (RCE)</h3>
+        <p>Deserialization, command injection, Log4Shell, etc.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- LDAP Injection -->
+      <a href="ldap-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-ldap"></i></div>
+        <h3>LDAP Injection</h3>
+        <p>Authentication bypass, directory enumeration.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- XPath Injection -->
+      <a href="xpath-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>XPath Injection</h3>
+        <p>Bypass authentication, extract XML data.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- SSI Injection -->
+      <a href="ssi-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>SSI Injection</h3>
+        <p>Server‑Side Includes command execution.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Insecure Deserialization -->
+      <a href="insecure-deserialization.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-box"></i></div>
+        <h3>Insecure Deserialization</h3>
+        <p>Java, PHP, Python, .NET – RCE via gadget chains.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- Reconnaissance -->
+      <a href="recon.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-search"></i></div>
+        <h3>Reconnaissance</h3>
+        <p>OSINT, subdomain discovery, fuzzing, JS analysis.</p>
+        <span class="severity severity-medium">Informational</span>
+      </a>
+
+      <!-- Web Pentest Checklist -->
+      <a href="checklist.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-check-square"></i></div>
+        <h3>Web Pentest Checklist</h3>
+        <p>Step‑by‑step testing methodology.</p>
+        <span class="severity severity-medium">Reference</span>
+      </a>
     </div>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p><p style="font-size: 0.7rem;"><a href="../index.html" style="color: var(--primary);">← Back to Resume</a></p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
