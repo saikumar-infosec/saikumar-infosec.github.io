@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Bug Bounty Examples | API Security | Saikumar Raju</title>
+  <!-- Include same base styles as previous pages, omitted for brevity -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same as above, copy from previous */</style>
+</head>
+<body>
+  <!-- Navigation same as others -->
+  <main>
+    <div class="container">
+      <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">API Security</a> / Real‑World Bug Bounty Examples</div>
+      <div class="page-header">
+        <h1>📌 API Bug Bounty – Real‑World Vulnerabilities</h1>
+      </div>
+
+      <div class="content-section">
+        <h2>1. Response Leakage via Implicit Broadcast (Shopify Android)</h2>
+        <p><strong>Issue:</strong> The Shopify Android client used an unprotected broadcast (<code>com.shopify.service.requestComplete</code>) to pass network responses intra‑app. Any app on the device could register a receiver and steal access tokens, cookies, and response bodies.</p>
+        <p><strong>Impact:</strong> Account takeover, session hijacking.</p>
+        <p><strong>Fix:</strong> Use protected broadcasts with permissions or local broadcasts (LocalBroadcastManager).</p>
+      </div>
+
+      <div class="content-section">
+        <h2>2. OAuth Authorization Code Not Revoked After Access Revocation (Vimeo)</h2>
+        <p><strong>Issue:</strong> When a user revoked the application, access tokens were invalidated, but previously issued authorization codes remained usable. An attacker could exchange a saved code for a new access token even after revocation.</p>
+        <p><strong>Impact:</strong> Persistent access after user removal.</p>
+        <p><strong>Fix:</strong> Revoke all codes when access is revoked; implement short code lifetimes.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>3. Disabled Agent Account Still Usable via Access Token (Zopim)</h2>
+        <p><strong>Issue:</strong> An agent account was disabled by the owner, but the access token remained valid. The attacker could continue using the token to create new accounts.</p>
+        <p><strong>Impact:</strong> Privilege escalation, account persistence.</p>
+        <p><strong>Fix:</strong> Invalidate all tokens when account is disabled.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>4. Missing Authorization Checks (Fabric.io / MoPub)</h2>
+        <p><strong>Issue:</strong> A member’s access token could be used to delete an organization’s app (admin‑only action). No proper role verification on the API endpoint.</p>
+        <p><strong>Impact:</strong> Data loss, application deletion.</p>
+        <p><strong>Fix:</strong> Enforce role‑based access control on every endpoint.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>5. Race Conditions in OAuth Token Generation</h2>
+        <p><strong>Issue:</strong> By sending multiple concurrent requests to the token endpoint with the same authorization code, an attacker could obtain multiple valid access/refresh token pairs. Revoking one pair did not invalidate the others.</p>
+        <p><strong>Impact:</strong> Persistent access after revocation.</p>
+        <p><strong>Fix:</strong> Use idempotency keys or lock the authorization code after first use.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>6. API Rate Limit Bypass</h2>
+        <p><strong>Issue:</strong> Several APIs allowed bypassing rate limits by using different IPs, rotating parameters, or exploiting low‑granularity limits.</p>
+        <p><strong>Impact:</strong> Brute‑force, resource exhaustion.</p>
+        <p><strong>Fix:</strong> Implement distributed rate limiting (e.g., Redis + sliding window) and keyed by user/session.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>7. Timing Attack in HMAC Comparison (Shopify Python API)</h2>
+        <p><strong>Issue:</strong> The fallback string comparison (<code>hmac_calculated == hmac_to_verify</code>) used short‑circuit evaluation, allowing timing‑based brute force of the HMAC.</p>
+        <p><strong>Impact:</strong> Potential signature forgery.</p>
+        <p><strong>Fix:</strong> Always use constant‑time comparison (<code>hmac.compare_digest</code>).</p>
+      </div>
+
+      <div class="content-section">
+        <h2>8. API Key Exposure (Starbucks Turkey)</h2>
+        <p><strong>Issue:</strong> A hardcoded Basic Auth token in the mobile app allowed full access to the internal API documentation and all GET endpoints without authentication.</p>
+        <p><strong>Impact:</strong> Unauthorised access to sensitive user data.</p>
+        <p><strong>Fix:</strong> Never hardcode credentials; use server‑side tokens with expiration and scope.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 Lessons Learned</h2>
+        <ul>
+          <li>Always validate authorization on every API call (not just authentication).</li>
+          <li>Revoke all derived tokens (codes, refresh tokens) when access is revoked.</li>
+          <li>Use constant‑time comparison for cryptographic secrets.</li>
+          <li>Implement proper rate limiting with distributed state.</li>
+          <li>Do not rely on client‑side security (broadcasts, hardcoded keys).</li>
+        </ul>
+      </div>
+
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to API Security</a>
+    </div>
+  </main>
+  <footer><p>Saikumar Raju — Cybersecurity Consultant | API Bug Bounty Case Studies</p></footer>
+  <script>/* copy and dark mode */</script>
+</body>
+</html>
