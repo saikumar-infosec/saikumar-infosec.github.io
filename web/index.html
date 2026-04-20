@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* (same style as above – paste the full style block from the SQL injection page or reuse your existing one) */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
@@ -72,23 +73,15 @@
     </div>
 
     <div class="vulns-grid">
-      <!-- SQL Injection (Basic) -->
-      <a href="sqli/index.html" class="vuln-card">
+      <!-- SQL Injection (Combined Basic + Advanced) -->
+      <a href="sql-injection.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-database"></i></div>
-        <h3>SQL Injection (Basic)</h3>
-        <p>Error‑based, union‑based, boolean/time‑based blind.</p>
+        <h3>SQL Injection</h3>
+        <p>Error‑based, union‑based, blind, WAF bypass, DB‑specific exploits, RCE.</p>
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- SQL Injection (Advanced) -->
-      <a href="sqli/advanced.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-database"></i></div>
-        <h3>SQL Injection (Advanced)</h3>
-        <p>WAF bypass, database‑specific exploits, stacked queries, RCE.</p>
-        <span class="severity severity-critical">Critical</span>
-      </a>
-
-      <!-- XSS -->
+      <!-- Cross-Site Scripting (XSS) -->
       <a href="xss.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-code"></i></div>
         <h3>Cross‑Site Scripting (XSS)</h3>
@@ -96,7 +89,7 @@
         <span class="severity severity-medium">Medium</span>
       </a>
 
-      <!-- SSRF -->
+      <!-- Server-Side Request Forgery (SSRF) -->
       <a href="ssrf.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-server"></i></div>
         <h3>Server‑Side Request Forgery (SSRF)</h3>
@@ -104,7 +97,7 @@
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- XXE -->
+      <!-- XXE (XML External Entity) -->
       <a href="xxe.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-file-code"></i></div>
         <h3>XXE (XML External Entity)</h3>
@@ -112,7 +105,7 @@
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- SSTI -->
+      <!-- Server-Side Template Injection (SSTI) -->
       <a href="ssti.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-paint-roller"></i></div>
         <h3>Server‑Side Template Injection (SSTI)</h3>
@@ -184,7 +177,7 @@
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- RCE -->
+      <!-- Remote Code Execution (RCE) -->
       <a href="remote-code-execution.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-bug"></i></div>
         <h3>Remote Code Execution (RCE)</h3>
