@@ -28,7 +28,7 @@
     .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
     .content-section { margin: 2rem 0; }
     .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; color: var(--text-primary); }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
     .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
     .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
     .content-section li { margin-bottom: 0.5rem; }
@@ -246,7 +246,7 @@ $query = "SELECT * FROM users WHERE id = " . $_GET['id'];</pre>
           <tr><td style="padding: 0.75rem;">3</td><td style="padding: 0.75rem;">Inject <code>' AND SLEEP(5)--</code></td><td style="padding: 0.75rem;">5‑second delay</td><td style="padding: 0.75rem;">Time‑based blind detected</td></tr>
           <tr><td style="padding: 0.75rem;">4</td><td style="padding: 0.75rem;">Inject <code>' UNION SELECT 1,2,3--</code></td><td style="padding: 0.75rem;">Numbers in response</td><td style="padding: 0.75rem;">Union‑based injection</td></tr>
         </tbody>
-      </table>
+       </table>
       <p>✔ Must be reproducible</p>
     </div>
 
