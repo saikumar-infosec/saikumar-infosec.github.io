@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT None Algorithm Attack | Web Security | Saikumar Raju</title>
+  <style>/* same as previous */</style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / JWT None Algorithm Attack</div>
+      <div class="page-header">
+        <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
+        <h1>📌 JWT None Algorithm Attack</h1>
+      </div>
+
+      <div class="content-section">
+        <h2>🧠 Description</h2>
+        <p>The JWT standard includes a special algorithm <code>none</code> intended for debugging or internal trusted systems. If a server accepts tokens with <code>alg: none</code>, it does not verify any signature. An attacker can forge a valid token for any user, including admin, by modifying the payload and setting the algorithm to <code>none</code>.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>💣 Attack Steps</h2>
+        <ol>
+          <li>Capture a valid JWT from the application.</li>
+          <li>Decode it at <a href="https://jwt.io" target="_blank">jwt.io</a>.</li>
+          <li>In the header, change <code>"alg": "HS256"</code> to <code>"alg": "none"</code>.</li>
+          <li>In the payload, change <code>"role": "user"</code> to <code>"role": "admin"</code>.</li>
+          <li>Remove the signature (leave the third part empty).</li>
+          <li>Send the crafted token to a privileged endpoint.</li>
+          <li>If the server accepts it, the vulnerability is confirmed.</li>
+        </ol>
+      </div>
+
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Original token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMiLCJyb2xlIjoidXNlciJ9.signature
+
+# Crafted token (alg: none, no signature)
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjMiLCJyb2xlIjoiYWRtaW4ifQ.</pre>
+      </div>
+
+      <div class="content-section">
+        <h2>🛡️ Mitigation</h2>
+        <div class="mitigation-box">
+          <strong>✅ Never accept the <code>none</code> algorithm in production</strong><br>
+          <strong>✅ Whitelist allowed algorithms (e.g., only <code>HS256</code> and <code>RS256</code>)</strong><br>
+          <strong>✅ Use a JWT library that rejects <code>none</code> by default</strong>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 References</h2>
+        <ul>
+          <li><a href="https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/" class="reference-link" target="_blank" style="color: var(--primary);">Auth0 – JWT none algorithm</a></li>
+        </ul>
+      </div>
+
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+    </div>
+  </main>
+  <footer><p>Saikumar Raju — Cybersecurity Consultant | JWT None Algorithm Guide</p></footer>
+  <script>/* copy and dark mode */</script>
+</body>
+</html>
