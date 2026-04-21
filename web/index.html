@@ -73,7 +73,7 @@
     </div>
 
     <div class="vulns-grid">
-      <!-- SQL Injection (Basic + Advanced Combined) -->
+      <!-- SQL Injection -->
       <a href="sql-injection.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-database"></i></div>
         <h3>SQL Injection</h3>
@@ -97,7 +97,7 @@
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- XXE (XML External Entity) -->
+      <!-- XXE -->
       <a href="xxe.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-file-code"></i></div>
         <h3>XXE (XML External Entity)</h3>
@@ -105,7 +105,7 @@
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- Server-Side Template Injection (SSTI) -->
+      <!-- SSTI -->
       <a href="ssti.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-paint-roller"></i></div>
         <h3>Server‑Side Template Injection (SSTI)</h3>
@@ -121,7 +121,7 @@
         <span class="severity severity-medium">Medium</span>
       </a>
 
-       <!-- IDOR -->
+      <!-- IDOR -->
       <a href="idor.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-key"></i></div>
         <h3>IDOR (Insecure Direct Object Reference)</h3>
@@ -145,12 +145,20 @@
         <span class="severity severity-critical">Critical</span>
       </a>
 
-      <!-- LFI/RFI -->
+      <!-- Local File Inclusion (LFI) -->
       <a href="lfi-rfi.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-file-import"></i></div>
-        <h3>LFI / RFI (File Inclusion)</h3>
-        <p>Local/remote file inclusion leading to RCE.</p>
+        <div class="vuln-icon"><i class="fas fa-file-alt"></i></div>
+        <h3>Local File Inclusion (LFI)</h3>
+        <p>Read local files, source code disclosure, log poisoning → RCE.</p>
         <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Remote File Inclusion (RFI) -->
+      <a href="rfi.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h3>Remote File Inclusion (RFI)</h3>
+        <p>Include remote files → direct RCE. Requires `allow_url_include=On`.</p>
+        <span class="severity severity-critical">Critical</span>
       </a>
 
       <!-- CORS -->
@@ -169,7 +177,7 @@
         <span class="severity severity-low">Low</span>
       </a>
 
-      <!-- File Upload Vulnerabilities -->
+      <!-- File Upload -->
       <a href="file-upload.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-file-upload"></i></div>
         <h3>File Upload</h3>
