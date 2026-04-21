@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* (same style as above – paste the full style block from the SQL injection page or reuse your existing one) */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
@@ -155,94 +154,4 @@
 
       <!-- CORS -->
       <a href="cors.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div>
-        <h3>CORS Misconfiguration</h3>
-        <p>Permissive cross‑origin policies, data theft.</p>
-        <span class="severity severity-medium">Medium</span>
-      </a>
-
-      <!-- Open Redirect -->
-      <a href="open-redirect.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div>
-        <h3>Open Redirect</h3>
-        <p>Unvalidated redirects to malicious sites.</p>
-        <span class="severity severity-low">Low</span>
-      </a>
-
-      <!-- File Upload -->
-      <a href="file-upload.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-file-upload"></i></div>
-        <h3>File Upload Vulnerabilities</h3>
-        <p>Bypass techniques, webshells, XSS via SVG, Zip Slip, etc.</p>
-        <span class="severity severity-critical">Critical</span>
-      </a>
-
-      <!-- Remote Code Execution (RCE) -->
-      <a href="remote-code-execution.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-bug"></i></div>
-        <h3>Remote Code Execution (RCE)</h3>
-        <p>Deserialization, command injection, Log4Shell, etc.</p>
-        <span class="severity severity-critical">Critical</span>
-      </a>
-
-      <!-- LDAP Injection -->
-      <a href="ldap-injection.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-ldap"></i></div>
-        <h3>LDAP Injection</h3>
-        <p>Authentication bypass, directory enumeration.</p>
-        <span class="severity severity-high">High</span>
-      </a>
-
-      <!-- XPath Injection -->
-      <a href="xpath-injection.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-code"></i></div>
-        <h3>XPath Injection</h3>
-        <p>Bypass authentication, extract XML data.</p>
-        <span class="severity severity-high">High</span>
-      </a>
-
-      <!-- SSI Injection -->
-      <a href="ssi-injection.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-code"></i></div>
-        <h3>SSI Injection</h3>
-        <p>Server‑Side Includes command execution.</p>
-        <span class="severity severity-high">High</span>
-      </a>
-
-      <!-- Insecure Deserialization -->
-      <a href="insecure-deserialization.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-box"></i></div>
-        <h3>Insecure Deserialization</h3>
-        <p>Java, PHP, Python, .NET – RCE via gadget chains.</p>
-        <span class="severity severity-critical">Critical</span>
-      </a>
-
-      <!-- Reconnaissance -->
-      <a href="recon.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-search"></i></div>
-        <h3>Reconnaissance</h3>
-        <p>OSINT, subdomain discovery, fuzzing, JS analysis.</p>
-        <span class="severity severity-medium">Informational</span>
-      </a>
-
-      <!-- Web Pentest Checklist -->
-      <a href="checklist.html" class="vuln-card">
-        <div class="vuln-icon"><i class="fas fa-check-square"></i></div>
-        <h3>Web Pentest Checklist</h3>
-        <p>Step‑by‑step testing methodology.</p>
-        <span class="severity severity-medium">Reference</span>
-      </a>
-    </div>
-  </div>
-</main>
-
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
-
-<script>
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
-  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
-</script>
-</body>
-</html>
+        <div class
