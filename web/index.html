@@ -55,6 +55,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="../index.html">Resume</a></li>
       <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
       <li><a href="../blog.html">Write-ups</a></li>
       <li><a href="../tools.html">Tools</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
@@ -72,7 +73,7 @@
     </div>
 
     <div class="vulns-grid">
-      <!-- SQL Injection (Combined Basic + Advanced) -->
+      <!-- SQL Injection (Basic + Advanced Combined) -->
       <a href="sql-injection.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-database"></i></div>
         <h3>SQL Injection</h3>
@@ -120,7 +121,7 @@
         <span class="severity severity-medium">Medium</span>
       </a>
 
-      <!-- IDOR -->
+       <!-- IDOR -->
       <a href="idor.html" class="vuln-card">
         <div class="vuln-icon"><i class="fas fa-key"></i></div>
         <h3>IDOR (Insecure Direct Object Reference)</h3>
@@ -154,4 +155,150 @@
 
       <!-- CORS -->
       <a href="cors.html" class="vuln-card">
-        <div class
+        <div class="vuln-icon"><i class="fas fa-exchange-alt"></i></div>
+        <h3>CORS Misconfiguration</h3>
+        <p>Permissive cross‑origin policies, data theft.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- Open Redirect -->
+      <a href="open-redirect.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-external-link-alt"></i></div>
+        <h3>Open Redirect</h3>
+        <p>Unvalidated redirects to malicious sites.</p>
+        <span class="severity severity-low">Low</span>
+      </a>
+
+      <!-- File Upload Vulnerabilities -->
+      <a href="file-upload.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-file-upload"></i></div>
+        <h3>File Upload</h3>
+        <p>Bypass techniques, webshells, XSS via SVG, Zip Slip, etc.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- Remote Code Execution (RCE) -->
+      <a href="remote-code-execution.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-bug"></i></div>
+        <h3>Remote Code Execution (RCE)</h3>
+        <p>Deserialization, command injection, Log4Shell, etc.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- LDAP Injection -->
+      <a href="ldap-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-ldap"></i></div>
+        <h3>LDAP Injection</h3>
+        <p>Authentication bypass, directory enumeration.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- XPath Injection -->
+      <a href="xpath-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>XPath Injection</h3>
+        <p>Bypass authentication, extract XML data.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- SSI Injection -->
+      <a href="ssi-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>SSI Injection</h3>
+        <p>Server‑Side Includes command execution.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Insecure Deserialization -->
+      <a href="insecure-deserialization.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-box"></i></div>
+        <h3>Insecure Deserialization</h3>
+        <p>Java, PHP, Python, .NET – RCE via gadget chains.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- JWT Attacks (Consolidated) -->
+      <a href="jwt-attacks.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-key"></i></div>
+        <h3>JWT Attacks</h3>
+        <p>None algorithm, weak secret, algorithm confusion, kid injection, JKU bypass.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- NoSQL Injection -->
+      <a href="nosql-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-database"></i></div>
+        <h3>NoSQL Injection</h3>
+        <p>MongoDB operator injection, authentication bypass.</p>
+        <span class="severity severity-critical">Critical</span>
+      </a>
+
+      <!-- HTML Injection -->
+      <a href="html-injection.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-code"></i></div>
+        <h3>HTML Injection</h3>
+        <p>Injecting fake forms, phishing on trusted domains.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- Session Fixation -->
+      <a href="session-fixation.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-user-clock"></i></div>
+        <h3>Session Fixation</h3>
+        <p>Attacker‑controlled session ID before login.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Insecure Password Reset -->
+      <a href="insecure-password-reset.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-key"></i></div>
+        <h3>Insecure Password Reset</h3>
+        <p>Weak tokens, user enumeration, token reuse.</p>
+        <span class="severity severity-high">High</span>
+      </a>
+
+      <!-- Security Headers -->
+      <a href="security-headers.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Missing Security Headers</h3>
+        <p>CSP, HSTS, X‑Frame‑Options, etc.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- Clickjacking -->
+      <a href="clickjacking.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-mouse-pointer"></i></div>
+        <h3>Clickjacking</h3>
+        <p>UI redressing, invisible iframe overlay.</p>
+        <span class="severity severity-medium">Medium</span>
+      </a>
+
+      <!-- Reconnaissance -->
+      <a href="recon.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-search"></i></div>
+        <h3>Reconnaissance</h3>
+        <p>OSINT, subdomain discovery, fuzzing, JS analysis.</p>
+        <span class="severity severity-medium">Informational</span>
+      </a>
+
+      <!-- Web Pentest Checklist -->
+      <a href="checklist.html" class="vuln-card">
+        <div class="vuln-icon"><i class="fas fa-check-square"></i></div>
+        <h3>Web Pentest Checklist</h3>
+        <p>Step‑by‑step testing methodology.</p>
+        <span class="severity severity-medium">Reference</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+</script>
+</body>
+</html>
