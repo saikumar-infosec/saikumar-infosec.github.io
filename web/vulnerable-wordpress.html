@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vulnerable WordPress Plugins/Themes | Web Security | Saikumar Raju</title>
+  <!-- same style -->
+</head>
+<body>
+<nav>...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">...</div>
+    <div class="page-header">
+      <span class="severity-badge">Critical Severity</span>
+      <h1>📌 Vulnerable WordPress Plugins & Themes</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p>WordPress sites using outdated or poorly coded plugins/themes expose SQLi, XSS, RCE, and auth bypass vulnerabilities.</p>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>wpscan --url https://target.com --enumerate vp,vt</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>💣 Example: Vulnerable Plugin RCE</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>https://target.com/wp-content/plugins/vulnerable-plugin/ajax.php?cmd=id</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Keep WordPress core, plugins, themes updated.</strong><br>✅ Remove unused plugins/themes.<br>✅ Use a security plugin (Wordfence, Sucuri).<br>✅ Regularly run wpscan.</div>
+    </div>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+</main>
+</body>
+</html>
