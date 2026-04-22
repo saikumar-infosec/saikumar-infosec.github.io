@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insufficient Logging & Monitoring | Web Security | Saikumar Raju</title>
+  <!-- same style -->
+</head>
+<body>
+<nav>...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">...</div>
+    <div class="page-header">
+      <span class="severity-badge">Medium Severity</span>
+      <h1>📌 Insufficient Logging & Monitoring</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p>The application does not log critical events (failed logins, privilege changes, data access) or lacks real‑time monitoring. Attackers can brute force, escalate privileges, or exfiltrate data without detection.</p>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection</h2>
+      <ul><li>Attempt multiple failed logins – check if any log entry or alert appears.</li><li>Perform a high‑risk action (e.g., privilege escalation) and see if it's logged.</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Impact</h2>
+      <p>Attackers can operate for weeks or months without being noticed, leading to prolonged data theft or backdoor persistence.</p>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Log all authentication attempts, privilege changes, and sensitive data access.</strong><br>✅ Use a SIEM or centralized logging.<br>✅ Set up alerts for suspicious patterns (multiple failures, unusual locations).<br>✅ Regularly review logs.</div>
+    </div>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+</main>
+</body>
+</html>
