@@ -4,31 +4,134 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log Injection | Web Security | Saikumar Raju</title>
-  <!-- same style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
 </head>
 <body>
-<nav>...</nav>
+<nav class="navbar">...</nav>
 <main>
   <div class="container">
-    <div class="breadcrumb">...</div>
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Log Injection</div>
     <div class="page-header">
-      <span class="severity-badge">Low Severity</span>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Low to Medium Severity | OWASP A09:2021</span>
       <h1>📌 Log Injection (Log Forging)</h1>
     </div>
     <div class="content-section">
       <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
       <p>Attackers inject newline characters or malicious data into log entries, forging fake log lines, hiding their actions, or exploiting log viewers (e.g., JavaScript injection in log viewers).</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Logs are constructed by concatenating user‑controlled input without sanitising CR/LF characters.</p>
+      <p><strong>Security principle violated:</strong> Input Validation / Log Integrity</p>
+      <p><strong>Real-world analogy:</strong> Adding fake entries to a police logbook to mislead investigators.</p>
     </div>
     <div class="content-section">
-      <h2>💣 Basic Payload</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>User-Agent: \n2023-01-01 Admin logged in from 127.0.0.1\n</pre></div>
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Log Forging</li>
+        <li><strong>OWASP:</strong> A09:2021 – Security Logging and Monitoring Failures</li>
+        <li><strong>CWE:</strong> CWE-117: Improper Output Neutralization for Logs</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ User‑Agent header</li>
+        <li>✅ Username/login fields</li>
+        <li>✅ Search queries</li>
+        <li>✅ Any parameter that gets written to logs</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul>
+        <li>Submit input containing `%0a`, `%0d`, `\r`, `\n` and check if logs contain injected lines.</li>
+        <li>Attempt to inject JavaScript (`<script>alert(1)</script>`) and view logs in a web‑based log viewer.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Inject newline to forge log entry
+User-Agent: \n2023-01-01 Admin logged in from 127.0.0.1\n
+
+# Inject XSS into log viewer
+User-Agent: <script>alert('XSS')</script></pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Hide malicious activity by injecting fake successful login after failure
+username=admin%0a[INFO] Login successful from 127.0.0.1%0a&password=wrong
+
+# If logs are used for automated parsing, break the log format
+username=admin%0a%0aERROR -- Corrupted log entry%0a&password=test</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Inject `%0aFake log line%0a` in User‑Agent</td><td style="padding: 0.75rem;">Newline escaped or encoded</td><td style="padding: 0.75rem;">Fake line appears in log</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Inject `<script>` in search parameter</td><td style="padding: 0.75rem;">HTML entities encoded</td><td style="padding: 0.75rem;">Script executes in log viewer</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify a parameter that gets logged (e.g., User‑Agent, username).</li>
+        <li>Inject CR/LF characters followed by fake log lines.</li>
+        <li>If successful, forge logs to hide your own malicious requests.</li>
+        <li>If log viewer is vulnerable, inject JavaScript to steal session cookies of admins viewing logs.</li>
+      </ol>
     </div>
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box"><strong>✅ Sanitize/encode log input (remove CR/LF).</strong><br>✅ Use structured logging (JSON) to separate fields.<br>✅ Never render raw logs in a browser without escaping.</div>
+      <div class="mitigation-box">
+        <strong>✅ Sanitize/encode log input (remove CR/LF characters).</strong><br>
+        <strong>✅ Use structured logging (JSON) to separate fields – never concatenate.</strong><br>
+        <strong>✅ Never render raw logs in a browser without escaping (use HTML encoding).</strong><br>
+        <strong>✅ Use a logging library that automatically escapes (e.g., Log4j with `%enc`).</strong>
+      </div>
     </div>
-    <a href="index.html" class="back-link">← Back</a>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If only basic newline characters are filtered, double encoding (`%250a`) may work.</li>
+        <li>If logs are viewed in a terminal, ANSI escape sequences could be used to hide text.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Low to Medium</strong><br><br>
+        <strong>Impact:</strong> Log forgery (hiding attacks), XSS in log viewers, corruption of forensic evidence.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using curl
+curl -A "User-Agent: \n2023-01-01 Admin logged in\n" https://target.com
+
+# Check logs – you should see the injected line</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Log_Injection" style="color: var(--primary);">OWASP – Log Injection</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/117.html" style="color: var(--primary);">CWE-117</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Log Injection Guide</p></footer>
+<script>/* same scripts */</script>
 </body>
 </html>
