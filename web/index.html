@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* same base styles as above – included for brevity, but use the same style block */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
     body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
@@ -37,6 +36,7 @@
     .severity-critical { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
     .severity-high { background: rgba(255, 153, 0, 0.2); color: #ff9900; }
     .severity-medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+    .severity-low { background: rgba(100, 100, 100, 0.2); color: #aaa; }
     footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
     @media (max-width: 768px) {
       .container { padding: 0 1rem; }
@@ -74,7 +74,8 @@
     </div>
 
     <div class="vulns-grid">
-      <!-- List of 37 cards (alphabetical order) -->
+      <!-- 40 cards: 27 completed + 13 pending (from pipeline) -->
+      <!-- Completed (existing) -->
       <a href="brute-force-protection.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-shield-alt"></i></div><h3>Brute Force Protection (Missing)</h3><p>No rate limiting or account lockout.</p><span class="severity severity-high">High</span></a>
       <a href="clickjacking.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-mouse-pointer"></i></div><h3>Clickjacking</h3><p>UI redressing, invisible iframe overlay.</p><span class="severity severity-medium">Medium</span></a>
       <a href="command-injection.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-terminal"></i></div><h3>Command Injection</h3><p>Executing OS commands via unsanitised input.</p><span class="severity severity-critical">Critical</span></a>
@@ -113,11 +114,26 @@
       <a href="xss.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-code"></i></div><h3>Cross‑Site Scripting (XSS)</h3><p>Reflected, stored, DOM‑based XSS.</p><span class="severity severity-medium">Medium</span></a>
       <a href="xxe.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-file-code"></i></div><h3>XXE (XML External Entity)</h3><p>File disclosure, SSRF, DoS.</p><span class="severity severity-critical">Critical</span></a>
       <a href="checklist.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-check-square"></i></div><h3>Web Pentest Checklist</h3><p>Step‑by‑step methodology.</p><span class="severity severity-medium">Reference</span></a>
+
+      <!-- NEW: 13 pending vulnerabilities (from pipeline) -->
+      <a href="missing-function-access-control.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-lock"></i></div><h3>Missing Function Level Access Control</h3><p>Admin functions accessible by low‑privileged users.</p><span class="severity severity-high">High</span></a>
+      <a href="default-credentials.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-key"></i></div><h3>Default Credentials</h3><p>Admin:admin, root:root, etc.</p><span class="severity severity-critical">Critical</span></a>
+      <a href="directory-listing.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-folder"></i></div><h3>Directory Listing Enabled</h3><p>Exposed file/folder structure.</p><span class="severity severity-medium">Medium</span></a>
+      <a href="sensitive-backup-files.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-archive"></i></div><h3>Sensitive Backup Files Exposure</h3><p>.bak, .old, .sql, .git/config accessible.</p><span class="severity severity-high">High</span></a>
+      <a href="php-object-injection.html" class="vuln-card"><div class="vuln-icon"><i class="fab fa-php"></i></div><h3>PHP Object Injection</h3><p>Insecure unserialize() leads to RCE.</p><span class="severity severity-critical">Critical</span></a>
+      <a href="outdated-libraries.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-cube"></i></div><h3>Outdated Libraries</h3><p>jQuery, React, Log4j with known CVEs.</p><span class="severity severity-high">High</span></a>
+      <a href="outdated-server-software.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-server"></i></div><h3>Outdated Web Server Software</h3><p>Old Apache, Nginx, IIS versions.</p><span class="severity severity-high">High</span></a>
+      <a href="vulnerable-wordpress.html" class="vuln-card"><div class="vuln-icon"><i class="fab fa-wordpress"></i></div><h3>Vulnerable WordPress Plugins/Themes</h3><p>Known exploits, outdated components.</p><span class="severity severity-critical">Critical</span></a>
+      <a href="insufficient-logging-monitoring.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-chart-line"></i></div><h3>Insufficient Logging & Monitoring</h3><p>No alerts for brute force, privilege escalation.</p><span class="severity severity-medium">Medium</span></a>
+      <a href="log-injection.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-scroll"></i></div><h3>Log Injection</h3><p>Forging log entries, log forging attacks.</p><span class="severity severity-low">Low</span></a>
+      <a href="price-manipulation.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-tag"></i></div><h3>Purchase Price Manipulation</h3><p>Modifying price parameters in e‑commerce.</p><span class="severity severity-high">High</span></a>
+      <a href="otp-brute-force.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-mobile-alt"></i></div><h3>OTP Brute Force</h3><p>No rate limiting on one‑time passwords.</p><span class="severity severity-high">High</span></a>
+      <a href="subdomain-takeover.html" class="vuln-card"><div class="vuln-icon"><i class="fas fa-globe"></i></div><h3>Subdomain Takeover</h3><p>Unused CNAME pointing to external service.</p><span class="severity severity-high">High</span></a>
     </div>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base</p></footer>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Web Security Knowledge Base (40+ vulnerabilities)</p></footer>
 
 <script>
   const mobileBtn = document.getElementById('mobileMenuBtn');
