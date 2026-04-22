@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensitive Backup Files Exposure | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 153, 0, 0.2); color: #ff9900; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 153, 0, 0.1); border-left: 4px solid #ff9900; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Sensitive Backup Files Exposure</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A05:2021</span>
+      <h1>📌 Sensitive Backup Files Exposure</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Backup files (e.g., <code>.bak</code>, <code>.old</code>, <code>.sql</code>, <code>.tar.gz</code>, <code>.zip</code>, <code>~</code> (vim swap), <code>.swp</code>) are left in publicly accessible directories. These files may contain source code, database dumps, configuration secrets, or credentials.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Developers manually back up files on the server, forget to remove them, or version control tools leave temporary files. Web servers serve these files if not explicitly blocked.</p>
+      <p><strong>Security principle violated:</strong> Information Disclosure / Secure File Handling</p>
+      <p><strong>Real-world analogy:</strong> Leaving a spare key under the doormat – attackers can find it and gain full access.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Information Disclosure</li>
+        <li><strong>OWASP:</strong> A05:2021 – Security Misconfiguration</li>
+        <li><strong>CWE:</strong> CWE-530: Exposure of Backup File to an Unauthorized Control Sphere</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Common backup extensions: <code>.bak</code>, <code>.backup</code>, <code>.old</code>, <code>.orig</code>, <code>.sql</code>, <code>.dump</code>, <code>.tar</code>, <code>.gz</code>, <code>.zip</code>, <code>.7z</code></li>
+        <li>✅ Temporary editor files: <code>~</code>, <code>.swp</code>, <code>.swo</code></li>
+        <li>✅ Version control leftovers: <code>.git/</code>, <code>.svn/</code>, <code>.hg/</code></li>
+        <li>✅ Backup archives in root or <code>/backup/</code> directories</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Manual Testing</h3>
+      <ul>
+        <li>Browse to <code>/backup.sql</code>, <code>/config.php.bak</code>, <code>/wp-config.php~</code> etc.</li>
+        <li>Use <code>curl</code> to check response codes.</li>
+      </ul>
+      <h3>2. Automated Fuzzing</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Gobuster with backup file extensions
+gobuster dir -u https://target.com -w /usr/share/wordlists/dirb/common.txt -x .bak,.old,.sql,.tar,.zip
+
+# Use ffuf with a backup wordlist
+ffuf -u https://target.com/FUZZ -w backup-files.txt</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Backup File Names)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>/backup.sql
+/database.sql
+/db_dump.sql
+/config.php.bak
+/config.inc.old
+/wp-config.php~
+/index.php~
+/.git/config
+/.svn/entries
+/.htaccess.bak
+/composer.json.backup</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Download and examine backup file
+wget https://target.com/backup.sql
+cat backup.sql | grep -i "password"
+
+# If it's a source code backup, search for API keys
+grep -r "API_KEY" ./extracted_backup/</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Request <code>/config.php.bak</code></td><td style="padding: 0.75rem;">403 or 404</td><td style="padding: 0.75rem;">200 OK with file contents</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Request <code>/.git/config</code></td><td style="padding: 0.75rem;">Access denied or not found</td><td style="padding: 0.75rem;">Git repository exposed</td></tr>
+        </tbody>
+       </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Fuzz for common backup file extensions and names.</li>
+        <li>Download any accessible backup files.</li>
+        <li>Extract credentials, API keys, database passwords, or source code.</li>
+        <li>Use extracted secrets to compromise the application or infrastructure.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Never store backups in web‑accessible directories.</strong><br>
+        <strong>✅ Store backups outside the document root (e.g., <code>/var/backups/</code>).</strong><br>
+        <strong>✅ Use <code>.htaccess</code> or server rules to deny access to <code>*.bak</code>, <code>*.sql</code>, <code>*.old</code>.</strong><br>
+        <strong>✅ Configure version control to exclude sensitive files (use <code>.gitignore</code>).</strong><br>
+        <strong>✅ Automatically remove temporary/backup files after deployment.</strong><br>
+        <strong>✅ Regularly scan for exposed backup files using security tools.</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If backup files are compressed and stored with obscure names, attackers may still guess them via wordlist fuzzing.</li>
+        <li>If server misinterprets file extensions (e.g., <code>.php.bak</code> might still execute as PHP if misconfigured).</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Credential leakage, database compromise, source code theft, full system compromise.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for backup file
+curl -I https://target.com/backup.sql
+
+# If response is 200 OK, download it
+curl -O https://target.com/backup.sql
+strings backup.sql | grep -i "password"</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Forced_browsing" style="color: var(--primary);">OWASP – Forced Browsing</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/530.html" style="color: var(--primary);">CWE-530</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Sensitive Backup Files Guide</p></footer>
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinksEl = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
+  });
+  function copyCode(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text);
+    const original = btn.innerText;
+    btn.innerText = 'Copied!';
+    setTimeout(() => btn.innerText = original, 1500);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+        if (navLinksEl.classList.contains('show')) navLinksEl.classList.remove('show');
+      }
+    });
+  });
+</script>
+</body>
+</html>
