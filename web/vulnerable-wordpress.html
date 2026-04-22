@@ -4,35 +4,142 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vulnerable WordPress Plugins/Themes | Web Security | Saikumar Raju</title>
-  <!-- same style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
 </head>
 <body>
-<nav>...</nav>
+<nav class="navbar">...</nav>
 <main>
   <div class="container">
-    <div class="breadcrumb">...</div>
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Vulnerable WordPress Plugins/Themes</div>
     <div class="page-header">
-      <span class="severity-badge">Critical Severity</span>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A06:2021</span>
       <h1>📌 Vulnerable WordPress Plugins & Themes</h1>
     </div>
     <div class="content-section">
       <h2>🧠 Description</h2>
-      <p>WordPress sites using outdated or poorly coded plugins/themes expose SQLi, XSS, RCE, and auth bypass vulnerabilities.</p>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>WordPress sites using outdated or poorly coded plugins/themes expose SQLi, XSS, RCE, and authentication bypass vulnerabilities. Attackers can exploit these to take over the site, deface it, or steal data.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Site owners fail to update plugins/themes, use nulled (pirated) versions, or install plugins from untrusted sources.</p>
+      <p><strong>Security principle violated:</strong> Vulnerable Components</p>
+      <p><strong>Real-world analogy:</strong> Installing a third‑party lock on your door without checking if it has a master key.</p>
     </div>
     <div class="content-section">
-      <h2>🔍 Detection</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>wpscan --url https://target.com --enumerate vp,vt</pre></div>
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Vulnerable Components</li>
+        <li><strong>OWASP:</strong> A06:2021 – Vulnerable and Outdated Components</li>
+        <li><strong>CWE:</strong> CWE-1104: Use of Unmaintained Third Party Components</li>
+      </ul>
     </div>
     <div class="content-section">
-      <h2>💣 Example: Vulnerable Plugin RCE</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>https://target.com/wp-content/plugins/vulnerable-plugin/ajax.php?cmd=id</pre></div>
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ /wp-content/plugins/ (plugin directories)</li>
+        <li>✅ /wp-content/themes/ (theme directories)</li>
+        <li>✅ readme.txt files revealing versions</li>
+        <li>✅ Admin Ajax endpoints</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># WPScan – WordPress vulnerability scanner
+wpscan --url https://target.com --enumerate vp,vt
+
+# Nuclei WordPress templates
+nuclei -t technologies/wordpress/ -target https://target.com
+
+# Manual: Check plugin readme
+https://target.com/wp-content/plugins/vulnerable-plugin/readme.txt</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Example: Plugin RCE)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Vulnerable plugin with direct file inclusion
+https://target.com/wp-content/plugins/vulnerable-plugin/ajax.php?cmd=id
+
+# SQLi in plugin parameter
+https://target.com/index.php?plugin_id=1 AND 1=0 UNION SELECT 1,2,3</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use wpscan to get exploit details
+wpscan --url https://target.com --enumerate vp --api-token YOUR_TOKEN
+
+# Metasploit module for specific plugin
+use exploit/unix/webapp/wp_plugin_upload_rce</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Run wpscan to enumerate plugins</td><td style="padding: 0.75rem;">No vulnerable plugins found</td><td style="padding: 0.75rem;">Vulnerable plugin detected</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Attempt known exploit for that plugin</td><td style="padding: 0.75rem;">Exploit blocked</td><td style="padding: 0.75rem;">Exploit successful (RCE)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Enumerate installed plugins/themes using wpscan or directory fuzzing.</li>
+        <li>Identify vulnerable versions from readme.txt or version numbers.</li>
+        <li>Search for public exploits (Exploit‑DB, WPVulnDB).</li>
+        <li>Execute exploit to gain admin access or RCE.</li>
+      </ol>
     </div>
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box"><strong>✅ Keep WordPress core, plugins, themes updated.</strong><br>✅ Remove unused plugins/themes.<br>✅ Use a security plugin (Wordfence, Sucuri).<br>✅ Regularly run wpscan.</div>
+      <div class="mitigation-box">
+        <strong>✅ Keep WordPress core, plugins, themes updated.</strong><br>
+        <strong>✅ Remove unused plugins/themes immediately.</strong><br>
+        <strong>✅ Use a security plugin (Wordfence, Sucuri).</strong><br>
+        <strong>✅ Regularly run wpscan or similar scanners.</strong><br>
+        <strong>✅ Avoid nulled (pirated) plugins/themes.</strong><br>
+        <strong>✅ Implement Web Application Firewall (WAF).</strong>
+      </div>
     </div>
-    <a href="index.html" class="back-link">← Back</a>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If auto‑update is enabled but the plugin's update server is compromised.</li>
+        <li>If a zero‑day vulnerability exists in a popular plugin.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Full site takeover, data breach, malware distribution, SEO spam.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using wpscan
+wpscan --url https://target.com --api-token YOUR_TOKEN --enumerate vp
+
+# Output will list vulnerable plugins with CVE IDs</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://wpscan.com/" style="color: var(--primary);">WPScan Vulnerability Database</a></li>
+        <li><a href="https://wordpress.org/plugins/" style="color: var(--primary);">WordPress Plugin Directory</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | WordPress Security Guide</p></footer>
+<script>/* same scripts */</script>
 </body>
 </html>
