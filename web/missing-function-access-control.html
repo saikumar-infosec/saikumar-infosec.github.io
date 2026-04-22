@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missing Function Level Access Control | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .vulnerability-box { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Missing Function Level Access Control</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A01:2021</span>
+      <h1>📌 Missing Function Level Access Control</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Missing Function Level Access Control (also known as <strong>Broken Access Control on Administrative Functions</strong>) occurs when a server fails to enforce proper authorization checks for specific backend functions or API endpoints. A low‑privileged user can directly access administrative URLs (e.g., <code>/admin/deleteUser</code>, <code>/api/users</code>) and perform actions they should not be allowed to.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Developers often implement access controls only on the frontend (hiding buttons) but forget to add server‑side checks. Alternatively, they assume that a function will only be called from a legitimate page and omit authorization.</p>
+      <p><strong>Security principle violated:</strong> Principle of Least Privilege / Defense in Depth</p>
+      <p><strong>Real-world analogy:</strong> A bank vault that is locked, but the door to the security control room has no lock – anyone who finds the control room can open the vault.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Broken Access Control</li>
+        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control</li>
+        <li><strong>CWE:</strong> CWE-285: Improper Authorization</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Administrative endpoints (<code>/admin</code>, <code>/manager</code>, <code>/api/admin</code>)</li>
+        <li>✅ Hidden functions like <code>/api/deleteUser</code>, <code>/api/updateSettings</code></li>
+        <li>✅ Internal microservices exposed without authentication</li>
+        <li>✅ Debug/developer endpoints left in production (<code>/debug</code>, <code>/console</code>)</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Check JavaScript files for hidden admin routes
+// Look for fetch('/api/admin/...') or similar</pre>
+      </div>
+      <h3>2. Dynamic Analysis</h3>
+      <ul>
+        <li>Enumerate common admin paths using wordlists (<code>/admin</code>, <code>/api/admin/users</code>, <code>/manage</code>).</li>
+        <li>Log in as a regular user and try to access those endpoints directly.</li>
+        <li>Use tools like <strong>Burp Suite Autorize</strong> or <strong>Authz</strong> to automate testing.</li>
+        <li>Observe response codes: 200/OK instead of 403/Forbidden indicates vulnerability.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Direct admin panel access
+https://target.com/admin
+
+# API endpoint that should be admin-only
+GET /api/admin/users
+GET /api/deleteUser?id=123
+POST /api/updateRole {"user":"attacker","role":"admin"}</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use path fuzzing to find hidden endpoints
+ffuf -u https://target.com/FUZZ -w /usr/share/wordlists/dirb/common.txt
+
+# If access control relies on a role parameter, try tampering
+POST /api/admin/action
+Cookie: session=user_session
+Body: {"role":"admin","action":"deleteUser","id":456}</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Log in as a regular user and attempt to access <code>/admin/dashboard</code></td><td>403 Forbidden or redirect to login</td><td>200 OK – admin panel visible</td></tr>
+          <tr><td>2</td><td>Send a request to <code>/api/admin/users</code> with a low‑privilege session cookie</td><td>403 or empty response</td><td>Full user list returned</td></tr>
+          <tr><td>3</td><td>Try to delete another user via <code>/api/deleteUser?id=2</code> as a regular user</td><td>403 Unauthorized</td><td>User deleted successfully</td></tr>
+        </tbody>
+      </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Enumerate administrative endpoints (use directory brute‑forcing or review client‑side JS).</li>
+        <li>Obtain a session cookie for a low‑privileged account (register if needed).</li>
+        <li>Replay requests to admin endpoints using that cookie (Burp Repeater, curl).</li>
+        <li>If you receive a successful response, you have broken function‑level access control.</li>
+        <li>Escalate privileges: create admin accounts, access sensitive data, or modify system settings.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Implement server‑side authorization checks for every function and endpoint.</strong><br>
+        <strong>✅ Use a centralized access control mechanism (e.g., role‑based middleware).</strong><br>
+        <strong>✅ Never rely on client‑side hiding of buttons or URLs.</strong><br>
+        <strong>✅ Deny by default – all endpoints should require explicit role authorization.</strong><br>
+        <strong>✅ Regularly audit API routes with automated tools (Autorize, ZAP).</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If the check is only based on a request parameter (e.g., <code>?admin=true</code>), an attacker can simply add it.</li>
+        <li>If the admin panel is on a different subdomain (e.g., <code>admin.target.com</code>) that shares the same authentication cookie, it may still be vulnerable.</li>
+        <li>HTTP method tampering: sometimes <code>GET</code> is protected but <code>POST</code> is not.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Unauthorized privilege escalation, data breach (all user records), system compromise, complete account takeover.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Request as regular user
+curl -X GET https://target.com/api/admin/users -H "Cookie: session=regular_user_cookie"
+
+# If response contains list of all users, vulnerability exists
+{"users":[{"id":1,"username":"admin","role":"admin"}, ...]}</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/Broken_Access_Control" style="color: var(--primary);">OWASP – Broken Access Control</a></li>
+        <li><a href="https://portswigger.net/web-security/access-control" style="color: var(--primary);">PortSwigger – Access Control Vulnerabilities</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/285.html" style="color: var(--primary);">CWE-285: Improper Authorization</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Missing Function Level Access Control Guide</p></footer>
+<script>
+  // Mobile menu toggle
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinksEl = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+  }
+
+  // Dark/Light mode toggle
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
+  });
+
+  // Copy code button functionality
+  function copyCode(btn) {
+    const codeBlock = btn.parentElement.querySelector('pre');
+    const text = codeBlock.innerText;
+    navigator.clipboard.writeText(text);
+    const originalText = btn.innerText;
+    btn.innerText = 'Copied!';
+    setTimeout(() => { btn.innerText = originalText; }, 1500);
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+        if (navLinksEl.classList.contains('show')) navLinksEl.classList.remove('show');
+      }
+    });
+  });
+</script>
+</body>
+</html>
