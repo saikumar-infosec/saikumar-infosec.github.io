@@ -145,7 +145,7 @@ grep -r "API_KEY" ./extracted_backup/</pre>
           <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Request <code>/config.php.bak</code></td><td style="padding: 0.75rem;">403 or 404</td><td style="padding: 0.75rem;">200 OK with file contents</td></tr>
           <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Request <code>/.git/config</code></td><td style="padding: 0.75rem;">Access denied or not found</td><td style="padding: 0.75rem;">Git repository exposed</td></tr>
         </tbody>
-       </table>
+      </table>
       <p>✔ Must be reproducible</p>
     </div>
     <div class="content-section">
@@ -208,12 +208,14 @@ strings backup.sql | grep -i "password"</pre>
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const navLinksEl = document.getElementById('navLinks');
   if (mobileBtn) mobileBtn.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+
   const themeToggle = document.getElementById('themeToggle');
   themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light');
     const isLight = document.body.classList.contains('light');
     themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
   });
+
   function copyCode(btn) {
     const pre = btn.parentElement.querySelector('pre');
     const text = pre.innerText;
@@ -222,6 +224,7 @@ strings backup.sql | grep -i "password"</pre>
     btn.innerText = 'Copied!';
     setTimeout(() => btn.innerText = original, 1500);
   }
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
