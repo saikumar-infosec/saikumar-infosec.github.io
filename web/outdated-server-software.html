@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Outdated Web Server Software | Web Security | Saikumar Raju</title>
-  <!-- same style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles as above */</style>
 </head>
 <body>
-<nav>...</nav>
+<nav class="navbar">...</nav>
 <main>
   <div class="container">
-    <div class="breadcrumb">...</div>
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Outdated Web Server Software</div>
     <div class="page-header">
-      <span class="severity-badge">High Severity</span>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A06:2021</span>
       <h1>📌 Outdated Web Server Software</h1>
     </div>
     <div class="content-section">
@@ -21,34 +23,119 @@
       <p>The web server (Apache, Nginx, IIS, Tomcat) runs an outdated version with known vulnerabilities, allowing attackers to bypass security controls, cause DoS, or execute arbitrary code.</p>
       <p><strong>Why does it occur?</strong></p>
       <p>Lack of patch management, legacy systems, or fear of downtime.</p>
+      <p><strong>Security principle violated:</strong> Security Misconfiguration / Patch Management</p>
+      <p><strong>Real-world analogy:</strong> A fortress with a crumbling wall – attackers know exactly where to strike.</p>
     </div>
     <div class="content-section">
       <h2>🏷️ Classification</h2>
-      <ul><li><strong>OWASP:</strong> A06:2021 – Vulnerable and Outdated Components</li><li><strong>CWE:</strong> CWE-1104</li></ul>
+      <ul>
+        <li><strong>Type:</strong> Vulnerable Components</li>
+        <li><strong>OWASP:</strong> A06:2021 – Vulnerable and Outdated Components</li>
+        <li><strong>CWE:</strong> CWE-1104: Use of Unmaintained Third Party Components</li>
+      </ul>
     </div>
     <div class="content-section">
       <h2>🎯 Attack Surface</h2>
-      <ul><li>✅ HTTP response headers (Server: Apache/2.2.22)</li><li>✅ Default error pages</li><li>✅ Static file access revealing version</li></ul>
+      <ul>
+        <li>✅ HTTP response headers (Server: Apache/2.2.22)</li>
+        <li>✅ Default error pages</li>
+        <li>✅ Static file access revealing version (e.g., /icons/, /docs/)</li>
+        <li>✅ Exposed server status pages</li>
+      </ul>
     </div>
     <div class="content-section">
       <h2>🔍 Detection Methodology</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>curl -I https://target.com | grep -i server
-nmap -sV --script http-server-header -p 80,443 target.com</pre></div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check Server header
+curl -I https://target.com | grep -i server
+
+# Nmap script for server version
+nmap -sV --script http-server-header -p 80,443 target.com
+
+# Use whatweb
+whatweb https://target.com</pre>
+      </div>
     </div>
     <div class="content-section">
-      <h2>💣 Basic Exploit</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Example for Apache 2.2.22 (CVE-2012-0053)
-curl -H "Host: $'\x80\x00\x00\x08\x00\x00\x00\x01'" http://target.com</pre></div>
+      <h2>💣 Basic Exploit (Example: Apache 2.2.22 CVE-2012-0053)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Apache 2.2.22 (CVE-2012-0053) – information disclosure
+curl -H "Host: $'\x80\x00\x00\x08\x00\x00\x00\x01'" http://target.com</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Searchsploit for known vulnerabilities
+searchsploit apache 2.2.22
+
+# Metasploit module for Apache Tomcat
+use exploit/multi/http/tomcat_mgr_deploy</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Check Server header</td><td style="padding: 0.75rem;">Version hidden or latest</td><td style="padding: 0.75rem;">Outdated version disclosed</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Attempt known public exploit</td><td style="padding: 0.75rem;">Exploit fails</td><td style="padding: 0.75rem;">Exploit succeeds</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify web server version from headers or error pages.</li>
+        <li>Search for public exploits (Exploit‑DB, CVE details).</li>
+        <li>Execute exploit to gain RCE or information disclosure.</li>
+        <li>Use compromised server as pivot point.</li>
+      </ol>
     </div>
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box"><strong>✅ Keep web server software updated to latest stable version.</strong><br>✅ Remove version headers (ServerTokens Prod in Apache, server_tokens off in Nginx).<br>✅ Use a WAF to virtual‑patch known vulnerabilities.<br>✅ Automate patch management.</div>
+      <div class="mitigation-box">
+        <strong>✅ Keep web server software updated to latest stable version.</strong><br>
+        <strong>✅ Remove version headers (ServerTokens Prod in Apache, server_tokens off in Nginx).</strong><br>
+        <strong>✅ Use a WAF to virtual‑patch known vulnerabilities.</strong><br>
+        <strong>✅ Automate patch management.</strong><br>
+        <strong>✅ Harden server configuration (remove unnecessary modules).</strong>
+      </div>
     </div>
-    <!-- rest of sections (Test Cases, Exploitation Steps, etc.) follow same pattern -->
-    <a href="index.html" class="back-link">← Back to Web Security</a>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If version is hidden but outdated, attackers may still fingerprint via behavior or known exploit patterns.</li>
+        <li>Backported patches may not cover all vulnerabilities.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Remote Code Execution, information disclosure, denial of service, full server compromise.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Simple version check
+curl -I https://target.com | grep -i "server"
+
+# If output shows "Server: Apache/2.2.22", it's vulnerable to multiple CVEs</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://httpd.apache.org/security/" style="color: var(--primary);">Apache Security</a></li>
+        <li><a href="https://nginx.org/en/security_advisories.html" style="color: var(--primary);">Nginx Security Advisories</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
-<footer>...</footer>
-<script>...</script>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Outdated Server Software Guide</p></footer>
+<script>/* same scripts as previous */</script>
 </body>
 </html>
