@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purchase Price Manipulation | Web Security | Saikumar Raju</title>
+  <!-- same style -->
+</head>
+<body>
+<nav>...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">...</div>
+    <div class="page-header">
+      <span class="severity-badge">High Severity</span>
+      <h1>📌 Purchase Price Manipulation</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p>The application does not validate price parameters on the server side. Attackers modify hidden form fields, JSON payloads, or request parameters to change the price of an item (e.g., set $0.01 for a $1000 product).</p>
+    </div>
+    <div class="content-section">
+      <h2>💣 Example</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>POST /checkout
+{"product_id": 123, "price": 0.01, "quantity": 1}</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Never trust client‑side price values.</strong><br>✅ Re‑calculate total on server using stored prices.<br>✅ Use signed/encrypted parameters for critical data.</div>
+    </div>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+</main>
+</body>
+</html>
