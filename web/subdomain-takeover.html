@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subdomain Takeover | Web Security | Saikumar Raju</title>
+  <!-- same style -->
+</head>
+<body>
+<nav>...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">...</div>
+    <div class="page-header">
+      <span class="severity-badge">High Severity</span>
+      <h1>📌 Subdomain Takeover</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p>A DNS CNAME record points to an external service (e.g., AWS S3, GitHub Pages, Heroku, Azure) that is no longer in use. An attacker claims the resource and hosts malicious content on the victim’s subdomain, enabling phishing, XSS, or session theft.</p>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Check for dangling CNAME
+dig CNAME sub.example.com
+# If response points to unclaimed bucket, it's vulnerable</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Exploitation</h2>
+      <ul><li>Identify unclaimed AWS S3 bucket from CNAME.</li><li>Create bucket with same name and upload an HTML file (e.g., phishing page).</li><li>Wait for victims to visit the subdomain.</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Regularly audit DNS records.</strong><br>✅ Remove unused CNAME records.<br>✅ Use AWS CloudFront or ALB with custom domain validation.<br>✅ Monitor for orphaned resources.</div>
+    </div>
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+</main>
+</body>
+</html>
