@@ -4,35 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Insufficient Logging & Monitoring | Web Security | Saikumar Raju</title>
-  <!-- same style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
 </head>
 <body>
-<nav>...</nav>
+<nav class="navbar">...</nav>
 <main>
   <div class="container">
-    <div class="breadcrumb">...</div>
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Insufficient Logging & Monitoring</div>
     <div class="page-header">
-      <span class="severity-badge">Medium Severity</span>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A09:2021</span>
       <h1>📌 Insufficient Logging & Monitoring</h1>
     </div>
     <div class="content-section">
       <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
       <p>The application does not log critical events (failed logins, privilege changes, data access) or lacks real‑time monitoring. Attackers can brute force, escalate privileges, or exfiltrate data without detection.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Poor security architecture, lack of compliance requirements, or cost cutting on SIEM solutions.</p>
+      <p><strong>Security principle violated:</strong> Detect and Respond</p>
+      <p><strong>Real-world analogy:</strong> A bank with no security cameras – robbers can operate freely without being recorded.</p>
     </div>
     <div class="content-section">
-      <h2>🔍 Detection</h2>
-      <ul><li>Attempt multiple failed logins – check if any log entry or alert appears.</li><li>Perform a high‑risk action (e.g., privilege escalation) and see if it's logged.</li></ul>
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Logging & Monitoring Failure</li>
+        <li><strong>OWASP:</strong> A09:2021 – Security Logging and Monitoring Failures</li>
+        <li><strong>CWE:</strong> CWE-778: Insufficient Logging</li>
+      </ul>
     </div>
     <div class="content-section">
-      <h2>⚙️ Exploitation Impact</h2>
-      <p>Attackers can operate for weeks or months without being noticed, leading to prolonged data theft or backdoor persistence.</p>
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Authentication endpoints (login, OTP, password reset)</li>
+        <li>✅ Admin actions (user creation, privilege change)</li>
+        <li>✅ Data export or download functions</li>
+        <li>✅ API endpoints with sensitive data access</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul>
+        <li>Attempt multiple failed logins – check if any log entry or alert appears.</li>
+        <li>Perform a high‑risk action (e.g., privilege escalation) and see if it's logged.</li>
+        <li>Check if logs are stored in an accessible location (e.g., /logs/ directory).</li>
+        <li>Attempt to access the application after hours – see if any monitoring alerts trigger.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Testing Logging)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Brute force login attempts
+for i in {1..100}; do curl -X POST https://target.com/login -d "user=admin&pass=wrong$i"; done
+
+# Try to access admin panel with low privileges
+curl -X GET https://target.com/admin -H "Cookie: session=user_session"</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation Impact</h2>
+      <p>Attackers can operate for weeks or months without being noticed, leading to prolonged data theft, backdoor persistence, or ransomware deployment. Without logs, forensic investigation becomes impossible.</p>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Perform 10 failed login attempts</td><td style="padding: 0.75rem;">Alert triggered (email/SIEM)</td><td style="padding: 0.75rem;">No alert, no log entry</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Change user role via API (low priv user)</td><td style="padding: 0.75rem;">Action logged with user ID</td><td style="padding: 0.75rem;">No log or incomplete log</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps (Attacker Perspective)</h2>
+      <ol>
+        <li>Identify that logging is insufficient by testing small actions.</li>
+        <li>Perform malicious actions (e.g., brute force, SQL injection) without fear of detection.</li>
+        <li>Cover tracks by deleting or modifying logs if accessible.</li>
+        <li>Maintain persistence for long‑term access.</li>
+      </ol>
     </div>
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box"><strong>✅ Log all authentication attempts, privilege changes, and sensitive data access.</strong><br>✅ Use a SIEM or centralized logging.<br>✅ Set up alerts for suspicious patterns (multiple failures, unusual locations).<br>✅ Regularly review logs.</div>
+      <div class="mitigation-box">
+        <strong>✅ Log all authentication attempts, privilege changes, and sensitive data access.</strong><br>
+        <strong>✅ Use a SIEM or centralized logging (ELK, Splunk, Sentinel).</strong><br>
+        <strong>✅ Set up alerts for suspicious patterns (multiple failures, unusual locations, high volume).</strong><br>
+        <strong>✅ Regularly review logs (daily or weekly).</strong><br>
+        <strong>✅ Protect log integrity (append‑only, tamper‑evident).</strong><br>
+        <strong>✅ Implement real‑time alerting for critical events.</strong>
+      </div>
     </div>
-    <a href="index.html" class="back-link">← Back</a>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If logs are stored locally, an attacker with RCE can delete them.</li>
+        <li>If alerts are only based on thresholds, low‑and‑slow attacks may bypass.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Medium (but can be High if combined with other vulns)</strong><br><br>
+        <strong>Impact:</strong> Delayed breach detection, inability to perform forensics, prolonged attacker presence.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Test if failed logins are logged
+# After sending 10 wrong passwords, ask the admin to check logs.
+# If no logs exist, vulnerability is confirmed.</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-project-top-ten/2021/A09_2021-Security_Logging_and_Monitoring_Failures" style="color: var(--primary);">OWASP A09:2021</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/778.html" style="color: var(--primary);">CWE-778</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Logging & Monitoring Guide</p></footer>
+<script>/* same scripts */</script>
 </body>
 </html>
