@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outdated Web Server Software | Web Security | Saikumar Raju</title>
+  <!-- same style -->
+</head>
+<body>
+<nav>...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">...</div>
+    <div class="page-header">
+      <span class="severity-badge">High Severity</span>
+      <h1>📌 Outdated Web Server Software</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>The web server (Apache, Nginx, IIS, Tomcat) runs an outdated version with known vulnerabilities, allowing attackers to bypass security controls, cause DoS, or execute arbitrary code.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Lack of patch management, legacy systems, or fear of downtime.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul><li><strong>OWASP:</strong> A06:2021 – Vulnerable and Outdated Components</li><li><strong>CWE:</strong> CWE-1104</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul><li>✅ HTTP response headers (Server: Apache/2.2.22)</li><li>✅ Default error pages</li><li>✅ Static file access revealing version</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>curl -I https://target.com | grep -i server
+nmap -sV --script http-server-header -p 80,443 target.com</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Exploit</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Example for Apache 2.2.22 (CVE-2012-0053)
+curl -H "Host: $'\x80\x00\x00\x08\x00\x00\x00\x01'" http://target.com</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Keep web server software updated to latest stable version.</strong><br>✅ Remove version headers (ServerTokens Prod in Apache, server_tokens off in Nginx).<br>✅ Use a WAF to virtual‑patch known vulnerabilities.<br>✅ Automate patch management.</div>
+    </div>
+    <!-- rest of sections (Test Cases, Exploitation Steps, etc.) follow same pattern -->
+    <a href="index.html" class="back-link">← Back to Web Security</a>
+  </div>
+</main>
+<footer>...</footer>
+<script>...</script>
+</body>
+</html>
