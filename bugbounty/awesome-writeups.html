@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Awesome Bug Bounty Writeups | Bug Bounty | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .resource-list { list-style: none; margin: 1rem 0; }
+    .resource-list li { margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-card); border-radius: 0.5rem; border: 1px solid var(--border); }
+    .resource-list li a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .resource-list li a:hover { text-decoration: underline; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../oscp/index.html">OSCP Prep</a></li>
+      <li><a href="../red-teaming/index.html">Red Teaming</a></li>
+      <li><a href="index.html">Bug Bounty</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Bug Bounty</a> / Awesome Bug Bounty Writeups</div>
+    <div class="page-header">
+      <h1>📚 Awesome Bug Bounty Writeups</h1>
+    </div>
+    
+    <div class="content-section">
+      <h2>🧠 Resource Overview</h2>
+      <p>A curated list of bug bounty writeups categorized by vulnerability type, this repository is an excellent learning resource for both beginners and experienced hunters. Each writeup includes a real‑world example, exploitation steps, and remediation advice from active bug bounty researchers[reference:0].</p>
+      <p><strong>Key Links:</strong></p>
+      <ul class="resource-list">
+        <li><a href="https://github.com/devanshbatham/Awesome-Bugbounty-Writeups" target="_blank">GitHub – Awesome-Bugbounty-Writeups</a></li>
+        <li><a href="https://undercodetesting.com/awesome-bugbounty-writeups/" target="_blank">External article: Awesome Bugbounty Writeups</a></li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Vulnerability Categories Covered</h2>
+      <ul>
+        <li>Cross Site Scripting (XSS)</li>
+        <li>Cross Site Request Forgery (CSRF)</li>
+        <li>Clickjacking (UI Redressing Attack)</li>
+        <li>Local File Inclusion (LFI)</li>
+        <li>Subdomain Takeover</li>
+        <li>Denial of Service (DoS)</li>
+        <li>Authentication Bypass</li>
+        <li>SQL Injection (SQLi)</li>
+        <li>Insecure Direct Object Reference (IDOR)</li>
+        <li>2FA Related Issues</li>
+        <li>CORS Related Issues</li>
+        <li>Server Side Request Forgery (SSRF)</li>
+        <li>Race Condition</li>
+        <li>Remote Code Execution (RCE)</li>
+        <li>Buffer Overflow Writeups</li>
+        <li>Android Pentesting</li>
+      </ul>
+      <p>The repository also includes a dedicated section on Buffer Overflow resources, with links to PDF books, GitHub repositories, and explanatory articles[reference:1].</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🔍 Why This Matters</h2>
+      <p>Bug bounty writeups are invaluable resources for cybersecurity professionals and ethical hackers. They provide real‑world examples of vulnerabilities, exploitation techniques, and remediation strategies that you won’t always find in textbooks[reference:2].</p>
+      <p>By studying these reports, you can understand how security researchers think, learn new attack vectors, and apply those lessons to your own penetration tests and bug bounty programs.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🚀 How to Use This Resource</h2>
+      <ul>
+        <li><strong>Clone the repository</strong> to browse locally or contribute new writeups.</li>
+        <li><strong>Search for specific vulnerabilities</strong> by scanning the README or using `grep` on the markdown files.</li>
+        <li><strong>Set up a testing lab</strong> to reproduce the exploits described in the writeups.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>📊 Impact in My Pipeline</h2>
+      <p>This resource has been added to the new <strong>Bug Bounty</strong> category in the knowledge base. It serves as a foundational reference for the 50‑TC web vulnerabilities, API security, and the OSCP prep section by providing real‑world examples of every major bug class.</p>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Bug Bounty Hub</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Awesome Bug Bounty Writeups</p></footer>
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
+  });
+</script>
+</body>
+</html>
