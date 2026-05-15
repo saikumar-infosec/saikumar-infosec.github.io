@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensitive Data in Error Messages | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
+</head>
+<body>
+<nav class="navbar">...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Sensitive Data in Error Messages</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A04:2021</span>
+      <h1>📌 Sensitive Data in Error Messages</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Error messages (stack traces, SQL errors, path disclosures) reveal internal details about the application, database, or server configuration. Attackers use this information to refine further attacks.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Developers leave debug mode enabled in production or fail to implement proper exception handling and custom error pages.</p>
+      <p><strong>Security principle violated:</strong> Information Disclosure</p>
+      <p><strong>Real-world analogy:</strong> A locked door that shows a detailed blueprint of the building when you knock – attackers learn exactly where to strike.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Information Disclosure</li>
+        <li><strong>OWASP:</strong> A04:2021 – Insecure Design / A05:2021 – Security Misconfiguration</li>
+        <li><strong>CWE:</strong> CWE-209: Generation of Error Message Containing Sensitive Information</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Invalid input triggers SQL errors</li>
+        <li>✅ Missing files cause path disclosure</li>
+        <li>✅ Debug mode enabled in production</li>
+        <li>✅ API endpoints returning verbose errors</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul>
+        <li>Inject unexpected characters (`'`, `\`, `%`, `<script>`) into parameters.</li>
+        <li>Request non‑existent pages (`/nonexistent`).</li>
+        <li>Observe responses for stack traces, file paths, database queries, or version numbers.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Trigger Errors)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SQL error trigger
+?id='
+
+# Path traversal trigger
+?file=../../../nonexistent
+
+# Invalid JSON
+{"user": "admin", "password": </pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Force a division by zero
+/?page=1/0</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Inject `'` in SQL parameter</td><td>Generic error</td><td>SQL syntax error with query</td></tr>
+          <tr><td>2</td><td>Access `/nonexistent`</td><td>Custom 404 page</td><td>Path disclosure</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify inputs that cause errors.</li>
+        <li>Collect revealed information (database version, file paths, internal IPs, stack traces).</li>
+        <li>Use this information to craft more targeted attacks.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Disable debug mode in production.</strong><br>
+        <strong>✅ Use custom error pages (e.g., 404, 500).</strong><br>
+        <strong>✅ Log errors internally, never display to users.</strong><br>
+        <strong>✅ Sanitize database error messages.</strong><br>
+        <strong>✅ Implement proper exception handling.</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If errors are partially hidden but still leak version numbers, those can still be used.</li>
+        <li>Sometimes error messages appear in JavaScript responses or API calls even if the frontend hides them.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Medium</strong><br><br>
+        <strong>Impact:</strong> Information leakage (version, paths, database structure) enabling targeted attacks.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Trigger SQL error
+curl "https://target.com/page?id='"
+
+# Response contains: "You have an error in your SQL syntax near ''' at line 1"</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/Improper_Error_Handling" style="color: var(--primary);">OWASP – Improper Error Handling</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Error Message Disclosure Guide</p></footer>
+<script>/* same scripts */</script>
+</body>
+</html>

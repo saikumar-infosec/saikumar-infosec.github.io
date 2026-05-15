@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Redirect | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(0, 245, 160, 0.2); color: var(--primary); padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-category { margin: 1.5rem 0 1rem; padding: 0.5rem; background: var(--bg-elevated); border-radius: 8px; font-weight: 700; color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+      .payload-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Open Redirect</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Low to Medium Severity | OWASP A01:2021</span>
+      <h1>📌 Open Redirect</h1>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is Open Redirect?</strong></p>
+      <p>Open Redirect occurs when an application accepts an untrusted URL parameter and redirects the user to that URL without proper validation. Attackers can use this to redirect users to malicious sites for phishing attacks.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Security Misconfiguration / Input Validation</li>
+        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control</li>
+        <li><strong>CWE:</strong> CWE-601: URL Redirection to Untrusted Site</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Login/Logout redirect parameters (<code>?next=</code>, <code>?redirect=</code>)</li>
+        <li>✅ Return URL parameters (<code>?return_to=</code>, <code>?redirect_uri=</code>)</li>
+        <li>✅ Referer header manipulation</li>
+        <li>✅ Open Graph / social media redirects</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">https://target.com/redirect?url=https://evil.com</div>
+        <div class="payload-item">https://target.com/login?next=//evil.com</div>
+        <div class="payload-item">https://target.com/return?redirect_uri=//evil.com</div>
+        <div class="payload-item">https://target.com/logout?return_to=https://evil.com</div>
+      </div>
+
+      <div class="payload-category">🚀 Advanced Bypass Techniques</div>
+      <div class="payload-grid">
+        <div class="payload-item">https://target.com/redirect?url=https://evil.com@target.com</div>
+        <div class="payload-item">https://target.com/redirect?url=//evil.com%2F%2Ftarget.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https://evil.com%252ftarget.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https://evil.com.targer.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https:evil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=//evil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=\evil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=//evil.com/../target.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https://target.com@evil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https://evil.com?target.com</div>
+        <div class="payload-item">https://target.com/redirect?url=javascript:alert(1)</div>
+        <div class="payload-item">https://target.com/redirect?url=data:text/html,Phishing</div>
+      </div>
+
+      <div class="payload-category">🔧 URL Encoding Bypasses</div>
+      <div class="payload-grid">
+        <div class="payload-item">https://target.com/redirect?url=https%3A%2F%2Fevil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https%253A%252F%252Fevil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https%3A//evil.com</div>
+        <div class="payload-item">https://target.com/redirect?url=https：//evil.com（全角コロン）</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for redirect parameters
+grep -r "redirect" requests.txt
+grep -r "return" requests.txt
+grep -r "next" requests.txt
+grep -r "url" requests.txt
+
+# Test with curl
+curl -i "https://target.com/login?next=https://evil.com"</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify redirect parameters (<code>next=</code>, <code>redirect=</code>, <code>return_to=</code>)</li>
+        <li>Test with external domain (<code>?next=https://evil.com</code>)</li>
+        <li>Check if redirection occurs</li>
+        <li>If filtered, try bypass techniques</li>
+        <li>Create phishing link: <code>https://target.com/login?next=https://evil.com/fake-login</code></li>
+      </ol>
+
+      <div class="payload-category">🎣 Phishing Exploit Example</div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Malicious link to send to victims
+https://legitimate-site.com/login?next=https://attacker.com/fake-login-page
+
+# Victims see legitimate domain but get redirected to fake page
+# Fake page mimics login to steal credentials</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Use allowlist of allowed domains:</strong> Only redirect to trusted domains<br>
+        <strong>✅ Validate URL structure:</strong> Ensure redirect is relative path, not absolute URL<br>
+        <strong>✅ Use token-based validation:</strong> Generate and validate redirect tokens<br>
+        <strong>✅ Warn users:</strong> Display warning before external redirects<br>
+        <strong>✅ Don't accept user-controlled redirect URLs when possible</strong>
+      </div>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Secure redirect validation (Python)
+ALLOWED_DOMAINS = ['target.com', 'sub.target.com']
+
+def validate_redirect(url):
+    parsed = urlparse(url)
+    if parsed.netloc in ALLOWED_DOMAINS:
+        return url
+    return '/dashboard'
+
+# PHP - Only allow relative paths
+if (strpos($_GET['redirect'], 'http') !== false) {
+    header('Location: /home');
+} else {
+    header('Location: ' . $_GET['redirect']);
+}</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Low to Medium</strong><br><br>
+        <strong>Impact:</strong>
+        <ul>
+          <li>Phishing attacks using trusted domain</li>
+          <li>Credential theft</li>
+          <li>Bypass CSRF protections</li>
+          <li>SEO spam / reputation damage</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/redirects" class="reference-link" target="_blank">PortSwigger: Open Redirect</a></li>
+        <li><a href="https://owasp.org/www-community/vulnerabilities/Unvalidated_Redirects_and_Forwards" class="reference-link" target="_blank">OWASP: Unvalidated Redirects</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/601.html" class="reference-link" target="_blank">CWE-601: URL Redirection</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Open Redirect - Complete Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

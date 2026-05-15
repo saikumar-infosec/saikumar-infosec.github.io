@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directory Listing Enabled | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Directory Listing Enabled</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A05:2021</span>
+      <h1>📌 Directory Listing Enabled</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Web server is configured to display directory contents when no index file (e.g., <code>index.html</code>) is present. This exposes the full file and folder structure of that directory, including source code, backup files, configuration files, or sensitive data.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Default server configurations (e.g., Apache <code>Options Indexes</code>) are not disabled, or developers intentionally leave directory listing enabled for convenience.</p>
+      <p><strong>Security principle violated:</strong> Information Disclosure / Least Disclosure</p>
+      <p><strong>Real-world analogy:</strong> Leaving the door to your storage room open with a full inventory list posted outside – anyone can see exactly what you have and where it is.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Information Disclosure</li>
+        <li><strong>OWASP:</strong> A05:2021 – Security Misconfiguration</li>
+        <li><strong>CWE:</strong> CWE-548: Exposure of Information Through Directory Listing</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Any directory without an index file (e.g., <code>/uploads/</code>, <code>/backup/</code>, <code>/assets/</code>)</li>
+        <li>✅ Temporary or debug folders (<code>/tmp/</code>, <code>/debug/</code>)</li>
+        <li>✅ Static asset folders with no index (<code>/images/</code>, <code>/css/</code>, <code>/js/</code>)</li>
+        <li>✅ Third‑party plugin directories</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Manual Browsing</h3>
+      <ul>
+        <li>Navigate to common directory paths: <code>/uploads/</code>, <code>/backup/</code>, <code>/images/</code>, <code>/files/</code>, <code>/assets/</code>.</li>
+        <li>If you see a list of files (instead of a 403/404), directory listing is enabled.</li>
+      </ul>
+      <h3>2. Automated Fuzzing</h3>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use dirb or gobuster to find directories
+gobuster dir -u https://target.com -w /usr/share/wordlists/dirb/common.txt
+
+# Check each discovered directory for listing
+curl -I https://target.com/uploads/ | grep -i "200 OK"</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Directory Enumeration)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Common vulnerable paths
+/uploads/
+/backup/
+/old/
+/tmp/
+/logs/
+/config/
+/assets/
+/files/
+/static/</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If directory listing is enabled, recursively download all contents
+wget -r -np -nH --cut-dirs=1 -R "index.html*" https://target.com/uploads/
+
+# Look for sensitive files like .sql, .env, .git, .config, .pem, .key</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Access <code>/uploads/</code> (or any directory without index)</td><td style="padding: 0.75rem;">403 Forbidden or 404 Not Found</td><td style="padding: 0.75rem;">Directory listing showing files</td></tr>
+          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Check for <code>/backup/</code> or <code>/logs/</code></td><td style="padding: 0.75rem;">No listing</td><td style="padding: 0.75rem;">Sensitive files exposed</td></tr>
+        </tbody>
+      </table>
+      <p>✔ Must be reproducible</p>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Enumerate all accessible directories using a wordlist.</li>
+        <li>For each directory that returns 200 OK, check if it returns an HTML directory listing (contains "Index of /" or file list).</li>
+        <li>Browse the listing and look for sensitive files: source code, database backups, configuration files, credentials, session data, logs.</li>
+        <li>Download interesting files and extract further information (e.g., database credentials from config files).</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Disable directory listing in web server configuration.</strong><br>
+        <strong>✅ Apache:</strong> Remove or comment <code>Options Indexes</code>; use <code>Options -Indexes</code>.<br>
+        <strong>✅ Nginx:</strong> Use <code>autoindex off;</code> in location blocks.<br>
+        <strong>✅ IIS:</strong> Uncheck "Directory browsing" in feature permissions.<br>
+        <strong>✅ Place an empty <code>index.html</code> in every directory as a fallback.</strong><br>
+        <strong>✅ Use a <code>robots.txt</code> disallow (not a mitigation, only prevents crawling).</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If directory listing is disabled but a default document (<code>index.html</code>) is missing, the server might still return a 403, but that does not expose the listing – so not a bypass. However, sometimes misconfigured servers still list if the request includes a trailing slash or uses specific user‑agents.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Medium (can become High if sensitive files are exposed)</strong><br><br>
+        <strong>Impact:</strong> Information leakage (source code, credentials, backups), facilitating further attacks like SQL injection (if config exposed) or privilege escalation.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Simple curl check
+curl https://target.com/uploads/
+
+# If response contains "Index of /uploads" or a list of files, vulnerability exists.</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Forced_browsing" style="color: var(--primary);">OWASP – Forced Browsing</a></li>
+        <li><a href="https://httpd.apache.org/docs/2.4/mod/mod_autoindex.html" style="color: var(--primary);">Apache mod_autoindex</a></li>
+        <li><a href="https://nginx.org/en/docs/http/ngx_http_autoindex_module.html" style="color: var(--primary);">Nginx autoindex</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Directory Listing Guide</p></footer>
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinksEl = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinksEl.classList.toggle('show'));
+
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
+  });
+
+  function copyCode(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text);
+    const original = btn.innerText;
+    btn.innerText = 'Copied!';
+    setTimeout(() => btn.innerText = original, 1500);
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+        if (navLinksEl.classList.contains('show')) navLinksEl.classList.remove('show');
+      }
+    });
+  });
+</script>
+</body>
+</html>

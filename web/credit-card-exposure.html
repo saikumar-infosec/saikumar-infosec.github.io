@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Card Exposure | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
+</head>
+<body>
+<nav class="navbar">...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Credit Card Exposure</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | PCI-DSS Violation</span>
+      <h1>📌 Full Credit Card Number Exposure</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>The application stores or displays full credit card numbers (PAN) in plaintext, violating PCI-DSS requirements. Attackers with database access or XSS can steal complete payment information.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Poor compliance awareness, improper tokenization, or insecure storage practices.</p>
+      <p><strong>Security principle violated:</strong> Sensitive Data Exposure</p>
+      <p><strong>Real-world analogy:</strong> Writing your credit card number on the outside of an envelope – anyone who sees it can use it.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Sensitive Data Exposure</li>
+        <li><strong>OWASP:</strong> A02:2021 – Cryptographic Failures / A04:2021 – Insecure Design</li>
+        <li><strong>CWE:</strong> CWE-312: Cleartext Storage of Sensitive Information</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Payment confirmation pages</li>
+        <li>✅ Admin order panels</li>
+        <li>✅ API responses containing full card numbers</li>
+        <li>✅ Database backups</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul>
+        <li>Complete a test transaction and inspect response bodies for 16-digit numbers.</li>
+        <li>Search database for patterns matching credit card numbers (Luhn algorithm).</li>
+        <li>Check admin interfaces for exposed card data.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Example</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>{"card_number": "4111111111111111", "expiry": "12/28", "cvv": "123"}</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SQL injection to dump credit cards
+' UNION SELECT card_number, expiry FROM payments --</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>View order confirmation page</td><td>Masked card (e.g., **** 1111)</td><td>Full card number displayed</td></tr>
+          <tr><td>2</td><td>Check database payments table</td><td>Encrypted or tokenized</td><td>Plaintext PAN</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Gain access to database via SQL injection or leaked backup.</li>
+        <li>Dump the payments or orders table.</li>
+        <li>Use stolen credit card numbers for fraudulent transactions.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Never store full PAN after authorization (PCI-DSS requirement).</strong><br>
+        <strong>✅ Tokenize card numbers via payment gateway.</strong><br>
+        <strong>✅ Display only last 4 digits.</strong><br>
+        <strong>✅ Encrypt stored card data (AES-256).</strong><br>
+        <strong>✅ Regular PCI-DSS audits.</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If encryption keys are stored alongside the data, encryption provides little protection.</li>
+        <li>If tokenization is used but tokens are reversible, it's equivalent to plaintext.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: Critical</strong><br><br>
+        <strong>Impact:</strong> Financial fraud, regulatory fines (PCI-DSS, GDPR), reputational damage.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SQL injection
+' UNION SELECT card_number, expiry FROM payments --</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://www.pcisecuritystandards.org/" style="color: var(--primary);">PCI-DSS Official Site</a></li>
+        <li><a href="https://owasp.org/www-community/PCI_DSS" style="color: var(--primary);">OWASP – PCI DSS</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Credit Card Exposure Guide</p></footer>
+<script>/* same scripts */</script>
+</body>
+</html>

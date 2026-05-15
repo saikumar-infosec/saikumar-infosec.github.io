@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHP Object Injection | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles as above – omitted for length but identical to previous */</style>
+</head>
+<body>
+<!-- Full HTML with all sections – I will provide a compact but complete version -->
+<nav class="navbar">...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / PHP Object Injection</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A08:2021</span>
+      <h1>📌 PHP Object Injection (Insecure Deserialization)</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>PHP Object Injection occurs when user‑supplied input is passed to <code>unserialize()</code> without proper validation. An attacker can supply a crafted serialized string that, when unserialized, instantiates arbitrary PHP objects and may trigger magic methods (e.g., <code>__wakeup()</code>, <code>__destruct()</code>) leading to Remote Code Execution (RCE), file deletion, or privilege escalation.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Developers use <code>unserialize()</code> on data from cookies, session storage, or API inputs, trusting it without sanitisation.</p>
+      <p><strong>Security principle violated:</strong> Insecure Deserialization</p>
+      <p><strong>Real-world analogy:</strong> Accepting a pre‑packaged box from a stranger and opening it – you have no control over what's inside.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul><li><strong>Type:</strong> Insecure Deserialization</li><li><strong>OWASP:</strong> A08:2021 – Software and Data Integrity Failures</li><li><strong>CWE:</strong> CWE-502: Deserialization of Untrusted Data</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul><li>✅ PHP sessions (serialized data in cookies or files)</li><li>✅ API endpoints accepting serialized objects (e.g., <code>application/x-php-serialized</code>)</li><li>✅ Parameters passed to <code>unserialize()</code> from user input</li><li>✅ Applications using <code>__wakeup()</code> or <code>__destruct()</code> for file operations</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul><li>Look for parameters that look like serialized PHP data: <code>O:4:"User":1:{s:4:"name";s:3:"abc";}</code></li><li>Use static analysis to find <code>unserialize($_GET[...])</code> or <code>unserialize($_COOKIE[...])</code></li><li>Fuzz with a harmless serialized object and observe behaviour changes.</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Simple serialized string for a class with a destructor
+O:1:"A":0:{}</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation (POP Chain)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Example payload using a known gadget chain (PHPGGC)
+phpggc Monolog/RCE1 system 'id' -s
+# Then send the generated payload to the vulnerable unserialize() endpoint.</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases (STRICT)</h2>
+      <table class="test-cases"><thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead><tbody><tr><td>1</td><td>Submit a malformed serialized string (e.g., <code>O:1:"A":0:{}</code>)</td><td>Error or no effect</td><td>Application crash or unexpected behaviour</td></tr><tr><td>2</td><td>Use PHPGGC to generate a payload for RCE</td><td>No output or blocked</td><td>Command executed (e.g., <code>id</code> output)</td></tr></tbody></table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol><li>Identify input that is passed to <code>unserialize()</code>.</li><li>Enumerate classes and available magic methods (use code review or PHPGGC).</li><li>Craft a gadget chain to achieve RCE.</li><li>Deliver the payload and execute commands.</li></ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box"><strong>✅ Never use <code>unserialize()</code> on user input.</strong><br>✅ Use safe alternatives like <code>json_decode()</code>.<br>✅ Implement allowlist of classes when deserializing (e.g., <code>unserialize($data, ['allowed_classes' => ['MyClass']])</code>).<br>✅ Use signature verification (HMAC) for serialized data.<br>✅ Keep dependencies updated to avoid known gadget chains.</div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul><li>If allowlist is too broad, attackers may still find usable classes.</li><li>If custom autoloaders are misconfigured, new classes can be injected.</li></ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box"><strong>Severity: Critical</strong><br><br><strong>Impact:</strong> Remote Code Execution, complete server takeover, data breach.</div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre># Vulnerable code
+$data = $_GET['data'];
+$obj = unserialize($data);
+
+# Payload
+?data=O:8:"stdClass":0:{}</pre></div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul><li><a href="https://owasp.org/www-community/vulnerabilities/PHP_Object_Injection" style="color: var(--primary);">OWASP – PHP Object Injection</a></li><li><a href="https://github.com/ambionics/phpggc" style="color: var(--primary);">PHPGGC – Gadget Chain Generator</a></li></ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer>...</footer>
+<script>/* same as before */</script>
+</body>
+</html>

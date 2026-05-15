@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueHammer (CVE-2026-33825) | Windows Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
+    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+    .page-header { padding: 6rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+    .content-section ul, .content-section ol { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
+    .content-section li { margin-bottom: 0.5rem; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .poc-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .poc-link { background: var(--bg-elevated); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; color: var(--primary); text-decoration: none; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
+    .test-cases { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border); margin: 1rem 0; }
+    .test-cases th, .test-cases td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .test-cases th { background: var(--bg-elevated); color: var(--primary); }
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .mobile-menu { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; }
+      .nav-links.show { display: flex; }
+      .page-header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Resume</a></li>
+      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
+      <li><a href="../status.html">Status</a></li>
+      <li><a href="../blog.html">Write-ups</a></li>
+      <li><a href="../tools.html">Tools</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Windows Security</a> / BlueHammer (CVE-2026-33825)</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity (CVSS 7.8) | CVE-2026-33825</span>
+      <h1>📌 BlueHammer (CVE-2026-33825) – Windows Defender LPE</h1>
+      <p>Local privilege escalation via Windows Defender update mechanism – user to SYSTEM.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is BlueHammer?</strong></p>
+      <p>BlueHammer (CVE-2026-33825) is a local privilege escalation vulnerability in Microsoft Defender that allows an authenticated attacker with low privileges to elevate to SYSTEM. It exploits a TOCTOU (Time-of-Check, Time-of-Use) race condition combined with path confusion during Defender's update process.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Insufficient granularity of access control in Microsoft Defender allows an attacker to manipulate the update mechanism and gain higher privileges. Microsoft addressed this vulnerability in the April 2026 Patch Tuesday updates.[reference:0][reference:1]</p>
+      <p><strong>Security principle violated:</strong> Access Control / Privilege Separation</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Local Privilege Escalation (LPE)</li>
+        <li><strong>CWE:</strong> CWE-1220 – Insufficient Granularity of Access Control</li>
+        <li><strong>CVSS Score:</strong> 7.8 (High)</li>
+        <li><strong>Impact:</strong> User → SYSTEM privileges</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Local authenticated user with low privileges</li>
+        <li>✅ Windows Defender update process</li>
+        <li>✅ File system race conditions</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <h3>1. Static Analysis</h3>
+      <p>Review Defender update routines for TOCTOU vulnerabilities.</p>
+      <h3>2. Dynamic Analysis</h3>
+      <ul>
+        <li>Monitor Defender update activity using Process Monitor</li>
+        <li>Look for file operations that can be raced</li>
+        <li>Use API monitoring to trace update call chain</li>
+      </ul>
+      <p><strong>Tools:</strong> Process Monitor, API Monitor, WinDbg</p>
+    </div>
+
+    <div class="content-section">
+      <h2>💣 Proof of Concept (PoC)</h2>
+      <p>A public PoC is available on GitHub. The exploit leverages a race condition during Defender's signature update process to overwrite a protected file and escalate privileges.</p>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># BlueHammer PoC execution (conceptual)
+BlueHammer.exe</pre>
+      </div>
+      <div class="poc-links">
+        <a href="https://github.com/Nightmare-Eclipse/BlueHammer" target="_blank" class="poc-link">🔗 GitHub PoC: BlueHammer</a>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Execute the BlueHammer exploit from a low-privileged user account.</li>
+        <li>The exploit races Defender's signature update process.</li>
+        <li>It overwrites a system file with malicious content.</li>
+        <li>The file is then executed with SYSTEM privileges.</li>
+        <li>Result: Full SYSTEM compromise.</li>
+      </ol>
+    </div>
+
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Install the April 2026 Patch Tuesday updates</strong><br>
+        <strong>✅ Keep Windows Defender definitions up to date</strong><br>
+        <strong>✅ Apply principle of least privilege</strong><br>
+        <strong>✅ Monitor for suspicious process activity</strong>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Complete SYSTEM compromise, persistence, lateral movement, data theft.
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://msrc.microsoft.com/update-guide/en-US/advisory/CVE-2026-33825" class="reference-link" target="_blank" style="color: var(--primary);">Microsoft Security Update Guide – CVE-2026-33825</a></li>
+        <li><a href="https://thehackernews.com/2026/04/three-microsoft-defender-zero-days.html" class="reference-link" target="_blank" style="color: var(--primary);">The Hacker News: Three Microsoft Defender Zero-Days</a></li>
+        <li><a href="https://github.com/Nightmare-Eclipse/BlueHammer" class="reference-link" target="_blank" style="color: var(--primary);">BlueHammer GitHub PoC</a></li>
+        <li><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" class="reference-link" target="_blank" style="color: var(--primary);">CISA KEV Catalog</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Windows Security</a>
+  </div>
+</main>
+
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Windows Security Knowledge Base</p></footer>
+
+<script>
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
+  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

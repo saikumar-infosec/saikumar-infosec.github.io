@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Commands Cheatsheet | Cloud Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* base styles */</style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Cloud Security</a> / Linux Commands Cheatsheet</div>
+      <div class="page-header">
+        <h1>🐧 50 Essential Linux Commands for Cloud Engineers</h1>
+      </div>
+
+      <div class="content-section">
+        <h2>File & Directory Management</h2>
+        <ul>
+          <li><code>ls -la</code> – list all files with permissions</li>
+          <li><code>pwd</code> – print working directory</li>
+          <li><code>cd /path</code> – change directory</li>
+          <li><code>mkdir newdir</code> – create directory</li>
+          <li><code>rm file.txt</code> – remove file</li>
+          <li><code>touch file.txt</code> – create empty file</li>
+          <li><code>cp source dest</code> – copy file</li>
+          <li><code>mv old new</code> – move or rename</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Viewing & Searching</h2>
+        <ul>
+          <li><code>cat file.txt</code> – display full content</li>
+          <li><code>less largefile.log</code> – paginated view</li>
+          <li><code>head -n 20 file.txt</code> – first 20 lines</li>
+          <li><code>tail -f logfile</code> – follow live log</li>
+          <li><code>grep "error" app.log</code> – search pattern</li>
+          <li><code>find /home -name "*.conf"</code> – find files</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Process Management</h2>
+        <ul>
+          <li><code>ps aux</code> – list all processes</li>
+          <li><code>kill -9 PID</code> – force kill process</li>
+          <li><code>top</code> – live process monitor</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Permissions & Ownership</h2>
+        <ul>
+          <li><code>chmod 755 script.sh</code> – change mode</li>
+          <li><code>chown user:group file</code> – change owner</li>
+          <li><code>sudo</code> – execute as superuser</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Disk & System Info</h2>
+        <ul>
+          <li><code>df -h</code> – disk free (human readable)</li>
+          <li><code>du -sh /home</code> – disk usage summary</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Networking & Transfer</h2>
+        <ul>
+          <li><code>ssh user@host</code> – secure shell</li>
+          <li><code>wget https://example.com/file.zip</code> – download file</li>
+          <li><code>curl -O https://example.com/file.zip</code> – download</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Archiving</h2>
+        <ul>
+          <li><code>tar -cvf archive.tar /folder</code> – create tar</li>
+          <li><code>tar -xvf archive.tar</code> – extract tar</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>Aliases & Shell</h2>
+        <ul>
+          <li><code>alias ll='ls -la'</code> – create shortcut</li>
+          <li><code>echo "Hello"</code> – print string</li>
+          <li><code>exit</code> – close shell</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 Quick Reference Table</h2>
+        <table class="test-cases">
+          <thead><tr><th>Command</th><th>Full Form / Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>ls</td><td>List Segments</td></tr>
+            <tr><td>pwd</td><td>Print Working Directory</td></tr>
+            <tr><td>cd</td><td>Change Directory</td></tr>
+            <tr><td>mkdir</td><td>Make Directory</td></tr>
+            <tr><td>rm</td><td>Remove</td></tr>
+            <tr><td>touch</td><td>Touch</td></tr>
+            <tr><td>cp</td><td>Copy</td></tr>
+            <tr><td>mv</td><td>Move</td></tr>
+            <tr><td>cat</td><td>Concatenate</td></tr>
+            <tr><td>less</td><td>Less</td></tr>
+            <tr><td>head</td><td>Head</td></tr>
+            <tr><td>tail</td><td>Tail</td></tr>
+            <tr><td>grep</td><td>Global Regular Expression Print</td></tr>
+            <tr><td>find</td><td>Find</td></tr>
+            <tr><td>man</td><td>Manual</td></tr>
+            <tr><td>sudo</td><td>SuperUser Do</td></tr>
+            <tr><td>df</td><td>Disk Filesystem</td></tr>
+            <tr><td>du</td><td>Disk Usage</td></tr>
+            <tr><td>ps</td><td>Process Status</td></tr>
+            <tr><td>kill</td><td>Kill</td></tr>
+            <tr><td>tar</td><td>Tape Archive</td></tr>
+            <tr><td>chmod</td><td>Change Mode</td></tr>
+            <tr><td>chown</td><td>Change Owner</td></tr>
+            <tr><td>ssh</td><td>Secure Shell</td></tr>
+            <tr><td>wget</td><td>World Wide Web Get</td></tr>
+            <tr><td>curl</td><td>Client URL</td></tr>
+            <tr><td>top</td><td>Table of Processes</td></tr>
+            <tr><td>alias</td><td>Alias</td></tr>
+            <tr><td>echo</td><td>Echo</td></tr>
+            <tr><td>exit</td><td>Exit</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cloud Security</a>
+    </div>
+  </main>
+  <footer><p>Saikumar Raju — Cybersecurity Consultant | Linux Commands Cheatsheet</p></footer>
+  <script>/* copy and dark mode */</script>
+</body>
+</html>

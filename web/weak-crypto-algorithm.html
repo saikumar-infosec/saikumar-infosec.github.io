@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weak Cryptographic Algorithm | Web Security | Saikumar Raju</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>/* same base styles */</style>
+</head>
+<body>
+<nav class="navbar">...</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Weak Cryptographic Algorithm</div>
+    <div class="page-header">
+      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A02:2021</span>
+      <h1>📌 Weak Cryptographic Algorithm</h1>
+    </div>
+    <div class="content-section">
+      <h2>🧠 Description</h2>
+      <p><strong>What is the vulnerability?</strong></p>
+      <p>Use of outdated or broken cryptographic algorithms (MD5, SHA-1, DES, RC4) for hashing or encryption. These are vulnerable to collision attacks, brute force, or other cryptanalysis techniques.</p>
+      <p><strong>Why does it occur?</strong></p>
+      <p>Legacy code, lack of security awareness, or failure to update dependencies.</p>
+      <p><strong>Security principle violated:</strong> Cryptographic Failure</p>
+      <p><strong>Real-world analogy:</strong> Using a wooden lock on a bank vault – it may look like a lock but offers no real security.</p>
+    </div>
+    <div class="content-section">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Cryptographic Failure</li>
+        <li><strong>OWASP:</strong> A02:2021 – Cryptographic Failures</li>
+        <li><strong>CWE:</strong> CWE-327: Use of a Broken or Risky Cryptographic Algorithm</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ Password hashing (MD5, SHA-1)</li>
+        <li>✅ SSL/TLS cipher suites (RC4, DES)</li>
+        <li>✅ JWT algorithms (HS256 with weak secret, none)</li>
+        <li>✅ Session token generation</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>🔍 Detection Methodology</h2>
+      <ul>
+        <li>Extract password hashes from database – identify hash type using `hashid`.</li>
+        <li>Use SSL Labs to check for weak ciphers.</li>
+        <li>Analyze JWT headers for `alg: HS256` with weak secrets.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>💣 Basic Payloads (Weak Hashes)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># MD5 of "password"
+5f4dcc3b5aa765d61d8327deb882cf99
+
+# SHA-1 of "password"
+5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🚀 Advanced Exploitation</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Crack MD5 with hashcat
+hashcat -a 0 -m 0 hash.txt rockyou.txt
+
+# Downgrade TLS to use RC4
+curl --ciphers RC4-SHA https://target.com</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🧪 Test Cases</h2>
+      <table class="test-cases">
+        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Identify hash type of stored password</td><td>bcrypt/Argon2</td><td>MD5 or SHA-1</td></tr>
+          <tr><td>2</td><td>Test SSL/TLS with weak cipher</td><td>Connection refused</td><td>RC4 cipher accepted</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-section">
+      <h2>⚙️ Exploitation Steps</h2>
+      <ol>
+        <li>Extract hash from database.</li>
+        <li>Identify algorithm (hashid).</li>
+        <li>Crack using rainbow tables or brute force (hashcat).</li>
+        <li>Use cracked password to authenticate.</li>
+      </ol>
+    </div>
+    <div class="content-section">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Use strong hashing: bcrypt, Argon2, PBKDF2.</strong><br>
+        <strong>✅ Disable weak TLS ciphers (RC4, DES, 3DES).</strong><br>
+        <strong>✅ Use AES-256 for symmetric encryption.</strong><br>
+        <strong>✅ For JWT, enforce strong algorithms (RS256/ES256) with long keys.</strong>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>🔓 Mitigation Bypass</h2>
+      <ul>
+        <li>If MD5 is used with a salt, it's still weak – attackers can precompute with the salt.</li>
+        <li>If weak ciphers are not disabled, attackers can force downgrade attacks.</li>
+      </ul>
+    </div>
+    <div class="content-section">
+      <h2>⚠️ Risk / Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: High</strong><br><br>
+        <strong>Impact:</strong> Credential cracking, data decryption, session forgery.
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📎 Proof of Concept (PoC)</h2>
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Identify hash
+hashid -m 5f4dcc3b5aa765d61d8327deb882cf99
+
+# Crack with hashcat
+hashcat -a 0 -m 0 hash.txt rockyou.txt</pre>
+      </div>
+    </div>
+    <div class="content-section">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/Password_Storage_Cheat_Sheet" style="color: var(--primary);">OWASP – Password Storage</a></li>
+        <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html" style="color: var(--primary);">OWASP – TLS Cipher String</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer><p>Saikumar Raju — Cybersecurity Consultant | Weak Crypto Guide</p></footer>
+<script>/* same scripts */</script>
+</body>
+</html>
