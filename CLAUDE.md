@@ -2,10 +2,14 @@
 
 This is a production-grade project.
 
-Rules:
+Requirements:
 - preserve architecture
-- modular code only
-- secure coding practices
 - avoid destructive edits
+- modular coding only
+- reusable components
+- secure coding practices
 - update MEMORY.md after major tasks
-- maintain TASKS.md continuously
+- maintain TASKS.md
+- summarize architectural changes
+- never break existing functionality
+- ask before major refactors
