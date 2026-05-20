@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows Security | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .topic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .topic-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .topic-card h3 { color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .topic-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .topic-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; }
+    .topic-link:hover { text-decoration: underline; }
+    .severity-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .severity-medium { background: rgba(255,187,0,0.2); color: #ffbb00; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .topics-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Windows Security
+    </div>
+
+    <div class="page-header">
+      <h1>🪟 Windows Security</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Windows penetration testing and security assessment guide. Covering privilege escalation, Windows services exploitation, UAC bypass, credential theft, and defense evasion on Windows systems.
+      </p>
+    </div>
+
+    <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-shield-alt"></i> UAC Bypass</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>User Account Control bypass techniques. Registry modifications, COM hijacking.</p>
+          <a href="uac-bypass.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-memory"></i> DLL Hijacking</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>Search order DLL hijacking, DLL proxying, phantom DLL hijacking.</p>
+          <a href="dll-hijacking.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-database"></i> LSASS Dumping</h3>
+          <span class="severity-badge severity-critical">Critical</span>
+          <p>Extract credentials from LSASS process. MiniDump, direct attack, defender bypassing.</p>
+          <a href="lsass-dumping.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-key"></i> SAM Database</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>Extract password hashes from SAM database. Registry and volume shadow copy techniques.</p>
+          <a href="sam-extraction.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-eye-slash"></i> Windows Defender</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>Disable, bypass, AMSI patching, signature removal, real-time protection tampering.</p>
+          <a href="defender-evasion.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-bomb"></i> BlueHammer LPE</h3>
+          <span class="severity-badge severity-critical">Critical</span>
+          <p>Windows Defender driver exploitation for local privilege escalation to SYSTEM.</p>
+          <a href="defender-lpe-bluehammer.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+
+    <!-- TOOLS -->
+    <div class="category-section" id="tools">
+      <h2>🛠️ Essential Tools</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-key"></i> Mimikatz</h3>
+          <p>Credential extraction, pass-the-hash, SAM dumping, token manipulation.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> WinPEAS</h3>
+          <p>Windows privilege escalation audit script. Check for privesc vectors.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-bomb"></i> PowerUp</h3>
+          <p>PowerShell privilege escalation checking. Service misconfigs, registry issues.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-terminal"></i> PowerSploit</h3>
+          <p>PowerShell penetration testing framework. Privesc, persistence, exfiltration.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-database"></i> Seatbelt</h3>
+          <p>Security assessment script. System checks, AMSI, WDigest, user sessions.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-shield"></i> SharpUp</h3>
+          <p>C# rewrite of PowerUp. Check for privilege escalation vectors.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

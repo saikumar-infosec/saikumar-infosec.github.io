@@ -3,127 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Credit Card Exposure | Web Security | Saikumar Raju</title>
+  <title>Credit Card Exposure | Saikumar Infosec</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>/* same base styles */</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255, 0, 0, 0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .vulnerability-box { background: rgba(255, 0, 0, 0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+  </style>
 </head>
 <body>
-<nav class="navbar">...</nav>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
 <main>
   <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Credit Card Exposure</div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / Credit Card Exposure</div>
+
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Critical Severity | PCI-DSS Violation</span>
-      <h1>📌 Full Credit Card Number Exposure</h1>
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical - PCI DSS Violation</span>
+      <h1>🔴 Exposure of PAN / Credit Card Data</h1>
+      <div class="meta-grid">
+        <div style="padding:0.5rem;"><strong>CWE</strong><span style="color:var(--text-secondary)">CWE-359: Exposure of Personally Identifiable Information</span></div>
+        <div style="padding:0.5rem;"><strong>OWASP</span><span style="color:var(--text-secondary)">A04:2021 Insecure Design</span></div>
+      </div>
     </div>
-    <div class="content-section">
+
+    <div class="content-section" id="description">
       <h2>🧠 Description</h2>
-      <p><strong>What is the vulnerability?</strong></p>
-      <p>The application stores or displays full credit card numbers (PAN) in plaintext, violating PCI-DSS requirements. Attackers with database access or XSS can steal complete payment information.</p>
-      <p><strong>Why does it occur?</strong></p>
-      <p>Poor compliance awareness, improper tokenization, or insecure storage practices.</p>
-      <p><strong>Security principle violated:</strong> Sensitive Data Exposure</p>
-      <p><strong>Real-world analogy:</strong> Writing your credit card number on the outside of an envelope – anyone who sees it can use it.</p>
+      <p>Application stores or exposes Primary Account Numbers (PAN), credit card numbers, CVV, or cardholder data without proper encryption or PCI DSS compliance.</p>
+      <div class="vulnerability-box">
+        <strong>Impact: PCI DSS Violation, Financial Fraud, Legal Liability, Data Breach</strong>
+      </div>
     </div>
-    <div class="content-section">
-      <h2>🏷️ Classification</h2>
-      <ul>
-        <li><strong>Type:</strong> Sensitive Data Exposure</li>
-        <li><strong>OWASP:</strong> A02:2021 – Cryptographic Failures / A04:2021 – Insecure Design</li>
-        <li><strong>CWE:</strong> CWE-312: Cleartext Storage of Sensitive Information</li>
-      </ul>
-    </div>
-    <div class="content-section">
+
+    <div class="content-section" id="attack-surface">
       <h2>🎯 Attack Surface</h2>
       <ul>
-        <li>✅ Payment confirmation pages</li>
-        <li>✅ Admin order panels</li>
-        <li>✅ API responses containing full card numbers</li>
-        <li>✅ Database backups</li>
+        <li>Database storing card data</li>
+        <li>API responses exposing card numbers</li>
+        <li>Logs containing card data</li>
+        <li>Backup files</li>
+        <li>Email/CSV exports</li>
       </ul>
     </div>
-    <div class="content-section">
-      <h2>🔍 Detection Methodology</h2>
-      <ul>
-        <li>Complete a test transaction and inspect response bodies for 16-digit numbers.</li>
-        <li>Search database for patterns matching credit card numbers (Luhn algorithm).</li>
-        <li>Check admin interfaces for exposed card data.</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>💣 Basic Example</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre>{"card_number": "4111111111111111", "expiry": "12/28", "cvv": "123"}</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>🚀 Advanced Exploitation</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># SQL injection to dump credit cards
-' UNION SELECT card_number, expiry FROM payments --</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>🧪 Test Cases</h2>
-      <table class="test-cases">
-        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>View order confirmation page</td><td>Masked card (e.g., **** 1111)</td><td>Full card number displayed</td></tr>
-          <tr><td>2</td><td>Check database payments table</td><td>Encrypted or tokenized</td><td>Plaintext PAN</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Gain access to database via SQL injection or leaked backup.</li>
-        <li>Dump the payments or orders table.</li>
-        <li>Use stolen credit card numbers for fraudulent transactions.</li>
-      </ol>
-    </div>
-    <div class="content-section">
-      <h2>🛡️ Mitigation</h2>
+
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation (PCI DSS Compliance)</h2>
       <div class="mitigation-box">
-        <strong>✅ Never store full PAN after authorization (PCI-DSS requirement).</strong><br>
-        <strong>✅ Tokenize card numbers via payment gateway.</strong><br>
-        <strong>✅ Display only last 4 digits.</strong><br>
-        <strong>✅ Encrypt stored card data (AES-256).</strong><br>
-        <strong>✅ Regular PCI-DSS audits.</strong>
+        <strong>✅ Use tokenization for card storage</strong><br><br>
+        <strong>✅ Encrypt PAN at rest (AES-256)</strong><br><br>
+        <strong>✅ Never store CVV after authorization</strong><br><br>
+        <strong>✅ Mask PAN in displays (show last 4 digits)</strong><br><br>
+        <strong>✅ Use compliant payment processors</strong>
       </div>
     </div>
-    <div class="content-section">
-      <h2>🔓 Mitigation Bypass</h2>
-      <ul>
-        <li>If encryption keys are stored alongside the data, encryption provides little protection.</li>
-        <li>If tokenization is used but tokens are reversible, it's equivalent to plaintext.</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>⚠️ Risk / Impact</h2>
-      <div class="vulnerability-box">
-        <strong>Severity: Critical</strong><br><br>
-        <strong>Impact:</strong> Financial fraud, regulatory fines (PCI-DSS, GDPR), reputational damage.
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📎 Proof of Concept (PoC)</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># SQL injection
-' UNION SELECT card_number, expiry FROM payments --</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://www.pcisecuritystandards.org/" style="color: var(--primary);">PCI-DSS Official Site</a></li>
-        <li><a href="https://owasp.org/www-community/PCI_DSS" style="color: var(--primary);">OWASP – PCI DSS</a></li>
-      </ul>
-    </div>
+
     <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Credit Card Exposure Guide</p></footer>
-<script>/* same scripts */</script>
+
+<footer class="footer"><div class="container"><p>Saikumar Raju</p></div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){document.body.classList.toggle('light');var i=t.querySelector('i'),s=t.querySelector('span');i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';s.textContent=document.body.classList.contains('light')?'Light':'Dark'})});
+</script>
 </body>
 </html>

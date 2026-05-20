@@ -1,191 +1,309 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <title>IDOR</title>
-    <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDOR | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255, 136, 0, 0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul, .content-section ol { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .content-section li { margin: 0.5rem 0; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: monospace; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: monospace; font-size: 0.72rem; word-break: break-all; }
+    .payload-category { margin: 2rem 0 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-left: 3px solid var(--primary); font-weight: 600; color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 136, 0, 0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff8800; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); color: var(--primary); }
+    td { color: var(--text-secondary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
 
 <nav class="navbar">
-<div class="container nav">
-<div class="logo">Saikumar <span>Infosec</span></div>
-</div>
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html">Home</a></li>
+      
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
 </nav>
 
+<main>
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / IDOR</div>
 
-    <section class="hero">
-    <div class="container">
-
-    <div class="badge">Web Vulnerability</div>
-
-    <h1>
-    IDOR
-    <span>Offensive Exploitation Guide</span>
-    </h1>
-
-    <p>Unauthorized object access.</p>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Meta Grid</h2>
-
-    <div class="grid">
-
-    <div class="card">
-    <h3>Authentication</h3>
-    <p>User / Anonymous</p>
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A01:2021</span>
+      <h1>🔴 Insecure Direct Object Reference (IDOR)</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>CWE</strong><span>CWE-639: BOLA</span></div>
+        <div class="meta-item"><strong>OWASP</strong><span>A01:2021 Broken Access Control</span></div>
+        <div class="meta-item"><strong>CVSS 3.1</strong><span>7.5 (High)</span></div>
+        <div class="meta-item"><strong>CAPEC</strong><span>CAPEC-115, 116</span></div>
+        <div class="meta-item"><strong>Attack Vector</strong><span>Network</span></div>
+        <div class="meta-item"><strong>Privilege Required</strong><span>Low</span></div>
+      </div>
     </div>
 
-    <div class="card">
-    <h3>Attack Surface</h3>
-    <p>Headers, forms, APIs, parameters.</p>
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p><strong>What is IDOR/BOLA?</strong></p>
+      <p>Insecure Direct Object Reference (IDOR) occurs when an application exposes internal object references (like database IDs) without proper authorization checks. Attackers can manipulate these references to access unauthorized data.</p>
+      <div class="vulnerability-box">
+        <strong>IDOR allows attackers to:</strong>
+        <ul>
+          <li>Access other users' data (horizontal privilege escalation)</li>
+          <li>Access admin data (vertical privilege escalation)</li>
+          <li>Modify or delete other users' data</li>
+          <li>Access sensitive files</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="card">
-    <h3>Impact</h3>
-    <p>Privilege escalation and compromise.</p>
+    <!-- 2. CLASSIFICATION -->
+    <div class="content-section" id="classification">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>Type:</strong> Insecure Direct Object Reference (CWE-639) / Broken Object Level Authorization (BOLA)</li>
+        <li><strong>OWASP:</strong> A01:2021 - Broken Access Control</li>
+        <li><strong>Subtypes:</strong> Horizontal IDOR, Vertical IDOR, Path-Based IDOR</li>
+      </ul>
     </div>
 
+    <!-- 3. ATTACK SURFACE -->
+    <div class="content-section" id="attack-surface">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ URL parameters with object IDs</li>
+        <li>✅ API endpoints with sequential IDs</li>
+        <li>✅ Form hidden fields</li>
+        <li>✅ Cookie values</li>
+        <li>✅ RESTful API paths</li>
+        <li>✅ File paths in requests</li>
+      </ul>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Burp Workflow</h2>
-
-    <div class="card">
-    <ol>
-    <li>Intercept request</li>
-    <li>Send to repeater</li>
-    <li>Inject payload</li>
-    <li>Observe response</li>
-    </ol>
+    <!-- 4. PRECONDITIONS -->
+    <div class="content-section" id="preconditions">
+      <h2>⚠️ Preconditions</h2>
+      <ul>
+        <li>Application uses predictable object references (IDs)</li>
+        <li>No proper authorization check on object access</li>
+        <li>User can guess/enumerate other object IDs</li>
+      </ul>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Advanced Payloads</h2>
-
-    <button class="copy-btn" onclick="copyCode('payloads')">Copy</button>
-
-    <div class="code">
-<pre id="payloads">
-Payload 1
-Payload 2
-Payload 3
-WAF bypasses
-Polyglots
-</pre>
+    <!-- 5. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Manual Testing:</strong></p>
+      <ul>
+        <li>Change ID parameter in URL: /profile?id=1 → /profile?id=2</li>
+        <li>Test with different user sessions</li>
+        <li>Check for direct object references in API</li>
+      </ul>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>PoC</h2>
-
-    <div class="code">
-<pre>
-Exact reproduction steps
-HTTP requests
-Expected behavior
-Observed behavior
-</pre>
+    <!-- 6. BURP WORKFLOW -->
+    <div class="content-section" id="burp-workflow">
+      <h2>🔧 Burp Suite Workflow</h2>
+      <ol>
+        <li>Login as regular user</li>
+        <li>Access own resource, capture request</li>
+        <li>Change object ID parameter</li>
+        <li>Check if unauthorized data returned</li>
+        <li>Test across different user accounts</li>
+      </ol>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Advanced Mitigation</h2>
-
-    <div class="card">
-    <ul>
-    <li>Parameterized queries</li>
-    <li>Strict CSP</li>
-    <li>Least privilege</li>
-    <li>Defense in depth</li>
-    </ul>
+    <!-- 7. TOOL AUTOMATION -->
+    <div class="content-section" id="tool-automation">
+      <h2>⚙️ Tool Automation</h2>
+      <div class="tool-grid">
+        <div class="tool-card"><h4>🔫 Autorize</h4><p>Automatic authorization tester</p></div>
+        <div class="tool-card"><h4>🛡️ Burp Suite</h4><p>Manual with Intruder</p></div>
+        <div class="tool-card"><h4>⚡ nuclei</h4><p>IDOR templates</p></div>
+      </div>
     </div>
 
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Retest Steps</h2>
-
-    <table>
-    <tr>
-    <th>Step</th>
-    <th>Validation</th>
-    </tr>
-
-    <tr>
-    <td>1</td>
-    <td>Retest payload execution</td>
-    </tr>
-
-    </table>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Attack Chains</h2>
-
-    <div class="card">
-    <p>
-    Initial access → privilege escalation → persistence → exfiltration
-    </p>
+    <!-- 8. BASIC PAYLOADS -->
+    <div class="content-section" id="payloads-basic">
+      <h2>💣 Basic Payloads</h2>
+      <div class="payload-grid">
+        <div class="payload-item">/api/users/1 → /api/users/2</div>
+        <div class="payload-item">/profile?id=123 → /profile?id=124</div>
+        <div class="payload-item">/order/1001 → /order/1002</div>
+        <div class="payload-item">/documents/secret.pdf → /documents/other.pdf</div>
+      </div>
     </div>
 
+    <!-- 9-28. REMAINING SECTIONS -->
+    <div class="content-section" id="payloads-advanced">
+      <h2>🚀 Advanced Payloads</h2>
+      <div class="payload-category">🔄 Parameter Pollution</div>
+      <div class="payload-grid">
+        <div class="payload-item">?user_id=1&user_id=2</div>
+        <div class="payload-item">?id=1&id=2</div>
+      </div>
+      <div class="payload-category">🔧 ID Enumeration</div>
+      <div class="payload-grid">
+        <div class="payload-item">Numeric ID range: 1-10000</div>
+        <div class="payload-item">UUID enumeration</div>
+      </div>
     </div>
-    </section>
 
-    <section class="section">
-    <div class="container">
+    <div class="content-section" id="poc">
+      <h2>📝 Proof of Concept</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Normal user accessing own profile
+GET /api/profile/USER123 HTTP/1.1
+Authorization: Bearer user_token
 
-    <h2>References</h2>
+# Attacker changes ID to another user
+GET /api/profile/USER456 HTTP/1.1
+Authorization: Bearer user_token
 
-    <div class="card">
-    <ul>
-    <li>OWASP</li>
-    <li>HackTricks</li>
-    <li>PayloadsAllTheThings</li>
-    </ul>
+# Response returns USER456 data - VULNERABLE!</pre>
+      </div>
     </div>
 
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: HIGH (CVSS 7.5)</strong>
+        <ul>
+          <li>Data breach of all users' data</li>
+          <li>Privacy violation</li>
+          <li>Account takeover</li>
+          <li>Regulatory compliance violations</li>
+        </ul>
+      </div>
     </div>
-    </section>
 
-    <footer class="footer">
-    <div class="container">
-    <p>Ultimate Cybersecurity Platform</p>
+    <div class="content-section" id="attack-chains">
+      <h2>🔗 Attack Chains</h2>
+      <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 0.75rem;">
+        <strong>Chain: IDOR to Full Account Takeover</strong>
+        <ol style="margin-top:0.5rem;"><li>Enumerate user IDs</li><li>Access admin API endpoints</li><li>Create admin user via IDOR</li><li>Full system access</li></ol>
+      </div>
     </div>
-    </footer>
 
-    <script src="../script.js"></script>
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Implement Authorization Checks:</strong> Verify user owns the object<br><br>
+        <strong>✅ Use Indirect References:</strong> Map internal IDs to random tokens<br><br>
+        <strong>✅ Add Access Control:</strong> Verify permissions before object access
+      </div>
+    </div>
 
-    </body>
-    </html>
+    <div class="content-section" id="advanced-mitigation">
+      <h2>🏰 Advanced Mitigation</h2>
+      <ul>
+        <li>Implement ABAC (Attribute-Based Access Control)</li>
+        <li>Add audit logging for all object access</li>
+        <li>Use UUIDs instead of sequential IDs</li>
+        <li>Implement rate limiting</li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="monitoring">
+      <h2>📊 Monitoring & Detection</h2>
+      <ul>
+        <li>Alert on unusual access patterns</li>
+        <li>Monitor for mass object enumeration</li>
+        <li>Log all access control failures</li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="security-controls">
+      <h2>🔐 Security Controls</h2>
+      <table>
+        <thead><tr><th>Control</th><th>Implementation</th></tr></thead>
+        <tbody>
+          <tr><td>Authorization</td><td>Check ownership on every request</td></tr>
+          <tr><td>Indirect References</td><td>Use random tokens instead of IDs</td></tr>
+          <tr><td>Logging</td><td>Log all object access</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section" id="tools-commands">
+      <h2>🛠️ Tools & Commands</h2>
+      <div class="tool-grid">
+        <div class="tool-card"><h4>Autorize</h4><p>Burp extension for authorization testing</p></div>
+        <div class="tool-card"><h4>IDOREnumerator</h4><p>Automated IDOR testing</p></div>
+      </div>
+    </div>
+
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/Insecure_Direct_Object_Reference" class="reference-link">OWASP: IDOR</a></li>
+        <li><a href="https://portswigger.net/web-security/access-control/idor" class="reference-link">PortSwigger: IDOR</a></li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="retest-steps">
+      <h2>🔄 Retest Steps</h2>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Implement authorization checks</td></tr>
+          <tr><td>2</td><td>Re-test with different user IDs</td></tr>
+          <tr><td>3</td><td>Verify ownership validation</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section" id="detection-logic"><h2>⚙️ Detection Logic</h2><p>Static: Check for authorization on object access. Dynamic: Fuzz object IDs with different sessions.</p></div>
+    <div class="content-section" id="threat-hunting"><h2>🔎 Threat-Hunting Notes</h2><p>IOCs: Multiple requests with sequential IDs, unusual access patterns, cross-user data access.</p></div>
+    <div class="content-section" id="defensive-detection"><h2>🛡️ Defensive Detection Ideas</h2><p>Deploy RASP to monitor object access, implement automatic authorization testing in CI/CD.</p></div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+
+<footer class="footer"><div class="container"><p>Saikumar Raju | Offensive Security Knowledge Base</p></div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('mobileMenuBtn'),n=document.getElementById('navLinks');if(m)m.addEventListener('click',function(){n.classList.toggle('show')});var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){document.body.classList.toggle('light');var i=t.querySelector('i'),s=t.querySelector('span');i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';s.textContent=document.body.classList.contains('light')?'Light':'Dark'})});
+function copyCode(b){navigator.clipboard.writeText(b.parentElement.querySelector('pre').innerText);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},2000);}
+</script>
+</body>
+</html>

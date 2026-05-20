@@ -1,61 +1,270 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Web Security</title>
-<link rel="stylesheet" href="../style.css">
+  <title>Web Security | Saikumar Infosec</title>
+  <link rel="stylesheet" href="../style.css">
+  <meta name="description" content="Web application security vulnerabilities, exploitation guides, and payloads.">
 </head>
 <body>
 
-
 <nav class="navbar">
-<div class="container nav">
-<div class="logo">Saikumar <span>Infosec</span></div>
-</div>
+  <div class="container nav">
+    <div class="logo">Saikumar <span>Infosec</span></div>
+  </div>
 </nav>
 
-
 <section class="hero">
-<div class="container">
+  <div class="container">
 
-<div class="badge">Web Security Module</div>
+    <div class="badge">Web Security Module</div>
 
-<h1>
-Web Security
-<span>Knowledge Base</span>
-</h1>
+    <h1>
+    Web Security
+    <span>Knowledge Base</span>
+    </h1>
 
-<div class="grid">
+    <p>
+    Comprehensive web application security testing guide covering OWASP Top 10,
+    real-world exploitation techniques, payloads, and mitigation strategies.
+    </p>
 
-<a href="sql-injection.html" class="card">
-<h3>SQL Injection</h3>
-<p>Database compromise via unsanitized queries.</p>
-</a>
+    <div class="grid">
 
-<a href="xss.html" class="card">
-<h3>Cross Site Scripting</h3>
-<p>Malicious JavaScript execution in browsers.</p>
-</a>
+    <!-- Critical -->
+    <a href="sql-injection.html" class="card">
+      <h3>💉 SQL Injection</h3>
+      <p>Database compromise via unsanitized queries. 50+ payloads.</p>
+    </a>
 
-<a href="ssrf.html" class="card">
-<h3>Server Side Request Forgery</h3>
-<p>Backend arbitrary requests.</p>
-</a>
+    <a href="command-injection.html" class="card">
+      <h3>💻 Command Injection</h3>
+      <p>OS command execution through vulnerable inputs. RCE payloads.</p>
+    </a>
 
-<a href="idor.html" class="card">
-<h3>IDOR</h3>
-<p>Unauthorized object access.</p>
-</a>
+    <a href="insecure-deserialization.html" class="card">
+      <h3>📦 Insecure Deserialization</h3>
+      <p>PHP/Java/Python deserialization exploitation. POP chains.</p>
+    </a>
 
-<a href="ssti.html" class="card">
-<h3>Server Side Template Injection</h3>
-<p>Template injection leading to RCE.</p>
-</a>
+    <a href="remote-code-execution.html" class="card">
+      <h3>⚡ Remote Code Execution</h3>
+      <p>Full remote code execution techniques and payloads.</p>
+    </a>
 
-</div>
+    <!-- High -->
+    <a href="xss.html" class="card">
+      <h3>🔴 Cross Site Scripting</h3>
+      <p>Malicious JavaScript execution. 40+ payloads.</p>
+    </a>
 
-</div>
+    <a href="ssrf.html" class="card">
+      <h3>🔗 Server Side Request Forgery</h3>
+      <p>Backend arbitrary requests. Cloud metadata exploitation.</p>
+    </a>
+
+    <a href="ssti.html" class="card">
+      <h3>📝 Server Side Template Injection</h3>
+      <p>Template injection leading to RCE. Jinja2, Twig, ERB.</p>
+    </a>
+
+    <a href="xxe.html" class="card">
+      <h3>🔍 XML External Entity</h3>
+      <p>XXE injection for file disclosure, SSRF, DoS.</p>
+    </a>
+
+    <a href="lfi-rfi.html" class="card">
+      <h3>📄 LFI / RFI</h3>
+      <p>Local and Remote File Inclusion. PHP wrappers.</p>
+    </a>
+
+    <a href="idor.html" class="card">
+      <h3>🔓 IDOR / BOLA</h3>
+      <p>Insecure Direct Object Reference. Horizontal/Vertical privilege escalation.</p>
+    </a>
+
+    <a href="jwt-attacks.html" class="card">
+      <h3>🔑 JWT Attacks</h3>
+      <p>JWT algorithm confusion, weak signing, key injection.</p>
+    </a>
+
+    <a href="path-traversal.html" class="card">
+      <h3>📂 Path Traversal</h3>
+      <p>Directory traversal for file access.</p>
+    </a>
+
+    <!-- Medium -->
+    <a href="csrf.html" class="card">
+      <h3>🎭 CSRF</h3>
+      <p>Cross-Site Request Forgery token bypass techniques.</p>
+    </a>
+
+    <a href="cors.html" class="card">
+      <h3>🌐 CORS Misconfiguration</h3>
+      <p>CORS origin bypass, credential leakage.</p>
+    </a>
+
+    <a href="open-redirect.html" class="card">
+      <h3>➡️ Open Redirect</h3>
+      <p>URL redirection exploitation and bypass.</p>
+    </a>
+
+    <a href="html-injection.html" class="card">
+      <h3>📄 HTML Injection</h3>
+      <p>HTML/JS injection via unsanitized input.</p>
+    </a>
+
+    <a href="nosql-injection.html" class="card">
+      <h3>🗄️ NoSQL Injection</h3>
+      <p>MongoDB, Redis injection techniques.</p>
+    </a>
+
+    <a href="rfi.html" class="card">
+      <h3>🔗 Remote File Inclusion</h3>
+      <p>RFI exploitation for RCE.</p>
+    </a>
+
+    <a href="php-object-injection.html" class="card">
+      <h3>🐘 PHP Object Injection</h3>
+      <p>PHP deserialization exploitation, magic methods.</p>
+    </a>
+
+    <a href="ssi-injection.html" class="card">
+      <h3>🖥️ SSI Injection</h3>
+      <p>Server-Side Include injection.</p>
+    </a>
+
+    <!-- More vulnerabilities -->
+    <a href="xpath-injection.html" class="card">
+      <h3>📊 XPath Injection</h3>
+      <p>XPath query injection attacks.</p>
+    </a>
+
+    <a href="ldap-injection.html" class="card">
+      <h3>🔐 LDAP Injection</h3>
+      <p>LDAP query injection.</p>
+    </a>
+
+    <a href="log-injection.html" class="card">
+      <h3>📋 Log Injection</h3>
+      <p>Log poisoning and injection.</p>
+    </a>
+
+    <a href="session-token-in-url.html" class="card">
+      <h3>🔗 Sensitive Data in URL</h3>
+      <p>Session tokens exposed in URLs.</p>
+    </a>
+
+    <a href="sensitive-data-localstorage.html" class="card">
+      <h3>💾 Sensitive Data in LocalStorage</h3>
+      <p>Token theft from browser storage.</p>
+    </a>
+
+    <a href="sensitive-backup-files.html" class="card">
+      <h3>📦 Sensitive Backup Files</h3>
+      <p>Backup file exposure.</p>
+    </a>
+
+    <a href="default-credentials.html" class="card">
+      <h3>🔑 Default Credentials</h3>
+      <p>Default password exploitation.</p>
+    </a>
+
+    <a href="directory-listing.html" class="card">
+      <h3>📂 Directory Listing</h3>
+      <p>Directory listing enabled.</p>
+    </a>
+
+    <a href="error-message-disclosure.html" class="card">
+      <h3>⚠️ Error Message Disclosure</h3>
+      <p>Verbose error information leakage.</p>
+    </a>
+
+    <a href="brute-force-protection.html" class="card">
+      <h3>🔓 Insufficient Brute Force Protection</h3>
+      <p>Brute force attack prevention bypass.</p>
+    </a>
+
+    <a href="otp-brute-force.html" class="card">
+      <h3>🔢 OTP Brute Force</h3>
+      <p>One-time password prediction/bypass.</p>
+    </a>
+
+    <a href="weak-password-policy.html" class="card">
+      <h3>🔐 Weak Password Policy</h3>
+      <p>Weak password requirements.</p>
+    </a>
+
+    <a href="weak-crypto-algorithm.html" class="card">
+      <h3>🔒 Weak Cryptographic Algorithm</h3>
+      <p>Use of deprecated crypto algorithms.</p>
+    </a>
+
+    <a href="plaintext-password-storage.html" class="card">
+      <h3>🔓 Plaintext Password Storage</h3>
+      <p>Password stored without hashing.</p>
+    </a>
+
+    <a href="credit-card-exposure.html" class="card">
+      <h3>💳 Credit Card Exposure</h3>
+      <p>PAN/PCI data exposure.</p>
+    </a>
+
+    <a href="missing-function-access-control.html" class="card">
+      <h3>🚫 Missing Function Access Control</h3>
+      <p>Broken access control.</p>
+    </a>
+
+    <a href="missing-https-weak-tls.html" class="card">
+      <h3>🔒 Missing HTTPS / Weak TLS</h3>
+      <p>Insecure transport configuration.</p>
+    </a>
+
+    <a href="outdated-server-software.html" class="card">
+      <h3>📅 Outdated Server Software</h3>
+      <p>Unpatched server vulnerabilities.</p>
+    </a>
+
+    <a href="outdated-libraries.html" class="card">
+      <h3>📚 Vulnerable Components</h3>
+      <p>Outdated libraries and dependencies.</p>
+    </a>
+
+    <a href="vulnerable-wordpress.html" class="card">
+      <h3>📰 Vulnerable WordPress</h3>
+      <p>WordPress CMS vulnerabilities.</p>
+    </a>
+
+    <a href="subdomain-takeover.html" class="card">
+      <h3>🌍 Subdomain Takeover</h3>
+      <p>DNS subdomain hijacking.</p>
+    </a>
+
+    <a href="vertical-privilege-escalation.html" class="card">
+      <h3>⬆️ Vertical Privilege Escalation</h3>
+      <p>Privilege escalation to admin.</p>
+    </a>
+
+    <a href="price-manipulation.html" class="card">
+      <h3>💰 Business Logic Flaws</h3>
+      <p>Price/inventory manipulation.</p>
+    </a>
+
+    <!-- File Upload -->
+    <a href="file-upload.html" class="card">
+      <h3>📤 File Upload Vulnerabilities</h3>
+      <p>Webshell upload, bypass techniques.</p>
+    </a>
+
+    </div>
+
+  </div>
 </section>
+
+<footer class="footer">
+  <div class="container">
+    <p>Web Security Module | Saikumar Infosec</p>
+  </div>
+</footer>
 
 </body>
 </html>

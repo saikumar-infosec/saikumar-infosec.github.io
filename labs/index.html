@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Labs | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .labs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .lab-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .lab-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .lab-card h3 { color: var(--primary); margin-bottom: 0.5rem; }
+    .lab-card .difficulty { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 1rem; }
+    .lab-card .duration { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .lab-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .lab-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .lab-tags span { background: var(--bg-elevated); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; color: var(--text-secondary); }
+    .lab-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; }
+    .lab-link:hover { text-decoration: underline; }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    .difficulty-beginner { background: rgba(0,255,136,0.2); color: #00ff88; }
+    .difficulty-intermediate { background: rgba(255,187,0,0.2); color: #ffbb00; }
+    .difficulty-advanced { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .difficulty-expert { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .challenge-list { list-style: none; padding: 0; }
+    .challenge-list li { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.5rem; margin: 0.5rem 0; }
+    .challenge-list li i { color: var(--primary); font-size: 1.2rem; }
+    .challenge-list li strong { color: var(--text-primary); }
+    @media (max-width: 768px) { .labs-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Labs
+    </div>
+
+    <div class="page-header">
+      <h1>🧪 Security Labs</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Hands-on security challenges and walkthrough labs covering web exploitation, network security, privilege escalation, and more. Practice in safe, isolated environments.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <strong>Lab Environment Setup:</strong> All labs are designed for local/virtual environments like DVWA, PortSwigger Lab, HackTheBox, or VulnHub. Never test on production systems without authorization.
+    </div>
+
+    <!-- WEB SECURITY LABS -->
+    <div class="category-section" id="web-labs">
+      <h2>🌐 Web Security Labs</h2>
+      
+      <div class="labs-grid">
+        <div class="lab-card">
+          <h3>Lab 1: SQL Injection Fundamentals</h3>
+          <span class="difficulty difficulty-beginner">Beginner</span>
+          <span class="duration"><i class="fas fa-clock"></i> 45 minutes</span>
+          <p>Learn basic SQL injection concepts: error-based detection, authentication bypass, and UNION SELECT enumeration.</p>
+          <div class="lab-tags">
+            <span>SQL Injection</span>
+            <span>MySQL</span>
+            <span>Authentication</span>
+          </div>
+          <a href="../web/sql-injection.html" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 2: XSS Exploitation Paths</h3>
+          <span class="difficulty difficulty-intermediate">Intermediate</span>
+          <span class="duration"><i class="fas fa-clock"></i> 60 minutes</span>
+          <p>Explore stored, reflected, and DOM-based XSS. Build cookie stealing and keylogger payloads.</p>
+          <div class="lab-tags">
+            <span>XSS</span>
+            <span>JavaScript</span>
+            <span>Session Hijacking</span>
+          </div>
+          <a href="../web/xss.html" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 3: SSRF to Cloud Compromise</h3>
+          <span class="difficulty difficulty-advanced">Advanced</span>
+          <span class="duration"><i class="fas fa-clock"></i> 90 minutes</span>
+          <p>Exploit SSRF to access cloud metadata services and extract IAM credentials for AWS/GCP compromise.</p>
+          <div class="lab-tags">
+            <span>SSRF</span>
+            <span>AWS</span>
+            <span>Cloud Security</span>
+          </div>
+          <a href="../web/ssrf.html" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 4: IDOR Vulnerability Hunting</h3>
+          <span class="difficulty difficulty-beginner">Beginner</span>
+          <span class="duration"><i class="fas fa-clock"></i> 45 minutes</span>
+          <p>Practice identifying and exploiting Insecure Direct Object Reference vulnerabilities in web applications.</p>
+          <div class="lab-tags">
+            <span>IDOR</span>
+            <span>Authorization</span>
+            <span>API Security</span>
+          </div>
+          <a href="../web/idor.html" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 5: File Upload Bypass Techniques</h3>
+          <span class="difficulty difficulty-intermediate">Intermediate</span>
+          <span class="duration"><i class="fas fa-clock"></i> 60 minutes</span>
+          <p>Bypass file upload restrictions using double extensions, polyglot files, and content-type manipulation.</p>
+          <div class="lab-tags">
+            <span>File Upload</span>
+            <span>WAF Bypass</span>
+            <span>RCE</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 6: Command Injection &amp; Chaining</h3>
+          <span class="difficulty difficulty-advanced">Advanced</span>
+          <span class="duration"><i class="fas fa-clock"></i> 75 minutes</span>
+          <p>Exploit OS command injection vulnerabilities, chain commands, and establish reverse shells.</p>
+          <div class="lab-tags">
+            <span>Command Injection</span>
+            <span>Linux</span>
+            <span>Reverse Shell</span>
+          </div>
+          <a href="../web/command-injection.html" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- NETWORK SECURITY LABS -->
+    <div class="category-section" id="network-labs">
+      <h2>🌍 Network Security Labs</h2>
+      
+      <div class="labs-grid">
+        <div class="lab-card">
+          <h3>Lab 7: Network Enumeration Mastery</h3>
+          <span class="difficulty difficulty-beginner">Beginner</span>
+          <span class="duration"><i class="fas fa-clock"></i> 60 minutes</span>
+          <p>Master network reconnaissance with nmap, masscan, and enumeration techniques.</p>
+          <div class="lab-tags">
+            <span>nmap</span>
+            <span>Enumeration</span>
+            <span>Reconnaissance</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 8: SMB Protocol Exploitation</h3>
+          <span class="difficulty difficulty-advanced">Advanced</span>
+          <span class="duration"><i class="fas fa-clock"></i> 90 minutes</span>
+          <p>Exploit SMB vulnerabilities, perform relay attacks, and extract credentials via Responder.</p>
+          <div class="lab-tags">
+            <span>SMB</span>
+            <span>NTLM Relay</span>
+            <span>Credential Theft</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 9: DNS Tunneling Techniques</h3>
+          <span class="difficulty difficulty-expert">Expert</span>
+          <span class="duration"><i class="fas fa-clock"></i> 120 minutes</span>
+          <p>Establish covert C2 channels using DNS tunneling through firewall restrictions.</p>
+          <div class="lab-tags">
+            <span>DNS</span>
+            <span>Tunneling</span>
+            <span>C2</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVILEGE ESCALATION LABS -->
+    <div class="category-section" id="privesc-labs">
+      <h2>🔓 Privilege Escalation Labs</h2>
+      
+      <div class="labs-grid">
+        <div class="lab-card">
+          <h3>Lab 10: Linux Privilege Escalation</h3>
+          <span class="difficulty difficulty-intermediate">Intermediate</span>
+          <span class="duration"><i class="fas fa-clock"></i> 90 minutes</span>
+          <p>Escalate from regular user to root using misconfigured SUID binaries, sudo exploits, and kernel vulnerabilities.</p>
+          <div class="lab-tags">
+            <span>Linux</span>
+            <span>SUID</span>
+            <span>Sudo</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 11: Windows Privilege Escalation</h3>
+          <span class="difficulty difficulty-intermediate">Intermediate</span>
+          <span class="duration"><i class="fas fa-clock"></i> 90 minutes</span>
+          <p>Windows privesc techniques including DLL hijacking, service exploits, and token manipulation.</p>
+          <div class="lab-tags">
+            <span>Windows</span>
+            <span>Services</span>
+            <span>Tokens</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+
+        <div class="lab-card">
+          <h3>Lab 12: Active Directory Exploitation</h3>
+          <span class="difficulty difficulty-expert">Expert</span>
+          <span class="duration"><i class="fas fa-clock"></i> 180 minutes</span>
+          <p>Full AD compromise: Kerberoasting, pass-the-hash, Golden Ticket, and DCSync attacks.</p>
+          <div class="lab-tags">
+            <span>Active Directory</span>
+            <span>Kerberos</span>
+            <span>Domain Admin</span>
+          </div>
+          <a href="#" class="lab-link"><i class="fas fa-arrow-right"></i> Start Lab</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTF CHALLENGES -->
+    <div class="category-section" id="ctf-labs">
+      <h2>🏴 CTF-Style Challenges</h2>
+      
+      <ul class="challenge-list">
+        <li>
+          <i class="fas fa-flag"></i>
+          <div>
+            <strong>Challenge: Hidden Flag in SQL Injection</strong>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Extract a flag hidden in the database using SQL injection techniques.</p>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-flag"></i>
+          <div>
+            <strong>Challenge: XSS Cookie Collector</strong>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Find and exploit an XSS vulnerability to steal admin cookies.</p>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-flag"></i>
+          <div>
+            <strong>Challenge: SSRF Metadata Escape</strong>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Use SSRF to escape a restricted network and access cloud metadata.</p>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-flag"></i>
+          <div>
+            <strong>Challenge: File Inclusion to RCE</strong>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Chain LFI with log poisoning to achieve remote code execution.</p>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-flag"></i>
+          <div>
+            <strong>Challenge: JWT Algorithm Confusion</strong>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Bypass JWT authentication using algorithm confusion attack.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="category-section" id="resources">
+      <h2>📚 Lab Resources &amp; Tools</h2>
+      
+      <div class="labs-grid">
+        <div class="lab-card">
+          <h3>Vulnerable Applications</h3>
+          <p>Download and install vulnerable applications for practice:</p>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem;">
+            <li>DVWA (Damn Vulnerable Web App)</li>
+            <li>OWASP WebGoat</li>
+            <li>PortSwigger Web Academy</li>
+            <li>juice-shop</li>
+            <li>VulnHub VMs</li>
+          </ul>
+        </div>
+
+        <div class="lab-card">
+          <h3>Essential Tools</h3>
+          <p>Tools required for lab completion:</p>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem;">
+            <li>Burp Suite Professional</li>
+            <li>OWASP ZAP</li>
+            <li>sqlmap</li>
+            <li>nmap</li>
+            <li>Metasploit Framework</li>
+          </ul>
+        </div>
+
+        <div class="lab-card">
+          <h3>Learning Resources</h3>
+          <p>Supplementary materials:</p>
+          <ul style="color: var(--text-secondary); font-size: 0.9rem;">
+            <li>PortSwigger Web Security Academy</li>
+            <li>OWASP Top 10</li>
+            <li>PTES (Penetration Testing Execution Standard)</li>
+            <li>MITRE ATT&CK Framework</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

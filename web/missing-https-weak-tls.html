@@ -3,134 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Missing HTTPS / Weak TLS | Web Security | Saikumar Raju</title>
+  <title>Missing HTTPS / Weak TLS | Saikumar Infosec</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>/* same base styles – copy from previous */</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255, 136, 0, 0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: monospace; font-size: 0.72rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 136, 0, 0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+  </style>
 </head>
 <body>
-<nav class="navbar">...</nav>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
 <main>
   <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Missing HTTPS / Weak TLS</div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / Missing HTTPS</div>
+
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A02:2021</span>
-      <h1>📌 Missing HTTPS or Weak TLS Configuration</h1>
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity</span>
+      <h1>🟠 Missing HTTPS / Weak TLS Configuration</h1>
+      <div class="meta-grid">
+        <div style="padding:0.5rem;"><strong>CWE</strong><span style="color:var(--text-secondary)">CWE-295: Improper Certificate Validation</span></div>
+        <div style="padding:0.5rem;"><strong>OWASP</span><span style="color:var(--text-secondary)">A02:2021 Cryptographic Failures</span></div>
+      </div>
     </div>
-    <div class="content-section">
+
+    <div class="content-section" id="description">
       <h2>🧠 Description</h2>
-      <p><strong>What is the vulnerability?</strong></p>
-      <p>The application does not enforce HTTPS or uses outdated TLS versions (TLS 1.0, TLS 1.1) or weak cipher suites. Attackers on the same network can intercept, modify, or downgrade connections (MITM), stealing credentials, session tokens, or other sensitive data.</p>
-      <p><strong>Why does it occur?</strong></p>
-      <p>Legacy configurations, lack of proper SSL/TLS management, or incomplete migration to HTTPS.</p>
-      <p><strong>Security principle violated:</strong> Cryptographic Failure / Transport Layer Security</p>
-      <p><strong>Real-world analogy:</strong> Sending a postcard instead of a sealed envelope – anyone handling it can read the contents.</p>
-    </div>
-    <div class="content-section">
-      <h2>🏷️ Classification</h2>
-      <ul>
-        <li><strong>Type:</strong> Cryptographic Failure</li>
-        <li><strong>OWASP:</strong> A02:2021 – Cryptographic Failures</li>
-        <li><strong>CWE:</strong> CWE-319: Cleartext Transmission of Sensitive Information</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>🎯 Attack Surface</h2>
-      <ul>
-        <li>✅ Login pages served over HTTP</li>
-        <li>✅ Mixed content (HTTPS page loads HTTP resources)</li>
-        <li>✅ Absence of HSTS header</li>
-        <li>✅ Weak TLS versions/ciphers (TLS 1.0, TLS 1.1, RC4, DES)</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>🔍 Detection Methodology</h2>
-      <ul>
-        <li>Check URL bar – is it `http://` or `https://`?</li>
-        <li>Use `curl -I https://target.com` to check HSTS header.</li>
-        <li>Use SSL Labs (ssllabs.com) to test TLS configuration.</li>
-        <li>Use `nmap --script ssl-enum-ciphers -p 443 target.com`.</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>💣 Basic Payloads (MITM Attack)</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># ARP spoofing to intercept traffic
-sudo arpspoof -t 192.168.1.10 192.168.1.1</pre>
+      <p>Application doesn't enforce HTTPS, uses self-signed certificates, or supports weak TLS versions (SSLv3, TLS 1.0, TLS 1.1). This allows man-in-the-middle attacks.</p>
+      <div class="vulnerability-box">
+        <strong>Impact: Credential Theft, Session Hijacking, Data Interception</strong>
       </div>
     </div>
-    <div class="content-section">
-      <h2>🚀 Advanced Exploitation</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># sslstrip to downgrade HTTPS to HTTP
-sudo sslstrip -l 8080</pre>
-      </div>
+
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <ul>
+        <li>Access via http:// (non-SSL)</li>
+        <li>Check SSL certificate validity</li>
+        <li>Test for TLS 1.0/1.1 support</li>
+        <li>Check HSTS header</li>
+        <li>Check weak cipher suites</li>
+      </ul>
     </div>
-    <div class="content-section">
-      <h2>🧪 Test Cases</h2>
-      <table class="test-cases">
-        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Visit login page with `http://`</td><td>Redirect to HTTPS</td><td>Page loads over HTTP</td></tr>
-          <tr><td>2</td><td>Check HSTS header</td><td>Present with `max-age`</td><td>Missing</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Position yourself on the same network as the victim.</li>
-        <li>Perform ARP spoofing to become man-in-the-middle.</li>
-        <li>If HTTPS is not enforced, capture plaintext credentials.</li>
-        <li>If weak TLS is supported, attempt protocol downgrade attacks.</li>
-      </ol>
-    </div>
-    <div class="content-section">
+
+    <div class="content-section" id="mitigation">
       <h2>🛡️ Mitigation</h2>
       <div class="mitigation-box">
-        <strong>✅ Enforce HTTPS everywhere (HSTS with `preload`).</strong><br>
-        <strong>✅ Redirect all HTTP traffic to HTTPS (301).</strong><br>
-        <strong>✅ Disable TLS 1.0 and 1.1, use TLS 1.2+.</strong><br>
-        <strong>✅ Use strong cipher suites (e.g., ECDHE-RSA-AES256-GCM-SHA384).</strong><br>
-        <strong>✅ Avoid mixed content.</strong><br>
-        <strong>✅ Use tools like SSL Labs to audit configuration.</strong>
+        <strong>✅ Enable HTTPS everywhere</strong><br><br>
+        <strong>✅ Use TLS 1.2+ only (disable 1.0/1.1)</strong><br><br>
+        <strong>✅ Implement HSTS header</strong><br><br>
+        <strong>✅ Use strong cipher suites (AES-128+)</strong><br><br>
+        <strong>✅ Use valid certificates from trusted CA</strong>
       </div>
     </div>
-    <div class="content-section">
-      <h2>🔓 Mitigation Bypass</h2>
-      <ul>
-        <li>If HSTS is missing, an attacker can perform SSL stripping.</li>
-        <li>If TLS 1.0 is still enabled, attackers can use POODLE or other attacks.</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>⚠️ Risk / Impact</h2>
-      <div class="vulnerability-box">
-        <strong>Severity: High</strong><br><br>
-        <strong>Impact:</strong> Credential theft, session hijacking, data modification.
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📎 Proof of Concept (PoC)</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Check HSTS
-curl -sI https://target.com | grep -i "strict-transport-security"
 
-# Check supported TLS versions
-nmap --script ssl-enum-ciphers -p 443 target.com</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://owasp.org/www-community/controls/HTTP_Strict_Transport_Security" style="color: var(--primary);">OWASP – HSTS</a></li>
-        <li><a href="https://www.ssllabs.com/ssltest/" style="color: var(--primary);">SSL Labs</a></li>
-      </ul>
-    </div>
     <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
-<footer><p>Saikumar Raju — Cybersecurity Consultant | HTTPS/TLS Guide</p></footer>
-<script>/* same scripts */</script>
+
+<footer class="footer"><div class="container"><p>Saikumar Raju</p></div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){document.body.classList.toggle('light');var i=t.querySelector('i'),s=t.querySelector('span');i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';s.textContent=document.body.classList.contains('light')?'Light':'Dark'})});
+</script>
 </body>
 </html>

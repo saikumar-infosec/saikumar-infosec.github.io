@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Bounty Recon Methodology | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; color: var(--text-secondary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); font-weight: 600; color: var(--primary); }
+    td { color: var(--text-secondary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .workflow-step { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0; }
+    .workflow-step h3 { color: var(--primary); margin-bottom: 1rem; }
+    @media (max-width: 768px) { .tool-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../bugbounty/index.html">Bug Bounty</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="../bugbounty/index.html">Bug Bounty</a> / Recon
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-search"></i> Methodology</span>
+      <h1>🔍 Bug Bounty Recon Methodology</h1>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <div class="content-section" id="overview">
+      <h2>🧠 Recon is Everything</h2>
+      <p>The success of a bug bounty hunter depends 80% on reconnaissance. More targets found = more vulnerabilities discovered. This guide covers systematic reconnaissance methodology.</p>
+      
+      <div class="info-box">
+        <strong>Golden Rule:</strong> The more you know about a target, the easier it is to find bugs. Never skip recon.
+      </div>
+    </div>
+
+    <!-- 2. PASSIVE RECON -->
+    <div class="content-section" id="passive">
+      <h2>🕵️ Passive Reconnaissance</h2>
+      
+      <div class="workflow-step">
+        <h3>2.1 Domain Enumeration</h3>
+        
+        <p><strong>Certificate Transparency Logs:</strong></p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># CTFR (Python tool for CT enumeration)
+python3 ctfr.py -d target.com -o subdomains.txt
+
+# Using amass (passive)
+amass enum -passive -d target.com -o amass_passive.txt
+
+# ctsearch (online tool)
+# https://ctsearch.entropy.xyz/
+
+# crt.sh
+curl -s "https://crt.sh/?q=target.com&output=json" | jq -r '.[].name_value' | sort -u</pre>
+        </div>
+
+        <p><strong>DNS Aggregators:</strong></p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># DNS dumpster
+curl -s "https://dnsdumpster.com/static/json/target.com.json"
+
+# Riddler
+curl -s "https://riddler.io/search?q=pld:target.com"
+
+# VirusTotal
+curl -s "https://www.virustotal.com/api/v3/domains/target.com" \
+  -H "x-apikey: YOUR_API_KEY" | jq '.data.subsamples'</pre>
+        </div>
+
+        <p><strong>Subdomain Aggregators:</strong></p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Subfinder (passive + API sources)
+subfinder -d target.com -o subfinder.txt
+
+# Assetfinder
+assetfinder target.com > assetfinder.txt
+
+# Findomain
+findomain -t target.com -u findomain.txt
+
+# Chaos
+curl -s "https://dns.projectdiscovery.io/dns/target.com/domain" \
+  -H "Authorization: YOUR_API_KEY" | jq '.subdomains'</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ACTIVE RECON -->
+    <div class="content-section" id="active">
+      <h2>🔎 Active Reconnaissance</h2>
+      
+      <div class="workflow-step">
+        <h3>3.1 DNS Bruteforce</h3>
+        
+        <p><strong>Bruteforce Wordlists:</strong></p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># MassDNS (fast DNS resolver)
+massdns -r resolvers.txt -t A -o S targets.txt | grep -E '\.com\.$' | awk '{print $1}'
+
+# Using shuffledns (bruteforce + DNS)
+shuffledns -d target.com -w wordlist.txt -r resolvers.txt -o output.txt
+
+# DNSX (fast DNS probing)
+dnsx -d target.com -w wordlist.txt -o dnsx.txt
+
+# aiodns (async DNS)
+aiodns brute target.com wordlist.txt</pre>
+        </div>
+
+        <p><strong>Common Wordlists:</strong></p>
+        <ul>
+          <li><code>Assetnote wordlist (5000)</code> - High quality small list</li>
+          <li><code>SecLists (DNS)</code> - Comprehensive DNS wordlist</li>
+          <li><code>ShuffledNS default</code> - Fast bruteforce</li>
+          <li><code>Jason Haddix's top10000</code> - Most common subdomains</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 4. WEB RECON -->
+    <div class="content-section" id="web-recon">
+      <h2>🌐 Web Application Discovery</h2>
+      
+      <div class="workflow-step">
+        <h3>4.1 Port Scanning</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Nmap quick scan (top 100 ports)
+nmap -T4 -F target.com -oN nmap_quick.txt
+
+# Masscan (fast internet scanning)
+masscan -p80,443,8080,8443 10.0.0.0/24 --rate=1000
+
+# Naabu (fast port scanner)
+naabu -host target.com -top-ports 100 -o naabu.txt
+
+# Rustscan (modern alternative)
+rustscan -t 1500 -b 2000 --range 1-65535 target.com</pre>
+        </div>
+      </div>
+
+      <div class="workflow-step">
+        <h3>4.2 Directory/File Discovery</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># FFUF (fast fuzzing)
+ffuf -u http://target.com/FUZZ -w wordlist.txt -mc 200,204,301,302,307,401 -o ffuf.json
+
+# dirsearch
+python3 dirsearch.py -u http://target.com -w wordlist.txt -e php,html,js
+
+# gobuster
+gobuster dir -u http://target.com -w wordlist.txt -x php,html,js
+
+# Nuclei for technology detection
+nuclei -t discovery/technologies/ -u https://target.com</pre>
+        </div>
+      </div>
+
+      <div class="workflow-step">
+        <h3>4.3 Parameter Discovery</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Arjun (parameter discovery)
+python3 arjun.py -u http://target.com/product?id=1
+
+# Param-miner (Burp extension)
+# Automatic parameter discovery
+
+# gau (waybackurls)
+cat targets.txt | while read t; do echo $t; gau $t | grep '\?'; done
+
+# katana (parameter extraction)
+katana -u https://target.com -ps -efq</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. JS ANALYSIS -->
+    <div class="content-section" id="js">
+      <h2>📜 JavaScript Analysis</h2>
+      
+      <p><strong>Endpoint Extraction from JS:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SecretFinder (find API keys, tokens, endpoints)
+python3 secretfinder.py -i https://target.com/js/app.js -o output.txt
+
+# LinkFinder
+python3 linkfinder.py -i https://target.com/js/app.js -o output.txt
+
+# JSParser
+python3 jjsp.py --url https://target.com/js/main.js
+
+# From gau output
+cat urls.txt | grep -E '\.js$' | while read url; do
+  curl -s $url | grep -oE '"/[a-zA-Z0-9/]+/[a-zA-Z0-9]+"' | sort -u
+done</pre>
+      </div>
+
+      <p><strong>Hardcoded Secrets:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># TruffleHog (find secrets in repos)
+trufflehog --json https://github.com/target/repo
+
+# gitLeaks
+gitleaks detect --source .
+
+# KeyHunter
+python3 keyhunter.py -d target.com</pre>
+      </div>
+    </div>
+
+    <!-- 6. ASN RECON -->
+    <div class="content-section" id="asn">
+      <h2>🌍 ASN & IP Space</h2>
+      
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find ASN for company
+amass intel -org "Target Inc"
+
+# BGP lookup
+curl -s "https://api.bgpview.io/search?query=target.com" | jq
+
+# Shodan
+curl -s "https://api.shodan.io/shodan/host/search?key=API_KEY&query=hostname:target.com"
+
+# Host.io
+curl -s "https://host.io/api/full/target.com"
+
+# Reverse DNS
+dnsx -ptr -l target.com -o ptr.txt</pre>
+      </div>
+    </div>
+
+    <!-- 7. VULNERABILITY DISCOVERY -->
+    <div class="content-section" id="vuln-discovery">
+      <h2>💥 Vulnerability Discovery</h2>
+      
+      <div class="workflow-step">
+        <h3>7.1 Nuclei Template Scanning</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre># Update templates
+nuclei -ut
+
+# Critical vulnerabilities
+nuclei -l targets.txt -t cves/ -severity critical,high -o nuclei_critical.txt
+
+# Custom templates
+nuclei -l targets.txt -t ~/custom-templates/ -o custom.txt
+
+# Fast scan
+nuclei -l targets.txt -t vulnerabilities/ -rate 150 -bulk-size 25</pre>
+        </div>
+      </div>
+
+      <div class="workflow-step">
+        <h3>7.2 Custom Testing</h3>
+        <table>
+          <thead>
+            <tr><th>Type</th><th>Payload Category</th><th>Targets</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>IDOR</td><td>Object IDs, sequential numbers</td><td>API endpoints, user profiles</td></tr>
+            <tr><td>SSTI</td><td>{{7*7}}, {{config}}</td><td>Template engines</td></tr>
+            <tr><td>SQLi</td><td>', ", OR 1=1</td><td>Parameters, forms</td></tr>
+            <tr><td>XSS</td><td><script>alert(1)</script></td><td>All user input</td></tr>
+            <tr><td>SSRF</td><td>localhost, 169.254.169.254</td><td>URL parameters</td></tr>
+            <tr><td>Open Redirect</td><td>javascript:, data:</td><td>Redirect parameters</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 8. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Essential Tools</h2>
+      
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h4>Amass</h4>
+          <p>Comprehensive subdomain enumeration with passive and active modes.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Subfinder</h4>
+          <p>Fast subdomain discovery from multiple sources.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Nuclei</h4>
+          <p>Template-based vulnerability scanner.</p>
+        </div>
+        <div class="tool-card">
+          <h4>FFUF</h4>
+          <p>Fast web fuzzer for directories and parameters.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Gau</h4>
+          <p>Fetch known URLs from various sources.</p>
+        </div>
+        <div class="tool-card">
+          <h4>httpx</h4>
+          <p>Fast HTTP probe and screenshot tool.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. WORKFLOW -->
+    <div class="content-section" id="workflow">
+      <h2>📋 Complete Workflow</h2>
+      
+      <div class="info-box">
+        <strong>Automated Pipeline (One-liner):</strong>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Complete recon pipeline
+subfinder -d target.com -silent | httpx -silent -follow-redirects | \
+  nuclei -t vulnerabilities/ -o nuclei.txt</pre>
+      </div>
+
+      <p><strong>Step-by-Step:</strong></p>
+      <ol>
+        <li><strong>Subdomain Enumeration:</strong> subfinder + amass + chaos</li>
+        <li><strong>DNS Resolution:</strong> shuffledns + dnsx</li>
+        <li><strong>HTTP Probing:</strong> httpx + naabu</li>
+        <li><strong>Screenshots:</strong> aquatone + gowitness</li>
+        <li><strong>Technology Detection:</strong> wappalyzer + whatweb</li>
+        <li><strong>Vulnerability Scan:</strong> nuclei + nmap</li>
+        <li><strong>Manual Testing:</strong> Focus on critical findings</li>
+      </ol>
+    </div>
+
+    <a href="../bugbounty/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Bug Bounty</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+});
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+</script>
+
+</body>
+</html>

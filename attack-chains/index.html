@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attack Chains | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .chain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .chain-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .chain-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .chain-card h3 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
+    .chain-card .difficulty { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 1rem; }
+    .diff-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .diff-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .diff-medium { background: rgba(255,187,0,0.2); color: #ffbb00; }
+    .chain-steps { counter-reset: step; list-style: none; padding: 0; }
+    .chain-steps li { counter-increment: step; display: flex; align-items: flex-start; gap: 1rem; margin: 1rem 0; }
+    .chain-steps li::before { content: counter(step); min-width: 28px; height: 28px; background: var(--primary); color: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+    .chain-steps li p { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+    .chain-steps li strong { color: var(--text-primary); }
+    .chain-arrow { color: var(--primary); text-align: center; font-size: 1.5rem; padding: 0.5rem 0; }
+    .chain-tools { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .chain-tools span { background: var(--bg-elevated); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; color: var(--text-secondary); }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .chain-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../api/index.html">API Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Attack Chains
+    </div>
+
+    <div class="page-header">
+      <h1>🔗 Attack Chains</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Comprehensive attack chain documentation showing step-by-step exploitation paths from initial access to target compromise. Each chain includes tools, techniques, and mitigation strategies.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <strong>What are Attack Chains?</strong><br>
+      Attack chains (also known as Kill Chains) document the complete exploitation path from initial reconnaissance to achieving the attack objective. Understanding these chains helps offensive and defensive security professionals.
+    </div>
+
+    <!-- WEB ATTACK CHAINS -->
+    <div class="category-section" id="web-chains">
+      <h2>🌐 Web Application Attack Chains</h2>
+      
+      <div class="chain-grid">
+        <div class="chain-card">
+          <h3>Chain 1: SQLi to RCE</h3>
+          <span class="difficulty diff-critical">Critical</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Full compromise via SQL injection to remote code execution</p>
+          <ol class="chain-steps">
+            <li><div><strong>Reconnaissance</strong><p>Discover SQL injection entry point via parameter fuzzing</p></div></li>
+            <li><div><strong>Enumeration</strong><p>Determine database type, version, and column count via UNION SELECT</p></div></li>
+            <li><div><strong>Discovery</strong><p>Find web root path from database error messages or file read</p></div></li>
+            <li><div><strong>Webshell Upload</strong><p>Write PHP/ASP webshell via INTO OUTFILE with path traversal</p></div></li>
+            <li><div><strong>Command Execution</strong><p>Execute OS commands via HTTP requests to uploaded webshell</p></div></li>
+            <li><div><strong>Persistence</strong><p>Add cron job or SSH key for persistent access</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>sqlmap</span>
+            <span>Burp Suite</span>
+            <span>Netcat</span>
+            <span>Metasploit</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 2: XSS to Account Takeover</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Stored XSS exploited to steal session cookies</p>
+          <ol class="chain-steps">
+            <li><div><strong>Discovery</strong><p>Identify stored XSS in comment/review field</p></div></li>
+            <li><div><strong>Payload Crafting</strong><p>Create cookie stealing JavaScript payload</p></div></li>
+            <li><div><strong>Injection</strong><p>Submit payload in vulnerable form field</p></div></li>
+            <li><div><strong>Wait</strong><p>Admin/user visits page containing payload</p></div></li>
+            <li><div><strong>Cookie Capture</strong><p>JavaScript executes, sending session to attacker</p></div></li>
+            <li><div><strong>Session Hijack</strong><p>Use stolen cookie to authenticate as victim</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Burp Suite</span>
+            <span>XSStrike</span>
+            <span>BeEF</span>
+            <span>ngrok</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 3: SSRF to Cloud Takeover</h3>
+          <span class="difficulty diff-critical">Critical</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Exploit SSRF to extract cloud credentials and compromise infrastructure</p>
+          <ol class="chain-steps">
+            <li><div><strong>Discovery</strong><p>Identify SSRF in URL parameter or image upload</p></div></li>
+            <li><div><strong>Metadata Access</strong><p>Request cloud metadata service (169.254.169.254)</p></div></li>
+            <li><div><strong>Credential Extraction</strong><p>Retrieve IAM credentials from metadata endpoint</p></div></li>
+            <li><div><strong>AWS CLI Setup</strong><p>Configure AWS credentials for target account</p></div></li>
+            <li><div><strong>Lateral Movement</strong><p>Access S3 buckets, Lambda functions, or other services</p></div></li>
+            <li><div><strong>Data Exfiltration</strong><p>Download sensitive data from cloud storage</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Burp Suite</span>
+            <span>AWS CLI</span>
+            <span>Cloud_enum</span>
+            <span>Pacu</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 4: File Upload to RCE</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Bypass file upload restrictions to gain shell access</p>
+          <ol class="chain-steps">
+            <li><div><strong>Discovery</strong><p>Identify file upload functionality</p></div></li>
+            <li><div><strong>Fingerprinting</strong><p>Determine allowed extensions and content validation</p></div></li>
+            <li><div><strong>Bypass Attempt</strong><p>Try double extensions, null bytes, or polyglot files</p></div></li>
+            <li><div><strong>Webshell Upload</strong><p>Upload web shell disguised as image or document</p></div></li>
+            <li><div><strong>Shell Activation</strong><p>Access uploaded shell via direct URL</p></div></li>
+            <li><div><strong>Post-Exploitation</strong><p>Enumerate and pivot to internal network</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Burp Suite</span>
+            <span>FFUF</span>
+            <span>Metasploit</span>
+            <span>weevely</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 5: IDOR to Privilege Escalation</h3>
+          <span class="difficulty diff-medium">Medium</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Exploit insecure direct object references to access unauthorized data</p>
+          <ol class="chain-steps">
+            <li><div><strong>Discovery</strong><p>Identify endpoints with object IDs (user profile, documents)</p></div></li>
+            <li><div><strong>Parameter Tampering</strong><p>Modify IDs in requests to access other users' resources</p></div></li>
+            <li><div><strong>Horizontal Enum</strong><p>Enumerate IDs to map accessible objects</p></div></li>
+            <li><div><strong>Vertical Escalation</strong><p>Find admin endpoints or privileged operations</p></div></li>
+            <li><div><strong>Data Access</strong><p>Access sensitive documents, financial records</p></div></li>
+            <li><div><strong>Account Manipulation</strong><p>Modify settings, passwords, or permissions</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Burp Suite</span>
+            <span>Auth Analyzer</span>
+            <span>Jinja2</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 6: Open Redirect to Phishing</h3>
+          <span class="difficulty diff-medium">Medium</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Leverage open redirect for credential harvesting</p>
+          <ol class="chain-steps">
+            <li><div><strong>Discovery</strong><p>Identify open redirect in return URL parameter</p></div></li>
+            <li><div><strong>Phishing Page Creation</strong><p>Clone legitimate login page</p></div></li>
+            <li><div><strong>Payload URL</strong><p>Construct redirect URL to phishing page</p></div></li>
+            <li><div><strong>Social Engineering</strong><p>Send phishing URL via email or message</p></div></li>
+            <li><div><strong>Credential Harvest</strong><p>Victim enters credentials on fake page</p></div></li>
+            <li><div><strong>Session Hijack</strong><p>Use credentials to access real application</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>SET</span>
+            <span>Gophish</span>
+            <span>Burp Suite</span>
+            <span>SocialFish</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API ATTACK CHAINS -->
+    <div class="category-section" id="api-chains">
+      <h2>🔌 API Attack Chains</h2>
+      
+      <div class="chain-grid">
+        <div class="chain-card">
+          <h3>Chain 7: API BOLA to Mass Data Breach</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Exploit broken object level authorization in REST API</p>
+          <ol class="chain-steps">
+            <li><div><strong>API Discovery</strong><p>Enumerate API endpoints via documentation or crawling</p></div></li>
+            <li><div><strong>Auth Analysis</strong><p>Authenticate as regular user, capture tokens</p></div></li>
+            <li><div><strong>ID Enumeration</strong><p>Test endpoints with different object IDs</p></div></li>
+            <li><div><strong>BOLA Exploitation</strong><p>Access other users' resources by modifying IDs</p></div></li>
+            <li><div><strong>Scripting</strong><p>Automate ID enumeration to extract all data</p></div></li>
+            <li><div><strong>Exfiltration</strong><p>Download complete dataset</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Burp Suite</span>
+            <span>Postman</span>
+            <span>FFUF</span>
+            <span>Python</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 8: JWT Authentication Bypass</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Forge JWT tokens to escalate privileges</p>
+          <ol class="chain-steps">
+            <li><div><strong>Token Analysis</strong><p>Extract JWT from authentication responses</p></div></li>
+            <li><div><strong>Algorithm Assessment</strong><p>Determine if "none" algorithm or weak secret is used</p></div></li>
+            <li><div><strong>Signature Bypass</strong><p>Use none algorithm or crack weak secret</p></div></li>
+            <li><div><strong>Claim Manipulation</strong><p>Modify role/permissions to admin</p></div></li>
+            <li><div><strong>Token Forgery</strong><p>Generate new valid token with elevated privileges</p></div></li>
+            <li><div><strong>Admin Access</strong><p>Access admin endpoints with forged token</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>jwt_tool</span>
+            <span>Burp Suite</span>
+            <span>hashcat</span>
+            <span>John</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NETWORK ATTACK CHAINS -->
+    <div class="category-section" id="network-chains">
+      <h2>🌍 Network Attack Chains</h2>
+      
+      <div class="chain-grid">
+        <div class="chain-card">
+          <h3>Chain 9: Phishing to Domain Admin</h3>
+          <span class="difficulty diff-critical">Critical</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Full Active Directory compromise via credential phishing</p>
+          <ol class="chain-steps">
+            <li><div><strong>Reconnaissance</strong><p>Gather employee emails via OSINT</p></div></li>
+            <li><div><strong>Phishing Campaign</strong><p>Create convincing email with malicious link/attachment</p></div></li>
+            <li><div><strong>Initial Access</strong><p>Victim enters credentials on fake Office 365 login</p></div></li>
+            <li><div><strong>FOIA Attack</strong><p>Extract tokens, access OAuth applications</p></div></li>
+            <li><div><strong>Kerberoasting</strong><p>Request service account TGS tickets</p></div></li>
+            <li><div><strong>Password Cracking</strong><p>Crack weak service account passwords offline</p></div></li>
+            <li><div><strong>Domain Dominance</strong><p>Use service account to modify AD, add new admin</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Gophish</span>
+            <span>Certify</span>
+            <span>Rubeus</span>
+            <span>hashcat</span>
+            <span>BloodHound</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 10: WiFi to Internal Network</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Compromise WPA2/WPA3 network to pivot to internal systems</p>
+          <ol class="chain-steps">
+            <li><div><strong>Wardriving</strong><p>Identify target wireless networks</p></div></li>
+            <li><div><strong>Handshake Capture</strong><p>Deauth clients, capture WPA handshake</p></div></li>
+            <li><div><strong>Password Cracking</strong><p>Crack WPA password using dictionary/rules</p></div></li>
+            <li><div><strong>Network Access</strong><p>Connect to wireless network</p></div></li>
+            <li><div><strong>Reconnaissance</strong><p>Scan internal network, identify services</p></div></li>
+            <li><div><strong>Lateral Movement</strong><p>Exploit vulnerabilities in internal hosts</p></div></li>
+            <li><div><strong>Persistence</strong><p>Establish VPN or reverse shell</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Wifite2</span>
+            <span>hashcat</span>
+            <span>Wireshark</span>
+            <span>Responder</span>
+            <span>Impacket</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 11: SMB Relay to Domain Admin</h3>
+          <span class="difficulty diff-critical">Critical</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Relay SMB authentication to compromise servers</p>
+          <ol class="chain-steps">
+            <li><div><strong>Responder Setup</strong><p>Configure SMB relay with LLMNR/NBT-NS poisoning</p></div></li>
+            <li><div><strong>Network Poisoning</strong><p>Poison LLMNR/NBT-NS requests on network</p></div></li>
+            <li><div><strong>Credential Capture</strong><p>Intercept NTLMv2 hash from victim</p></div></li>
+            <li><div><strong>Relay Attack</strong><p>Relay hash to target server with SMB signing disabled</p></div></li>
+            <li><div><strong>Local Admin</strong><p>Gain local administrator access on target</p></div></li>
+            <li><div><strong>Privilege Escalation</strong><p>Escalate to Domain Admin via LAPS or Kerberoast</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>Responder</span>
+            <span>ntlmrelayx</span>
+            <span>smbexec</span>
+            <span>Mimikatz</span>
+            <span>BloodHound</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD ATTACK CHAINS -->
+    <div class="category-section" id="cloud-chains">
+      <h2>☁️ Cloud Attack Chains</h2>
+      
+      <div class="chain-grid">
+        <div class="chain-card">
+          <h3>Chain 12: Lambda Backdoor Creation</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Create persistent backdoor in AWS Lambda functions</p>
+          <ol class="chain-steps">
+            <li><div><strong>IAM Enum</strong><p>Enumerate current user's Lambda permissions</p></div></li>
+            <li><div><strong>Lambda Access</strong><p>Get permissions to create/update Lambda functions</p></div></li>
+            <li><div><strong>Backdoor Function</strong><p>Create malicious Lambda with reverse shell</p></div></li>
+            <li><div><strong>Trigger Setup</strong><p>Configure CloudWatch trigger for persistence</p></div></li>
+            <li><div><strong>Execution</strong><p>Trigger function via CloudWatch event</p></div></li>
+            <li><div><strong>C2 Channel</strong><p>Establish command and control via Lambda</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>AWS CLI</span>
+            <span>Pacu</span>
+            <span>CloudFormation</span>
+            <span>Python</span>
+          </div>
+        </div>
+
+        <div class="chain-card">
+          <h3>Chain 13: S3 Bucket Misconfiguration</h3>
+          <span class="difficulty diff-medium">Medium</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Exploit public S3 bucket to access sensitive data</p>
+          <ol class="chain-steps">
+            <li><div><strong>Bucket Discovery</strong><p>Find S3 buckets via DNS, Shodan, or guessing</p></div></li>
+            <li><div><strong>Access Testing</strong><p>Test if bucket is publicly accessible</p></div></li>
+            <li><div><strong>Enumeration</strong><p>List bucket contents with AWS CLI</p></div></li>
+            <li><div><strong>Data Analysis</strong><p>Identify sensitive files (backups, configs, keys)</p></div></li>
+            <li><div><strong>Download</strong><p>Download interesting files to local system</p></div></li>
+            <li><div><strong>Key Extraction</strong><p>Extract API keys, credentials from downloaded files</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>AWS CLI</span>
+            <span>awscli</span>
+            <span>S3Scanner</span>
+            <span>Sandman</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE ATTACK CHAINS -->
+    <div class="category-section" id="mobile-chains">
+      <h2>📱 Mobile Attack Chains</h2>
+      
+      <div class="chain-grid">
+        <div class="chain-card">
+          <h3>Chain 14: Android APK to Data Theft</h3>
+          <span class="difficulty diff-high">High</span>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Reverse engineer Android app to steal sensitive data</p>
+          <ol class="chain-steps">
+            <li><div><strong>APK Acquisition</strong><p>Download APK from app store or device</p></div></li>
+            <li><div><strong>Static Analysis</strong><p>Decompile APK, analyze code for API keys/secrets</p></div></li>
+            <li><div><strong>Certificate Pinning</strong><p>Identify and bypass SSL pinning</p></div></li>
+            <li><div><strong>Runtime Analysis</strong><p>Hook app with Frida to extract runtime data</p></div></li>
+            <li><div><strong>Data Extraction</strong><p>Extract tokens, credentials from memory/storage</p></div></li>
+            <li><div><strong>Lateral Movement</strong><p>Use extracted credentials on other platforms</p></div></li>
+          </ol>
+          <div class="chain-tools">
+            <span>jadx-gui</span>
+            <span>Frida</span>
+            <span>Objection</span>
+            <span>MobSF</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MITIGATION SECTION -->
+    <div class="category-section" id="mitigation">
+      <h2>🛡️ Chain Mitigation Strategies</h2>
+      
+      <div class="info-box">
+        <strong>Defense in Depth</strong><br>
+        Each attack chain should be disrupted at multiple points. Focus on early-stage prevention to stop attacks before they reach critical stages.
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Chain Stage</th><th>Prevention</th><th>Detection</th><th>Response</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Reconnaissance</td>
+            <td>Minimize information exposure, rotate credentials</td>
+            <td>Monitor DNS queries, port scans</td>
+            <td>Block source IPs, alert SOC</td>
+          </tr>
+          <tr>
+            <td>Initial Access</td>
+            <td>MFA, least privilege, input validation</td>
+            <td>Login anomaly detection, WAF alerts</td>
+            <td>Lock accounts, rotate credentials</td>
+          </tr>
+          <tr>
+            <td>Execution</td>
+            <td>Endpoint protection, application whitelisting</td>
+            <td>EDR telemetry, process monitoring</td>
+            <td>Isolate endpoint, collect forensics</td>
+          </tr>
+          <tr>
+            <td>Persistence</td>
+            <td>Harden systems, monitor startup items</td>
+            <td>Detect new scheduled tasks, registry changes</td>
+            <td>Remove persistence mechanisms</td>
+          </tr>
+          <tr>
+            <td>Privilege Escalation</td>
+            <td>Least privilege, patch management</td>
+            <td>Monitor admin group changes</td>
+            <td>Audit admin accounts, rotate passwords</td>
+          </tr>
+          <tr>
+            <td>Lateral Movement</td>
+            <td>Network segmentation, strong auth</td>
+            <td>Monitor lateral traffic, SMB usage</td>
+            <td>Isolate affected segments</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

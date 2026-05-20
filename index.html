@@ -1,67 +1,840 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Ultimate Cybersecurity Platform</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saikumar Raju | Offensive Security Consultant</title>
+  <meta name="description" content="Offensive Security Consultant specializing in Web Security, API Security, Mobile Security, Active Directory, Cloud Security, and Penetration Testing.">
+  <meta name="keywords" content="penetration testing, web security, API security, mobile security, Active Directory, bug bounty, offensive security, VAPT">
+  <meta name="author" content="Saikumar Raju">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Saikumar Raju | Offensive Security Consultant">
+  <meta property="og:description" content="Offensive Security Consultant with expertise in web, API, mobile, AD, and cloud security testing.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://saikumar-infosec.github.io/">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 0;
+      border-bottom: 1px solid #1e1e2e;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .logo span { color: #00f5a0; }
+
+    .nav-search {
+      position: relative;
+      margin-left: 20px;
+    }
+
+    .nav-search input {
+      background: #1e1e2e;
+      border: 1px solid #2d2d3d;
+      border-radius: 8px;
+      padding: 8px 15px;
+      color: #fff;
+      width: 200px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .nav-search input:focus {
+      outline: none;
+      border-color: #00f5a0;
+      width: 250px;
+    }
+
+    .nav-search input::placeholder {
+      color: #64748b;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #12121a;
+      border: 1px solid #2d2d3d;
+      border-radius: 8px;
+      margin-top: 5px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+
+    .search-results.show {
+      display: block;
+    }
+
+    .search-results a {
+      display: block;
+      padding: 12px 15px;
+      color: #94a3b8;
+      text-decoration: none;
+      border-bottom: 1px solid #1e1e2e;
+      transition: all 0.2s;
+    }
+
+    .search-results a:hover {
+      background: #1e1e2e;
+      color: #00f5a0;
+    }
+
+    .search-results a span {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 3px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 35px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: #00f5a0; }
+
+    .nav-cta {
+      background: #00f5a0;
+      color: #0a0a0f;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+      padding: 80px 0;
+    }
+
+    .hero-content { flex: 1; }
+
+    .hero-badge {
+      display: inline-block;
+      background: #00f5a015;
+      color: #00f5a0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: #00f5a0;
+    }
+
+    .hero-subtitle {
+      font-size: 22px;
+      color: #94a3b8;
+      margin-bottom: 25px;
+      font-weight: 500;
+    }
+
+    .hero-desc {
+      color: #64748b;
+      font-size: 16px;
+      max-width: 550px;
+      margin-bottom: 35px;
+      line-height: 1.8;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn-primary {
+      background: #00f5a0;
+      color: #0a0a0f;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #06b6d4;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #1e1e2e;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid #2d2d3d;
+    }
+
+    .btn-secondary:hover {
+      border-color: #00f5a0;
+      color: #00f5a0;
+    }
+
+    /* Hero Right - Stats Cards */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .stat-card {
+      background: linear-gradient(145deg, #12121a, #1a1a24);
+      border: 1px solid #2d2d3d;
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      border-color: #00f5a0;
+      transform: translateY(-3px);
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: #00f5a0;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .social-card {
+      background: linear-gradient(145deg, #12121a, #1a1a24);
+      border: 1px solid #2d2d3d;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .social-card a {
+      width: 50px;
+      height: 50px;
+      background: #1e1e2e;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 20px;
+      transition: all 0.3s;
+    }
+
+    .social-card a:hover {
+      background: #00f5a0;
+      color: #0a0a0f;
+    }
+
+    /* Sections */
+    section { padding: 80px 0; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-header h2 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    .section-header p {
+      color: #64748b;
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Skills */
+    .skills-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: linear-gradient(145deg, #12121a, #1a1a24);
+      border: 1px solid #2d2d3d;
+      border-radius: 16px;
+      padding: 25px;
+      transition: all 0.3s;
+    }
+
+    .skill-card:hover {
+      border-color: #00f5a0;
+      transform: translateY(-5px);
+    }
+
+    .skill-icon {
+      width: 50px;
+      height: 50px;
+      background: #00f5a015;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00f5a0;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .skill-card h3 {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .skill-card p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* Experience Timeline */
+    .timeline {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to bottom, #00f5a0, #8b5cf6);
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 50%;
+      position: relative;
+      margin-bottom: 40px;
+    }
+
+    .timeline-item:nth-child(even) {
+      justify-content: flex-start;
+      padding-right: 0;
+      padding-left: 50%;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      background: #00f5a0;
+      border-radius: 50%;
+      border: 3px solid #0a0a0f;
+    }
+
+    .timeline-content {
+      background: linear-gradient(145deg, #12121a, #1a1a24);
+      border: 1px solid #2d2d3d;
+      border-radius: 16px;
+      padding: 25px;
+      width: 90%;
+      transition: all 0.3s;
+    }
+
+    .timeline-content:hover {
+      border-color: #00f5a0;
+      transform: translateY(-3px);
+    }
+
+    .timeline-content h3 {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .timeline-content .company {
+      color: #00f5a0;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .timeline-content ul {
+      list-style: none;
+    }
+
+    .timeline-content li {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 8px;
+      padding-left: 15px;
+      position: relative;
+    }
+
+    .timeline-content li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #00f5a0;
+    }
+
+    /* Modules Grid */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .module-card {
+      background: linear-gradient(145deg, #12121a, #1a1a24);
+      border: 1px solid #2d2d3d;
+      border-radius: 16px;
+      padding: 30px;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: block;
+    }
+
+    .module-card:hover {
+      border-color: #00f5a0;
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(34, 211, 238, 0.1);
+    }
+
+    .module-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #00f5a020, #8b5cf620);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .module-card h3 {
+      color: #fff;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .module-card p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .module-count {
+      display: inline-block;
+      background: #00f5a015;
+      color: #00f5a0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid #1e1e2e;
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero-btns { justify-content: center; }
+      .hero-desc { margin: 0 auto 35px; }
+      .skills-container { grid-template-columns: repeat(2, 1fr); }
+      .modules-grid { grid-template-columns: repeat(2, 1fr); }
+      .timeline::before { display: none; }
+      .timeline-item, .timeline-item:nth-child(even) { padding: 0; justify-content: center; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 36px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .skills-container { grid-template-columns: 1fr; }
+      .modules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<nav class="navbar">
-<div class="container nav">
-<div class="logo">Saikumar <span>Infosec</span></div>
-</div>
-</nav>
+  <!-- Navigation -->
+  <div class="container">
+    <nav>
+      <div class="logo">Saikumar <span>Raju</span></div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#modules">Portfolio</a></li>
+      </ul>
+      <div class="nav-search">
+        <input type="text" id="globalSearch" placeholder="Search pages... (Press /)">
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      <a href="mailto:saikumarraju30@gmail.com" class="nav-cta">Contact Me</a>
+    </nav>
+  </div>
 
-<section class="hero">
-<div class="container">
+  <!-- Hero Section -->
+  <div class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Offensive Security Consultant</span>
+        <h1>Hi, I'm <span>Saikumar Raju</span></h1>
+        <p class="hero-subtitle">Cybersecurity Professional</p>
+        <p class="hero-desc">
+          4+ years of experience in VAPT, Web Application Security, API Testing, 
+          Mobile Security, and AWS Cloud Security. Passionate about identifying 
+          vulnerabilities and securing digital infrastructure.
+        </p>
+        <div class="hero-btns">
+          <a href="#modules" class="btn-primary">View Portfolio</a>
+          <a href="mailto:saikumarraju30@gmail.com" class="btn-secondary">Get In Touch</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">4+</div>
+            <div class="stat-label">Years Experience</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">VAPT Projects</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">Vulnerabilities Found</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Certifications</div>
+          </div>
+        </div>
+        <div class="social-card">
+          <a href="mailto:saikumarraju30@gmail.com"><i class="fas fa-envelope"></i></a>
+          <a href="tel:+917337026773"><i class="fas fa-phone"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </section>
+  </div>
 
-<div class="badge">Production Offensive Security Knowledgebase</div>
+  <!-- Skills Section -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header">
+        <h2>What I Do</h2>
+        <p>Comprehensive cybersecurity services and expertise</p>
+      </div>
+      <div class="skills-container">
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-globe"></i></div>
+          <h3>Web Security</h3>
+          <p>Web application penetration testing, OWASP Top 10 vulnerabilities, secure code review</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-plug"></i></div>
+          <h3>API Security</h3>
+          <p>REST API testing, GraphQL security, authentication bypass, API pentesting</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-mobile-alt"></i></div>
+          <h3>Mobile Security</h3>
+          <p>Android & iOS app security testing, reverse engineering, Frida dynamic analysis</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-network-wired"></i></div>
+          <h3>Network Security</h3>
+          <p>Internal & external network pentesting, vulnerability assessment, Nmap, Metasploit</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fab fa-aws"></i></div>
+          <h3>Cloud Security</h3>
+          <p>AWS security assessment, IAM review, S3 bucket audit, cloud hardening</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-bug"></i></div>
+          <h3>VAPT</h3>
+          <p>Complete vulnerability assessment and penetration testing with detailed reports</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-tools"></i></div>
+          <h3>Security Tools</h3>
+          <p>Burp Suite, OWASP ZAP, Nessus, Wireshark, SQLMap, Nikto, Nmap</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-code"></i></div>
+          <h3>Programming</h3>
+          <p>Python, Bash, JavaScript, SQL for automation and security scripting</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<h1>
-Cybersecurity
-<span>Operating Platform</span>
-</h1>
+  <!-- Experience Section -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header">
+        <h2>Work Experience</h2>
+        <p>My professional journey in cybersecurity</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3>Offensive Security Consultant</h3>
+            <p class="company">Astracybertech Pvt Ltd</p>
+            <ul>
+              <li>Lead comprehensive VAPT assessments for Web, Mobile, API, and Network</li>
+              <li>Executed 50+ security assessments for banking, healthcare, and e-commerce</li>
+              <li>Conducted network penetration testing using Nmap, Nessus, and Metasploit</li>
+              <li>Performed mobile app security testing for Android & iOS</li>
+              <li>Executed AWS cloud security assessments and created detailed security reports</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3>Security Analyst</h3>
+            <p class="company">Yash Technologies</p>
+            <ul>
+              <li>Conducted Web and API security testing identifying critical vulnerabilities</li>
+              <li>Utilized OWASP ZAP, Burp Suite, and SQLMap for security assessment</li>
+              <li>Performed network security assessments detecting misconfigurations</li>
+              <li>Participated in Red Team exercises and security risk assessments</li>
+              <li>Prepared technical security reports with mitigation strategies</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<p>
-Unified offensive security platform containing vulnerabilities, payloads,
-labs, attack chains, tooling, methodologies, automation and AI-ready architecture.
-</p>
+  <!-- Modules/Portfolio Section -->
+  <section id="modules">
+    <div class="container">
+      <div class="section-header">
+        <h2>Security Knowledge Base</h2>
+        <p>Explore my cybersecurity portfolio and research</p>
+      </div>
+      <div class="modules-grid">
+        <a href="web/index.html" class="module-card">
+          <div class="module-icon">🌐</div>
+          <h3>Web Security</h3>
+          <p>Web vulnerabilities, exploitation, payloads, mitigation</p>
+          <span class="module-count">50+ Pages</span>
+        </a>
+        <a href="api/index.html" class="module-card">
+          <div class="module-icon">🔌</div>
+          <h3>API Security</h3>
+          <p>REST API vulnerabilities, JWT, OAuth, GraphQL</p>
+          <span class="module-count">7 Pages</span>
+        </a>
+        <a href="mobile/index.html" class="module-card">
+          <div class="module-icon">📱</div>
+          <h3>Mobile Security</h3>
+          <p>Android & iOS app security, reverse engineering</p>
+          <span class="module-count">6 Pages</span>
+        </a>
+        <a href="active-directory/index.html" class="module-card">
+          <div class="module-icon">🏢</div>
+          <h3>Active Directory</h3>
+          <p>AD attacks, Kerberos, DCSync, Golden Tickets</p>
+          <span class="module-count">25+ Pages</span>
+        </a>
+        <a href="systems/index.html" class="module-card">
+          <div class="module-icon">🖥️</div>
+          <h3>Systems & Networks</h3>
+          <p>Protocols, privesc, pivoting, database attacks</p>
+          <span class="module-count">30+ Pages</span>
+        </a>
+        <a href="evasion/index.html" class="module-card">
+          <div class="module-icon">🎭</div>
+          <h3>Evasion Techniques</h3>
+          <p>AV/EDR bypass, process injection, LOLBAS</p>
+          <span class="module-count">20+ Pages</span>
+        </a>
+        <a href="radio/index.html" class="module-card">
+          <div class="module-icon">📡</div>
+          <h3>WiFi & Radio</h3>
+          <p>WPA2/WPA3 attacks, RFID, Bluetooth, BLE</p>
+          <span class="module-count">20+ Pages</span>
+        </a>
+        <a href="osint/index.html" class="module-card">
+          <div class="module-icon">🔍</div>
+          <h3>OSINT & Recon</h3>
+          <p>Email, domain, username, password hunting</p>
+          <span class="module-count">20+ Pages</span>
+        </a>
+        <a href="cloud/index.html" class="module-card">
+          <div class="module-icon">☁️</div>
+          <h3>Cloud Security</h3>
+          <p>AWS, Azure, GCP security testing</p>
+          <span class="module-count">5+ Pages</span>
+        </a>
+        <a href="bugbounty/index.html" class="module-card">
+          <div class="module-icon">🎯</div>
+          <h3>Bug Bounty</h3>
+          <p>Real-world writeups, methodology, tips</p>
+          <span class="module-count">5+ Pages</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-<div class="grid">
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2026 Saikumar Raju | Offensive Security Consultant</p>
+      <p style="margin-top: 10px; color: #475569;">saikumarraju30@gmail.com | +91 7337026773 | India</p>
+    </div>
+  </footer>
 
-<a class="card" href="web/index.html">
-<h3>🌐 Web Security</h3>
-<p>50+ vulnerabilities and exploit workflows.</p>
-</a>
+  <script>
+    const pages = [
+      { title: 'SQL Injection', url: 'web/sql-injection.html', category: 'Web' },
+      { title: 'Cross-Site Scripting (XSS)', url: 'web/xss.html', category: 'Web' },
+      { title: 'SSRF', url: 'web/ssrf.html', category: 'Web' },
+      { title: 'XXE', url: 'web/xxe.html', category: 'Web' },
+      { title: 'Command Injection', url: 'web/command-injection.html', category: 'Web' },
+      { title: 'IDOR', url: 'web/idor.html', category: 'Web' },
+      { title: 'CSRF', url: 'web/csrf.html', category: 'Web' },
+      { title: 'JWT Attacks', url: 'web/jwt-attacks.html', category: 'Web' },
+      { title: 'LFI/RFI', url: 'web/lfi-rfi.html', category: 'Web' },
+      { title: 'SSTI', url: 'web/ssti.html', category: 'Web' },
+      { title: 'API Security', url: 'api/index.html', category: 'API' },
+      { title: 'Broken Authentication', url: 'api/broken-api-authentication.html', category: 'API' },
+      { title: 'Mobile Security', url: 'mobile/index.html', category: 'Mobile' },
+      { title: 'Android APK Analysis', url: 'mobile/android-apk-analysis.html', category: 'Mobile' },
+      { title: 'Active Directory', url: 'active-directory/index.html', category: 'AD' },
+      { title: 'Kerberoasting', url: 'active-directory/kerberoasting.html', category: 'AD' },
+      { title: 'Golden Ticket', url: 'active-directory/golden-ticket.html', category: 'AD' },
+      { title: 'Network Security', url: 'network/index.html', category: 'Network' },
+      { title: 'Windows Security', url: 'windows-security/index.html', category: 'Windows' },
+      { title: 'Cloud Security', url: 'cloud/index.html', category: 'Cloud' },
+      { title: 'Bug Bounty', url: 'bugbounty/index.html', category: 'Bug Bounty' },
+      { title: 'Evasion Techniques', url: 'evasion/index.html', category: 'Evasion' },
+      { title: 'WiFi Hacking', url: 'radio/index.html', category: 'Radio' },
+      { title: 'OSINT', url: 'osint/index.html', category: 'OSINT' },
+      { title: 'Labs', url: 'labs/index.html', category: 'Labs' },
+      { title: 'Attack Chains', url: 'attack-chains/index.html', category: 'Attack Chains' },
+      { title: 'Payloads', url: 'payloads/index.html', category: 'Payloads' },
+      { title: 'Scripts', url: 'scripts/index.html', category: 'Scripts' }
+    ];
 
-<a class="card" href="payloads/index.html">
-<h3>💣 Payload Engine</h3>
-<p>Payload libraries and bypass collections.</p>
-</a>
+    const searchInput = document.getElementById('globalSearch');
+    const searchResults = document.getElementById('searchResults');
 
-<a class="card" href="labs/oscp/index.html">
-<h3>🧪 OSCP Labs</h3>
-<p>Enumeration and privilege escalation labs.</p>
-</a>
+    if (searchInput && searchResults) {
+      searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length < 2) {
+          searchResults.classList.remove('show');
+          return;
+        }
+        
+        const filtered = pages.filter(p => 
+          p.title.toLowerCase().includes(query) || 
+          p.category.toLowerCase().includes(query)
+        ).slice(0, 8);
 
-<a class="card" href="attack-chains/index.html">
-<h3>🔗 Attack Chains</h3>
-<p>Real-world chained exploitation paths.</p>
-</a>
+        if (filtered.length > 0) {
+          searchResults.innerHTML = filtered.map(p => 
+            `<a href="${p.url}">${p.title}<span>${p.category}</span></a>`
+          ).join('');
+          searchResults.classList.add('show');
+        } else {
+          searchResults.innerHTML = '<a href="#">No results found</a>';
+          searchResults.classList.add('show');
+        }
+      });
 
-</div>
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-search')) {
+          searchResults.classList.remove('show');
+        }
+      });
+    }
 
-</div>
-</section>
-
-<footer class="footer">
-<div class="container">
-<p>Ultimate Cybersecurity Platform</p>
-</div>
-</footer>
-
-<script src="script.js"></script>
+    document.addEventListener('keydown', function(e) {
+      if (e.key === '/' && !e.target.matches('input, textarea')) {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+  </script>
 
 </body>
 </html>

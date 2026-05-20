@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android APK Analysis | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { padding: 0.75rem 1rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--bg-elevated); font-weight: 600; color: var(--primary); font-size: 0.85rem; }
+    td { color: var(--text-secondary); font-size: 0.85rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+    .tool-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .tool-card p { font-size: 0.8rem; margin: 0; color: var(--text-secondary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../mobile/index.html">Mobile</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Mobile</a> / APK Analysis
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity</span>
+      <h1>📱 Android APK Analysis</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>OWASP Mobile</strong><span>MSTG-NETWORK</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Intermediate</span></div>
+        <div class="meta-item"><strong>Tools</strong><span>Jadx-gui, MobSF</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Android</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Android APK reverse engineering is the process of analyzing compiled Android applications to understand their functionality, find vulnerabilities, and extract sensitive information.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why APK Analysis Matters:</strong>
+        <ul>
+          <li>Extract hardcoded API keys, passwords, and credentials</li>
+          <li>Discover insecure data storage practices</li>
+          <li>Identify SSL pinning implementations for traffic interception</li>
+          <li>Find business logic vulnerabilities</li>
+          <li>Analyze third-party SDK security</li>
+          <li>Detect counterfeit or malicious apps</li>
+        </ul>
+      </div>
+
+      <p><strong>APK Structure:</strong></p>
+      <ul>
+        <li><code>classes.dex</code> - Dalvik bytecode (compiled Java/Kotlin)</li>
+        <li><code>AndroidManifest.xml</code> - App permissions and components</li>
+        <li><code>res/</code> - Resources (layouts, strings, images)</li>
+        <li><code>lib/</code> - Native libraries (.so files)</li>
+        <li><code>assets/</code> - Additional bundled files</li>
+        <li><code>META-INF/</code> - Signature and certificate info</li>
+      </ul>
+    </div>
+
+    <!-- 2. APK EXTRACTION -->
+    <div class="content-section" id="extraction">
+      <h2>📦 APK Extraction</h2>
+      
+      <p><strong>From Device (via ADB):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List installed packages
+adb shell pm list packages
+
+# Get APK path for specific app
+adb shell pm path com.example.app
+
+# Pull APK to local machine
+adb pull /data/app/com.example.app/base.apk ./app.apk</pre>
+      </div>
+
+      <p><strong>From Play Store:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using gplaycli (Linux/macOS)
+gplaycli -d com.example.app
+
+# Using Rastic (Windows)
+rastic download com.example.app
+
+# APK Downloader websites
+apkcombo.com
+apkpure.com</pre>
+      </div>
+
+      <p><strong>From Emulator:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Enable USB debugging on emulator
+adb emu kill
+adb shell "su -c 'cp /data/app/com.example.app/base.apk /sdcard/'"
+adb pull /sdcard/base.apk</pre>
+      </div>
+    </div>
+
+    <!-- 3. STATIC ANALYSIS -->
+    <div class="content-section" id="static">
+      <h2>🔍 Static Analysis</h2>
+      
+      <p><strong>Decompile APK:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Using apktool (extracts resources + decompiles DEX)
+apktool d app.apk -o output_folder
+
+# Using jadx (Java decompiler)
+jadx -d output_folder app.apk
+
+# Using MobSF (automated analysis)
+docker run -it -p 8000:8000 opensecurity/mobsf:latest</pre>
+      </div>
+
+      <p><strong>Analysis Steps:</strong></p>
+      <ol>
+        <li>Check <code>AndroidManifest.xml</code> for excessive permissions</li>
+        <li>Search for hardcoded credentials in source code</li>
+        <li>Analyze network traffic encryption implementation</li>
+        <li>Review data storage mechanisms</li>
+        <li>Identify crypto implementation</li>
+        <li>Find exported components</li>
+      </ol>
+
+      <p><strong>Common Findings:</strong></p>
+      <ul>
+        <li>Hardcoded API keys: <code>BuildConfig.API_KEY</code></li>
+        <li>Hardcoded passwords: <code>"admin", "password123"</code></li>
+        <li>Weak crypto: MD5, SHA1 for passwords</li>
+        <li>Insecure storage: SharedPreferences without encryption</li>
+        <li>Debug enabled: <code>android:debuggable="true"</code></li>
+      </ul>
+    </div>
+
+    <!-- 4. PERMISSIONS ANALYSIS -->
+    <div class="content-section" id="permissions">
+      <h2>🔐 Permissions Analysis</h2>
+      
+      <p><strong>Dangerous Permissions:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Runtime permissions that require user consent
+android.permission.CAMERA
+android.permission.RECORD_AUDIO
+android.permission.ACCESS_FINE_LOCATION
+android.permission.ACCESS_COARSE_LOCATION
+android.permission.READ_CONTACTS
+android.permission.WRITE_CONTACTS
+android.permission.READ_SMS
+android.permission.RECEIVE_SMS
+android.permission.READ_CALL_LOG
+android.permission.WRITE_CALL_LOG
+android.permission.READ_PHONE_STATE
+android.permission.CALL_PHONE
+android.permission.READ_EXTERNAL_STORAGE
+android.permission.WRITE_EXTERNAL_STORAGE</pre>
+      </div>
+
+      <p><strong>Permission Misuse Examples:</strong></p>
+      <table>
+        <thead>
+          <tr><th>Permission</th><th>Potential Abuse</th><th>Legitimate Use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>READ_SMS</td><td>Steal OTPs, 2FA codes</td><td>OTP auto-fill</td></tr>
+          <tr><td>READ_CONTACTS</td><td>Harvest contact list</td><td>Payment apps</td></tr>
+          <tr><td>RECORD_AUDIO</td><td>Surveillance</td><td>Voice notes</td></tr>
+          <tr><td>READ_EXTERNAL_STORAGE</td><td>Exfiltrate files</td><td>Photo editing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. DYNAMIC ANALYSIS -->
+    <div class="content-section" id="dynamic">
+      <h2>⚡ Dynamic Analysis</h2>
+      
+      <p><strong>Setting Up Proxy:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Install Burp CA certificate as system trusted CA
+openssl x509 -in burp_cert.crt -out burp_cert.cer -outform DER
+adb push burp_cert.cer /sdcard/
+adb shell "su -c 'mv /sdcard/burp_cert.cer /system/etc/security/cacerts/'"
+adb shell "su -c 'chmod 644 /system/etc/security/cacerts/burp_cert.cer'"</pre>
+      </div>
+
+      <p><strong>Frida Setup:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Install frida-server on Android device
+adb push frida-server /data/local/tmp/
+adb shell "su -c 'chmod 755 /data/local/tmp/frida-server'"
+adb shell "su -c '/data/local/tmp/frida-server &'"
+
+# Attach to app on PC
+frida -U -f com.example.app -l script.js --no-pause</pre>
+      </div>
+
+      <p><strong>Common Frida Scripts:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>// Bypass SSL pinning
+Java.perform(function() {
+    var TrustManagerImpl = Java.use('com.android.trustpoint.' +
+        'tls.TrustManagerImpl');
+    TrustManagerImpl.verifyChain.implementation = function(chain, authType) {
+        return chain;
+    };
+});
+
+// Hook crypto calls
+Java.perform(function() {
+    var Cipher = Java.use('javax.crypto.Cipher');
+    Cipher.doFinal.implementation = function(input) {
+        console.log('Cipher input: ' + bytesToString(input));
+        return this.doFinal(input);
+    };
+});
+
+// Find stored credentials
+Java.perform(function() {
+    var SharedPreferences = Java.use('android.content.SharedPreferences');
+    var editor = SharedPreferences.edit();
+    // Hook putString to capture writes
+});</pre>
+      </div>
+    </div>
+
+    <!-- 6. SECURE STORAGE -->
+    <div class="content-section" id="storage">
+      <h2>💾 Secure Storage Analysis</h2>
+      
+      <p><strong>Common Insecure Storage Locations:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SharedPreferences (often unencrypted)
+/data/data/com.example.app/shared_prefs/
+/data/data/com.example.app/shared_prefs/*.xml
+
+# SQLite Databases
+/data/data/com.example.app/databases/
+/data/data/com.example.app/databases/*.db
+
+# External Storage
+/mnt/sdcard/Android/data/com.example.app/files/
+/mnt/sdcard/Download/
+
+# Log files
+/data/data/com.example.app/logs/
+/data/data/com.example.app/cache/</pre>
+      </div>
+
+      <p><strong>SQLite Analysis:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Pull database from device
+adb pull /data/data/com.example.app/databases/app.db
+
+# View with sqlite3 CLI
+sqlite3 app.db
+sqlite> .tables
+sqlite> .schema table_name
+sqlite> SELECT * FROM table_name;
+
+# Using SQLite Viewer (GUI)
+DB Browser for SQLite
+SQLiteStudio</pre>
+      </div>
+
+      <div class="vulnerability-box">
+        <strong>Insecure Storage Findings:</strong>
+        <ul>
+          <li>SQLite with plaintext passwords or tokens</li>
+          <li>SharedPreferences with username/password stored in cleartext</li>
+          <li>Session tokens in world-readable files</li>
+          <li>Logging sensitive data to files in external storage</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 7. CRYPTOGRAPHY -->
+    <div class="content-section" id="crypto">
+      <h2>🔒 Cryptography Analysis</h2>
+      
+      <p><strong>Weak Crypto Indicators:</strong></p>
+      <ul>
+        <li>Usage of <code>CryptoProvider</code> or custom encryption</li>
+        <li>AES with ECB mode (predictable output)</li>
+        <li>Hardcoded encryption keys in source code</li>
+        <li>MD5 or SHA1 for password hashing</li>
+        <li>ECB mode encryption for sensitive data</li>
+      </ul>
+
+      <p><strong>Safe Crypto Patterns (Search for):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Good patterns to find
+javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+javax.crypto.Cipher.getInstance("AES/CBC/PKCS5Padding")
+javax.crypto.spec.SecretKeySpec (with random key)
+java.security.SecureRandom
+
+# Bad patterns to find
+Cipher.getInstance("AES/ECB")  // Never use ECB
+new SecretKeySpec(key.getBytes(), "AES")  // Hardcoded key?
+MessageDigest.getInstance("MD5")  // Broken hash
+URLEncoder.encode(password)  // Not encryption</pre>
+      </div>
+    </div>
+
+    <!-- 8. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools & Commands</h2>
+
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h4>Jadx-gui</h4>
+          <p>Java decompiler with GUI. View decompiled source code.</p>
+        </div>
+        <div class="tool-card">
+          <h4>apktool</h4>
+          <p>APK decompilation. Extract resources and decompile DEX.</p>
+        </div>
+        <div class="tool-card">
+          <h4>MobSF</h4>
+          <p>Automated mobile app security analysis.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Frida</h4>
+          <p>Dynamic instrumentation toolkit.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Objection</h4>
+          <p>Runtime mobile exploration without root.</p>
+        </div>
+        <div class="tool-card">
+          <h4>Drozer</h4>
+          <p>Android security assessment framework.</p>
+        </div>
+      </div>
+
+      <p><strong>Useful Commands:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Extract strings from APK
+strings app.apk | grep -i "api_key\|password\|secret"
+
+# Extract URLs
+strings app.apk | grep "http"
+
+# Check signature
+apksigner verify --print-certs app.apk
+
+# Extract certificates
+keytool -printcert -file META-INF/CERT.RSA
+
+# Objection runtime analysis
+objection explore -g <PID>
+objection -g <PID> memory search "password" --string
+
+# Drozer module
+dz> run app.package.list
+dz> run app.package.info -a com.example.app
+dz> run app.activity.info -a com.example.app</pre>
+      </div>
+    </div>
+
+    <!-- 9. COMMON VULNERABILITIES -->
+    <div class="content-section" id="vulnerabilities">
+      <h2>⚠️ Common Vulnerabilities</h2>
+      
+      <table>
+        <thead>
+          <tr><th>Vulnerability</th><th>Description</th><th>Risk</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hardcoded Credentials</td><td>API keys, passwords in source code</td><td>Critical</td></tr>
+          <tr><td>Insecure Storage</td><td>Sensitive data in plaintext files</td><td>High</td></tr>
+          <tr><td>No SSL Pinning</td><td>Traffic interception possible</td><td>High</td></tr>
+          <tr><td>Root Detection Bypass</td><td>Malware can run on rooted devices</td><td>Medium</td></tr>
+          <tr><td>Exported Components</td><td>Other apps can access functionality</td><td>Medium</td></tr>
+          <tr><td>Debug Enabled</td><td>Runtime inspection possible</td><td>Medium</td></tr>
+          <tr><td>Excessive Permissions</td><td>More access than needed</td><td>Medium</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 10. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Secure Development Practices:</strong>
+        <ul>
+          <li>Use Android Keystore for cryptographic keys</li>
+          <li>Implement SSL/TLS pinning properly</li>
+          <li>Encrypt SharedPreferences with EncryptedSharedPreferences</li>
+          <li>Use SQLCipher for database encryption</li>
+          <li>Implement root/tamper detection (but don't rely solely on it)</li>
+          <li>Enable ProGuard/R8 for code obfuscation</li>
+          <li>Use secure random number generators</li>
+          <li>Never log sensitive data</li>
+        </ul>
+      </div>
+
+      <p><strong>Best Practices:</strong></p>
+      <ul>
+        <li>Store tokens in KeyStore, not SharedPreferences</li>
+        <li>Use biometric authentication for sensitive operations</li>
+        <li>Implement certificate validation properly</li>
+        <li>Use Android's built-in encryption (EncryptedFile, EncryptedSharedPreferences)</li>
+        <li>Follow principle of least privilege for permissions</li>
+      </ul>
+    </div>
+
+    <!-- 11. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://developer.android.com/training/articles/security-tips" target="_blank">Android Security Tips</a></li>
+        <li><a href="https://mas.owasp.org/" target="_blank">OWASP MASVS</a></li>
+        <li><a href="https://github.com/OWASP/owasp-mastg" target="_blank">OWASP Mobile Security Testing Guide</a></li>
+        <li><a href="https://developer.android.com/guide/topics/security/cryptography" target="_blank">Android Cryptography</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Mobile Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

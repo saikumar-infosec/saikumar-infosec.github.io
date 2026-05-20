@@ -3,135 +3,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Awesome Bug Bounty Writeups | Bug Bounty | Saikumar Raju</title>
+  <title>Bug Bounty Methodology | Saikumar Infosec</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #00f5a0; --bg-dark: #0a0c10; --bg-card: #111827; --bg-elevated: #1a1f2e; --text-primary: #e8edf5; --text-secondary: #9ca3af; --border: #1f2937; }
-    body.light { --bg-dark: #f3f4f6; --bg-card: #ffffff; --bg-elevated: #e5e7eb; --text-primary: #111827; --text-secondary: #4b5563; --border: #d1d5db; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; transition: all 0.3s ease; }
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { position: sticky; top: 0; background: var(--bg-dark); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; backdrop-filter: blur(8px); }
-    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--text-primary); }
-    .logo span { color: var(--primary); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; flex-wrap: wrap; }
-    .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--primary); }
-    .theme-toggle { background: var(--bg-elevated); border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
-    .mobile-menu { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-    .page-header { padding: 6rem 0 2rem; }
-    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; }
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .breadcrumb a { color: var(--primary); text-decoration: none; }
-    .page-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .content-section { margin: 2rem 0; }
-    .content-section h2 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
-    .content-section p { margin-bottom: 1rem; color: var(--text-secondary); }
-    .content-section ul { margin: 1rem 0 1.5rem 2rem; color: var(--text-secondary); }
-    .content-section li { margin-bottom: 0.5rem; }
-    .resource-list { list-style: none; margin: 1rem 0; }
-    .resource-list li { margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-card); border-radius: 0.5rem; border: 1px solid var(--border); }
-    .resource-list li a { color: var(--primary); text-decoration: none; font-weight: 500; }
-    .resource-list li a:hover { text-decoration: underline; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; }
-    @media (max-width: 768px) { .container { padding: 0 1rem; } .mobile-menu { display: block; } .nav-links { display: none; width: 100%; flex-direction: column; padding: 1rem 0; gap: 1rem; } .nav-links.show { display: flex; } .page-header h1 { font-size: 1.8rem; } }
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .topic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; transition: var(--transition); }
+    .topic-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .topic-card h3 { color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .topic-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    .topic-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; }
+    .topic-link:hover { text-decoration: underline; }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    .warning-box { background: rgba(255,136,0,0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .warning-box strong { color: #ff8800; }
+    .category-section { margin: 3rem 0; }
+    .category-section h2 { margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .topics-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
+
 <nav class="navbar">
   <div class="container nav-flex">
-    <a href="../index.html" class="logo">Saikumar.<span>Raju</span></a>
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
     <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Resume</a></li>
-      <li><a href="../knowledge-base.html">Knowledge Base</a></li>
-      <li><a href="../status.html">Status</a></li>
-      <li><a href="../blog.html">Write-ups</a></li>
-      <li><a href="../tools.html">Tools</a></li>
-      <li><a href="../oscp/index.html">OSCP Prep</a></li>
-      <li><a href="../red-teaming/index.html">Red Teaming</a></li>
-      <li><a href="index.html">Bug Bounty</a></li>
+      <li><a href="../index.html">Home</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
-      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> Dark</button></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
     </ul>
   </div>
 </nav>
+
 <main>
   <div class="container">
-    <div class="breadcrumb"><a href="index.html">Bug Bounty</a> / Awesome Bug Bounty Writeups</div>
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / Bug Bounty
+    </div>
+
     <div class="page-header">
-      <h1>📚 Awesome Bug Bounty Writeups</h1>
-    </div>
-    
-    <div class="content-section">
-      <h2>🧠 Resource Overview</h2>
-      <p>A curated list of bug bounty writeups categorized by vulnerability type, this repository is an excellent learning resource for both beginners and experienced hunters. Each writeup includes a real‑world example, exploitation steps, and remediation advice from active bug bounty researchers[reference:0].</p>
-      <p><strong>Key Links:</strong></p>
-      <ul class="resource-list">
-        <li><a href="https://github.com/devanshbatham/Awesome-Bugbounty-Writeups" target="_blank">GitHub – Awesome-Bugbounty-Writeups</a></li>
-        <li><a href="https://undercodetesting.com/awesome-bugbounty-writeups/" target="_blank">External article: Awesome Bugbounty Writeups</a></li>
-      </ul>
+      <h1>🎯 Bug Bounty Methodology</h1>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px;">
+        Comprehensive bug bounty hunting methodology. Learn reconnaissance, vulnerability discovery, report writing, and maximizing your impact on platforms like HackerOne, Bugcrowd, and private programs.
+      </p>
     </div>
 
-    <div class="content-section">
-      <h2>🎯 Vulnerability Categories Covered</h2>
-      <ul>
-        <li>Cross Site Scripting (XSS)</li>
-        <li>Cross Site Request Forgery (CSRF)</li>
-        <li>Clickjacking (UI Redressing Attack)</li>
-        <li>Local File Inclusion (LFI)</li>
-        <li>Subdomain Takeover</li>
-        <li>Denial of Service (DoS)</li>
-        <li>Authentication Bypass</li>
-        <li>SQL Injection (SQLi)</li>
-        <li>Insecure Direct Object Reference (IDOR)</li>
-        <li>2FA Related Issues</li>
-        <li>CORS Related Issues</li>
-        <li>Server Side Request Forgery (SSRF)</li>
-        <li>Race Condition</li>
-        <li>Remote Code Execution (RCE)</li>
-        <li>Buffer Overflow Writeups</li>
-        <li>Android Pentesting</li>
-      </ul>
-      <p>The repository also includes a dedicated section on Buffer Overflow resources, with links to PDF books, GitHub repositories, and explanatory articles[reference:1].</p>
+    <div class="warning-box">
+      <strong>Responsible Disclosure:</strong> Always follow the program's disclosure policy. Test only within scope, respect rate limits, and report vulnerabilities responsibly to earn bounties.
     </div>
 
-    <div class="content-section">
-      <h2>🔍 Why This Matters</h2>
-      <p>Bug bounty writeups are invaluable resources for cybersecurity professionals and ethical hackers. They provide real‑world examples of vulnerabilities, exploitation techniques, and remediation strategies that you won’t always find in textbooks[reference:2].</p>
-      <p>By studying these reports, you can understand how security researchers think, learn new attack vectors, and apply those lessons to your own penetration tests and bug bounty programs.</p>
+    <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> Reconnaissance</h3>
+          <p>Passive and active reconnaissance. Subdomain enumeration, asset discovery, technology fingerprinting.</p>
+          <a href="recon.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-database"></i> IDOR</h3>
+          <p>Insecure Direct Object Reference. Horizontal and vertical privilege escalation via ID manipulation.</p>
+          <a href="idor-bugs.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-cloud"></i> SSRF</h3>
+          <p>Server-Side Request Forgery. Cloud metadata, internal scanning, data exfiltration.</p>
+          <a href="ssrf-bugs.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-bomb"></i> RCE</h3>
+          <p>Remote Code Execution. Command injection, deserialization, upload exploitation.</p>
+          <a href="rce-bugs.html" class="topic-link"><i class="fas fa-arrow-right"></i> Full Guide</a>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-flag"></i> Awesome Writeups</h3>
+          <p>Collection of real-world bug bounty writeups with methodology and impact analysis.</p>
+          <a href="awesome-writeups.html" class="topic-link"><i class="fas fa-arrow-right"></i> Read More</a>
+        </div>
+      </div>
+
+    <!-- WRITEUPS -->
+    <div class="category-section" id="writeups">
+      <h2>📝 Sample Writeups</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-flag"></i> Awesome Writeups</h3>
+          <p>Collection of real-world bug bounty writeups with methodology and impact analysis.</p>
+          <a href="awesome-writeups.html" class="topic-link"><i class="fas fa-arrow-right"></i> Read More</a>
+        </div>
+      </div>
     </div>
 
-    <div class="content-section">
-      <h2>🚀 How to Use This Resource</h2>
-      <ul>
-        <li><strong>Clone the repository</strong> to browse locally or contribute new writeups.</li>
-        <li><strong>Search for specific vulnerabilities</strong> by scanning the README or using `grep` on the markdown files.</li>
-        <li><strong>Set up a testing lab</strong> to reproduce the exploits described in the writeups.</li>
-      </ul>
+    <!-- PLATFORMS -->
+    <div class="category-section" id="platforms">
+      <h2>🌐 Bug Bounty Platforms</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-trophy"></i> HackerOne</h3>
+          <p>Programs: Facebook, Uber, Spotify, Google. Tips for successful submissions.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-trophy"></i> Bugcrowd</h3>
+          <p>Diverse program types. VDP vs PVT programs. Ranking system explained.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-trophy"></i> Open Bug Bounty</h3>
+          <p>Coordinated disclosure platform. Cross-site scripting and HTML injection focus.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-trophy"></i> Private Programs</h3>
+          <p>Where to find private programs. Invitation-only, direct outreach, and networking.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="content-section">
-      <h2>📊 Impact in My Pipeline</h2>
-      <p>This resource has been added to the new <strong>Bug Bounty</strong> category in the knowledge base. It serves as a foundational reference for the 50‑TC web vulnerabilities, API security, and the OSCP prep section by providing real‑world examples of every major bug class.</p>
+    <!-- TOOLS -->
+    <div class="category-section" id="tools">
+      <h2>🛠️ Essential Tools</h2>
+      
+      <div class="topics-grid">
+        <div class="topic-card">
+          <h3><i class="fas fa-bomb"></i> Nuclei</h3>
+          <p>Template-based vulnerability scanner. Fast, customizable, community templates.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-search"></i> Subfinder</h3>
+          <p>Fast subdomain discovery. Passive sources, high accuracy.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-sitemap"></i> Amass</h3>
+          <p>In-depth subdomain enumeration. Active and passive scanning modes.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-globe"></i> Gau</h3>
+          <p>Get all URLs. Wayback, Common Crawl, AlienVault for parameter collection.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-bug"></i> Param-miner</h3>
+          <p>Burp extension for parameter discovery. Guess params, audit hidden params.</p>
+        </div>
+
+        <div class="topic-card">
+          <h3><i class="fas fa-database"></i> Sqlmap</h3>
+          <p>Automated SQL injection detection and exploitation.</p>
+        </div>
+      </div>
     </div>
 
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Bug Bounty Hub</a>
+    <!-- TIPS -->
+    <div class="category-section" id="tips">
+      <h2>💡 Pro Tips</h2>
+      
+      <div class="info-box">
+        <strong>1. Think Like a Developer:</strong><br>
+        Understanding how applications are built helps predict where bugs exist. Learn common frameworks, patterns, and their typical security issues.
+      </div>
+
+      <div class="info-box">
+        <strong>2. Focus on Impact:</strong><br>
+        A medium-severity bug with clear business impact often pays more than a high-severity informational finding. Show how bugs affect real users.
+      </div>
+
+      <div class="info-box">
+        <strong>3. Race Condition Rewards:</strong><br>
+        Timing-sensitive vulnerabilities often go undiscovered. Use Turbo Intruder's race condition scanning for potential bonus payouts.
+      </div>
+
+      <div class="info-box">
+        <strong>4. API Testing:</strong><br>
+        Many programs overlook API endpoints. Mobile APIs, internal APIs, and undocumented features often have more vulnerabilities.
+      </div>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
   </div>
 </main>
-<footer><p>Saikumar Raju — Cybersecurity Consultant | Awesome Bug Bounty Writeups</p></footer>
+
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+
 <script>
+document.addEventListener('DOMContentLoaded', function() {
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const navLinks = document.getElementById('navLinks');
-  if (mobileBtn) mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+  }
   const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    const isLight = document.body.classList.contains('light');
-    themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
-  });
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = 'Light';
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = 'Dark';
+      }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'light') document.body.classList.add('light');
+});
 </script>
+
 </body>
 </html>

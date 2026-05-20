@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | Saikumar Infosec</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="core/styles/core.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      text-align: center;
+    }
+    .error-container {
+      max-width: 600px;
+      padding: 2rem;
+    }
+    .error-code {
+      font-size: 8rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0;
+      line-height: 1;
+    }
+    .error-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      color: var(--text-primary);
+    }
+    .error-message {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: var(--primary);
+      color: var(--bg-dark);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .back-home:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    .icon {
+      font-size: 4rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .search-box {
+      margin-top: 2rem;
+    }
+    .search-box input {
+      padding: 0.8rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      width: 70%;
+      max-width: 300px;
+      font-size: 1rem;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .quick-links {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .quick-links a {
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+    .quick-links a:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="icon"><i class="fas fa-search"></i></div>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Page Not Found</h2>
+    <p class="error-message">The page you're looking for doesn't exist or has been moved.</p>
+    <a href="index.html" class="back-home"><i class="fas fa-home"></i> Back to Home</a>
+    
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search pages..." onkeypress="if(event.key==='Enter') searchPage()">
+    </div>
+    
+    <div class="quick-links">
+      <a href="web/index.html">Web Security</a>
+      <a href="api/index.html">API Security</a>
+      <a href="mobile/index.html">Mobile Security</a>
+      <a href="active-directory/index.html">Active Directory</a>
+      <a href="cloud/index.html">Cloud Security</a>
+      <a href="network/index.html">Network Security</a>
+    </div>
+  </div>
+  
+  <script>
+    const pages = [
+      'web/sql-injection.html', 'web/xss.html', 'web/ssrf.html', 'web/xxe.html',
+      'api/index.html', 'mobile/index.html', 'active-directory/index.html',
+      'cloud/index.html', 'network/index.html', 'windows-security/index.html'
+    ];
+    
+    function searchPage() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const found = pages.find(p => p.toLowerCase().includes(query));
+      if (found) window.location.href = found;
+      else alert('No matching page found. Try one of the quick links above.');
+    }
+  </script>
+</body>
+</html>
